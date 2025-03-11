@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.1758
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TabletInterface", "TabletInterface\TabletInterface.csproj", "{0279B2D8-2DF7-4876-8012-5C343A7A5860}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HTSController", "HTS Controller\HTSController.csproj", "{0279B2D8-2DF7-4876-8012-5C343A7A5860}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
