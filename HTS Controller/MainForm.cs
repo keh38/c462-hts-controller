@@ -18,20 +18,15 @@ using SerilogTraceListener;
 
 using KLib.Net;
 
-namespace TabletInterface
+namespace HTSController
 {
     public partial class MainForm : Form
     {
-        private IPEndPoint _ipEndPoint;
-        private string _serverAddress;
-
-        private CancellationTokenSource _serverCancellationToken;
-        private SynchronizationContext _synchronizationContext;
+        HTSNetwork _network;
 
         public MainForm()
         {
             InitializeComponent();
-            _synchronizationContext = SynchronizationContext.Current;
         }
 
         private async Task StartLogging()
@@ -54,7 +49,14 @@ namespace TabletInterface
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            _network = new HTSNetwork();
+            subjectPageControl.Initialize(_network);
 
+            menuPanel.Enabled = false;
+            subjectButton.Checked = false;
+            subjectButton.BackColor = menuPanel.BackColor;
+            //subjectButton.BackColor = MainForm.DefaultBackColor;
+            tabControl.SelectedTab = subjectPage;
         }
 
         private async void MainForm_Shown(object sender, EventArgs e)
@@ -64,186 +66,57 @@ namespace TabletInterface
             Log.Information($"HTS  v{Assembly.GetExecutingAssembly().GetName().Version.ToString()} started");
 
             Log.Information("Starting TCP listener");
-            StartListener();
+            _network.StartListener();
 
-            await InitializeTabletConnection();
-
-            subjectButton.Checked = true;
-            subjectButton.BackColor = MainForm.DefaultBackColor;
-
+            await ConnectToTablet();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_ipEndPoint != null)
+            if (!e.Cancel)
             {
-                KTcpClient.SendMessage(_ipEndPoint, "Disconnect");
-
-                if (!e.Cancel)
-                {
-                    _serverCancellationToken.Cancel();
-                }
+                _network.Disconnect();
             }
+
             Log.Information("Exit");
             Log.CloseAndFlush();
         }
 
-        #region Network Methods
-        private async Task InitializeTabletConnection()
+        private async Task ConnectToTablet()
         {
-            await SearchForConnection();
+            var success = await _network.Connect();
 
-            if (_ipEndPoint != null)
+            if (success)
             {
-                //await Task.Run(() => GetSubjectInfo());
-                //await Task.Run(() => GetTabletConfiguration());
+                connectionStatusLabel.Image = imageList.Images[1];
+                connectionStatusLabel.Text = $"Connected to {_network.TabletAddress}";
+                sceneNameLabel.Text = $"Scene: {_network.CurrentScene}";
+
+                subjectPageControl.RetrieveSubjectState();
+                menuPanel.Enabled = true;
+                subjectButton.Checked = true;
+                subjectButton.BackColor = MainForm.DefaultBackColor;
             }
-        }
-
-        private async Task SearchForConnection()
-        {
-            await Task.Run(() => Discover());
-
-            if (_ipEndPoint == null)
+            else
             {
                 connectionStatusLabel.Image = imageList.Images[0];
                 connectionStatusLabel.Text = "No tablet connection (double-click to retry)";
             }
-            else
-            {
-                connectionStatusLabel.Image = imageList.Images[1];
-                connectionStatusLabel.Text = $"Connected to {_ipEndPoint.ToString()}";
-            }
         }
 
-        private bool Discover()
+        private void menuButton_CheckedChanged(object sender, EventArgs e)
         {
-            bool success = false;
 
-            _synchronizationContext.Post(
-                new SendOrPostCallback(o =>
-                {
-                    connectionStatusLabel.Image = imageList.Images[0];
-                    connectionStatusLabel.Text = "Connecting to tablet...";
-                }),
-                null);
-            Log.Information("Connecting to tablet");
-
-            try
-            {
-                _ipEndPoint = Discovery.Discover("HEARING.TEST.SUITE");
-                if (_ipEndPoint != null)
-                {
-                    Debug.WriteLine($"contacting host {_ipEndPoint.ToString()}");
-
-                    var result = KTcpClient.SendMessage(_ipEndPoint, $"Connect:{_serverAddress}");
-                    if (result > 0)
-                    {
-                        var sceneName = KTcpClient.SendMessageReceiveString(_ipEndPoint, "GetCurrentSceneName");
-                        sceneNameLabel.Text = $"Scene: {sceneName}";
-                    }
-                    success = (result > 0);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message); 
-                success = false;
-                _ipEndPoint = null;
-            }
-
-            return success;
         }
 
-        private void StartListener()
+        private async void connectionStatusLabel_DoubleClick(object sender, EventArgs e)
         {
-            _serverCancellationToken = new CancellationTokenSource();
-            Task.Run(() =>
-            {
-                Listener(_serverCancellationToken.Token);
-            }, _serverCancellationToken.Token);
+            await ConnectToTablet();
         }
 
-        private void Listener(CancellationToken ct)
+        private void subjectPageControl_ValueChanged(object sender, EventArgs e)
         {
-            var server = new KTcpListener();
-            server.StartListener(4951);
-
-            _serverAddress = server.ListeningOn;
-            Debug.WriteLine($"TCP server started on {server.ListeningOn}");
-
-            while (!ct.IsCancellationRequested)
-            {
-                try
-                {
-                    if (server.Pending())
-                    {
-                        ProcessTCPMessage(server);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                }
-            }
-
-            server.CloseListener();
-            Debug.WriteLine("TCP server stopped");
-        }
-
-        private void ProcessTCPMessage(KTcpListener server)
-        {
-            server.AcceptTcpClient();
-
-            //UserResponse response = null;
-            //ErrorDescription error = null;
-
-            //string input = server.ReadString();
-            //switch (input)
-            //{
-            //    case "error":
-            //        var bytes = server.ReadBytes();
-            //        error = SRI.Messages.Message.FromProtoBuf<ErrorDescription>(bytes);
-            //        break;
-
-            //    case "item":
-            //        bytes = server.ReadBytes();
-            //        _currentItem = SRI.Messages.Message.FromProtoBuf<CurrentItem>(bytes);
-            //        break;
-
-            //    case "response":
-            //        bytes = server.ReadBytes();
-            //        response = SRI.Messages.Message.FromProtoBuf<UserResponse>(bytes);
-            //        break;
-            //}
-            //server.CloseTcpClient();
-
-            //switch (input)
-            //{
-            //    case "play finished":
-            //        _isPlaying = false;
-            //        break;
-
-            //    case "error":
-            //        _isPlaying = false;
-            //        this.Invoke(this.processErrorDelgate, error);
-            //        break;
-
-            //    case "item":
-            //        this.Invoke(this.showCurrentItemDelegate);
-            //        break;
-
-            //    case "response":
-            //        this.Invoke(this.processResponseDelgate, response);
-            //        break;
-            //}
-        }
-
-        #endregion
-
-        private void GetSubjectInfo()
-        {
-
+            subjectButton.Text = string.IsNullOrEmpty(subjectPageControl.Subject) ? "Subject" : subjectPageControl.Subject;
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace TabletInterface
+namespace HTSController
 {
     static class Program
     {
