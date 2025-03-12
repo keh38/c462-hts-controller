@@ -50,6 +50,8 @@ namespace HTSController
         private void MainForm_Load(object sender, EventArgs e)
         {
             _network = new HTSNetwork();
+            _network.RemoteMessageHandler = HandleRemoteMessage;
+
             subjectPageControl.Initialize(_network);
 
             menuPanel.Enabled = false;
@@ -117,6 +119,20 @@ namespace HTSController
         private void subjectPageControl_ValueChanged(object sender, EventArgs e)
         {
             subjectButton.Text = string.IsNullOrEmpty(subjectPageControl.Subject) ? "Subject" : subjectPageControl.Subject;
+        }
+
+        private void HandleRemoteMessage(string fullMessage)
+        {
+            var parts = fullMessage.Split(':');
+            string message = parts[0];
+            string data = (parts.Length > 1) ? parts[1] : null;
+
+            switch (message)
+            {
+                case "ChangedScene":
+                    sceneNameLabel.Text = $"Scene: {data}";
+                    break;
+            }
         }
     }
 }

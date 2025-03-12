@@ -23,8 +23,12 @@ namespace HTSController
 {
     public class HTSNetwork
     {
+        public delegate void RemoteMessageHandlerDelegate (string message);
+        public RemoteMessageHandlerDelegate RemoteMessageHandler { set; get; } = null;
+
         private IPEndPoint _ipEndPoint;
         private string _serverAddress;
+        private int _serverPort = 4951;
 
         private CancellationTokenSource _serverCancellationToken;
 
@@ -93,7 +97,7 @@ namespace HTSController
                 {
                     Debug.WriteLine($"contacting host {_ipEndPoint.ToString()}");
 
-                    var result = KTcpClient.SendMessage(_ipEndPoint, $"Connect:{_serverAddress}");
+                    var result = KTcpClient.SendMessage(_ipEndPoint, $"Connect:{_serverAddress.Replace(":","/")}");
                     if (result > 0)
                     {
                         CurrentScene = KTcpClient.SendMessageReceiveString(_ipEndPoint, "GetCurrentSceneName");
@@ -123,9 +127,13 @@ namespace HTSController
         private void Listener(CancellationToken ct)
         {
             var server = new KTcpListener();
-            server.StartListener(4951);
+            server.StartListener(_serverPort);
 
             _serverAddress = server.ListeningOn;
+            if (_serverAddress.StartsWith("localhost"))
+            {
+                _serverAddress = _serverAddress.Replace("localhost", "127.0.0.1");
+            }
             Debug.WriteLine($"TCP server started on {server.ListeningOn}");
 
             while (!ct.IsCancellationRequested)
@@ -151,48 +159,14 @@ namespace HTSController
         {
             server.AcceptTcpClient();
 
-            //UserResponse response = null;
-            //ErrorDescription error = null;
+            string input = server.ReadString();
+            server.SendAcknowledgement();
+            server.CloseTcpClient();
 
-            //string input = server.ReadString();
-            //switch (input)
-            //{
-            //    case "error":
-            //        var bytes = server.ReadBytes();
-            //        error = SRI.Messages.Message.FromProtoBuf<ErrorDescription>(bytes);
-            //        break;
-
-            //    case "item":
-            //        bytes = server.ReadBytes();
-            //        _currentItem = SRI.Messages.Message.FromProtoBuf<CurrentItem>(bytes);
-            //        break;
-
-            //    case "response":
-            //        bytes = server.ReadBytes();
-            //        response = SRI.Messages.Message.FromProtoBuf<UserResponse>(bytes);
-            //        break;
-            //}
-            //server.CloseTcpClient();
-
-            //switch (input)
-            //{
-            //    case "play finished":
-            //        _isPlaying = false;
-            //        break;
-
-            //    case "error":
-            //        _isPlaying = false;
-            //        this.Invoke(this.processErrorDelgate, error);
-            //        break;
-
-            //    case "item":
-            //        this.Invoke(this.showCurrentItemDelegate);
-            //        break;
-
-            //    case "response":
-            //        this.Invoke(this.processResponseDelgate, response);
-            //        break;
-            //}
+            if (RemoteMessageHandler != null)
+            {
+                RemoteMessageHandler.Invoke(input);
+            }
         }
 
     }

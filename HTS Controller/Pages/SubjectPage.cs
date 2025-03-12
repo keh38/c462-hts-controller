@@ -110,5 +110,45 @@ namespace HTSController.Pages
             }
             OnValueChanged();
         }
+
+        private void subjectDropDown_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (!subjectDropDown.Items.Contains(subjectDropDown.Text))
+                {
+                    createButton.Visible = true;
+                }
+            }
+
+        }
+
+        private void subjectDropDown_TextChanged(object sender, EventArgs e)
+        {
+            createButton.Visible = false;
+        }
+
+        private void createButton_Click(object sender, EventArgs e)
+        {
+            createButton.Visible = false;
+
+            Subject = subjectDropDown.Text;
+            _network.SendMessage($"SetSubjectInfo:{Project}/{Subject}");
+
+            _ignoreEvents = true;
+
+            var subjects = subjectDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList();
+            subjectDropDown.Items.Add(Subject);
+            subjects.Add(Subject);
+            subjects.Sort();
+            subjectDropDown.Items.Clear();
+            subjectDropDown.Items.AddRange(subjects.ToArray());
+
+            subjectDropDown.SelectedIndex = subjects.IndexOf(Subject);
+            subjectDropDown.Text = Subject;
+
+            _ignoreEvents = false;
+        }
+
     }
 }

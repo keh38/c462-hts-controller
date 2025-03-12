@@ -32,6 +32,7 @@
             this.projectDropDown = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.subjectDropDown = new System.Windows.Forms.ComboBox();
+            this.createButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -66,18 +67,34 @@
             // 
             // subjectDropDown
             // 
+            this.subjectDropDown.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.subjectDropDown.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.subjectDropDown.FormattingEnabled = true;
             this.subjectDropDown.Location = new System.Drawing.Point(40, 98);
             this.subjectDropDown.Name = "subjectDropDown";
             this.subjectDropDown.Size = new System.Drawing.Size(121, 21);
             this.subjectDropDown.TabIndex = 4;
             this.subjectDropDown.SelectedIndexChanged += new System.EventHandler(this.subjectDropDown_SelectedIndexChanged);
+            this.subjectDropDown.TextChanged += new System.EventHandler(this.subjectDropDown_TextChanged);
+            this.subjectDropDown.KeyDown += new System.Windows.Forms.KeyEventHandler(this.subjectDropDown_KeyDown);
+            // 
+            // createButton
+            // 
+            this.createButton.Location = new System.Drawing.Point(167, 96);
+            this.createButton.Name = "createButton";
+            this.createButton.Size = new System.Drawing.Size(73, 23);
+            this.createButton.TabIndex = 7;
+            this.createButton.Text = "Create new";
+            this.createButton.UseVisualStyleBackColor = true;
+            this.createButton.Visible = false;
+            this.createButton.Click += new System.EventHandler(this.createButton_Click);
             // 
             // SubjectPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.createButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.subjectDropDown);
             this.Controls.Add(this.label1);
@@ -95,5 +112,6 @@
         private System.Windows.Forms.ComboBox projectDropDown;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox subjectDropDown;
+        private System.Windows.Forms.Button createButton;
     }
 }
