@@ -26,10 +26,12 @@ namespace TabletInterface
         private string _serverAddress;
 
         private CancellationTokenSource _serverCancellationToken;
+        private SynchronizationContext _synchronizationContext;
 
         public MainForm()
         {
             InitializeComponent();
+            _synchronizationContext = SynchronizationContext.Current;
         }
 
         private async Task StartLogging()
@@ -65,8 +67,28 @@ namespace TabletInterface
             StartListener();
 
             await InitializeTabletConnection();
+
+            subjectButton.Checked = true;
+            subjectButton.BackColor = MainForm.DefaultBackColor;
+
         }
 
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_ipEndPoint != null)
+            {
+                KTcpClient.SendMessage(_ipEndPoint, "Disconnect");
+
+                if (!e.Cancel)
+                {
+                    _serverCancellationToken.Cancel();
+                }
+            }
+            Log.Information("Exit");
+            Log.CloseAndFlush();
+        }
+
+        #region Network Methods
         private async Task InitializeTabletConnection()
         {
             await SearchForConnection();
@@ -98,8 +120,13 @@ namespace TabletInterface
         {
             bool success = false;
 
-            connectionStatusLabel.Image = imageList.Images[0];
-            connectionStatusLabel.Text = "Connecting to tablet...";
+            _synchronizationContext.Post(
+                new SendOrPostCallback(o =>
+                {
+                    connectionStatusLabel.Image = imageList.Images[0];
+                    connectionStatusLabel.Text = "Connecting to tablet...";
+                }),
+                null);
             Log.Information("Connecting to tablet");
 
             try
@@ -107,19 +134,22 @@ namespace TabletInterface
                 _ipEndPoint = Discovery.Discover("HEARING.TEST.SUITE");
                 if (_ipEndPoint != null)
                 {
-                    Debug.WriteLine($"pinging host {_ipEndPoint.ToString()}");
+                    Debug.WriteLine($"contacting host {_ipEndPoint.ToString()}");
 
-                    var result = KTcpClient.SendMessage(_ipEndPoint, $"Ping:{_serverAddress}");
-                    Log.Information($"Ping: {(result > 0).ToString()}");
+                    var result = KTcpClient.SendMessage(_ipEndPoint, $"Connect:{_serverAddress}");
+                    if (result > 0)
+                    {
+                        var sceneName = KTcpClient.SendMessageReceiveString(_ipEndPoint, "GetCurrentSceneName");
+                        sceneNameLabel.Text = $"Scene: {sceneName}";
+                    }
                     success = (result > 0);
                 }
-
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message); 
                 success = false;
-                _ipEndPoint = null; ;
+                _ipEndPoint = null;
             }
 
             return success;
@@ -209,5 +239,11 @@ namespace TabletInterface
             //}
         }
 
+        #endregion
+
+        private void GetSubjectInfo()
+        {
+
+        }
     }
 }
