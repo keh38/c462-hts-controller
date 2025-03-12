@@ -24,9 +24,16 @@ namespace HTSController
     {
         HTSNetwork _network;
 
+        List<Tuple<CheckBox, TabPage>> _menu;
+        bool _ignoreEvents = false;
+
         public MainForm()
         {
             InitializeComponent();
+
+            _menu = new List<Tuple<CheckBox, TabPage>>();
+            _menu.Add(new Tuple<CheckBox, TabPage>(subjectButton, subjectPage));
+            _menu.Add(new Tuple<CheckBox, TabPage>(turandotButton, turandotPage));
         }
 
         private async Task StartLogging()
@@ -55,10 +62,8 @@ namespace HTSController
             subjectPageControl.Initialize(_network);
 
             menuPanel.Enabled = false;
-            subjectButton.Checked = false;
-            subjectButton.BackColor = menuPanel.BackColor;
-            //subjectButton.BackColor = MainForm.DefaultBackColor;
             tabControl.SelectedTab = subjectPage;
+            SelectTab(null);
         }
 
         private async void MainForm_Shown(object sender, EventArgs e)
@@ -84,6 +89,26 @@ namespace HTSController
             Log.CloseAndFlush();
         }
 
+        private void SelectTab(CheckBox button)
+        {
+            _ignoreEvents = true;
+            foreach (var m in _menu)
+            {
+                bool isSelected = (m.Item1 == button);
+                subjectButton.Checked = isSelected;
+                m.Item1.FlatAppearance.BorderColor = isSelected ? Color.Black : menuPanel.BackColor;
+                m.Item1.BackColor = isSelected ? MainForm.DefaultBackColor : menuPanel.BackColor;
+                m.Item1.FlatAppearance.CheckedBackColor = isSelected ? MainForm.DefaultBackColor : menuPanel.BackColor;
+                m.Item1.FlatAppearance.MouseOverBackColor = isSelected ? MainForm.DefaultBackColor : menuPanel.BackColor;
+                if (isSelected)
+                {
+                    tabControl.SelectedTab = m.Item2;
+                }
+            }
+            tabControl.SelectedTab.Focus();
+            _ignoreEvents = false;
+        }
+
         private async Task ConnectToTablet()
         {
             var success = await _network.Connect();
@@ -96,8 +121,7 @@ namespace HTSController
 
                 subjectPageControl.RetrieveSubjectState();
                 menuPanel.Enabled = true;
-                subjectButton.Checked = true;
-                subjectButton.BackColor = MainForm.DefaultBackColor;
+                SelectTab(subjectButton);
             }
             else
             {
@@ -108,7 +132,10 @@ namespace HTSController
 
         private void menuButton_CheckedChanged(object sender, EventArgs e)
         {
-
+            if (!_ignoreEvents)
+            {
+                SelectTab(sender as CheckBox);
+            }
         }
 
         private async void connectionStatusLabel_DoubleClick(object sender, EventArgs e)
@@ -133,6 +160,16 @@ namespace HTSController
                     sceneNameLabel.Text = $"Scene: {data}";
                     break;
             }
+        }
+
+        private void interactiveButton_Click(object sender, EventArgs e)
+        {
+            _network.SendMessage("ChangeScene:Turandot Interactive");
+        }
+
+        private void homeButton_Click(object sender, EventArgs e)
+        {
+            _network.SendMessage("ChangeScene:Home");
         }
     }
 }
