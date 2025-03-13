@@ -160,5 +160,11 @@
   <ItemGroup>
     <None Include="Images\Turandot Black 24.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Controls\Controls.csproj">
+      <Project>{65b6e422-f6c9-4fae-bbd1-58c67a83a2ae}</Project>
+      <Name>Controls</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

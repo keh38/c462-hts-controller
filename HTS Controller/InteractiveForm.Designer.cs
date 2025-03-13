@@ -35,6 +35,7 @@
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.displayTimer = new System.Windows.Forms.Timer(this.components);
             this.led1 = new System.Windows.Forms.Panel();
+            this.noisePage1 = new KLib.Unity.Controls.Signals.NoisePage();
             this.SuspendLayout();
             // 
             // startButton
@@ -78,11 +79,22 @@
             this.led1.Size = new System.Drawing.Size(79, 26);
             this.led1.TabIndex = 2;
             // 
+            // noisePage1
+            // 
+            this.noisePage1.AutoSize = true;
+            this.noisePage1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.noisePage1.Location = new System.Drawing.Point(371, 59);
+            this.noisePage1.Name = "noisePage1";
+            this.noisePage1.Size = new System.Drawing.Size(180, 152);
+            this.noisePage1.TabIndex = 3;
+            this.noisePage1.Value = null;
+            // 
             // InteractiveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(371, 149);
+            this.ClientSize = new System.Drawing.Size(751, 409);
+            this.Controls.Add(this.noisePage1);
             this.Controls.Add(this.led1);
             this.Controls.Add(this.stopButton);
             this.Controls.Add(this.startButton);
@@ -92,6 +104,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.InteractiveForm_FormClosing);
             this.Shown += new System.EventHandler(this.InteractiveForm_Shown);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -102,5 +115,6 @@
         private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.Timer displayTimer;
         private System.Windows.Forms.Panel led1;
+        private KLib.Unity.Controls.Signals.NoisePage noisePage1;
     }
 }
