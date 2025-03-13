@@ -165,6 +165,8 @@ namespace HTSController
         private void interactiveButton_Click(object sender, EventArgs e)
         {
             _network.SendMessage("ChangeScene:Turandot Interactive");
+            var dlg = new InteractiveForm(_network);
+            dlg.ShowDialog();
         }
 
         private void homeButton_Click(object sender, EventArgs e)

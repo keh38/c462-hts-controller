@@ -35,6 +35,7 @@ namespace HTSController
         public bool IsConnected { get { return _ipEndPoint != null; } }
         public string CurrentScene { get; private set; }
         public string TabletAddress { get { return (_ipEndPoint == null) ? "" : _ipEndPoint.ToString(); } }
+        public string MyAddress { get { return _serverAddress; } }
 
         public HTSNetwork()
         {
@@ -57,7 +58,6 @@ namespace HTSController
         public bool SendMessage(string message)
         {
             var response = KTcpClient.SendMessage(_ipEndPoint, message);
-            Debug.WriteLine("response = " + response);
             return response > 0;
         }
 
