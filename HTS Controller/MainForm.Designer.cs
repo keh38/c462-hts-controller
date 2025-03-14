@@ -35,18 +35,19 @@
             this.sceneNameLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.menuPanel = new System.Windows.Forms.Panel();
+            this.homeButton = new System.Windows.Forms.Button();
+            this.turandotButton = new System.Windows.Forms.CheckBox();
+            this.subjectButton = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.subjectPage = new System.Windows.Forms.TabPage();
+            this.subjectPageControl = new HTSController.Pages.SubjectPage();
             this.turandotPage = new System.Windows.Forms.TabPage();
+            this.interactiveButton = new System.Windows.Forms.Button();
             this.messagePage = new System.Windows.Forms.TabPage();
             this.ipcPanel = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
-            this.turandotButton = new System.Windows.Forms.CheckBox();
-            this.subjectButton = new System.Windows.Forms.CheckBox();
-            this.subjectPageControl = new HTSController.Pages.SubjectPage();
-            this.interactiveButton = new System.Windows.Forms.Button();
-            this.homeButton = new System.Windows.Forms.Button();
+            this.connectionTimer = new System.Windows.Forms.Timer(this.components);
             this.statusStrip.SuspendLayout();
             this.menuPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -106,94 +107,17 @@
             this.menuPanel.Size = new System.Drawing.Size(149, 420);
             this.menuPanel.TabIndex = 5;
             // 
-            // tableLayoutPanel1
+            // homeButton
             // 
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 155F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-            this.tableLayoutPanel1.Controls.Add(this.menuPanel, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.tabControl, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.ipcPanel, 2, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 426);
-            this.tableLayoutPanel1.TabIndex = 6;
-            // 
-            // tabControl
-            // 
-            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-            this.tabControl.Controls.Add(this.subjectPage);
-            this.tabControl.Controls.Add(this.turandotPage);
-            this.tabControl.Controls.Add(this.messagePage);
-            this.tabControl.ItemSize = new System.Drawing.Size(0, 1);
-            this.tabControl.Location = new System.Drawing.Point(158, 3);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(489, 420);
-            this.tabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.tabControl.TabIndex = 6;
-            // 
-            // subjectPage
-            // 
-            this.subjectPage.Controls.Add(this.subjectPageControl);
-            this.subjectPage.Location = new System.Drawing.Point(4, 5);
-            this.subjectPage.Name = "subjectPage";
-            this.subjectPage.Padding = new System.Windows.Forms.Padding(3);
-            this.subjectPage.Size = new System.Drawing.Size(481, 411);
-            this.subjectPage.TabIndex = 0;
-            this.subjectPage.Text = "tabPage1";
-            this.subjectPage.UseVisualStyleBackColor = true;
-            // 
-            // turandotPage
-            // 
-            this.turandotPage.Controls.Add(this.interactiveButton);
-            this.turandotPage.Location = new System.Drawing.Point(4, 5);
-            this.turandotPage.Name = "turandotPage";
-            this.turandotPage.Padding = new System.Windows.Forms.Padding(3);
-            this.turandotPage.Size = new System.Drawing.Size(481, 411);
-            this.turandotPage.TabIndex = 1;
-            this.turandotPage.Text = "tabPage2";
-            this.turandotPage.UseVisualStyleBackColor = true;
-            // 
-            // messagePage
-            // 
-            this.messagePage.Location = new System.Drawing.Point(4, 5);
-            this.messagePage.Name = "messagePage";
-            this.messagePage.Padding = new System.Windows.Forms.Padding(3);
-            this.messagePage.Size = new System.Drawing.Size(481, 411);
-            this.messagePage.TabIndex = 2;
-            this.messagePage.Text = "tabPage1";
-            this.messagePage.UseVisualStyleBackColor = true;
-            // 
-            // ipcPanel
-            // 
-            this.ipcPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ipcPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ipcPanel.Controls.Add(this.label1);
-            this.ipcPanel.Location = new System.Drawing.Point(653, 3);
-            this.ipcPanel.Name = "ipcPanel";
-            this.ipcPanel.Size = new System.Drawing.Size(144, 420);
-            this.ipcPanel.TabIndex = 7;
-            // 
-            // label1
-            // 
-            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
-            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label1.Location = new System.Drawing.Point(3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(136, 30);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Data streams";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.homeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
+            this.homeButton.ForeColor = System.Drawing.Color.White;
+            this.homeButton.Location = new System.Drawing.Point(31, 352);
+            this.homeButton.Name = "homeButton";
+            this.homeButton.Size = new System.Drawing.Size(90, 36);
+            this.homeButton.TabIndex = 1;
+            this.homeButton.Text = "Home";
+            this.homeButton.UseVisualStyleBackColor = false;
+            this.homeButton.Click += new System.EventHandler(this.homeButton_Click);
             // 
             // turandotButton
             // 
@@ -243,6 +167,51 @@
             this.subjectButton.UseVisualStyleBackColor = false;
             this.subjectButton.CheckedChanged += new System.EventHandler(this.menuButton_CheckedChanged);
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 3;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 155F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.tableLayoutPanel1.Controls.Add(this.menuPanel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tabControl, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.ipcPanel, 2, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 426);
+            this.tableLayoutPanel1.TabIndex = 6;
+            // 
+            // tabControl
+            // 
+            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
+            this.tabControl.Controls.Add(this.subjectPage);
+            this.tabControl.Controls.Add(this.turandotPage);
+            this.tabControl.Controls.Add(this.messagePage);
+            this.tabControl.ItemSize = new System.Drawing.Size(0, 1);
+            this.tabControl.Location = new System.Drawing.Point(158, 3);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(489, 420);
+            this.tabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabControl.TabIndex = 6;
+            // 
+            // subjectPage
+            // 
+            this.subjectPage.Controls.Add(this.subjectPageControl);
+            this.subjectPage.Location = new System.Drawing.Point(4, 5);
+            this.subjectPage.Name = "subjectPage";
+            this.subjectPage.Padding = new System.Windows.Forms.Padding(3);
+            this.subjectPage.Size = new System.Drawing.Size(481, 411);
+            this.subjectPage.TabIndex = 0;
+            this.subjectPage.Text = "tabPage1";
+            this.subjectPage.UseVisualStyleBackColor = true;
+            // 
             // subjectPageControl
             // 
             this.subjectPageControl.AutoSize = true;
@@ -253,6 +222,17 @@
             this.subjectPageControl.Size = new System.Drawing.Size(475, 405);
             this.subjectPageControl.TabIndex = 0;
             this.subjectPageControl.ValueChanged += new System.EventHandler(this.subjectPageControl_ValueChanged);
+            // 
+            // turandotPage
+            // 
+            this.turandotPage.Controls.Add(this.interactiveButton);
+            this.turandotPage.Location = new System.Drawing.Point(4, 5);
+            this.turandotPage.Name = "turandotPage";
+            this.turandotPage.Padding = new System.Windows.Forms.Padding(3);
+            this.turandotPage.Size = new System.Drawing.Size(481, 411);
+            this.turandotPage.TabIndex = 1;
+            this.turandotPage.Text = "tabPage2";
+            this.turandotPage.UseVisualStyleBackColor = true;
             // 
             // interactiveButton
             // 
@@ -266,17 +246,43 @@
             this.interactiveButton.UseVisualStyleBackColor = false;
             this.interactiveButton.Click += new System.EventHandler(this.interactiveButton_Click);
             // 
-            // homeButton
+            // messagePage
             // 
-            this.homeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
-            this.homeButton.ForeColor = System.Drawing.Color.White;
-            this.homeButton.Location = new System.Drawing.Point(31, 352);
-            this.homeButton.Name = "homeButton";
-            this.homeButton.Size = new System.Drawing.Size(90, 36);
-            this.homeButton.TabIndex = 1;
-            this.homeButton.Text = "Home";
-            this.homeButton.UseVisualStyleBackColor = false;
-            this.homeButton.Click += new System.EventHandler(this.homeButton_Click);
+            this.messagePage.Location = new System.Drawing.Point(4, 5);
+            this.messagePage.Name = "messagePage";
+            this.messagePage.Padding = new System.Windows.Forms.Padding(3);
+            this.messagePage.Size = new System.Drawing.Size(481, 411);
+            this.messagePage.TabIndex = 2;
+            this.messagePage.Text = "tabPage1";
+            this.messagePage.UseVisualStyleBackColor = true;
+            // 
+            // ipcPanel
+            // 
+            this.ipcPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ipcPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ipcPanel.Controls.Add(this.label1);
+            this.ipcPanel.Location = new System.Drawing.Point(653, 3);
+            this.ipcPanel.Name = "ipcPanel";
+            this.ipcPanel.Size = new System.Drawing.Size(144, 420);
+            this.ipcPanel.TabIndex = 7;
+            // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(136, 30);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Data streams";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // connectionTimer
+            // 
+            this.connectionTimer.Interval = 500;
+            this.connectionTimer.Tick += new System.EventHandler(this.connectionTimer_Tick);
             // 
             // MainForm
             // 
@@ -326,6 +332,7 @@
         private System.Windows.Forms.CheckBox turandotButton;
         private System.Windows.Forms.Button interactiveButton;
         private System.Windows.Forms.Button homeButton;
+        private System.Windows.Forms.Timer connectionTimer;
     }
 }
 

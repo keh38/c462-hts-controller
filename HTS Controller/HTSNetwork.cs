@@ -29,14 +29,15 @@ namespace HTSController
         private IPEndPoint _ipEndPoint;
         private string _serverAddress;
         private int _serverPort = 4951;
+        private bool _lastPingSucceeded = false;
 
         private CancellationTokenSource _serverCancellationToken;
 
-        public bool IsConnected { get { return _ipEndPoint != null; } }
+        public bool IsConnected { get { return _ipEndPoint != null && _lastPingSucceeded; } }
         public string CurrentScene { get; private set; }
         public string TabletAddress { get { return (_ipEndPoint == null) ? "" : _ipEndPoint.ToString(); } }
         public string MyAddress { get { return _serverAddress; } }
-
+      
         public HTSNetwork()
         {
         }
@@ -53,6 +54,19 @@ namespace HTSController
                 KTcpClient.SendMessage(_ipEndPoint, "Disconnect");
                 _serverCancellationToken.Cancel();
             }
+        }
+
+        public bool CheckConnection()
+        {
+            bool connected = false;
+            if (_ipEndPoint != null)
+            {
+                var result = KTcpClient.SendMessage(_ipEndPoint, "Ping");
+                connected = result > 0;
+                _lastPingSucceeded = connected;
+            }
+
+            return connected;
         }
 
         public bool SendMessage(string message)
@@ -103,6 +117,7 @@ namespace HTSController
                         CurrentScene = KTcpClient.SendMessageReceiveString(_ipEndPoint, "GetCurrentSceneName");
                     }
                     success = (result > 0);
+                    _lastPingSucceeded = success;
                 }
             }
             catch (Exception ex)

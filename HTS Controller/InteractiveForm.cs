@@ -111,9 +111,12 @@ namespace HTSController
                 else
                 {
                     var byteArray = _packetQueue.Dequeue();
-                    var floatArray2 = new float[byteArray.Length / sizeof(float)];
-                    Buffer.BlockCopy(byteArray, 0, floatArray2, 0, byteArray.Length);
-                    amplitude = floatArray2[0];
+                    if (byteArray != null)
+                    {
+                        var floatArray2 = new float[byteArray.Length / sizeof(float)];
+                        Buffer.BlockCopy(byteArray, 0, floatArray2, 0, byteArray.Length);
+                        amplitude = floatArray2[0];
+                    }
                 }
             }
         }
@@ -164,13 +167,24 @@ namespace HTSController
 
             _sigMan = new SignalManager();
             _sigMan.AddChannel(ch);
+
+            freqBox.FloatValue = (_sigMan.channels[0].waveform as Sinusoid).Frequency_Hz;
+            levelBox.FloatValue = _sigMan.channels[0].level.Value;
         }
 
         private void sendButton_Click(object sender, EventArgs e)
         {
-            //KLib.KFile.SaveToXML(_sigMan, @"C:\Users\kehan\OneDrive\Desktop\test.xml");
             _network.SendMessage($"SetParams:{KFile.ToXMLString(_sigMan)}");
-            //_network.SendMessage($"SetParams:{KLib.KFile.JSONSerializeToString(_sigMan)}");
+        }
+
+        private void freqBox_ValueChanged(object sender, EventArgs e)
+        {
+            _network.SendMessage($"SetParameter:Audio.Tone.Frequency_Hz={freqBox.FloatValue}");
+        }
+
+        private void levelBox_ValueChanged(object sender, EventArgs e)
+        {
+            _network.SendMessage($"SetParameter:Audio.Level={levelBox.FloatValue}");
         }
     }
 }

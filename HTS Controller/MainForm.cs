@@ -75,7 +75,27 @@ namespace HTSController
             Log.Information("Starting TCP listener");
             _network.StartListener();
 
-            await ConnectToTablet();
+            connectionTimer.Start();
+        }
+
+        private async void connectionTimer_Tick(object sender, EventArgs e)
+        {
+            if (!_network.IsConnected)
+            {
+                var success = await ConnectToTablet();
+                if (success)
+                {
+                    connectionTimer.Interval = 5000;
+                }
+            }
+            else
+            {
+                var success = _network.CheckConnection();
+                if (!success)
+                {
+                    connectionTimer.Interval = 500;
+                }
+            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -109,7 +129,7 @@ namespace HTSController
             _ignoreEvents = false;
         }
 
-        private async Task ConnectToTablet()
+        private async Task<bool> ConnectToTablet()
         {
             var success = await _network.Connect();
 
@@ -126,8 +146,9 @@ namespace HTSController
             else
             {
                 connectionStatusLabel.Image = imageList.Images[0];
-                connectionStatusLabel.Text = "No tablet connection (double-click to retry)";
+                connectionStatusLabel.Text = "No tablet connection, retrying..."; // (double-click to retry)";
             }
+            return success;
         }
 
         private void menuButton_CheckedChanged(object sender, EventArgs e)
@@ -140,7 +161,7 @@ namespace HTSController
 
         private async void connectionStatusLabel_DoubleClick(object sender, EventArgs e)
         {
-            await ConnectToTablet();
+            //await ConnectToTablet();
         }
 
         private void subjectPageControl_ValueChanged(object sender, EventArgs e)
@@ -164,14 +185,19 @@ namespace HTSController
 
         private void interactiveButton_Click(object sender, EventArgs e)
         {
+            connectionTimer.Stop();
+
             _network.SendMessage("ChangeScene:Turandot Interactive");
             var dlg = new InteractiveForm(_network);
             dlg.ShowDialog();
+
+            connectionTimer.Start();
         }
 
         private void homeButton_Click(object sender, EventArgs e)
         {
             _network.SendMessage("ChangeScene:Home");
         }
+
     }
 }
