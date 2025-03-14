@@ -12,6 +12,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using KLib.Signals;
+using KLib.Signals.Waveforms;
+
+using KLib;
+
 namespace HTSController
 {
     public partial class InteractiveForm : Form
@@ -28,6 +33,8 @@ namespace HTSController
         private float amplitude = 0;
         private Color _ledOnColor = Color.FromArgb(0, 255, 0);
         private Color _ledOffColor = Color.FromArgb(0, 32, 0);
+
+        private SignalManager _sigMan;
 
         public InteractiveForm(HTSNetwork network)
         {
@@ -46,6 +53,7 @@ namespace HTSController
         private void InteractiveForm_Shown(object sender, EventArgs e)
         {
             StartUDP();
+            CreateDefaultSignalManager();
         }
 
         private void StartUDP()
@@ -85,7 +93,7 @@ namespace HTSController
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    //Debug.WriteLine(ex.Message);
                 }
             }
 
@@ -123,6 +131,46 @@ namespace HTSController
         private void displayTimer_Tick(object sender, EventArgs e)
         {
             led1.BackColor = (amplitude > 0) ? _ledOnColor : _ledOffColor;
+        }
+
+        private void CreateDefaultSignalManager()
+        {
+            var ch = new Channel()
+            {
+                Name = "Audio",
+                Adapter = "Audio",
+                Laterality = Laterality.Diotic,
+                waveform = new Sinusoid()
+                {
+                    Frequency_Hz = 500
+                },
+                modulation = new KLib.Signals.Modulations.SinusoidalAM()
+                {
+                    Frequency_Hz = 40,
+                    Depth = 1
+                },
+                gate = new Gate()
+                {
+                    Active = true,
+                    Duration_ms = 250,
+                    Period_ms = 1000
+                },
+                level = new Level()
+                {
+                    Units = LevelUnits.dB_attenuation,
+                    Value = -20
+                }
+            };
+
+            _sigMan = new SignalManager();
+            _sigMan.AddChannel(ch);
+        }
+
+        private void sendButton_Click(object sender, EventArgs e)
+        {
+            //KLib.KFile.SaveToXML(_sigMan, @"C:\Users\kehan\OneDrive\Desktop\test.xml");
+            _network.SendMessage($"SetParams:{KFile.ToXMLString(_sigMan)}");
+            //_network.SendMessage($"SetParams:{KLib.KFile.JSONSerializeToString(_sigMan)}");
         }
     }
 }

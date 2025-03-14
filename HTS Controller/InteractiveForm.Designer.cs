@@ -36,6 +36,7 @@
             this.displayTimer = new System.Windows.Forms.Timer(this.components);
             this.led1 = new System.Windows.Forms.Panel();
             this.noisePage1 = new KLib.Unity.Controls.Signals.NoisePage();
+            this.sendButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // startButton
@@ -89,11 +90,22 @@
             this.noisePage1.TabIndex = 3;
             this.noisePage1.Value = null;
             // 
+            // sendButton
+            // 
+            this.sendButton.Location = new System.Drawing.Point(168, 176);
+            this.sendButton.Name = "sendButton";
+            this.sendButton.Size = new System.Drawing.Size(110, 35);
+            this.sendButton.TabIndex = 4;
+            this.sendButton.Text = "Send";
+            this.sendButton.UseVisualStyleBackColor = true;
+            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
+            // 
             // InteractiveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(751, 409);
+            this.Controls.Add(this.sendButton);
             this.Controls.Add(this.noisePage1);
             this.Controls.Add(this.led1);
             this.Controls.Add(this.stopButton);
@@ -116,5 +128,6 @@
         private System.Windows.Forms.Timer displayTimer;
         private System.Windows.Forms.Panel led1;
         private KLib.Unity.Controls.Signals.NoisePage noisePage1;
+        private System.Windows.Forms.Button sendButton;
     }
 }
