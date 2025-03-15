@@ -61,7 +61,7 @@ namespace HTSController
 
             subjectPageControl.Initialize(_network);
 
-            menuPanel.Enabled = false;
+            //menuPanel.Enabled = false;
             tabControl.SelectedTab = subjectPage;
             SelectTab(null);
         }
@@ -187,7 +187,7 @@ namespace HTSController
         {
             connectionTimer.Stop();
 
-            _network.SendMessage("ChangeScene:Turandot Interactive");
+            //_network.SendMessage("ChangeScene:Turandot Interactive");
             var dlg = new InteractiveForm(_network);
             dlg.ShowDialog();
 
