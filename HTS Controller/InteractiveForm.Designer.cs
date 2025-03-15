@@ -38,11 +38,10 @@
             this.sendButton = new System.Windows.Forms.Button();
             this.freqBox = new KLib.Controls.KNumericBox();
             this.levelBox = new KLib.Controls.KNumericBox();
-            this.normalizeCheckBox = new KLib.Controls.KCheckBox();
             this.audioErrorTextBox = new System.Windows.Forms.TextBox();
             this.channelListBox = new KLib.Controls.KUserListBox();
             this.signalGraph = new ZedGraph.ZedGraphControl();
-            this.channelView1 = new KLib.Unity.Controls.Signals.ChannelView();
+            this.channelView = new KLib.Unity.Controls.Signals.ChannelView();
             this.SuspendLayout();
             // 
             // startButton
@@ -146,21 +145,11 @@
             this.levelBox.Value = 0D;
             this.levelBox.ValueChanged += new System.EventHandler(this.levelBox_ValueChanged);
             // 
-            // normalizeCheckBox
-            // 
-            this.normalizeCheckBox.AutoSize = true;
-            this.normalizeCheckBox.Location = new System.Drawing.Point(24, 421);
-            this.normalizeCheckBox.Name = "normalizeCheckBox";
-            this.normalizeCheckBox.Size = new System.Drawing.Size(130, 25);
-            this.normalizeCheckBox.TabIndex = 9;
-            this.normalizeCheckBox.Text = "Normalize";
-            this.normalizeCheckBox.UseVisualStyleBackColor = true;
-            // 
             // audioErrorTextBox
             // 
             this.audioErrorTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.audioErrorTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.audioErrorTextBox.Location = new System.Drawing.Point(24, 113);
+            this.audioErrorTextBox.Location = new System.Drawing.Point(24, 159);
             this.audioErrorTextBox.Multiline = true;
             this.audioErrorTextBox.Name = "audioErrorTextBox";
             this.audioErrorTextBox.ReadOnly = true;
@@ -173,13 +162,13 @@
             this.channelListBox.Location = new System.Drawing.Point(24, 17);
             this.channelListBox.Name = "channelListBox";
             this.channelListBox.SelectedIndex = -1;
-            this.channelListBox.Size = new System.Drawing.Size(219, 89);
+            this.channelListBox.Size = new System.Drawing.Size(219, 136);
             this.channelListBox.TabIndex = 7;
             // 
             // signalGraph
             // 
             this.signalGraph.BackColor = System.Drawing.SystemColors.Control;
-            this.signalGraph.Location = new System.Drawing.Point(24, 452);
+            this.signalGraph.Location = new System.Drawing.Point(24, 467);
             this.signalGraph.Name = "signalGraph";
             this.signalGraph.ScrollGrace = 0D;
             this.signalGraph.ScrollMaxX = 0D;
@@ -188,28 +177,28 @@
             this.signalGraph.ScrollMinX = 0D;
             this.signalGraph.ScrollMinY = 0D;
             this.signalGraph.ScrollMinY2 = 0D;
-            this.signalGraph.Size = new System.Drawing.Size(605, 213);
+            this.signalGraph.Size = new System.Drawing.Size(491, 184);
             this.signalGraph.TabIndex = 10;
             // 
-            // channelView1
+            // channelView
             // 
-            this.channelView1.AllowExpertOptions = false;
-            this.channelView1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.channelView1.Location = new System.Drawing.Point(277, 17);
-            this.channelView1.Name = "channelView1";
-            this.channelView1.Size = new System.Drawing.Size(213, 404);
-            this.channelView1.TabIndex = 11;
-            this.channelView1.Value = null;
-            this.channelView1.WavFolder = null;
+            this.channelView.AllowExpertOptions = false;
+            this.channelView.AutoScroll = true;
+            this.channelView.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.channelView.Location = new System.Drawing.Point(277, 17);
+            this.channelView.Name = "channelView";
+            this.channelView.Size = new System.Drawing.Size(238, 404);
+            this.channelView.TabIndex = 11;
+            this.channelView.Value = null;
+            this.channelView.WavFolder = null;
             // 
             // InteractiveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(861, 677);
-            this.Controls.Add(this.channelView1);
+            this.Controls.Add(this.channelView);
             this.Controls.Add(this.signalGraph);
-            this.Controls.Add(this.normalizeCheckBox);
             this.Controls.Add(this.audioErrorTextBox);
             this.Controls.Add(this.channelListBox);
             this.Controls.Add(this.levelBox);
@@ -238,10 +227,9 @@
         private System.Windows.Forms.Button sendButton;
         private KLib.Controls.KNumericBox freqBox;
         private KLib.Controls.KNumericBox levelBox;
-        private KLib.Controls.KCheckBox normalizeCheckBox;
         private System.Windows.Forms.TextBox audioErrorTextBox;
         private KLib.Controls.KUserListBox channelListBox;
         private ZedGraph.ZedGraphControl signalGraph;
-        private KLib.Unity.Controls.Signals.ChannelView channelView1;
+        private KLib.Unity.Controls.Signals.ChannelView channelView;
     }
 }

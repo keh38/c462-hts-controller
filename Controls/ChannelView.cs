@@ -18,13 +18,15 @@ namespace KLib.Unity.Controls.Signals
     public partial class ChannelView : KUserControl
     {
         private Channel _chan;
+        private KLib.AdapterMap _adapterMap = AdapterMap.Default7point1Map();
         private bool _allowExpert = false;
 
         public ChannelView()
         {
             InitializeComponent();
 
-            //destinationDropDown.FillSubset(Laterality.Left, Laterality.Right, Laterality.Diotic, Laterality.Dichotic);
+            modalityDropDown.Fill<Modality>();
+            destinationDropDown.Fill<Laterality>();
         }
 
         public Channel Value
@@ -66,6 +68,7 @@ namespace KLib.Unity.Controls.Signals
 
             if (ch == null || ch.waveform==null)
             {
+                modalityDropDown.SetEnumValue(Modality.Unspecified);
                 destinationDropDown.SetEnumValue(Laterality.Diotic);
                 destPanel.Enabled = false;
                 waveformView.Value = null;
@@ -75,7 +78,8 @@ namespace KLib.Unity.Controls.Signals
             }
             else if (ch.waveform.Shape == Waveshape.None)
             {
-                //destinationDropDown.SetEnumValue(ch.Destination);
+                modalityDropDown.SetEnumValue(ch.Modality);
+                ShowModalitySpecific();
                 destPanel.Enabled = true;
 
                 waveformView.Value = ch.waveform;
@@ -85,16 +89,17 @@ namespace KLib.Unity.Controls.Signals
             }
             else
             {
-                //destinationDropDown.SetEnumValue(ch.Destination);
+                modalityDropDown.SetEnumValue(ch.Modality);
+                ShowModalitySpecific();
                 destPanel.Enabled = true;
 
                 waveformView.Enabled = true;
                 waveformView.Value = ch.waveform;
 
-                //modulationView.Value = ch.modul;
+                modulationView.Value = ch.modulation;
                 gateView.Value = ch.gate;
 
-                SetContextDependentLevelUnits(ch.waveform.Shape);
+                SetContextDependentLevelUnits(ch.Modality);
                 levelView.Value = ch.level;
                 levelView.SetMaxLevel(ch.GetMaxLevel());
 
@@ -102,11 +107,36 @@ namespace KLib.Unity.Controls.Signals
 
                 ShowModGateLevel(true);
                 EnableBinauralProperties();
-                //levelView.m
                 levelView.ILD = ch.binaural.ILD;
                 waveformView.IPD = ch.binaural.IPD;
 
                 _ignoreEvents = false;
+            }
+        }
+
+        private void ShowModalitySpecific()
+        {
+            switch (_chan.Modality)
+            {
+                case Modality.Audio:
+                    destPanel.Visible = true;
+                    locationPanel.Visible = false;
+                    destinationDropDown.Fill<Laterality>();
+                    destinationDropDown.SetEnumValue(_chan.Laterality);
+                    break;
+                case Modality.Haptic:
+                case Modality.Electric:
+                    destPanel.Visible = false;
+                    locationPanel.Visible = true;
+                    var items = _adapterMap.GetLocations(_chan.Modality.ToString());
+                    locationDropDown.Items.Clear();
+                    locationDropDown.Items.AddRange(items.ToArray());
+                    locationDropDown.SelectedIndex = items.IndexOf(_chan.Location);
+                    break;
+                default:
+                    destPanel.Visible = false;
+                    locationPanel.Visible = false;
+                    break;
             }
         }
 
@@ -125,12 +155,20 @@ namespace KLib.Unity.Controls.Signals
             expertControl.Visible = show && _allowExpert;
         }
 
-        private void SetContextDependentLevelUnits(Waveshape waveShape)
+        private void SetContextDependentLevelUnits(Modality modality)
         {
-            //if (!_allowExpert)
-            //    levelView.SetAllowableUnits(LevelUnits.dB_attenuation, LevelUnits.dB_SPL, LevelUnits.dB_Vrms, LevelUnits.dB_SL, LevelUnits.pctDR);
-            //else
-            //    levelView.SetAllowableUnits(LevelUnits.dB_attenuation, LevelUnits.dB_SPL, LevelUnits.dB_Vrms, LevelUnits.dB_SL, LevelUnits.pctDR, LevelUnits.dB_SPL_noLDL);
+            if (modality == Modality.Audio)
+            {
+                levelView.SetAllowableUnits(LevelUnits.dB_attenuation, LevelUnits.dB_SPL, LevelUnits.dB_Vrms, LevelUnits.dB_SL);
+            }
+            else if (modality == Modality.Haptic)
+            {
+                levelView.SetAllowableUnits(LevelUnits.Volts, LevelUnits.dB_Vrms, LevelUnits.dB_attenuation);
+            }
+            else if (modality == Modality.Electric)
+            {
+                levelView.SetAllowableUnits(LevelUnits.mA);
+            }
         }
 
         private void SetContextDependentLevelReferences(Waveshape waveShape)
@@ -161,7 +199,7 @@ namespace KLib.Unity.Controls.Signals
         {
             if (!_ignoreEvents)
             {
-                //_chan.modul = modulationView.Value;
+                _chan.modulation = modulationView.Value;
                 OnValueChanged();
             }
         }
@@ -179,8 +217,8 @@ namespace KLib.Unity.Controls.Signals
         private void destinationDropDown_ValueChanged(object sender, EventArgs e)
         {
             if (!_ignoreEvents)
-            {
-                //_chan.Destination = (Laterality) destinationDropDown.Value;
+            {            
+                _chan.Laterality = (Laterality) destinationDropDown.Value;
                 EnableBinauralProperties();
                 OnValueChanged();
             }
@@ -188,9 +226,9 @@ namespace KLib.Unity.Controls.Signals
 
         private void EnableBinauralProperties()
         {
-            //bool isDichotic = _chan.Destination == Laterality.Dichotic;
-            //levelView.IsDichotic = isDichotic;
-            //waveformView.IsDichotic = isDichotic;
+            bool isDichotic = _chan.Laterality != Laterality.Diotic;
+            levelView.IsDichotic = isDichotic;
+            waveformView.IsDichotic = isDichotic;
         }
 
         private void levelView_BinauralChanged(object sender, EventArgs e)
@@ -217,6 +255,28 @@ namespace KLib.Unity.Controls.Signals
             if (!_ignoreEvents)
             {
                 OnValueChanged();
+            }
+        }
+
+        private void locationDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                _chan.Location = locationDropDown.SelectedText;
+            }
+        }
+
+        private void modalityDropDown_ValueChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                _ignoreEvents = true;
+
+                _chan.Modality = (Modality)modalityDropDown.Value;
+                ShowModalitySpecific();
+                SetContextDependentLevelUnits(_chan.Modality);
+
+                _ignoreEvents = false;
             }
         }
     }

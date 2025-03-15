@@ -131,7 +131,12 @@ namespace HTSController
 
         private async Task<bool> ConnectToTablet()
         {
-            var success = await _network.Connect();
+            bool success = false;
+            try
+            {
+                success = await _network.Connect();
+            }
+            catch { }
 
             if (success)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Data;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace KLib.Unity.Controls.Signals
                 _modulation = value;
                 if (_modulation != null)
                 {
+                    Debug.WriteLine(value.Shape);
                     shapeDropDown.SetEnumValue(_modulation.Shape);
                     ShowModulation(_modulation);
                     ActivateModulationControl(_modulation.Shape);

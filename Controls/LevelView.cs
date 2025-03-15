@@ -67,7 +67,7 @@ namespace KLib.Unity.Controls.Signals
         {
             List<LevelUnits> units = new List<LevelUnits>(u);
 
-            //unitsDropDown.FillSubset(units.FindAll(o => o != LevelUnits.pctDR).ToArray());
+            unitsDropDown.FillSubset(units.ToArray());
 
             //if (units.FindIndex(o => o == LevelUnits.pctDR) >= 0)
             //    unitsDropDown.AddItem(LevelUnits.pctDR, "% DR");
