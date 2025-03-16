@@ -160,6 +160,7 @@ namespace HTSController
                 Modality = KLib.Signals.Enumerations.Modality.Audio,
                 Laterality = Laterality.Diotic,
                 Location = "Site 2",
+                Transducer = "HD280",
                 waveform = new Sinusoid()
                 {
                     Frequency_Hz = 500
@@ -177,8 +178,8 @@ namespace HTSController
                 },
                 level = new Level()
                 {
-                    Units = LevelUnits.dB_attenuation,
-                    Value = -20
+                    Units = LevelUnits.dB_SPL,
+                    Value = 50
                 }
             };
 
@@ -307,11 +308,9 @@ namespace HTSController
 
         private void PlotSignals(SignalManager sigman)
         {
-            //sigman.CalibrationFolder = _settings.calFolder;
             //sigman.WavFolder = Path.Combine(_settings.wavFolder, _params.wavFolder);
 
             audioErrorTextBox.Text = "";
-            audioErrorTextBox.Visible = false;
 
             string chanName = "";
             int npts = 0;
@@ -319,7 +318,6 @@ namespace HTSController
             try
             {
                 signalGraph.GraphPane.CurveList.Clear();
-
 
                 float T = 0.001f * sigman.GetMaxInterval(1000);
                 T = Math.Min(T, 25);
@@ -334,9 +332,8 @@ namespace HTSController
             catch (Exception ex)
             {
                 audioErrorTextBox.Text = ex.Message;
-                audioErrorTextBox.Visible = true;
                 signalGraph.Refresh();
-
+                graphTabControl.SelectedTab = errorPage;
                 return;
             }
 
@@ -362,7 +359,7 @@ namespace HTSController
                 catch (Exception ex)
                 {
                     audioErrorTextBox.Text += chanName + ": " + ex.Message + Environment.NewLine;
-                    audioErrorTextBox.Visible = true;
+                    graphTabControl.SelectedTab = errorPage;
                 }
                 --irow;
             }
@@ -373,6 +370,7 @@ namespace HTSController
             signalGraph.GraphPane.YAxis.Scale.Max = 1.25;
             signalGraph.GraphPane.YAxis.IsVisible = false;
             signalGraph.Refresh();
+            graphTabControl.SelectedTab = string.IsNullOrEmpty(audioErrorTextBox.Text) ? graphPage : errorPage;
         }
 
     }

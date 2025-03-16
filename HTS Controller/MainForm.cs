@@ -82,11 +82,15 @@ namespace HTSController
         {
             if (!_network.IsConnected)
             {
-                var success = await ConnectToTablet();
-                if (success)
+                try
                 {
-                    connectionTimer.Interval = 5000;
+                    var success = await ConnectToTablet();
+                    if (success)
+                    {
+                        connectionTimer.Interval = 5000;
+                    }
                 }
+                catch (Exception ex) { Debug.WriteLine(ex.Message); }
             }
             else
             {
