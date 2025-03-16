@@ -33,6 +33,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.subjectDropDown = new System.Windows.Forms.ComboBox();
             this.createButton = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.transducerDropDown = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -89,11 +91,33 @@
             this.createButton.Visible = false;
             this.createButton.Click += new System.EventHandler(this.createButton_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(37, 141);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(61, 13);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "Transducer";
+            // 
+            // transducerDropDown
+            // 
+            this.transducerDropDown.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.transducerDropDown.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.transducerDropDown.FormattingEnabled = true;
+            this.transducerDropDown.Location = new System.Drawing.Point(40, 157);
+            this.transducerDropDown.Name = "transducerDropDown";
+            this.transducerDropDown.Size = new System.Drawing.Size(121, 21);
+            this.transducerDropDown.TabIndex = 8;
+            this.transducerDropDown.SelectedIndexChanged += new System.EventHandler(this.transducerDropDown_SelectedIndexChanged);
+            // 
             // SubjectPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.transducerDropDown);
             this.Controls.Add(this.createButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.subjectDropDown);
@@ -113,5 +137,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox subjectDropDown;
         private System.Windows.Forms.Button createButton;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox transducerDropDown;
     }
 }

@@ -23,12 +23,15 @@ namespace HTSController.Pages
         private string Project { get; set; } = "";
         public string Subject { get; private set; } = "";
 
+        private SubjectMetadata _subjectMetadata;
+
         public SubjectPage()
         {
             InitializeComponent();
 
             projectDropDown.Enabled = false;
             subjectDropDown.Enabled = false;
+            transducerDropDown.Enabled = false;
         }
 
         public void Initialize(HTSNetwork network)
@@ -72,6 +75,8 @@ namespace HTSController.Pages
             if (projectDropDown.SelectedIndex < 0)
             {
                 Subject = "";
+                transducerDropDown.Items.Clear();
+                transducerDropDown.Enabled = false;
                 subjectDropDown.Items.Clear();
                 subjectDropDown.Enabled = false;
             }
@@ -79,6 +84,11 @@ namespace HTSController.Pages
             {
                 if (_network.IsConnected)
                 {
+                    var transducers = _network.SendMessageAndReceiveXml<List<string>>("GetTransducers");
+                    transducerDropDown.Enabled = true;
+                    transducerDropDown.Items.Clear();
+                    transducerDropDown.Items.AddRange(transducers.ToArray());
+
                     var subjects = _network.SendMessageAndReceiveJSON<List<string>>($"GetSubjectList:{projectDropDown.Text}");
 
                     subjectDropDown.Enabled = true;
@@ -108,6 +118,16 @@ namespace HTSController.Pages
                 Subject = subjectDropDown.Text;
                 _network.SendMessage($"SetSubjectInfo:{Project}/{Subject}");
             }
+            _subjectMetadata = _network.SendMessageAndReceiveXml<SubjectMetadata>("GetSubjectMetadata");
+            var itransducer = transducerDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList().IndexOf(_subjectMetadata.Transducer);
+
+            var currentIgnore = _ignoreEvents;
+            _ignoreEvents = true;
+
+            transducerDropDown.SelectedIndex = itransducer;
+
+            _ignoreEvents = currentIgnore;
+
             OnValueChanged();
         }
 
@@ -120,7 +140,6 @@ namespace HTSController.Pages
                     createButton.Visible = true;
                 }
             }
-
         }
 
         private void subjectDropDown_TextChanged(object sender, EventArgs e)
@@ -150,5 +169,14 @@ namespace HTSController.Pages
             _ignoreEvents = false;
         }
 
+        private void transducerDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                _subjectMetadata.Transducer = transducerDropDown.Text;
+                _network.SendMessage($"SetSubjectMetadata:{KLib.KFile.ToXMLString(_subjectMetadata)}");
+
+            }
+        }
     }
 }

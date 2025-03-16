@@ -98,6 +98,18 @@ namespace HTSController
             return data;
         }
 
+        public T SendMessageAndReceiveXml<T>(string message)
+        {
+            var data = default(T);
+            if (_ipEndPoint != null)
+            {
+                var response = KTcpClient.SendMessageReceiveString(_ipEndPoint, message);
+                data = KFile.FromXMLString<T>(response);
+            }
+
+            return data;
+        }
+
         private bool Discover()
         {
             bool success = false;

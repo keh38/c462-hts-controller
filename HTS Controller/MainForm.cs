@@ -88,6 +88,7 @@ namespace HTSController
                     if (success)
                     {
                         connectionTimer.Interval = 5000;
+                        subjectPageControl.Enabled = true;
                     }
                 }
                 catch (Exception ex) { Debug.WriteLine(ex.Message); }
@@ -97,6 +98,7 @@ namespace HTSController
                 var success = _network.CheckConnection();
                 if (!success)
                 {
+                    subjectPageControl.Enabled = false;
                     connectionTimer.Interval = 500;
                 }
             }
