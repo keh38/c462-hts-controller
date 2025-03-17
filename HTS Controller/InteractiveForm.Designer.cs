@@ -35,17 +35,15 @@
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.displayTimer = new System.Windows.Forms.Timer(this.components);
             this.led1 = new System.Windows.Forms.Panel();
-            this.sendButton = new System.Windows.Forms.Button();
             this.audioErrorTextBox = new System.Windows.Forms.TextBox();
             this.signalGraph = new ZedGraph.ZedGraphControl();
             this.channelListBox = new KLib.Controls.KUserListBox();
-            this.levelBox = new KLib.Controls.KNumericBox();
-            this.freqBox = new KLib.Controls.KNumericBox();
             this.channelView = new KLib.Unity.Controls.Signals.ChannelView();
             this.graphTabControl = new System.Windows.Forms.TabControl();
             this.graphPage = new System.Windows.Forms.TabPage();
             this.errorPage = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
+            this.saveButton = new System.Windows.Forms.Button();
             this.graphTabControl.SuspendLayout();
             this.graphPage.SuspendLayout();
             this.errorPage.SuspendLayout();
@@ -53,7 +51,7 @@
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(590, 71);
+            this.startButton.Location = new System.Drawing.Point(722, 71);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(110, 35);
             this.startButton.TabIndex = 0;
@@ -87,20 +85,10 @@
             // 
             this.led1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(32)))), ((int)(((byte)(0)))));
             this.led1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.led1.Location = new System.Drawing.Point(676, 24);
+            this.led1.Location = new System.Drawing.Point(628, 141);
             this.led1.Name = "led1";
-            this.led1.Size = new System.Drawing.Size(79, 26);
+            this.led1.Size = new System.Drawing.Size(24, 58);
             this.led1.TabIndex = 2;
-            // 
-            // sendButton
-            // 
-            this.sendButton.Location = new System.Drawing.Point(722, 222);
-            this.sendButton.Name = "sendButton";
-            this.sendButton.Size = new System.Drawing.Size(110, 35);
-            this.sendButton.TabIndex = 4;
-            this.sendButton.Text = "Send";
-            this.sendButton.UseVisualStyleBackColor = true;
-            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
             // 
             // audioErrorTextBox
             // 
@@ -139,58 +127,9 @@
             this.channelListBox.Size = new System.Drawing.Size(219, 136);
             this.channelListBox.TabIndex = 7;
             // 
-            // levelBox
-            // 
-            this.levelBox.AllowInf = false;
-            this.levelBox.AutoSize = true;
-            this.levelBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.levelBox.ClearOnDisable = false;
-            this.levelBox.FloatValue = 0F;
-            this.levelBox.IntValue = 0;
-            this.levelBox.IsInteger = false;
-            this.levelBox.Location = new System.Drawing.Point(732, 171);
-            this.levelBox.MaxCoerce = false;
-            this.levelBox.MaximumSize = new System.Drawing.Size(20000, 20);
-            this.levelBox.MaxValue = 1.7976931348623157E+308D;
-            this.levelBox.MinCoerce = false;
-            this.levelBox.MinimumSize = new System.Drawing.Size(10, 20);
-            this.levelBox.MinValue = 0D;
-            this.levelBox.Name = "levelBox";
-            this.levelBox.Size = new System.Drawing.Size(100, 20);
-            this.levelBox.TabIndex = 6;
-            this.levelBox.TextFormat = "K4";
-            this.levelBox.ToolTip = "";
-            this.levelBox.Units = "";
-            this.levelBox.Value = 0D;
-            this.levelBox.ValueChanged += new System.EventHandler(this.levelBox_ValueChanged);
-            // 
-            // freqBox
-            // 
-            this.freqBox.AllowInf = false;
-            this.freqBox.AutoSize = true;
-            this.freqBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.freqBox.ClearOnDisable = false;
-            this.freqBox.FloatValue = 0F;
-            this.freqBox.IntValue = 0;
-            this.freqBox.IsInteger = false;
-            this.freqBox.Location = new System.Drawing.Point(732, 133);
-            this.freqBox.MaxCoerce = false;
-            this.freqBox.MaximumSize = new System.Drawing.Size(20000, 20);
-            this.freqBox.MaxValue = 1.7976931348623157E+308D;
-            this.freqBox.MinCoerce = false;
-            this.freqBox.MinimumSize = new System.Drawing.Size(10, 20);
-            this.freqBox.MinValue = 0D;
-            this.freqBox.Name = "freqBox";
-            this.freqBox.Size = new System.Drawing.Size(100, 20);
-            this.freqBox.TabIndex = 5;
-            this.freqBox.TextFormat = "K4";
-            this.freqBox.ToolTip = "";
-            this.freqBox.Units = "";
-            this.freqBox.Value = 0D;
-            this.freqBox.ValueChanged += new System.EventHandler(this.freqBox_ValueChanged);
-            // 
             // channelView
             // 
+            this.channelView.AdapterMap = null;
             this.channelView.AllowExpertOptions = false;
             this.channelView.AutoScroll = true;
             this.channelView.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -246,17 +185,25 @@
             this.label1.TabIndex = 9;
             this.label1.Text = "Errors";
             // 
+            // saveButton
+            // 
+            this.saveButton.Location = new System.Drawing.Point(24, 423);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(110, 35);
+            this.saveButton.TabIndex = 13;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            // 
             // InteractiveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(861, 677);
+            this.Controls.Add(this.saveButton);
             this.Controls.Add(this.graphTabControl);
             this.Controls.Add(this.channelView);
             this.Controls.Add(this.channelListBox);
-            this.Controls.Add(this.levelBox);
-            this.Controls.Add(this.freqBox);
-            this.Controls.Add(this.sendButton);
             this.Controls.Add(this.led1);
             this.Controls.Add(this.stopButton);
             this.Controls.Add(this.startButton);
@@ -270,7 +217,6 @@
             this.errorPage.ResumeLayout(false);
             this.errorPage.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -281,9 +227,6 @@
         private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.Timer displayTimer;
         private System.Windows.Forms.Panel led1;
-        private System.Windows.Forms.Button sendButton;
-        private KLib.Controls.KNumericBox freqBox;
-        private KLib.Controls.KNumericBox levelBox;
         private System.Windows.Forms.TextBox audioErrorTextBox;
         private KLib.Controls.KUserListBox channelListBox;
         private ZedGraph.ZedGraphControl signalGraph;
@@ -292,5 +235,6 @@
         private System.Windows.Forms.TabPage graphPage;
         private System.Windows.Forms.TabPage errorPage;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button saveButton;
     }
 }

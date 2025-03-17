@@ -43,7 +43,7 @@
             this.subjectPage = new System.Windows.Forms.TabPage();
             this.subjectPageControl = new HTSController.Pages.SubjectPage();
             this.turandotPage = new System.Windows.Forms.TabPage();
-            this.interactiveButton = new System.Windows.Forms.Button();
+            this.turandotPageControl = new HTSController.Pages.TurandotPage();
             this.messagePage = new System.Windows.Forms.TabPage();
             this.ipcPanel = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
@@ -225,7 +225,7 @@
             // 
             // turandotPage
             // 
-            this.turandotPage.Controls.Add(this.interactiveButton);
+            this.turandotPage.Controls.Add(this.turandotPageControl);
             this.turandotPage.Location = new System.Drawing.Point(4, 5);
             this.turandotPage.Name = "turandotPage";
             this.turandotPage.Padding = new System.Windows.Forms.Padding(3);
@@ -234,17 +234,14 @@
             this.turandotPage.Text = "tabPage2";
             this.turandotPage.UseVisualStyleBackColor = true;
             // 
-            // interactiveButton
+            // turandotPageControl
             // 
-            this.interactiveButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
-            this.interactiveButton.ForeColor = System.Drawing.Color.White;
-            this.interactiveButton.Location = new System.Drawing.Point(53, 185);
-            this.interactiveButton.Name = "interactiveButton";
-            this.interactiveButton.Size = new System.Drawing.Size(144, 36);
-            this.interactiveButton.TabIndex = 0;
-            this.interactiveButton.Text = "Interactive";
-            this.interactiveButton.UseVisualStyleBackColor = false;
-            this.interactiveButton.Click += new System.EventHandler(this.interactiveButton_Click);
+            this.turandotPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.turandotPageControl.Location = new System.Drawing.Point(6, 3);
+            this.turandotPageControl.Name = "turandotPageControl";
+            this.turandotPageControl.Size = new System.Drawing.Size(313, 244);
+            this.turandotPageControl.TabIndex = 0;
+            this.turandotPageControl.InteractiveClick += new System.EventHandler<string>(this.turandotPageControl_InteractiveClick);
             // 
             // messagePage
             // 
@@ -330,9 +327,9 @@
         private Pages.SubjectPage subjectPageControl;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox turandotButton;
-        private System.Windows.Forms.Button interactiveButton;
         private System.Windows.Forms.Button homeButton;
         private System.Windows.Forms.Timer connectionTimer;
+        private Pages.TurandotPage turandotPageControl;
     }
 }
 

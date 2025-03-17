@@ -114,8 +114,6 @@ namespace HTSController
         {
             bool success = false;
 
-            Log.Information("Discovering...");
-
             try
             {
                 _ipEndPoint = Discovery.Discover("HEARING.TEST.SUITE");

@@ -103,13 +103,13 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\Program Files\Unity\Hub\Editor\2020.3.22f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\Unity Assemblies\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
-      <HintPath>..\..\..\..\Program Files\Unity\Hub\Editor\2020.3.22f1\Editor\Data\Managed\UnityEngine\UnityEngine.AudioModule.dll</HintPath>
+      <HintPath>..\Unity Assemblies\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\Program Files\Unity\Hub\Editor\2020.3.22f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\Unity Assemblies\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="ZedGraph, Version=5.1.5.36759, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -117,6 +117,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileLocations.cs" />
+    <Compile Include="HSTControllerSettings.cs" />
     <Compile Include="InteractiveForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -130,6 +132,12 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="HTSNetwork.cs" />
+    <Compile Include="Pages\TurandotPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\TurandotPage.Designer.cs">
+      <DependentUpon>TurandotPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SubjectPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -143,6 +151,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\TurandotPage.resx">
+      <DependentUpon>TurandotPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\SubjectPage.resx">
       <DependentUpon>SubjectPage.cs</DependentUpon>

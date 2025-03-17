@@ -18,8 +18,9 @@ namespace KLib.Unity.Controls.Signals
     public partial class ChannelView : KUserControl
     {
         private Channel _chan;
-        private KLib.AdapterMap _adapterMap = AdapterMap.Default7point1Map();
         private bool _allowExpert = false;
+
+        public AdapterMap AdapterMap { set; get; }
 
         public ChannelView()
         {
@@ -101,7 +102,7 @@ namespace KLib.Unity.Controls.Signals
 
                 SetContextDependentLevelUnits(ch.Modality);
                 levelView.Value = ch.level;
-                levelView.SetMaxLevel(ch.GetMaxLevel());
+                //levelView.SetMaxLevel(ch.GetMaxLevel());
 
                 expertControl.Value = ch;
 
@@ -128,7 +129,7 @@ namespace KLib.Unity.Controls.Signals
                 case Modality.Electric:
                     destPanel.Visible = false;
                     locationPanel.Visible = true;
-                    var items = _adapterMap.GetLocations(_chan.Modality.ToString());
+                    var items = AdapterMap.GetLocations(_chan.Modality.ToString());
                     locationDropDown.Items.Clear();
                     locationDropDown.Items.AddRange(items.ToArray());
                     locationDropDown.SelectedIndex = items.IndexOf(_chan.Location);

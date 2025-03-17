@@ -60,6 +60,7 @@ namespace HTSController
             _network.RemoteMessageHandler = HandleRemoteMessage;
 
             subjectPageControl.Initialize(_network);
+            turandotPageControl.Initialize(_network);
 
             //menuPanel.Enabled = false;
             tabControl.SelectedTab = subjectPage;
@@ -98,6 +99,7 @@ namespace HTSController
                 var success = _network.CheckConnection();
                 if (!success)
                 {
+                    Log.Information("Tablet connection lost");
                     subjectPageControl.Enabled = false;
                     connectionTimer.Interval = 500;
                 }
@@ -194,21 +196,27 @@ namespace HTSController
             }
         }
 
-        private void interactiveButton_Click(object sender, EventArgs e)
-        {
-            connectionTimer.Stop();
-
-            //_network.SendMessage("ChangeScene:Turandot Interactive");
-            var dlg = new InteractiveForm(_network);
-            dlg.ShowDialog();
-
-            connectionTimer.Start();
-        }
-
         private void homeButton_Click(object sender, EventArgs e)
         {
             _network.SendMessage("ChangeScene:Home");
         }
 
+        private void turandotPageControl_InteractiveClick(object sender, string settingsPath)
+        {
+            connectionTimer.Stop();
+
+            _network.SendMessage("ChangeScene:Turandot Interactive");
+            HSTControllerSettings.SetLastUsed("Turandot Interactive", settingsPath);
+            var dlg = new InteractiveForm(_network, settingsPath);
+            dlg.ShowDialog();
+
+            if (!dlg.SettingsPath.Equals(settingsPath))
+            {
+                HSTControllerSettings.SetLastUsed("Turandot Interactive", dlg.SettingsPath);
+                turandotPageControl.FillInteractiveList();
+            }
+
+            connectionTimer.Start();
+        }
     }
 }

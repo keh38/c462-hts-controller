@@ -19,11 +19,15 @@ using KLib.Signals.Waveforms;
 
 using KLib;
 
+using Turandot.Interactive;
+
 namespace HTSController
 {
     public partial class InteractiveForm : Form
     {
         private HTSNetwork _network;
+
+        private InteractiveSettings _settings;
 
         private CancellationTokenSource _udpCancellationToken;
         private CancellationTokenSource _queueCancellationToken;
@@ -36,15 +40,17 @@ namespace HTSController
         private Color _ledOnColor = Color.FromArgb(0, 255, 0);
         private Color _ledOffColor = Color.FromArgb(0, 32, 0);
 
-        private SignalManager _sigMan;
-
         private float _plotSampleRate = 48000;
 
         private bool _ignoreEvents = false;
 
-        public InteractiveForm(HTSNetwork network)
+        public string SettingsPath { get; private set; }
+
+        public InteractiveForm(HTSNetwork network, string settingsPath)
         {
             _network = network;
+            SettingsPath = settingsPath;
+
             _packetQueue = new Queue<byte[]>();
 
             InitializeComponent();
@@ -67,9 +73,17 @@ namespace HTSController
 
         private void InteractiveForm_Shown(object sender, EventArgs e)
         {
+            var adapterMap = _network.SendMessageAndReceiveJSON<AdapterMap>("GetAdapterMap");
+
             StartUDP();
-            CreateDefaultSignalManager();
-            channelView.Value = _sigMan.channels[0];
+
+            InitializeSettings();
+
+            _settings.SigMan.AdapterMap = adapterMap;
+            channelView.AdapterMap = adapterMap;
+            channelView.Value = _settings.SigMan.channels[0];
+
+            PlotSignals(_settings.SigMan);
         }
 
         private void StartUDP()
@@ -139,6 +153,7 @@ namespace HTSController
 
         private void startButton_Click(object sender, EventArgs e)
         {
+            _network.SendMessage($"SetParams:{KFile.ToXMLString(_settings)}");
             _network.SendMessage("Start");
         }
 
@@ -152,63 +167,27 @@ namespace HTSController
             led1.BackColor = (amplitude > 0) ? _ledOnColor : _ledOffColor;
         }
 
-        private void CreateDefaultSignalManager()
+        private void InitializeSettings()
         {
-            var ch = new Channel()
+            if (string.IsNullOrEmpty(SettingsPath) || !File.Exists(SettingsPath))
             {
-                Name = "Audio",
-                Modality = KLib.Signals.Enumerations.Modality.Audio,
-                Laterality = Laterality.Diotic,
-                Location = "Site 2",
-                Transducer = "HD280",
-                waveform = new Sinusoid()
-                {
-                    Frequency_Hz = 500
-                },
-                modulation = new KLib.Signals.Modulations.SinusoidalAM()
-                {
-                    Frequency_Hz = 40,
-                    Depth = 1
-                },
-                gate = new Gate()
-                {
-                    Active = true,
-                    Duration_ms = 250,
-                    Period_ms = 1000
-                },
-                level = new Level()
-                {
-                    Units = LevelUnits.dB_SPL,
-                    Value = 50
-                }
-            };
+                _settings = new InteractiveSettings();
+            }
+            else
+            {
+                _settings = KFile.XmlDeserialize<InteractiveSettings>(SettingsPath);
+            }
 
-            _sigMan = new SignalManager();
-            _sigMan.AdapterMap = AdapterMap.DefaultStereoMap();
-            _sigMan.AddChannel(ch);
-
-            freqBox.FloatValue = (_sigMan.channels[0].waveform as Sinusoid).Frequency_Hz;
-            levelBox.FloatValue = _sigMan.channels[0].level.Value;
-
-            channelListBox.SetItems(_sigMan.channels.Select(c => c.Name).ToList());
+            channelListBox.SetItems(_settings.SigMan.channels.Select(c => c.Name).ToList());
             channelListBox.SelectedIndex = 0;
             signalGraph.Visible = true;
-            PlotSignals(_sigMan);
+
+            SetTitle();
         }
 
-        private void sendButton_Click(object sender, EventArgs e)
+        private void SetTitle()
         {
-            _network.SendMessage($"SetParams:{KFile.ToXMLString(_sigMan)}");
-        }
-
-        private void freqBox_ValueChanged(object sender, EventArgs e)
-        {
-            _network.SendMessage($"SetParameter:Audio.Tone.Frequency_Hz={freqBox.FloatValue}");
-        }
-
-        private void levelBox_ValueChanged(object sender, EventArgs e)
-        {
-            _network.SendMessage($"SetParameter:Audio.Level={levelBox.FloatValue}");
+            this.Text = $"Interactive:  {_settings.Name}";
         }
 
         private void channelListBox_ItemAdded(object sender, KUserListBox.ChangedItem e)
@@ -218,7 +197,7 @@ namespace HTSController
             ch.Laterality = Laterality.Diotic;
             channelView.Value = ch;
 
-            _sigMan.channels.Insert(e.index, ch);
+            _settings.SigMan.channels.Insert(e.index, ch);
         }
 
         private void channelView_WaveformBecameValid(object sender, EventArgs e)
@@ -231,27 +210,27 @@ namespace HTSController
         {
             if (!_ignoreEvents)
             {
-                PlotSignals(_sigMan);
+                PlotSignals(_settings.SigMan);
             }
         }
 
         private void channelListBox_ItemMoved(object sender, KUserListBox.ChangedItem e)
         {
-            if (_ignoreEvents || _sigMan == null) return;
+            if (_ignoreEvents || _settings.SigMan == null) return;
 
-            Channel ch = _sigMan.GetChannel(e.name);
+            Channel ch = _settings.SigMan.GetChannel(e.name);
             if (ch != null)
             {
-                _sigMan.channels.Remove(ch);
-                _sigMan.channels.Insert(e.index, ch);
+                _settings.SigMan.channels.Remove(ch);
+                _settings.SigMan.channels.Insert(e.index, ch);
             }
         }
 
         private void channelListBox_ItemRenamed(object sender, KUserListBox.ChangedItem e)
         {
-            if (_ignoreEvents || _sigMan == null) return;
+            if (_ignoreEvents || _settings.SigMan == null) return;
 
-            Channel ch = _sigMan.channels[e.index];
+            Channel ch = _settings.SigMan.channels[e.index];
 
             if (ch != null)
             {
@@ -263,32 +242,27 @@ namespace HTSController
 
         private void channelListBox_ItemsDeleted(object sender, KUserListBox.ChangedItems e)
         {
-            if (_ignoreEvents || _sigMan == null) return;
+            if (_ignoreEvents || _settings.SigMan == null) return;
 
             foreach (string name in e.names)
             {
-                Channel ch = _sigMan.GetChannel(name);
-                if (ch != null) _sigMan.channels.Remove(ch);
-            }
-
-            if (_sigMan.channels.Count == 0)
-            {
-                _sigMan = null;
+                Channel ch = _settings.SigMan.GetChannel(name);
+                if (ch != null) _settings.SigMan.channels.Remove(ch);
             }
         }
 
         private void channelListBox_ItemsMoved(object sender, KUserListBox.ChangedItems e)
         {
-            if (_ignoreEvents || _sigMan == null) return;
+            if (_ignoreEvents || _settings.SigMan == null) return;
 
             List<Channel> tmp = new List<Channel>();
             foreach (string name in e.names)
             {
-                Channel ch = _sigMan.GetChannel(name);
+                Channel ch = _settings.SigMan.GetChannel(name);
                 if (ch != null) tmp.Add(ch);
             }
 
-            _sigMan.channels = tmp;
+            _settings.SigMan.channels = tmp;
         }
 
         private void channelListBox_SelectionChanged(object sender, KUserListBox.ChangedItem e)
@@ -296,7 +270,7 @@ namespace HTSController
             if (!_ignoreEvents)
             {
                 Channel ch = null;
-                if (_sigMan != null) ch = _sigMan.GetChannel(e.name);
+                if (_settings.SigMan != null) ch = _settings.SigMan.GetChannel(e.name);
                 if (ch == null)
                 {
                     ch = new Channel(e.name);
@@ -373,5 +347,32 @@ namespace HTSController
             graphTabControl.SelectedTab = string.IsNullOrEmpty(audioErrorTextBox.Text) ? graphPage : errorPage;
         }
 
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            var dlg = new SaveFileDialog();
+
+            dlg.InitialDirectory = FileLocations.ConfigFolder;
+            dlg.FileName = Path.GetFileName(SettingsPath);
+            dlg.Filter = "Interactive settings | Interactive.*.xml";
+            dlg.OverwritePrompt = true;
+
+            var result = dlg.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                var folder = Path.GetDirectoryName(dlg.FileName);
+                var name = Path.GetFileNameWithoutExtension(dlg.FileName);
+                if (name.StartsWith("Interactive."))
+                {
+                    name = name.Remove(0, ("Interactive.").Length);
+                }
+
+                _settings.Name = name;
+                SettingsPath = Path.Combine(folder, $"Interactive.{name}.xml");
+                KFile.XmlSerialize(_settings, SettingsPath);
+                SetTitle();
+            }
+
+        }
     }
 }
