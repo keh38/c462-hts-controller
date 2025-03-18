@@ -34,12 +34,12 @@
             // 
             // propertyLabel
             // 
-            this.propertyLabel.Location = new System.Drawing.Point(3, 4);
+            this.propertyLabel.Location = new System.Drawing.Point(85, 4);
             this.propertyLabel.Name = "propertyLabel";
             this.propertyLabel.Size = new System.Drawing.Size(148, 16);
             this.propertyLabel.TabIndex = 0;
             this.propertyLabel.Text = "label1";
-            this.propertyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.propertyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // propertyNumeric
             // 
@@ -50,7 +50,7 @@
             this.propertyNumeric.FloatValue = 0F;
             this.propertyNumeric.IntValue = 0;
             this.propertyNumeric.IsInteger = false;
-            this.propertyNumeric.Location = new System.Drawing.Point(157, 3);
+            this.propertyNumeric.Location = new System.Drawing.Point(3, 3);
             this.propertyNumeric.MaxCoerce = false;
             this.propertyNumeric.MaximumSize = new System.Drawing.Size(20000, 20);
             this.propertyNumeric.MaxValue = 1.7976931348623157E+308D;
@@ -75,7 +75,7 @@
             this.Controls.Add(this.propertyNumeric);
             this.Controls.Add(this.propertyLabel);
             this.Name = "PropertyControl";
-            this.Size = new System.Drawing.Size(239, 26);
+            this.Size = new System.Drawing.Size(236, 26);
             this.ResumeLayout(false);
             this.PerformLayout();
 

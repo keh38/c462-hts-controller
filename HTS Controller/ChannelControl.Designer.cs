@@ -28,31 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.led1 = new System.Windows.Forms.Panel();
-            this.channelLabel = new System.Windows.Forms.Label();
+            this.ledPanel = new System.Windows.Forms.Panel();
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.enableCheckBox = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // led1
+            // ledPanel
             // 
-            this.led1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(32)))), ((int)(((byte)(0)))));
-            this.led1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.led1.Location = new System.Drawing.Point(5, 3);
-            this.led1.Name = "led1";
-            this.led1.Size = new System.Drawing.Size(42, 19);
-            this.led1.TabIndex = 3;
-            // 
-            // channelLabel
-            // 
-            this.channelLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.channelLabel.Location = new System.Drawing.Point(53, 2);
-            this.channelLabel.Name = "channelLabel";
-            this.channelLabel.Size = new System.Drawing.Size(211, 23);
-            this.channelLabel.TabIndex = 4;
-            this.channelLabel.Text = "label1";
+            this.ledPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(32)))), ((int)(((byte)(0)))));
+            this.ledPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ledPanel.Location = new System.Drawing.Point(5, 3);
+            this.ledPanel.Name = "ledPanel";
+            this.ledPanel.Size = new System.Drawing.Size(42, 19);
+            this.ledPanel.TabIndex = 3;
             // 
             // flowLayoutPanel
             // 
@@ -62,19 +53,33 @@
             this.flowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel.Name = "flowLayoutPanel";
-            this.flowLayoutPanel.Size = new System.Drawing.Size(273, 31);
+            this.flowLayoutPanel.Size = new System.Drawing.Size(157, 32);
             this.flowLayoutPanel.TabIndex = 5;
             // 
             // panel1
             // 
             this.panel1.AutoSize = true;
             this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel1.Controls.Add(this.led1);
-            this.panel1.Controls.Add(this.channelLabel);
+            this.panel1.Controls.Add(this.enableCheckBox);
+            this.panel1.Controls.Add(this.ledPanel);
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(267, 25);
+            this.panel1.Size = new System.Drawing.Size(151, 26);
             this.panel1.TabIndex = 6;
+            // 
+            // enableCheckBox
+            // 
+            this.enableCheckBox.AutoSize = true;
+            this.enableCheckBox.Checked = true;
+            this.enableCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.enableCheckBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.enableCheckBox.Location = new System.Drawing.Point(53, 2);
+            this.enableCheckBox.Name = "enableCheckBox";
+            this.enableCheckBox.Size = new System.Drawing.Size(95, 21);
+            this.enableCheckBox.TabIndex = 6;
+            this.enableCheckBox.Text = "checkBox1";
+            this.enableCheckBox.UseVisualStyleBackColor = true;
+            this.enableCheckBox.CheckedChanged += new System.EventHandler(this.enableCheckBox_CheckedChanged);
             // 
             // ChannelControl
             // 
@@ -84,10 +89,11 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.flowLayoutPanel);
             this.Name = "ChannelControl";
-            this.Size = new System.Drawing.Size(279, 37);
+            this.Size = new System.Drawing.Size(163, 38);
             this.flowLayoutPanel.ResumeLayout(false);
             this.flowLayoutPanel.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -95,9 +101,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel led1;
-        private System.Windows.Forms.Label channelLabel;
+        private System.Windows.Forms.Panel ledPanel;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox enableCheckBox;
     }
 }

@@ -36,13 +36,14 @@ namespace HTSController
         private Task _listenerTask;
 
         private int _udpPort = 63557;
-        private float amplitude = 0;
+        private float[] amplitudes = null;
         private Color _ledOnColor = Color.FromArgb(0, 255, 0);
         private Color _ledOffColor = Color.FromArgb(0, 32, 0);
 
         private float _plotSampleRate = 48000;
 
         private bool _ignoreEvents = false;
+        private bool _isLive = false;
 
         public string SettingsPath { get; private set; }
 
@@ -54,6 +55,8 @@ namespace HTSController
             _packetQueue = new Queue<byte[]>();
 
             InitializeComponent();
+
+            channelControl.ChannelActiveChanged = OnChannelActiveChanged;
 
             KLib.KGraphics.ZedGraphUtils.InitZedGraph(signalGraph, "Time (s)", "");
             signalGraph.MasterPane.Fill.Type = ZedGraph.FillType.None;
@@ -74,6 +77,8 @@ namespace HTSController
         private void InteractiveForm_Shown(object sender, EventArgs e)
         {
             var adapterMap = _network.SendMessageAndReceiveJSON<AdapterMap>("GetAdapterMap");
+            //adapterMap = AdapterMap.DefaultStereoMap();
+            //adapterMap.AudioTransducer = "HD280";
 
             StartUDP();
 
@@ -147,9 +152,9 @@ namespace HTSController
                     var byteArray = _packetQueue.Dequeue();
                     if (byteArray != null)
                     {
-                        var floatArray2 = new float[byteArray.Length / sizeof(float)];
-                        Buffer.BlockCopy(byteArray, 0, floatArray2, 0, byteArray.Length);
-                        amplitude = floatArray2[0];
+                        var floatArray = new float[byteArray.Length / sizeof(float)];
+                        Buffer.BlockCopy(byteArray, 0, floatArray, 0, byteArray.Length);
+                        amplitudes = floatArray;
                     }
                 }
             }
@@ -159,16 +164,26 @@ namespace HTSController
         {
             _network.SendMessage($"SetParams:{KFile.ToXMLString(_settings)}");
             _network.SendMessage("Start");
+            startButton.Visible = false;
+            _isLive = true;
         }
 
         private void stopButton_Click(object sender, EventArgs e)
         {
             _network.SendMessage("Stop");
+            startButton.Visible = true;
+            _isLive = false;
         }
 
         private void displayTimer_Tick(object sender, EventArgs e)
         {
-            led1.BackColor = (amplitude > 0) ? _ledOnColor : _ledOffColor;
+            if (amplitudes == null) return;
+
+            for (int k = 0; k < flowLayoutPanel.Controls.Count; k++)
+            {
+                (flowLayoutPanel.Controls[k] as ChannelControl).LED.BackColor =
+                    (amplitudes[k] > 0) ? _ledOnColor : _ledOffColor;
+            }
         }
 
         private void InitializeSettings()
@@ -191,7 +206,7 @@ namespace HTSController
 
         private void SetTitle()
         {
-            this.Text = $"Interactive:  {_settings.Name}";
+            this.Text = $"Interactive: {_settings.Name}";
         }
 
         private void channelListBox_ItemAdded(object sender, KUserListBox.ChangedItem e)
@@ -202,6 +217,7 @@ namespace HTSController
             channelView.Value = ch;
 
             _settings.SigMan.channels.Insert(e.index, ch);
+            CurateControls();
         }
 
         private void channelView_WaveformBecameValid(object sender, EventArgs e)
@@ -215,6 +231,7 @@ namespace HTSController
             if (!_ignoreEvents)
             {
                 PlotSignals(_settings.SigMan);
+                CurateControls();
             }
         }
 
@@ -228,6 +245,8 @@ namespace HTSController
                 _settings.SigMan.channels.Remove(ch);
                 _settings.SigMan.channels.Insert(e.index, ch);
             }
+
+            CurateControls();
         }
 
         private void channelListBox_ItemRenamed(object sender, KUserListBox.ChangedItem e)
@@ -241,7 +260,17 @@ namespace HTSController
                 string oldname = ch.Name;
                 ch.Name = e.name;
                 channelView.Value = ch;
+
+                foreach (var c in _settings.Controls)
+                {
+                    if (c.channel.Equals(oldname))
+                    {
+                        c.channel = e.name;
+                    }
+                }
+
             }
+            CurateControls();
         }
 
         private void channelListBox_ItemsDeleted(object sender, KUserListBox.ChangedItems e)
@@ -253,6 +282,7 @@ namespace HTSController
                 Channel ch = _settings.SigMan.GetChannel(name);
                 if (ch != null) _settings.SigMan.channels.Remove(ch);
             }
+            CurateControls();
         }
 
         private void channelListBox_ItemsMoved(object sender, KUserListBox.ChangedItems e)
@@ -267,6 +297,7 @@ namespace HTSController
             }
 
             _settings.SigMan.channels = tmp;
+            CurateControls();
         }
 
         private void channelListBox_SelectionChanged(object sender, KUserListBox.ChangedItem e)
@@ -353,20 +384,71 @@ namespace HTSController
 
         private void LayoutControls()
         {
+            InitializeControlValues();
+
             var chanNames = _settings.SigMan.channels.Select(x => x.Name).ToList();
             for (int k=0; k < chanNames.Count; k++)
             {
                 var controls = _settings.Controls.FindAll(x => x.channel.Equals(chanNames[k]));
-                if (k < flowLayoutPanel.Controls.Count)
+                if (k >= flowLayoutPanel.Controls.Count)
                 {
-                    (flowLayoutPanel.Controls[k] as ChannelControl).LayoutControls(chanNames[k], controls, OnPropertyValueChanged);
+                    var c = new ChannelControl();
+                    c.ChannelActiveChanged = OnChannelActiveChanged;
+                    flowLayoutPanel.Controls.Add(c);
                 }
+                (flowLayoutPanel.Controls[k] as ChannelControl).LayoutControls(chanNames[k], controls, OnPropertyValueChanged);
+            }
+
+            int nremove = flowLayoutPanel.Controls.Count - chanNames.Count;
+            for (int k = 0; k < nremove; k++) flowLayoutPanel.Controls.RemoveAt(chanNames.Count);
+        }
+
+        private void InitializeControlValues()
+        {
+            foreach (var c in _settings.Controls)
+            {
+                c.value = _settings.SigMan.GetParameter(c.channel, c.property);
+            }
+        }
+
+        private void CurateControls()
+        {
+            var valid = _settings.SigMan.GetValidProperties();
+
+            var toDelete = new List<InteractiveControl>();
+            foreach (var c in _settings.Controls)
+            {
+                if (valid.Find(x => x.channelName.Equals(c.channel) && x.properties.Contains(c.property)) == null)
+                {
+                    toDelete.Add(c);
+                }
+            }
+            foreach (var c in toDelete) _settings.Controls.Remove(c);
+
+            controlGridView.SetDataForContext(_settings.SigMan.GetValidProperties());
+            controlGridView.Value = _settings.Controls;
+
+            LayoutControls();
+        }
+
+        private void OnChannelActiveChanged(string channel, bool enabled)
+        {
+            if (_isLive)
+            {
+                _network.SendMessage($"SetActive:{channel}={(enabled?1:0)}");
             }
         }
 
         private void OnPropertyValueChanged(string channel, string property, float value)
         {
-            Debug.WriteLine($"{channel}.{property}={value}");
+            if (_isLive)
+            {
+                _network.SendMessage($"SetProperty:{channel}.{property}={value}");
+            }
+
+            _settings.SigMan.SetParameter(channel, property, value);
+            channelView.UpdateParameters();
+            PlotSignals(_settings.SigMan);
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -394,7 +476,11 @@ namespace HTSController
                 KFile.XmlSerialize(_settings, SettingsPath);
                 SetTitle();
             }
+        }
 
+        private void controlGridView_ValueChanged(object sender, EventArgs e)
+        {
+            LayoutControls();
         }
     }
 }

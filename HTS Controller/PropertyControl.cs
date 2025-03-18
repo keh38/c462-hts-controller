@@ -31,10 +31,11 @@ namespace HTSController
 
         public void LayoutControl(InteractiveControl control)
         {
-            if (!control.channel.Equals(_control.channel) || !control.property.Equals(_control.property))
+            if (_control==null || !control.channel.Equals(_control.channel) || !control.property.Equals(_control.property))
             {
                 _control = control;
                 propertyLabel.Text = _control.property;
+                propertyNumeric.Value = _control.value;
             }
         }
 

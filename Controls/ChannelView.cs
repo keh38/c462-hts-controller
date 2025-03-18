@@ -63,6 +63,11 @@ namespace KLib.Unity.Controls.Signals
             }
         }
 
+        public void UpdateParameters()
+        {
+            ShowChannel(Value);
+        }
+
         private void ShowChannel(Channel ch)
         {
             _ignoreEvents = true;
@@ -227,7 +232,7 @@ namespace KLib.Unity.Controls.Signals
 
         private void EnableBinauralProperties()
         {
-            bool isDichotic = _chan.Laterality != Laterality.Diotic;
+            bool isDichotic = _chan.Laterality == Laterality.Diotic;
             levelView.IsDichotic = isDichotic;
             waveformView.IsDichotic = isDichotic;
         }

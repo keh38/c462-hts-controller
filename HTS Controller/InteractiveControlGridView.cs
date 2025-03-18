@@ -114,7 +114,13 @@ namespace Turandot_Editor
                     _controls[rowIndex].expression = cells["Expr"].Value as string;
                     //TestExpression(cells["Expr"]);
                 }
-                OnValueChanged();
+
+                if (!string.IsNullOrEmpty(_controls[rowIndex].channel) &&
+                    !string.IsNullOrEmpty(_controls[rowIndex].property) &&
+                    !string.IsNullOrEmpty(_controls[rowIndex].expression))
+                {
+                    OnValueChanged();
+                }
             }
         }
 
@@ -210,21 +216,22 @@ namespace Turandot_Editor
 
         private void dataGridView_Leave(object sender, EventArgs e)
         {
-            //if (_controls == null) return;
+            if (_controls == null) return;
 
-            //List<Variable> toDelete = new List<Variable>();
-            //foreach (Variable v in _controls)
-            //{
-            //    if (string.IsNullOrEmpty(v.state) ||
-            //        string.IsNullOrEmpty(v.chan) ||
-            //        string.IsNullOrEmpty(v.property) ||
-            //        string.IsNullOrEmpty(v.expression))
-            //    {
-            //        toDelete.Add(v);
-            //    }
-            //}
-            //foreach (Variable v in toDelete) _controls.Remove(v);
-            //if (toDelete.Count > 0) ShowFamily(_controls);
+            var toDelete = new List<InteractiveControl>();
+            foreach (var c in _controls)
+            {
+                if (string.IsNullOrEmpty(c.channel) ||
+                    string.IsNullOrEmpty(c.property) ||
+                    string.IsNullOrEmpty(c.expression))
+                {
+                    toDelete.Add(c);
+                }
+            }
+            foreach (var c in toDelete) _controls.Remove(c);
+            if (toDelete.Count > 0) ShowControls(_controls);
+
+            OnValueChanged();
         }
 
         private void dataGridView_MouseUp(object sender, MouseEventArgs e)
@@ -242,20 +249,22 @@ namespace Turandot_Editor
 
             MenuItem mi;
 
-            if (_controls.Count > 1)
+            if (_controls.Count > 0)
             {
                 mi = new MenuItem();
-                mi.Text = "Sort";
-                mi.Click += sortClick;
+                mi.Text = "Move up";
+                mi.Click += moveUpClick;
+                cm.MenuItems.Add(mi);
+
+                mi = new MenuItem();
+                mi.Text = "Move down";
+                mi.Click += moveDownClick;
                 cm.MenuItems.Add(mi);
 
                 mi = new MenuItem();
                 mi.Text = "-";
                 cm.MenuItems.Add(mi);
-            }
 
-            if (_controls.Count > 0)
-            {
                 mi = new MenuItem();
                 mi.Text = "Delete selected row(s)";
                 mi.Click += deleteRowClick;
@@ -274,41 +283,63 @@ namespace Turandot_Editor
             return cm;
         }
 
+        void moveUpClick(object sender, EventArgs e)
+        {
+            if (dataGridView.SelectedRows.Count != 1) return;
+
+            int index = dataGridView.SelectedRows[0].Index;
+            if (index == 0) return;
+
+            var c = _controls[index];
+            _controls.RemoveAt(index);
+            _controls.Insert(index - 1, c);
+
+            var r = dataGridView.Rows[index];
+            dataGridView.Rows.RemoveAt(index);
+            dataGridView.Rows.Insert(index - 1, r);
+
+            OnValueChanged();
+        }
+
+        void moveDownClick(object sender, EventArgs e)
+        {
+            if (dataGridView.SelectedRows.Count != 1) return;
+
+            int index = dataGridView.SelectedRows[0].Index;
+            if (index == dataGridView.Rows.Count-1) return;
+
+            var c = _controls[index];
+            _controls.RemoveAt(index);
+            _controls.Insert(index + 1, c);
+
+            var r = dataGridView.Rows[index];
+            dataGridView.Rows.RemoveAt(index);
+            dataGridView.Rows.Insert(index + 1, r);
+
+            OnValueChanged();
+        }
+
         void deleteRowClick(object sender, EventArgs e)
         {
-            //List<Variable> toDelete = new List<Variable>();
-            //foreach (var row in dataGridView.SelectedRows)
-            //    toDelete.Add(_controls[row.Index]);
+            var toDelete = new List<InteractiveControl>();
+            foreach (DataGridViewRow row in dataGridView.SelectedRows)
+                toDelete.Add(_controls[row.Index]);
 
-            //foreach (var v in toDelete) _controls.Remove(v);
+            foreach (var v in toDelete) _controls.Remove(v);
 
-            //foreach (DataGridViewRow row in dataGridView.SelectedRows)
-            //    dataGridView.Rows.Remove(row);
+            foreach (DataGridViewRow row in dataGridView.SelectedRows)
+                dataGridView.Rows.Remove(row);
 
-            //OnValueChanged();
+            OnValueChanged();
         }
+
 
         void clearTableClick(object sender, EventArgs e)
         {
-            //_controls.Clear();
-            //ShowFamily(_controls);
+            _controls.Clear();
+            ShowControls(_controls);
 
-            //OnValueChanged();
-        }
-
-        void sortClick(object sender, EventArgs e)
-        {
-            //List<Variable> tmp = new List<Variable>();
-            //foreach (Variable v in _controls) tmp.Add(new Variable(v));
-
-            //_controls.Clear();
-            //foreach (Variable v in tmp.FindAll(o => o.dim == VarDimension.X)) _controls.Add(new Variable(v));
-            //foreach (Variable v in tmp.FindAll(o => o.dim == VarDimension.Y)) _controls.Add(new Variable(v));
-            //foreach (Variable v in tmp.FindAll(o => o.dim == VarDimension.Ind)) _controls.Add(new Variable(v));
-
-            //ShowFamily(_controls);
-
-            //OnValueChanged();
+            OnValueChanged();
         }
 
         private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
