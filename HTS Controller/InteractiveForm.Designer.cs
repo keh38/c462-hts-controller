@@ -38,22 +38,34 @@
             this.audioErrorTextBox = new System.Windows.Forms.TextBox();
             this.signalGraph = new ZedGraph.ZedGraphControl();
             this.channelListBox = new KLib.Controls.KUserListBox();
-            this.channelView = new KLib.Unity.Controls.Signals.ChannelView();
             this.graphTabControl = new System.Windows.Forms.TabControl();
             this.graphPage = new System.Windows.Forms.TabPage();
             this.errorPage = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
             this.saveButton = new System.Windows.Forms.Button();
+            this.channelView = new KLib.Unity.Controls.Signals.ChannelView();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.stimulusPage = new System.Windows.Forms.TabPage();
+            this.controlsPage = new System.Windows.Forms.TabPage();
+            this.controlGridView = new Turandot_Editor.InteractiveControlGridView();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.channelControl = new HTSController.ChannelControl();
+            this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.graphTabControl.SuspendLayout();
             this.graphPage.SuspendLayout();
             this.errorPage.SuspendLayout();
+            this.tabControl.SuspendLayout();
+            this.stimulusPage.SuspendLayout();
+            this.controlsPage.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.flowLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(722, 71);
+            this.startButton.Location = new System.Drawing.Point(521, 75);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(110, 35);
+            this.startButton.Size = new System.Drawing.Size(80, 26);
             this.startButton.TabIndex = 0;
             this.startButton.Text = "Start";
             this.startButton.UseVisualStyleBackColor = true;
@@ -61,9 +73,9 @@
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(722, 71);
+            this.stopButton.Location = new System.Drawing.Point(521, 107);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(110, 35);
+            this.stopButton.Size = new System.Drawing.Size(80, 26);
             this.stopButton.TabIndex = 1;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
@@ -85,7 +97,7 @@
             // 
             this.led1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(32)))), ((int)(((byte)(0)))));
             this.led1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.led1.Location = new System.Drawing.Point(628, 141);
+            this.led1.Location = new System.Drawing.Point(560, 238);
             this.led1.Name = "led1";
             this.led1.Size = new System.Drawing.Size(24, 58);
             this.led1.TabIndex = 2;
@@ -121,24 +133,11 @@
             // channelListBox
             // 
             this.channelListBox.DefaultName = "Signal";
-            this.channelListBox.Location = new System.Drawing.Point(24, 17);
+            this.channelListBox.Location = new System.Drawing.Point(20, 9);
             this.channelListBox.Name = "channelListBox";
             this.channelListBox.SelectedIndex = -1;
             this.channelListBox.Size = new System.Drawing.Size(219, 136);
             this.channelListBox.TabIndex = 7;
-            // 
-            // channelView
-            // 
-            this.channelView.AdapterMap = null;
-            this.channelView.AllowExpertOptions = false;
-            this.channelView.AutoScroll = true;
-            this.channelView.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.channelView.Location = new System.Drawing.Point(277, 17);
-            this.channelView.Name = "channelView";
-            this.channelView.Size = new System.Drawing.Size(238, 461);
-            this.channelView.TabIndex = 11;
-            this.channelView.Value = null;
-            this.channelView.WavFolder = null;
             // 
             // graphTabControl
             // 
@@ -146,7 +145,7 @@
             this.graphTabControl.Controls.Add(this.graphPage);
             this.graphTabControl.Controls.Add(this.errorPage);
             this.graphTabControl.ItemSize = new System.Drawing.Size(0, 1);
-            this.graphTabControl.Location = new System.Drawing.Point(12, 479);
+            this.graphTabControl.Location = new System.Drawing.Point(12, 361);
             this.graphTabControl.Name = "graphTabControl";
             this.graphTabControl.SelectedIndex = 0;
             this.graphTabControl.Size = new System.Drawing.Size(503, 186);
@@ -187,26 +186,109 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(24, 423);
+            this.saveButton.Location = new System.Drawing.Point(521, 34);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(110, 35);
+            this.saveButton.Size = new System.Drawing.Size(80, 26);
             this.saveButton.TabIndex = 13;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
+            // channelView
+            // 
+            this.channelView.AdapterMap = null;
+            this.channelView.AllowExpertOptions = false;
+            this.channelView.AutoScroll = true;
+            this.channelView.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.channelView.Location = new System.Drawing.Point(245, 9);
+            this.channelView.Name = "channelView";
+            this.channelView.Size = new System.Drawing.Size(238, 290);
+            this.channelView.TabIndex = 11;
+            this.channelView.Value = null;
+            this.channelView.WavFolder = null;
+            // 
+            // tabControl
+            // 
+            this.tabControl.Controls.Add(this.stimulusPage);
+            this.tabControl.Controls.Add(this.controlsPage);
+            this.tabControl.Controls.Add(this.tabPage3);
+            this.tabControl.Location = new System.Drawing.Point(12, 12);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(503, 347);
+            this.tabControl.TabIndex = 15;
+            // 
+            // stimulusPage
+            // 
+            this.stimulusPage.Controls.Add(this.channelListBox);
+            this.stimulusPage.Controls.Add(this.channelView);
+            this.stimulusPage.Location = new System.Drawing.Point(4, 22);
+            this.stimulusPage.Name = "stimulusPage";
+            this.stimulusPage.Padding = new System.Windows.Forms.Padding(3);
+            this.stimulusPage.Size = new System.Drawing.Size(495, 321);
+            this.stimulusPage.TabIndex = 0;
+            this.stimulusPage.Text = "Stimulus";
+            this.stimulusPage.UseVisualStyleBackColor = true;
+            // 
+            // controlsPage
+            // 
+            this.controlsPage.BackColor = System.Drawing.SystemColors.Control;
+            this.controlsPage.Controls.Add(this.controlGridView);
+            this.controlsPage.Location = new System.Drawing.Point(4, 22);
+            this.controlsPage.Name = "controlsPage";
+            this.controlsPage.Padding = new System.Windows.Forms.Padding(3);
+            this.controlsPage.Size = new System.Drawing.Size(495, 321);
+            this.controlsPage.TabIndex = 1;
+            this.controlsPage.Text = "Controls";
+            // 
+            // controlGridView
+            // 
+            this.controlGridView.Location = new System.Drawing.Point(64, 24);
+            this.controlGridView.MaxNumberRows = 0;
+            this.controlGridView.Name = "controlGridView";
+            this.controlGridView.Size = new System.Drawing.Size(363, 209);
+            this.controlGridView.TabIndex = 14;
+            this.controlGridView.Value = null;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage3.Controls.Add(this.flowLayoutPanel);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(495, 321);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Live";
+            // 
+            // channelControl
+            // 
+            this.channelControl.AutoSize = true;
+            this.channelControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.channelControl.Location = new System.Drawing.Point(3, 3);
+            this.channelControl.Name = "channelControl";
+            this.channelControl.Size = new System.Drawing.Size(279, 37);
+            this.channelControl.TabIndex = 3;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel.Controls.Add(this.channelControl);
+            this.flowLayoutPanel.Location = new System.Drawing.Point(85, 6);
+            this.flowLayoutPanel.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel.Size = new System.Drawing.Size(325, 309);
+            this.flowLayoutPanel.TabIndex = 4;
+            // 
             // InteractiveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(861, 677);
-            this.Controls.Add(this.saveButton);
-            this.Controls.Add(this.graphTabControl);
-            this.Controls.Add(this.channelView);
-            this.Controls.Add(this.channelListBox);
-            this.Controls.Add(this.led1);
+            this.ClientSize = new System.Drawing.Size(615, 558);
             this.Controls.Add(this.stopButton);
+            this.Controls.Add(this.led1);
+            this.Controls.Add(this.saveButton);
             this.Controls.Add(this.startButton);
+            this.Controls.Add(this.tabControl);
+            this.Controls.Add(this.graphTabControl);
             this.Name = "InteractiveForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Interactive";
@@ -216,6 +298,12 @@
             this.graphPage.ResumeLayout(false);
             this.errorPage.ResumeLayout(false);
             this.errorPage.PerformLayout();
+            this.tabControl.ResumeLayout(false);
+            this.stimulusPage.ResumeLayout(false);
+            this.controlsPage.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.flowLayoutPanel.ResumeLayout(false);
+            this.flowLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -236,5 +324,12 @@
         private System.Windows.Forms.TabPage errorPage;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button saveButton;
+        private Turandot_Editor.InteractiveControlGridView controlGridView;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage stimulusPage;
+        private System.Windows.Forms.TabPage controlsPage;
+        private System.Windows.Forms.TabPage tabPage3;
+        private ChannelControl channelControl;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
     }
 }

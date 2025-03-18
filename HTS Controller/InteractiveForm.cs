@@ -83,7 +83,11 @@ namespace HTSController
             channelView.AdapterMap = adapterMap;
             channelView.Value = _settings.SigMan.channels[0];
 
+            controlGridView.SetDataForContext(_settings.SigMan.GetValidProperties());
+            controlGridView.Value = _settings.Controls;
+
             PlotSignals(_settings.SigMan);
+            LayoutControls();
         }
 
         private void StartUDP()
@@ -345,6 +349,24 @@ namespace HTSController
             signalGraph.GraphPane.YAxis.IsVisible = false;
             signalGraph.Refresh();
             graphTabControl.SelectedTab = string.IsNullOrEmpty(audioErrorTextBox.Text) ? graphPage : errorPage;
+        }
+
+        private void LayoutControls()
+        {
+            var chanNames = _settings.SigMan.channels.Select(x => x.Name).ToList();
+            for (int k=0; k < chanNames.Count; k++)
+            {
+                var controls = _settings.Controls.FindAll(x => x.channel.Equals(chanNames[k]));
+                if (k < flowLayoutPanel.Controls.Count)
+                {
+                    (flowLayoutPanel.Controls[k] as ChannelControl).LayoutControls(chanNames[k], controls, OnPropertyValueChanged);
+                }
+            }
+        }
+
+        private void OnPropertyValueChanged(string channel, string property, float value)
+        {
+            Debug.WriteLine($"{channel}.{property}={value}");
         }
 
         private void saveButton_Click(object sender, EventArgs e)
