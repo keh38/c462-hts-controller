@@ -76,9 +76,9 @@ namespace HTSController
 
         private void InteractiveForm_Shown(object sender, EventArgs e)
         {
-            var adapterMap = _network.SendMessageAndReceiveJSON<AdapterMap>("GetAdapterMap");
-            //adapterMap = AdapterMap.DefaultStereoMap();
-            //adapterMap.AudioTransducer = "HD280";
+            var adapterMap = _network.SendMessageAndReceiveXml<AdapterMap>("GetAdapterMap");
+            adapterMap = AdapterMap.Default7point1Map();
+            adapterMap.AudioTransducer = "HD280";
 
             StartUDP();
 
@@ -355,7 +355,8 @@ namespace HTSController
                     ch.Create();
 
                     double[] y = new double[npts];
-                    double scaleFactor = 1 / ch.Data.Max();
+                    var maxVal = ch.Data.Max();
+                    double scaleFactor = maxVal > 0 ? 1 / ch.Data.Max() : 1;
 
                     for (int k = 0; k < npts; k++)
                     {

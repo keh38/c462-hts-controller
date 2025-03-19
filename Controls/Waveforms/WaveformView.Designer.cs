@@ -34,6 +34,7 @@
             this.wfDropDown = new KLib.Controls.EnumDropDown();
             this.noisePage = new KLib.Unity.Controls.Signals.NoisePage();
             this.sinePage = new KLib.Unity.Controls.Signals.SinusoidPage();
+            this.digitimerPage = new KLib.Unity.Controls.Signals.DigitimerPage();
             this.userFilePage = new KLib.Unity.Controls.Signals.UserFilePage();
             this.fmPage = new KLib.Unity.Controls.Signals.Waveforms.FMPage();
             this.flowLayoutPanel1.SuspendLayout();
@@ -56,13 +57,14 @@
             this.flowLayoutPanel1.Controls.Add(this.panel1);
             this.flowLayoutPanel1.Controls.Add(this.noisePage);
             this.flowLayoutPanel1.Controls.Add(this.sinePage);
+            this.flowLayoutPanel1.Controls.Add(this.digitimerPage);
             this.flowLayoutPanel1.Controls.Add(this.userFilePage);
             this.flowLayoutPanel1.Controls.Add(this.fmPage);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(190, 373);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(190, 443);
             this.flowLayoutPanel1.TabIndex = 9;
             // 
             // panel1
@@ -97,7 +99,7 @@
             this.noisePage.Location = new System.Drawing.Point(10, 37);
             this.noisePage.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.noisePage.Name = "noisePage";
-            this.noisePage.Size = new System.Drawing.Size(180, 131);
+            this.noisePage.Size = new System.Drawing.Size(180, 152);
             this.noisePage.TabIndex = 10;
             this.noisePage.Value = null;
             this.noisePage.ValueChanged += new System.EventHandler(this.noisePage_ValueChanged);
@@ -109,14 +111,27 @@
             this.sinePage.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.sinePage.IPD = 0F;
             this.sinePage.IsDichotic = false;
-            this.sinePage.Location = new System.Drawing.Point(16, 174);
+            this.sinePage.Location = new System.Drawing.Point(16, 195);
             this.sinePage.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.sinePage.Name = "sinePage";
-            this.sinePage.Size = new System.Drawing.Size(174, 47);
+            this.sinePage.Size = new System.Drawing.Size(174, 48);
             this.sinePage.TabIndex = 0;
             this.sinePage.Value = null;
             this.sinePage.IPDChanged += new System.EventHandler(this.sinePage_IPDChanged);
             this.sinePage.ValueChanged += new System.EventHandler(this.sinePage_ValueChanged);
+            // 
+            // digitimerPage
+            // 
+            this.digitimerPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.digitimerPage.AutoSize = true;
+            this.digitimerPage.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.digitimerPage.Location = new System.Drawing.Point(16, 249);
+            this.digitimerPage.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.digitimerPage.Name = "digitimerPage";
+            this.digitimerPage.Size = new System.Drawing.Size(174, 25);
+            this.digitimerPage.TabIndex = 11;
+            this.digitimerPage.Value = null;
+            this.digitimerPage.ValueChanged += new System.EventHandler(this.digitimerPage_ValueChanged);
             // 
             // userFilePage
             // 
@@ -124,10 +139,10 @@
             this.userFilePage.AutoSize = true;
             this.userFilePage.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.userFilePage.DefaultFolder = null;
-            this.userFilePage.Location = new System.Drawing.Point(12, 227);
+            this.userFilePage.Location = new System.Drawing.Point(12, 280);
             this.userFilePage.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.userFilePage.Name = "userFilePage";
-            this.userFilePage.Size = new System.Drawing.Size(178, 46);
+            this.userFilePage.Size = new System.Drawing.Size(178, 63);
             this.userFilePage.TabIndex = 10;
             this.userFilePage.Value = null;
             this.userFilePage.ValueChanged += new System.EventHandler(this.userFilePage_ValueChanged);
@@ -137,7 +152,7 @@
             this.fmPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.fmPage.AutoSize = true;
             this.fmPage.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.fmPage.Location = new System.Drawing.Point(27, 279);
+            this.fmPage.Location = new System.Drawing.Point(27, 349);
             this.fmPage.Name = "fmPage";
             this.fmPage.Size = new System.Drawing.Size(160, 91);
             this.fmPage.TabIndex = 10;
@@ -152,7 +167,7 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "WaveformView";
-            this.Size = new System.Drawing.Size(193, 379);
+            this.Size = new System.Drawing.Size(193, 449);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -172,5 +187,6 @@
         private UserFilePage userFilePage;
         private KLib.Controls.EnumDropDown wfDropDown;
         private Waveforms.FMPage fmPage;
+        private DigitimerPage digitimerPage;
     }
 }

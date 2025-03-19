@@ -57,6 +57,12 @@
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\Program Files\Unity\Hub\Editor\5.2.2f1\Editor\Data\PlaybackEngines\windowsstandalonesupport\Managed\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>..\Unity Assemblies\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\Unity Assemblies\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChannelAdvancedControl.cs">
@@ -114,6 +120,12 @@
     <Compile Include="Waveforms\NoisePage.designer.cs">
       <DependentUpon>NoisePage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Waveforms\DigitimerPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Waveforms\DigitimerPage.designer.cs">
+      <DependentUpon>DigitimerPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Waveforms\SinusoidPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -160,6 +172,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Waveforms\NoisePage.resx">
       <DependentUpon>NoisePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Waveforms\DigitimerPage.resx">
+      <DependentUpon>DigitimerPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Waveforms\SinusoidPage.resx">
       <DependentUpon>SinusoidPage.cs</DependentUpon>

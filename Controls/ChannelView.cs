@@ -173,7 +173,7 @@ namespace KLib.Unity.Controls.Signals
             }
             else if (modality == Modality.Electric)
             {
-                levelView.SetAllowableUnits(LevelUnits.mA);
+                levelView.SetAllowableUnits(LevelUnits.Volts, LevelUnits.mA);
             }
         }
 

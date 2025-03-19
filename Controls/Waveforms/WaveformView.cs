@@ -28,7 +28,7 @@ namespace KLib.Unity.Controls.Signals
 
             _ignoreEvents = true;
 
-            wfDropDown.FillSubset(Waveshape.Sinusoid, Waveshape.Noise, Waveshape.File, Waveshape.FM);
+            wfDropDown.FillSubset(Waveshape.Sinusoid, Waveshape.Noise, Waveshape.File, Waveshape.FM, Waveshape.Digitimer);
             wfDropDown.SetEnumValue(Waveshape.Noise);
             ActivateWaveformControl(Waveshape.Noise);
 
@@ -98,6 +98,9 @@ namespace KLib.Unity.Controls.Signals
                 case Waveshape.FM:
                     fmPage.Value = wf;
                     break;
+                case Waveshape.Digitimer:
+                    digitimerPage.Value = wf;
+                    break;
             }
         }
 
@@ -107,6 +110,7 @@ namespace KLib.Unity.Controls.Signals
             sinePage.Visible = shape == Waveshape.Sinusoid;
             userFilePage.Visible = shape == Waveshape.File;
             fmPage.Visible = shape == Waveshape.FM;
+            digitimerPage.Visible = shape == Waveshape.Digitimer;
         }
 
         private void wfDropDown_ValueChanged(object sender, EventArgs e)
@@ -146,6 +150,11 @@ namespace KLib.Unity.Controls.Signals
             OnValueChanged();
         }
 
+        private void digitimerPage_ValueChanged(object sender, EventArgs e)
+        {
+            OnValueChanged();
+        }
+
         public event EventHandler IPDChanged;
         protected virtual void OnIPDChanged()
         {
@@ -163,5 +172,6 @@ namespace KLib.Unity.Controls.Signals
                 OnIPDChanged();
             }
         }
+
     }
 }
