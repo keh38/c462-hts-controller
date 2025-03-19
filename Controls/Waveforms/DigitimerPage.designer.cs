@@ -30,12 +30,22 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.rateNumeric = new KLib.Controls.KNumericBox();
+            this.modeDropDown = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.polarityDropDown = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.widthNumeric = new KLib.Controls.KNumericBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.recoveryNumeric = new KLib.Controls.KNumericBox();
+            this.dwellNumeric = new KLib.Controls.KNumericBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(21, 4);
+            this.label1.Location = new System.Drawing.Point(17, 58);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(76, 13);
             this.label1.TabIndex = 1;
@@ -50,16 +60,16 @@
             this.rateNumeric.FloatValue = 0F;
             this.rateNumeric.IntValue = 0;
             this.rateNumeric.IsInteger = false;
-            this.rateNumeric.Location = new System.Drawing.Point(99, 2);
+            this.rateNumeric.Location = new System.Drawing.Point(96, 54);
             this.rateNumeric.Margin = new System.Windows.Forms.Padding(3, 0, 0, 3);
             this.rateNumeric.MaxCoerce = false;
-            this.rateNumeric.MaximumSize = new System.Drawing.Size(15000, 16);
+            this.rateNumeric.MaximumSize = new System.Drawing.Size(20000, 20);
             this.rateNumeric.MaxValue = double.PositiveInfinity;
             this.rateNumeric.MinCoerce = false;
-            this.rateNumeric.MinimumSize = new System.Drawing.Size(8, 16);
+            this.rateNumeric.MinimumSize = new System.Drawing.Size(10, 20);
             this.rateNumeric.MinValue = 0D;
             this.rateNumeric.Name = "rateNumeric";
-            this.rateNumeric.Size = new System.Drawing.Size(75, 16);
+            this.rateNumeric.Size = new System.Drawing.Size(75, 20);
             this.rateNumeric.TabIndex = 0;
             this.rateNumeric.TextFormat = "K4";
             this.rateNumeric.ToolTip = "";
@@ -67,16 +77,176 @@
             this.rateNumeric.Value = 0D;
             this.rateNumeric.ValueChanged += new System.EventHandler(this.rateNumeric_ValueChanged);
             // 
+            // modeDropDown
+            // 
+            this.modeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.modeDropDown.FormattingEnabled = true;
+            this.modeDropDown.Items.AddRange(new object[] {
+            "Monophasic",
+            "Biphasic"});
+            this.modeDropDown.Location = new System.Drawing.Point(79, 3);
+            this.modeDropDown.Name = "modeDropDown";
+            this.modeDropDown.Size = new System.Drawing.Size(92, 21);
+            this.modeDropDown.TabIndex = 2;
+            this.modeDropDown.SelectedIndexChanged += new System.EventHandler(this.modeDropDown_SelectedIndexChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(42, 6);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(34, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Mode";
+            // 
+            // polarityDropDown
+            // 
+            this.polarityDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.polarityDropDown.FormattingEnabled = true;
+            this.polarityDropDown.Items.AddRange(new object[] {
+            "Positive",
+            "Negative",
+            "Alternating"});
+            this.polarityDropDown.Location = new System.Drawing.Point(79, 30);
+            this.polarityDropDown.Name = "polarityDropDown";
+            this.polarityDropDown.Size = new System.Drawing.Size(92, 21);
+            this.polarityDropDown.TabIndex = 4;
+            this.polarityDropDown.SelectedIndexChanged += new System.EventHandler(this.polarityDropDown_SelectedIndexChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(35, 33);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(41, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Polarity";
+            // 
+            // widthNumeric
+            // 
+            this.widthNumeric.AllowInf = false;
+            this.widthNumeric.AutoSize = true;
+            this.widthNumeric.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.widthNumeric.ClearOnDisable = false;
+            this.widthNumeric.FloatValue = 0F;
+            this.widthNumeric.IntValue = 0;
+            this.widthNumeric.IsInteger = true;
+            this.widthNumeric.Location = new System.Drawing.Point(96, 77);
+            this.widthNumeric.Margin = new System.Windows.Forms.Padding(3, 0, 0, 3);
+            this.widthNumeric.MaxCoerce = true;
+            this.widthNumeric.MaximumSize = new System.Drawing.Size(20000, 20);
+            this.widthNumeric.MaxValue = 2000D;
+            this.widthNumeric.MinCoerce = true;
+            this.widthNumeric.MinimumSize = new System.Drawing.Size(10, 20);
+            this.widthNumeric.MinValue = 50D;
+            this.widthNumeric.Name = "widthNumeric";
+            this.widthNumeric.Size = new System.Drawing.Size(75, 20);
+            this.widthNumeric.TabIndex = 6;
+            this.widthNumeric.TextFormat = "K4";
+            this.widthNumeric.ToolTip = "";
+            this.widthNumeric.Units = "";
+            this.widthNumeric.Value = 0D;
+            this.widthNumeric.ValueChanged += new System.EventHandler(this.widthNumeric_ValueChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(13, 80);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(81, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Pulse width (us)";
+            // 
+            // recoveryNumeric
+            // 
+            this.recoveryNumeric.AllowInf = false;
+            this.recoveryNumeric.AutoSize = true;
+            this.recoveryNumeric.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.recoveryNumeric.ClearOnDisable = false;
+            this.recoveryNumeric.FloatValue = 50F;
+            this.recoveryNumeric.IntValue = 50;
+            this.recoveryNumeric.IsInteger = true;
+            this.recoveryNumeric.Location = new System.Drawing.Point(96, 100);
+            this.recoveryNumeric.Margin = new System.Windows.Forms.Padding(3, 0, 0, 3);
+            this.recoveryNumeric.MaxCoerce = true;
+            this.recoveryNumeric.MaximumSize = new System.Drawing.Size(20000, 20);
+            this.recoveryNumeric.MaxValue = 100D;
+            this.recoveryNumeric.MinCoerce = true;
+            this.recoveryNumeric.MinimumSize = new System.Drawing.Size(10, 20);
+            this.recoveryNumeric.MinValue = 10D;
+            this.recoveryNumeric.Name = "recoveryNumeric";
+            this.recoveryNumeric.Size = new System.Drawing.Size(75, 20);
+            this.recoveryNumeric.TabIndex = 8;
+            this.recoveryNumeric.TextFormat = "K4";
+            this.recoveryNumeric.ToolTip = "";
+            this.recoveryNumeric.Units = "";
+            this.recoveryNumeric.Value = 50D;
+            this.recoveryNumeric.ValueChanged += new System.EventHandler(this.recoveryNumeric_ValueChanged);
+            // 
+            // dwellNumeric
+            // 
+            this.dwellNumeric.AllowInf = false;
+            this.dwellNumeric.AutoSize = true;
+            this.dwellNumeric.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.dwellNumeric.ClearOnDisable = false;
+            this.dwellNumeric.FloatValue = 50F;
+            this.dwellNumeric.IntValue = 50;
+            this.dwellNumeric.IsInteger = true;
+            this.dwellNumeric.Location = new System.Drawing.Point(96, 123);
+            this.dwellNumeric.Margin = new System.Windows.Forms.Padding(3, 0, 0, 3);
+            this.dwellNumeric.MaxCoerce = true;
+            this.dwellNumeric.MaximumSize = new System.Drawing.Size(20000, 20);
+            this.dwellNumeric.MaxValue = 990D;
+            this.dwellNumeric.MinCoerce = true;
+            this.dwellNumeric.MinimumSize = new System.Drawing.Size(10, 20);
+            this.dwellNumeric.MinValue = 1D;
+            this.dwellNumeric.Name = "dwellNumeric";
+            this.dwellNumeric.Size = new System.Drawing.Size(75, 20);
+            this.dwellNumeric.TabIndex = 9;
+            this.dwellNumeric.TextFormat = "K4";
+            this.dwellNumeric.ToolTip = "";
+            this.dwellNumeric.Units = "";
+            this.dwellNumeric.Value = 50D;
+            this.dwellNumeric.ValueChanged += new System.EventHandler(this.dwellNumeric_ValueChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(23, 103);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(70, 13);
+            this.label5.TabIndex = 10;
+            this.label5.Text = "Recovery (%)";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(41, 126);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(53, 13);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Dwell (us)";
+            // 
             // DigitimerPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.dwellNumeric);
+            this.Controls.Add(this.recoveryNumeric);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.widthNumeric);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.polarityDropDown);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.modeDropDown);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.rateNumeric);
             this.Name = "DigitimerPage";
-            this.Size = new System.Drawing.Size(174, 21);
+            this.Size = new System.Drawing.Size(174, 146);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -86,5 +256,15 @@
 
         private KLib.Controls.KNumericBox rateNumeric;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox modeDropDown;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox polarityDropDown;
+        private System.Windows.Forms.Label label3;
+        private KLib.Controls.KNumericBox widthNumeric;
+        private System.Windows.Forms.Label label4;
+        private KLib.Controls.KNumericBox recoveryNumeric;
+        private KLib.Controls.KNumericBox dwellNumeric;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }

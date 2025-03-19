@@ -35,7 +35,13 @@ namespace KLib.Unity.Controls.Signals
         private void Redisplay()
         {
             _ignoreEvents = true;
+            modeDropDown.SelectedIndex = (int) _digitimer.PulseMode;
+            polarityDropDown.SelectedIndex = (int)_digitimer.PulsePolarity;
             rateNumeric.Value = _digitimer.PulseRate_Hz;
+            widthNumeric.IntValue = (int) _digitimer.Width;
+            recoveryNumeric.IntValue = (int)_digitimer.Recovery;
+            dwellNumeric.IntValue = (int)_digitimer.Dwell;
+
             _ignoreEvents = false;
         }
 
@@ -48,5 +54,49 @@ namespace KLib.Unity.Controls.Signals
             }
         }
 
+        private void modeDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                _digitimer.PulseMode = (float)modeDropDown.SelectedIndex;
+                OnValueChanged();
+            }
+        }
+
+        private void polarityDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                _digitimer.PulsePolarity = (float)polarityDropDown.SelectedIndex;
+                OnValueChanged();
+            }
+        }
+
+        private void widthNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                _digitimer.Width = (float)widthNumeric.IntValue;
+                OnValueChanged();
+            }
+        }
+
+        private void recoveryNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                _digitimer.Recovery = (float)recoveryNumeric.IntValue;
+                OnValueChanged();
+            }
+        }
+
+        private void dwellNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                _digitimer.Dwell = (float)dwellNumeric.IntValue;
+                OnValueChanged();
+            }
+        }
     }
 }
