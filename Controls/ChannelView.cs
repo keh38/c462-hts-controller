@@ -268,7 +268,8 @@ namespace KLib.Unity.Controls.Signals
         {
             if (!_ignoreEvents)
             {
-                _chan.Location = locationDropDown.SelectedText;
+                _chan.Location = locationDropDown.Text;
+                OnValueChanged();
             }
         }
 

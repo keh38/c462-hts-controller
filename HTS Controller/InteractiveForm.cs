@@ -77,15 +77,16 @@ namespace HTSController
         private void InteractiveForm_Shown(object sender, EventArgs e)
         {
             var adapterMap = _network.SendMessageAndReceiveXml<AdapterMap>("GetAdapterMap");
-            adapterMap = AdapterMap.Default7point1Map();
-            adapterMap.AudioTransducer = "HD280";
+            //adapterMap = AdapterMap.Default7point1Map();
+            //adapterMap.AudioTransducer = "HD280";
+
+            channelView.AdapterMap = adapterMap;
 
             StartUDP();
 
             InitializeSettings();
 
             _settings.SigMan.AdapterMap = adapterMap;
-            channelView.AdapterMap = adapterMap;
             channelView.Value = _settings.SigMan.channels[0];
 
             controlGridView.SetDataForContext(_settings.SigMan.GetValidProperties());
