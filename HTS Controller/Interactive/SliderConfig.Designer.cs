@@ -33,14 +33,15 @@
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.sliderListBox = new System.Windows.Forms.ListBox();
             this.addButton = new System.Windows.Forms.Button();
+            this.removeButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // sliderPropertyDropDown
+            // propertyDropDown
             // 
             this.propertyDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.propertyDropDown.FormattingEnabled = true;
             this.propertyDropDown.Location = new System.Drawing.Point(10, 251);
-            this.propertyDropDown.Name = "sliderPropertyDropDown";
+            this.propertyDropDown.Name = "propertyDropDown";
             this.propertyDropDown.Size = new System.Drawing.Size(164, 21);
             this.propertyDropDown.Sorted = true;
             this.propertyDropDown.TabIndex = 14;
@@ -87,12 +88,23 @@
             this.addButton.UseVisualStyleBackColor = true;
             this.addButton.Click += new System.EventHandler(this.addButton_Click);
             // 
+            // removeButton
+            // 
+            this.removeButton.Location = new System.Drawing.Point(74, 159);
+            this.removeButton.Name = "removeButton";
+            this.removeButton.Size = new System.Drawing.Size(58, 24);
+            this.removeButton.TabIndex = 17;
+            this.removeButton.Text = "Remove";
+            this.removeButton.UseVisualStyleBackColor = true;
+            this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
+            // 
             // SliderConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.removeButton);
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.sliderListBox);
             this.Controls.Add(this.propertyDropDown);
@@ -111,5 +123,6 @@
         private System.Windows.Forms.PropertyGrid propertyGrid;
         private System.Windows.Forms.ListBox sliderListBox;
         private System.Windows.Forms.Button addButton;
+        private System.Windows.Forms.Button removeButton;
     }
 }

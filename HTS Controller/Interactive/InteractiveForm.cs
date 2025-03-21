@@ -92,9 +92,8 @@ namespace HTSController
             controlGridView.SetDataForContext(_settings.SigMan.GetValidProperties());
             controlGridView.Value = _settings.Controls;
 
-            sliderConfig.SetDataForContext(_settings.SigMan.GetValidProperties());
+            sliderConfig.SetDataForContext(_settings.SigMan.GetValidSweepables());
             sliderConfig.Value = _settings.Sliders;
-
 
             PlotSignals(_settings.SigMan);
             LayoutControls();
@@ -223,6 +222,7 @@ namespace HTSController
 
             _settings.SigMan.channels.Insert(e.index, ch);
             CurateControls();
+            CurateSweepables();
         }
 
         private void channelView_WaveformBecameValid(object sender, EventArgs e)
@@ -237,6 +237,7 @@ namespace HTSController
             {
                 PlotSignals(_settings.SigMan);
                 CurateControls();
+                CurateSweepables();
             }
         }
 
@@ -252,6 +253,7 @@ namespace HTSController
             }
 
             CurateControls();
+            CurateSweepables();
         }
 
         private void channelListBox_ItemRenamed(object sender, KUserListBox.ChangedItem e)
@@ -276,6 +278,7 @@ namespace HTSController
 
             }
             CurateControls();
+            CurateSweepables();
         }
 
         private void channelListBox_ItemsDeleted(object sender, KUserListBox.ChangedItems e)
@@ -288,6 +291,7 @@ namespace HTSController
                 if (ch != null) _settings.SigMan.channels.Remove(ch);
             }
             CurateControls();
+            CurateSweepables();
         }
 
         private void channelListBox_ItemsMoved(object sender, KUserListBox.ChangedItems e)
@@ -303,6 +307,7 @@ namespace HTSController
 
             _settings.SigMan.channels = tmp;
             CurateControls();
+            CurateSweepables();
         }
 
         private void channelListBox_SelectionChanged(object sender, KUserListBox.ChangedItem e)
@@ -433,6 +438,23 @@ namespace HTSController
 
             controlGridView.SetDataForContext(_settings.SigMan.GetValidProperties());
             controlGridView.Value = _settings.Controls;
+
+            LayoutControls();
+        }
+
+        private void CurateSweepables()
+        {
+            var valid = _settings.SigMan.GetValidSweepables();
+
+            var toDelete = new List<Turandot.Inputs.ParameterSliderProperties>();
+            foreach (var s in _settings.Sliders)
+            {
+                if (valid.Find(x => x.channelName.Equals(s.Channel) && x.properties.Contains(s.Property)) == null)
+                {
+                    toDelete.Add(s);
+                }
+            }
+            foreach (var c in toDelete) _settings.Sliders.Remove(c);
 
             LayoutControls();
         }
