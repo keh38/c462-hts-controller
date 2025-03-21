@@ -71,6 +71,7 @@ namespace KLib.Unity.Controls.Signals
         private void ShowChannel(Channel ch)
         {
             _ignoreEvents = true;
+            DrawingControl.SuspendDrawing(this);
 
             if (ch == null || ch.waveform==null)
             {
@@ -117,6 +118,7 @@ namespace KLib.Unity.Controls.Signals
                 waveformView.IPD = ch.binaural.IPD;
 
                 _ignoreEvents = false;
+                DrawingControl.ResumeDrawing(this);
             }
         }
 

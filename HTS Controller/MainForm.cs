@@ -205,7 +205,7 @@ namespace HTSController
         {
             connectionTimer.Stop();
 
-            _network.SendMessage("ChangeScene:Turandot Interactive");
+            //_network.SendMessage("ChangeScene:Turandot Interactive");
             HSTControllerSettings.SetLastUsed("Turandot Interactive", settingsPath);
             var dlg = new InteractiveForm(_network, settingsPath);
             dlg.ShowDialog();

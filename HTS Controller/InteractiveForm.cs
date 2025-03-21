@@ -47,6 +47,8 @@ namespace HTSController
 
         public string SettingsPath { get; private set; }
 
+        Turandot.Inputs.ParameterSliderProperties _psp = new Turandot.Inputs.ParameterSliderProperties();
+
         public InteractiveForm(HTSNetwork network, string settingsPath)
         {
             _network = network;
@@ -77,8 +79,8 @@ namespace HTSController
         private void InteractiveForm_Shown(object sender, EventArgs e)
         {
             var adapterMap = _network.SendMessageAndReceiveXml<AdapterMap>("GetAdapterMap");
-            //adapterMap = AdapterMap.Default7point1Map();
-            //adapterMap.AudioTransducer = "HD280";
+            adapterMap = AdapterMap.Default7point1Map();
+            adapterMap.AudioTransducer = "HD280";
 
             channelView.AdapterMap = adapterMap;
 
@@ -94,6 +96,8 @@ namespace HTSController
 
             PlotSignals(_settings.SigMan);
             LayoutControls();
+
+            propertyGrid1.SelectedObject = _psp;
         }
 
         private void StartUDP()
@@ -484,5 +488,6 @@ namespace HTSController
         {
             LayoutControls();
         }
+
     }
 }
