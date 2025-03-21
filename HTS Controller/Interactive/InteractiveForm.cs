@@ -47,8 +47,6 @@ namespace HTSController
 
         public string SettingsPath { get; private set; }
 
-        Turandot.Inputs.ParameterSliderProperties _psp = new Turandot.Inputs.ParameterSliderProperties();
-
         public InteractiveForm(HTSNetwork network, string settingsPath)
         {
             _network = network;
@@ -94,10 +92,12 @@ namespace HTSController
             controlGridView.SetDataForContext(_settings.SigMan.GetValidProperties());
             controlGridView.Value = _settings.Controls;
 
+            sliderConfig.SetDataForContext(_settings.SigMan.GetValidProperties());
+            sliderConfig.Value = _settings.Sliders;
+
+
             PlotSignals(_settings.SigMan);
             LayoutControls();
-
-            propertyGrid1.SelectedObject = _psp;
         }
 
         private void StartUDP()
