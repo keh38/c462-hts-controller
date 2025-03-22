@@ -76,10 +76,15 @@ namespace HTSController
 
         private void InteractiveForm_Shown(object sender, EventArgs e)
         {
-            var adapterMap = _network.SendMessageAndReceiveXml<AdapterMap>("GetAdapterMap");
-            adapterMap = AdapterMap.Default7point1Map();
-            adapterMap.AudioTransducer = "HD280";
-
+            AdapterMap adapterMap = null;
+            if (_network.IsConnected)
+            {
+                adapterMap = _network.SendMessageAndReceiveXml<AdapterMap>("GetAdapterMap");
+            }
+            else
+            {
+                adapterMap = AdapterMap.Default7point1Map("HD280");
+            }
             channelView.AdapterMap = adapterMap;
 
             StartUDP();
@@ -93,6 +98,7 @@ namespace HTSController
             controlGridView.Value = _settings.Controls;
 
             sliderConfig.SetDataForContext(_settings.SigMan.GetValidSweepables());
+            sliderConfig.ShowSliders = _settings.ShowSliders;
             sliderConfig.Value = _settings.Sliders;
 
             PlotSignals(_settings.SigMan);
