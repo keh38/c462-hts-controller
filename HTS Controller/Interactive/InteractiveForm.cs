@@ -33,10 +33,10 @@ namespace HTSController
         private CancellationTokenSource _queueCancellationToken;
 
         private Queue<byte[]> _packetQueue;
+        private UDPPacket _udpPacket = new UDPPacket();
         private Task _listenerTask;
 
         private int _udpPort = 63557;
-        private float[] amplitudes = null;
         private Color _ledOnColor = Color.FromArgb(0, 255, 0);
         private Color _ledOffColor = Color.FromArgb(0, 32, 0);
 
@@ -156,9 +156,7 @@ namespace HTSController
                     var byteArray = _packetQueue.Dequeue();
                     if (byteArray != null)
                     {
-                        var floatArray = new float[byteArray.Length / sizeof(float)];
-                        Buffer.BlockCopy(byteArray, 0, floatArray, 0, byteArray.Length);
-                        amplitudes = floatArray;
+                        _udpPacket.FromByteArray(byteArray);
                     }
                 }
             }
@@ -181,12 +179,10 @@ namespace HTSController
 
         private void displayTimer_Tick(object sender, EventArgs e)
         {
-            if (amplitudes == null) return;
-
             for (int k = 0; k < flowLayoutPanel.Controls.Count; k++)
             {
                 (flowLayoutPanel.Controls[k] as ChannelControl).LED.BackColor =
-                    (amplitudes[k] > 0) ? _ledOnColor : _ledOffColor;
+                    (_udpPacket.Amplitudes[k] > 0) ? _ledOnColor : _ledOffColor;
             }
         }
 
@@ -511,5 +507,9 @@ namespace HTSController
             LayoutControls();
         }
 
+        private void sliderConfig_ShowSlidersChanged(object sender, bool show)
+        {
+            _settings.ShowSliders = show;
+        }
     }
 }

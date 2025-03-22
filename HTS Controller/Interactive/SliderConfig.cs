@@ -30,9 +30,16 @@ namespace HTSController.Interactive
                 ShowValue();
             }
         }
+        public bool ShowSliders { set; get; }
 
         private List<Tuple<string, string>> _linearValidProperties = new List<Tuple<string, string>>();
         private bool _renameInProgress = false;
+
+        public event EventHandler<bool> ShowSlidersChanged;
+        private void OnShowSlidersChanged(bool value)
+        {
+            ShowSlidersChanged?.Invoke(this, value);
+        }
 
         public SliderConfig()
         {
@@ -62,6 +69,7 @@ namespace HTSController.Interactive
         {
             if (_value == null) return;
 
+            showCheckBox.Checked = ShowSliders;
             sliderListBox.Items.Clear();
             sliderListBox.Items.AddRange(_value.Select(x => x.FullParameterName).ToArray());
 
@@ -178,6 +186,15 @@ namespace HTSController.Interactive
                     _selectedSlider = null;
                     propertyGrid.SelectedObject = null;
                 }
+            }
+        }
+
+        private void showCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                ShowSliders = showCheckBox.Checked;
+                OnShowSlidersChanged(ShowSliders);
             }
         }
     }
