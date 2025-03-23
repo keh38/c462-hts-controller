@@ -63,10 +63,9 @@
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(612, 15);
-            this.startButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.startButton.Location = new System.Drawing.Point(459, 12);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(107, 32);
+            this.startButton.Size = new System.Drawing.Size(80, 26);
             this.startButton.TabIndex = 0;
             this.startButton.Text = "Start";
             this.startButton.UseVisualStyleBackColor = true;
@@ -74,10 +73,9 @@
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(612, 15);
-            this.stopButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.stopButton.Location = new System.Drawing.Point(459, 12);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(107, 32);
+            this.stopButton.Size = new System.Drawing.Size(80, 26);
             this.stopButton.TabIndex = 1;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
@@ -100,20 +98,19 @@
             this.audioErrorTextBox.BackColor = System.Drawing.SystemColors.Control;
             this.audioErrorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.audioErrorTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.audioErrorTextBox.Location = new System.Drawing.Point(27, 31);
-            this.audioErrorTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.audioErrorTextBox.Location = new System.Drawing.Point(20, 25);
             this.audioErrorTextBox.Multiline = true;
             this.audioErrorTextBox.Name = "audioErrorTextBox";
             this.audioErrorTextBox.ReadOnly = true;
-            this.audioErrorTextBox.Size = new System.Drawing.Size(510, 163);
+            this.audioErrorTextBox.Size = new System.Drawing.Size(383, 133);
             this.audioErrorTextBox.TabIndex = 8;
             // 
             // signalGraph
             // 
             this.signalGraph.BackColor = System.Drawing.SystemColors.Control;
             this.signalGraph.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.signalGraph.Location = new System.Drawing.Point(4, 4);
-            this.signalGraph.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.signalGraph.Location = new System.Drawing.Point(3, 3);
+            this.signalGraph.Margin = new System.Windows.Forms.Padding(4);
             this.signalGraph.Name = "signalGraph";
             this.signalGraph.ScrollGrace = 0D;
             this.signalGraph.ScrollMaxX = 0D;
@@ -122,17 +119,17 @@
             this.signalGraph.ScrollMinX = 0D;
             this.signalGraph.ScrollMinY = 0D;
             this.signalGraph.ScrollMinY2 = 0D;
-            this.signalGraph.Size = new System.Drawing.Size(560, 212);
+            this.signalGraph.Size = new System.Drawing.Size(418, 171);
             this.signalGraph.TabIndex = 10;
             // 
             // channelListBox
             // 
             this.channelListBox.DefaultName = "Signal";
-            this.channelListBox.Location = new System.Drawing.Point(8, 11);
-            this.channelListBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.channelListBox.Location = new System.Drawing.Point(6, 9);
+            this.channelListBox.Margin = new System.Windows.Forms.Padding(4);
             this.channelListBox.Name = "channelListBox";
             this.channelListBox.SelectedIndex = -1;
-            this.channelListBox.Size = new System.Drawing.Size(219, 181);
+            this.channelListBox.Size = new System.Drawing.Size(164, 147);
             this.channelListBox.TabIndex = 7;
             this.channelListBox.SelectionChanged += new System.EventHandler<KLib.Controls.KUserListBox.ChangedItem>(this.channelListBox_SelectionChanged);
             this.channelListBox.ItemAdded += new System.EventHandler<KLib.Controls.KUserListBox.ChangedItem>(this.channelListBox_ItemAdded);
@@ -147,11 +144,10 @@
             this.graphTabControl.Controls.Add(this.graphPage);
             this.graphTabControl.Controls.Add(this.errorPage);
             this.graphTabControl.ItemSize = new System.Drawing.Size(0, 1);
-            this.graphTabControl.Location = new System.Drawing.Point(16, 444);
-            this.graphTabControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphTabControl.Location = new System.Drawing.Point(12, 361);
             this.graphTabControl.Name = "graphTabControl";
             this.graphTabControl.SelectedIndex = 0;
-            this.graphTabControl.Size = new System.Drawing.Size(576, 229);
+            this.graphTabControl.Size = new System.Drawing.Size(432, 186);
             this.graphTabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.graphTabControl.TabIndex = 12;
             // 
@@ -160,10 +156,9 @@
             this.graphPage.BackColor = System.Drawing.SystemColors.Control;
             this.graphPage.Controls.Add(this.signalGraph);
             this.graphPage.Location = new System.Drawing.Point(4, 5);
-            this.graphPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.graphPage.Name = "graphPage";
-            this.graphPage.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.graphPage.Size = new System.Drawing.Size(568, 220);
+            this.graphPage.Padding = new System.Windows.Forms.Padding(3);
+            this.graphPage.Size = new System.Drawing.Size(424, 177);
             this.graphPage.TabIndex = 0;
             this.graphPage.Text = "tabPage1";
             // 
@@ -173,29 +168,26 @@
             this.errorPage.Controls.Add(this.label1);
             this.errorPage.Controls.Add(this.audioErrorTextBox);
             this.errorPage.Location = new System.Drawing.Point(4, 5);
-            this.errorPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.errorPage.Name = "errorPage";
-            this.errorPage.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.errorPage.Size = new System.Drawing.Size(568, 220);
+            this.errorPage.Padding = new System.Windows.Forms.Padding(3);
+            this.errorPage.Size = new System.Drawing.Size(424, 177);
             this.errorPage.TabIndex = 1;
             this.errorPage.Text = "tabPage2";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(23, 11);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(17, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(47, 17);
+            this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 9;
             this.label1.Text = "Errors";
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(796, 15);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.saveButton.Location = new System.Drawing.Point(597, 12);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(107, 32);
+            this.saveButton.Size = new System.Drawing.Size(80, 26);
             this.saveButton.TabIndex = 13;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -207,10 +199,10 @@
             this.channelView.AllowExpertOptions = false;
             this.channelView.AutoScroll = true;
             this.channelView.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.channelView.Location = new System.Drawing.Point(235, 11);
-            this.channelView.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.channelView.Location = new System.Drawing.Point(176, 9);
+            this.channelView.Margin = new System.Windows.Forms.Padding(4);
             this.channelView.Name = "channelView";
-            this.channelView.Size = new System.Drawing.Size(317, 357);
+            this.channelView.Size = new System.Drawing.Size(238, 290);
             this.channelView.TabIndex = 11;
             this.channelView.Value = null;
             this.channelView.WavFolder = null;
@@ -221,22 +213,20 @@
             this.tabControl.Controls.Add(this.stimulusPage);
             this.tabControl.Controls.Add(this.controlsPage);
             this.tabControl.Controls.Add(this.sliderPage);
-            this.tabControl.Location = new System.Drawing.Point(16, 15);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl.Location = new System.Drawing.Point(12, 12);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(576, 427);
+            this.tabControl.Size = new System.Drawing.Size(432, 347);
             this.tabControl.TabIndex = 15;
             // 
             // stimulusPage
             // 
             this.stimulusPage.Controls.Add(this.channelListBox);
             this.stimulusPage.Controls.Add(this.channelView);
-            this.stimulusPage.Location = new System.Drawing.Point(4, 25);
-            this.stimulusPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.stimulusPage.Location = new System.Drawing.Point(4, 22);
             this.stimulusPage.Name = "stimulusPage";
-            this.stimulusPage.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.stimulusPage.Size = new System.Drawing.Size(568, 398);
+            this.stimulusPage.Padding = new System.Windows.Forms.Padding(3);
+            this.stimulusPage.Size = new System.Drawing.Size(424, 321);
             this.stimulusPage.TabIndex = 0;
             this.stimulusPage.Text = "Stimulus";
             this.stimulusPage.UseVisualStyleBackColor = true;
@@ -245,21 +235,20 @@
             // 
             this.controlsPage.BackColor = System.Drawing.SystemColors.Control;
             this.controlsPage.Controls.Add(this.controlGridView);
-            this.controlsPage.Location = new System.Drawing.Point(4, 25);
-            this.controlsPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.controlsPage.Location = new System.Drawing.Point(4, 22);
             this.controlsPage.Name = "controlsPage";
-            this.controlsPage.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.controlsPage.Size = new System.Drawing.Size(568, 398);
+            this.controlsPage.Padding = new System.Windows.Forms.Padding(3);
+            this.controlsPage.Size = new System.Drawing.Size(424, 321);
             this.controlsPage.TabIndex = 1;
             this.controlsPage.Text = "My controls";
             // 
             // controlGridView
             // 
-            this.controlGridView.Location = new System.Drawing.Point(43, 21);
-            this.controlGridView.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.controlGridView.Location = new System.Drawing.Point(32, 17);
+            this.controlGridView.Margin = new System.Windows.Forms.Padding(4);
             this.controlGridView.MaxNumberRows = 0;
             this.controlGridView.Name = "controlGridView";
-            this.controlGridView.Size = new System.Drawing.Size(484, 330);
+            this.controlGridView.Size = new System.Drawing.Size(363, 268);
             this.controlGridView.TabIndex = 14;
             this.controlGridView.Value = null;
             this.controlGridView.ValueChanged += new System.EventHandler(this.controlGridView_ValueChanged);
@@ -267,11 +256,11 @@
             // sliderPage
             // 
             this.sliderPage.Controls.Add(this.sliderConfig);
-            this.sliderPage.Location = new System.Drawing.Point(4, 25);
-            this.sliderPage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.sliderPage.Location = new System.Drawing.Point(4, 22);
+            this.sliderPage.Margin = new System.Windows.Forms.Padding(2);
             this.sliderPage.Name = "sliderPage";
-            this.sliderPage.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.sliderPage.Size = new System.Drawing.Size(568, 398);
+            this.sliderPage.Padding = new System.Windows.Forms.Padding(2);
+            this.sliderPage.Size = new System.Drawing.Size(424, 321);
             this.sliderPage.TabIndex = 2;
             this.sliderPage.Text = "User controls";
             this.sliderPage.UseVisualStyleBackColor = true;
@@ -280,11 +269,11 @@
             // 
             this.sliderConfig.AutoSize = true;
             this.sliderConfig.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.sliderConfig.Location = new System.Drawing.Point(13, 6);
-            this.sliderConfig.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.sliderConfig.Location = new System.Drawing.Point(10, 5);
+            this.sliderConfig.Margin = new System.Windows.Forms.Padding(4);
             this.sliderConfig.Name = "sliderConfig";
             this.sliderConfig.ShowSliders = false;
-            this.sliderConfig.Size = new System.Drawing.Size(539, 352);
+            this.sliderConfig.Size = new System.Drawing.Size(404, 287);
             this.sliderConfig.TabIndex = 0;
             this.sliderConfig.Value = null;
             this.sliderConfig.ShowSlidersChanged += new System.EventHandler<bool>(this.sliderConfig_ShowSlidersChanged);
@@ -293,34 +282,32 @@
             // 
             this.flowLayoutPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.flowLayoutPanel.Controls.Add(this.channelControl);
-            this.flowLayoutPanel.Location = new System.Drawing.Point(612, 64);
-            this.flowLayoutPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flowLayoutPanel.Location = new System.Drawing.Point(459, 52);
             this.flowLayoutPanel.Name = "flowLayoutPanel";
-            this.flowLayoutPanel.Size = new System.Drawing.Size(290, 604);
+            this.flowLayoutPanel.Size = new System.Drawing.Size(218, 491);
             this.flowLayoutPanel.TabIndex = 4;
             // 
             // channelControl
             // 
             this.channelControl.AutoSize = true;
             this.channelControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.channelControl.Location = new System.Drawing.Point(5, 5);
-            this.channelControl.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.channelControl.Location = new System.Drawing.Point(4, 4);
+            this.channelControl.Margin = new System.Windows.Forms.Padding(4);
             this.channelControl.Name = "channelControl";
-            this.channelControl.Size = new System.Drawing.Size(204, 47);
+            this.channelControl.Size = new System.Drawing.Size(163, 38);
             this.channelControl.TabIndex = 3;
             // 
             // InteractiveForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(921, 687);
+            this.ClientSize = new System.Drawing.Size(691, 558);
             this.Controls.Add(this.flowLayoutPanel);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.graphTabControl);
             this.Controls.Add(this.stopButton);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "InteractiveForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Interactive";

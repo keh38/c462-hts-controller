@@ -45,6 +45,9 @@ namespace HTSController
         private bool _ignoreEvents = false;
         private bool _isLive = false;
 
+        private List<ChannelControl> _channelControls;
+        private List<Action<float>> _sliderActions;
+
         public string SettingsPath { get; private set; }
 
         public InteractiveForm(HTSNetwork network, string settingsPath)
@@ -189,6 +192,11 @@ namespace HTSController
             {
                 (flowLayoutPanel.Controls[k] as ChannelControl).LED.BackColor =
                     (_udpPacket.Amplitudes[k] > 0) ? _ledOnColor : _ledOffColor;
+            }
+
+            for (int k=0; k<_sliderActions.Count; k++)
+            {
+                _sliderActions[k]?.Invoke(_udpPacket.Values[k]);
             }
         }
 
@@ -397,7 +405,15 @@ namespace HTSController
 
         private void LayoutControls()
         {
+            LayoutMyControls();
+            InitializeSliders();
+        }
+
+        private void LayoutMyControls()
+        {
             InitializeControlValues();
+
+            _channelControls = new List<ChannelControl>();
 
             var chanNames = _settings.SigMan.channels.Select(x => x.Name).ToList();
             for (int k=0; k < chanNames.Count; k++)
@@ -409,11 +425,36 @@ namespace HTSController
                     c.ChannelActiveChanged = OnChannelActiveChanged;
                     flowLayoutPanel.Controls.Add(c);
                 }
-                (flowLayoutPanel.Controls[k] as ChannelControl).LayoutControls(chanNames[k], controls, OnPropertyValueChanged);
+                _channelControls.Add(flowLayoutPanel.Controls[k] as ChannelControl);
+                _channelControls[k].LayoutControls(chanNames[k], controls, OnPropertyValueChanged);
             }
 
             int nremove = flowLayoutPanel.Controls.Count - chanNames.Count;
             for (int k = 0; k < nremove; k++) flowLayoutPanel.Controls.RemoveAt(chanNames.Count);
+        }
+
+        private void InitializeSliders()
+        {
+            _sliderActions = new List<Action<float>>();
+
+            foreach (var s in _settings.Sliders)
+            {
+                s.StartValue = _settings.SigMan.GetParameter(s.Channel, s.Property);
+                if (!_isLive && _network.IsConnected)
+                {
+                    _network.SendMessage($"SetProperty:{s.Channel}.{s.Property}={s.StartValue}");
+                }
+
+                var pc = _channelControls.Find(x => x.ChannelName.Equals(s.Channel))?.GetPropertyControl(s.Property);
+                if (pc != null)
+                {
+                    _sliderActions.Add(x => pc.SetValue(x));
+                }
+                else
+                {
+                    _sliderActions.Add(null);
+                }
+            }
         }
 
         private void InitializeControlValues()
@@ -471,7 +512,8 @@ namespace HTSController
 
         private void OnPropertyValueChanged(string channel, string property, float value)
         {
-            if (_isLive)
+            Debug.WriteLine($"{channel}.{property} = {value}");
+            if (_isLive || (_network.IsConnected && _settings.ShowSliders))
             {
                 _network.SendMessage($"SetProperty:{channel}.{property}={value}");
             }
@@ -515,7 +557,17 @@ namespace HTSController
 
         private void sliderConfig_ShowSlidersChanged(object sender, bool show)
         {
+            if (_ignoreEvents) return;
+
             _settings.ShowSliders = show;
+            if (_isLive)
+            {
+                _network.SendMessage($"ShowSliders:{show.ToString()}");
+            }
+            else if (_network.IsConnected)
+            {
+                _network.SendMessage($"SetParams:{KFile.ToXMLString(_settings)}");
+            }
         }
     }
 }

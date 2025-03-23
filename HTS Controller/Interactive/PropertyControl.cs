@@ -16,6 +16,7 @@ namespace HTSController
     public partial class PropertyControl : KUserControl
     {
         private InteractiveControl _control;
+        public string PropertyName { get; private set; }
 
         public delegate void PropertyValueChangedDelegate(string channel, string property, float value);
         public PropertyValueChangedDelegate PropertyValueChanged;
@@ -28,11 +29,18 @@ namespace HTSController
         {
             InitializeComponent();
         }
+       
+        public void SetValue(float value)
+        {
+            propertyNumeric.FloatValue = value;
+            propertyNumeric_ValueChanged(null, null);
+        }
 
         public void LayoutControl(InteractiveControl control)
         {
             if (_control==null || !control.channel.Equals(_control.channel) || !control.property.Equals(_control.property))
             {
+                PropertyName = control.property;
                 _control = control;
                 propertyLabel.Text = _control.property;
                 propertyNumeric.Value = _control.value;

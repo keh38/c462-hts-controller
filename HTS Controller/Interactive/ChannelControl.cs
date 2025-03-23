@@ -15,12 +15,14 @@ namespace HTSController
 {
     public partial class ChannelControl : KUserControl
     {
-        private string _channelName;
+        public string ChannelName { get; private set; }
 
         public delegate void ChannelActiveChangedDelegate(string channel, bool active);
         public ChannelActiveChangedDelegate ChannelActiveChanged;
 
         public Panel LED => ledPanel;
+
+        private List<PropertyControl> _propertyControls;
 
         private void OnChannelActiveChanged(string channel, bool active)
         {
@@ -31,18 +33,27 @@ namespace HTSController
             InitializeComponent();
         }
 
+        public PropertyControl GetPropertyControl(string name)
+        {
+            return _propertyControls.Find(x => x.PropertyName.Equals(name));
+        }
+
         public void LayoutControls(string name, List<InteractiveControl> controls, PropertyControl.PropertyValueChangedDelegate callback)
         {
-            _channelName = name;
+            ChannelName = name;
             enableCheckBox.Text = name;
+
+            _propertyControls = new List<PropertyControl>();
 
             for (int k=0; k < controls.Count; k++)
             {
                 if (k >= flowLayoutPanel.Controls.Count - 1)
                 {
-                    flowLayoutPanel.Controls.Add(new PropertyControl() { PropertyValueChanged = callback });
+                    var pc = new PropertyControl() { PropertyValueChanged = callback };
+                    flowLayoutPanel.Controls.Add(pc);
+                    _propertyControls.Add(pc);
                 }
-                (flowLayoutPanel.Controls[k+1] as PropertyControl).LayoutControl(controls[k]);
+                _propertyControls[k].LayoutControl(controls[k]);
             }
 
             int nremove = flowLayoutPanel.Controls.Count - controls.Count - 1;
@@ -56,7 +67,7 @@ namespace HTSController
         {
             if (!_ignoreEvents)
             {
-                OnChannelActiveChanged(_channelName, enableCheckBox.Checked);
+                OnChannelActiveChanged(ChannelName, enableCheckBox.Checked);
             }
         }
     }
