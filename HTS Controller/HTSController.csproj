@@ -144,12 +144,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="HTSNetwork.cs" />
-    <Compile Include="Interactive\InteractiveControlGridView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Interactive\InteractiveControlGridView.designer.cs">
-      <DependentUpon>InteractiveControlGridView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Pages\TurandotPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -181,9 +175,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Interactive\InteractiveControlGridView.resx">
-      <DependentUpon>InteractiveControlGridView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\TurandotPage.resx">
       <DependentUpon>TurandotPage.cs</DependentUpon>

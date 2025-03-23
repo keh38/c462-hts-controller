@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using KLib.Controls;
-using Turandot.Interactive;
+using Turandot.Inputs;
 
 namespace HTSController
 {
@@ -17,17 +17,18 @@ namespace HTSController
     {
         public string ChannelName { get; private set; }
 
-        public delegate void ChannelActiveChangedDelegate(string channel, bool active);
-        public ChannelActiveChangedDelegate ChannelActiveChanged;
-
         public Panel LED => ledPanel;
 
         private List<PropertyControl> _propertyControls;
 
-        private void OnChannelActiveChanged(string channel, bool active)
+        public delegate void ChannelActiveChangedDelegate(string channel, bool active, bool selfChange);
+        public ChannelActiveChangedDelegate ChannelActiveChanged;
+
+        private void OnChannelActiveChanged(string channel, bool active, bool selfChange)
         {
-            ChannelActiveChanged?.Invoke(channel, active);
+            ChannelActiveChanged?.Invoke(channel, active, selfChange);
         }
+
         public ChannelControl()
         {
             InitializeComponent();
@@ -38,7 +39,14 @@ namespace HTSController
             return _propertyControls.Find(x => x.PropertyName.Equals(name));
         }
 
-        public void LayoutControls(string name, List<InteractiveControl> controls, PropertyControl.PropertyValueChangedDelegate callback)
+        public void SetActive(bool active)
+        {
+            _ignoreEvents = true;
+            enableCheckBox.Checked = active;
+            _ignoreEvents = false;
+        }
+
+        public void LayoutControls(string name, List<ParameterSliderProperties> controls, PropertyControl.PropertyValueChangedDelegate callback)
         {
             ChannelName = name;
             enableCheckBox.Text = name;
@@ -67,7 +75,7 @@ namespace HTSController
         {
             if (!_ignoreEvents)
             {
-                OnChannelActiveChanged(ChannelName, enableCheckBox.Checked);
+                OnChannelActiveChanged(ChannelName, enableCheckBox.Checked, selfChange: true);
             }
         }
     }

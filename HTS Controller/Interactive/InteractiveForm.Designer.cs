@@ -45,8 +45,6 @@
             this.channelView = new KLib.Unity.Controls.Signals.ChannelView();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.stimulusPage = new System.Windows.Forms.TabPage();
-            this.controlsPage = new System.Windows.Forms.TabPage();
-            this.controlGridView = new Turandot_Editor.InteractiveControlGridView();
             this.sliderPage = new System.Windows.Forms.TabPage();
             this.sliderConfig = new HTSController.Interactive.SliderConfig();
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -56,7 +54,6 @@
             this.errorPage.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.stimulusPage.SuspendLayout();
-            this.controlsPage.SuspendLayout();
             this.sliderPage.SuspendLayout();
             this.flowLayoutPanel.SuspendLayout();
             this.SuspendLayout();
@@ -211,7 +208,6 @@
             // tabControl
             // 
             this.tabControl.Controls.Add(this.stimulusPage);
-            this.tabControl.Controls.Add(this.controlsPage);
             this.tabControl.Controls.Add(this.sliderPage);
             this.tabControl.Location = new System.Drawing.Point(12, 12);
             this.tabControl.Name = "tabControl";
@@ -231,28 +227,6 @@
             this.stimulusPage.Text = "Stimulus";
             this.stimulusPage.UseVisualStyleBackColor = true;
             // 
-            // controlsPage
-            // 
-            this.controlsPage.BackColor = System.Drawing.SystemColors.Control;
-            this.controlsPage.Controls.Add(this.controlGridView);
-            this.controlsPage.Location = new System.Drawing.Point(4, 22);
-            this.controlsPage.Name = "controlsPage";
-            this.controlsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.controlsPage.Size = new System.Drawing.Size(424, 321);
-            this.controlsPage.TabIndex = 1;
-            this.controlsPage.Text = "My controls";
-            // 
-            // controlGridView
-            // 
-            this.controlGridView.Location = new System.Drawing.Point(32, 17);
-            this.controlGridView.Margin = new System.Windows.Forms.Padding(4);
-            this.controlGridView.MaxNumberRows = 0;
-            this.controlGridView.Name = "controlGridView";
-            this.controlGridView.Size = new System.Drawing.Size(363, 268);
-            this.controlGridView.TabIndex = 14;
-            this.controlGridView.Value = null;
-            this.controlGridView.ValueChanged += new System.EventHandler(this.controlGridView_ValueChanged);
-            // 
             // sliderPage
             // 
             this.sliderPage.Controls.Add(this.sliderConfig);
@@ -262,7 +236,7 @@
             this.sliderPage.Padding = new System.Windows.Forms.Padding(2);
             this.sliderPage.Size = new System.Drawing.Size(424, 321);
             this.sliderPage.TabIndex = 2;
-            this.sliderPage.Text = "User controls";
+            this.sliderPage.Text = "Controls";
             this.sliderPage.UseVisualStyleBackColor = true;
             // 
             // sliderConfig
@@ -319,7 +293,6 @@
             this.errorPage.PerformLayout();
             this.tabControl.ResumeLayout(false);
             this.stimulusPage.ResumeLayout(false);
-            this.controlsPage.ResumeLayout(false);
             this.sliderPage.ResumeLayout(false);
             this.sliderPage.PerformLayout();
             this.flowLayoutPanel.ResumeLayout(false);
@@ -343,10 +316,8 @@
         private System.Windows.Forms.TabPage errorPage;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button saveButton;
-        private Turandot_Editor.InteractiveControlGridView controlGridView;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage stimulusPage;
-        private System.Windows.Forms.TabPage controlsPage;
         private ChannelControl channelControl;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
         private System.Windows.Forms.TabPage sliderPage;

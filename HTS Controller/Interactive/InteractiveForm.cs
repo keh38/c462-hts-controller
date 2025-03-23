@@ -48,6 +48,9 @@ namespace HTSController
         private List<ChannelControl> _channelControls;
         private List<Action<float>> _sliderActions;
 
+        private int _packetsReceived = 0;
+        private int _lastPacketProcessed = 0;
+
         public string SettingsPath { get; private set; }
 
         public InteractiveForm(HTSNetwork network, string settingsPath)
@@ -73,6 +76,7 @@ namespace HTSController
 
         private void InteractiveForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Debug.WriteLine("cancelling tokens");
             _udpCancellationToken.Cancel();
             _queueCancellationToken.Cancel();
         }
@@ -96,9 +100,6 @@ namespace HTSController
 
             _settings.SigMan.AdapterMap = adapterMap;
             channelView.Value = _settings.SigMan.channels[0];
-
-            controlGridView.SetDataForContext(_settings.SigMan.GetValidProperties());
-            controlGridView.Value = _settings.Controls;
 
             sliderConfig.SetDataForContext(_settings.SigMan.GetValidSweepables());
             sliderConfig.ShowSliders = _settings.ShowSliders;
@@ -150,6 +151,7 @@ namespace HTSController
             }
 
             client.Close();
+            Debug.WriteLine("UDP listener stopped");
         }
 
         private void ProcessPacketQueue(CancellationToken ct)
@@ -166,6 +168,7 @@ namespace HTSController
                     if (byteArray != null)
                     {
                         _udpPacket.FromByteArray(byteArray);
+                        _packetsReceived++;
                     }
                 }
             }
@@ -188,15 +191,27 @@ namespace HTSController
 
         private void displayTimer_Tick(object sender, EventArgs e)
         {
+            if (_packetsReceived <= _lastPacketProcessed) return;
+
             for (int k = 0; k < flowLayoutPanel.Controls.Count; k++)
             {
                 (flowLayoutPanel.Controls[k] as ChannelControl).LED.BackColor =
                     (_udpPacket.Amplitudes[k] > 0) ? _ledOnColor : _ledOffColor;
             }
 
-            for (int k=0; k<_sliderActions.Count; k++)
+            if (_settings.ShowSliders)
             {
-                _sliderActions[k]?.Invoke(_udpPacket.Values[k]);
+                for (int k = 0; k < _sliderActions.Count; k++)
+                {
+                    _sliderActions[k]?.Invoke(_udpPacket.Values[k]);
+                }
+                for (int k=0; k < _channelControls.Count; k++)
+                {
+                    if (_udpPacket.Active[k] >= 0)
+                    {
+                        _channelControls[k].SetActive(_udpPacket.Active[k] > 0);
+                    }
+                }
             }
         }
 
@@ -232,7 +247,6 @@ namespace HTSController
 
             _settings.SigMan.channels.Insert(e.index, ch);
             CurateControls();
-            CurateSweepables();
         }
 
         private void channelView_WaveformBecameValid(object sender, EventArgs e)
@@ -247,7 +261,6 @@ namespace HTSController
             {
                 PlotSignals(_settings.SigMan);
                 CurateControls();
-                CurateSweepables();
             }
         }
 
@@ -263,32 +276,13 @@ namespace HTSController
             }
 
             CurateControls();
-            CurateSweepables();
         }
 
         private void channelListBox_ItemRenamed(object sender, KUserListBox.ChangedItem e)
         {
             if (_ignoreEvents || _settings.SigMan == null) return;
 
-            Channel ch = _settings.SigMan.channels[e.index];
-
-            if (ch != null)
-            {
-                string oldname = ch.Name;
-                ch.Name = e.name;
-                channelView.Value = ch;
-
-                foreach (var c in _settings.Controls)
-                {
-                    if (c.channel.Equals(oldname))
-                    {
-                        c.channel = e.name;
-                    }
-                }
-
-            }
             CurateControls();
-            CurateSweepables();
         }
 
         private void channelListBox_ItemsDeleted(object sender, KUserListBox.ChangedItems e)
@@ -301,7 +295,6 @@ namespace HTSController
                 if (ch != null) _settings.SigMan.channels.Remove(ch);
             }
             CurateControls();
-            CurateSweepables();
         }
 
         private void channelListBox_ItemsMoved(object sender, KUserListBox.ChangedItems e)
@@ -317,7 +310,6 @@ namespace HTSController
 
             _settings.SigMan.channels = tmp;
             CurateControls();
-            CurateSweepables();
         }
 
         private void channelListBox_SelectionChanged(object sender, KUserListBox.ChangedItem e)
@@ -405,20 +397,23 @@ namespace HTSController
 
         private void LayoutControls()
         {
+            displayTimer.Enabled = false;
+
             LayoutMyControls();
             InitializeSliders();
+            InitializeControlValues();
+
+            displayTimer.Enabled = true;
         }
 
         private void LayoutMyControls()
         {
-            InitializeControlValues();
-
             _channelControls = new List<ChannelControl>();
 
             var chanNames = _settings.SigMan.channels.Select(x => x.Name).ToList();
             for (int k=0; k < chanNames.Count; k++)
             {
-                var controls = _settings.Controls.FindAll(x => x.channel.Equals(chanNames[k]));
+                var controls = _settings.Sliders.FindAll(x => x.Channel.Equals(chanNames[k]));
                 if (k >= flowLayoutPanel.Controls.Count)
                 {
                     var c = new ChannelControl();
@@ -439,12 +434,6 @@ namespace HTSController
 
             foreach (var s in _settings.Sliders)
             {
-                s.StartValue = _settings.SigMan.GetParameter(s.Channel, s.Property);
-                if (!_isLive && _network.IsConnected)
-                {
-                    _network.SendMessage($"SetProperty:{s.Channel}.{s.Property}={s.StartValue}");
-                }
-
                 var pc = _channelControls.Find(x => x.ChannelName.Equals(s.Channel))?.GetPropertyControl(s.Property);
                 if (pc != null)
                 {
@@ -459,33 +448,15 @@ namespace HTSController
 
         private void InitializeControlValues()
         {
-            foreach (var c in _settings.Controls)
+            foreach (var s in _settings.Sliders)
             {
-                c.value = _settings.SigMan.GetParameter(c.channel, c.property);
+                _settings.SigMan.SetParameter(s.Channel, s.Property, s.StartValue);
             }
+            channelView.UpdateParameters();
+            PlotSignals(_settings.SigMan);
         }
 
         private void CurateControls()
-        {
-            var valid = _settings.SigMan.GetValidProperties();
-
-            var toDelete = new List<InteractiveControl>();
-            foreach (var c in _settings.Controls)
-            {
-                if (valid.Find(x => x.channelName.Equals(c.channel) && x.properties.Contains(c.property)) == null)
-                {
-                    toDelete.Add(c);
-                }
-            }
-            foreach (var c in toDelete) _settings.Controls.Remove(c);
-
-            controlGridView.SetDataForContext(_settings.SigMan.GetValidProperties());
-            controlGridView.Value = _settings.Controls;
-
-            LayoutControls();
-        }
-
-        private void CurateSweepables()
         {
             var valid = _settings.SigMan.GetValidSweepables();
 
@@ -502,24 +473,25 @@ namespace HTSController
             LayoutControls();
         }
 
-        private void OnChannelActiveChanged(string channel, bool enabled)
+        private void OnChannelActiveChanged(string channel, bool enabled, bool selfChange)
         {
-            if (_isLive)
+            if (selfChange && (_isLive || (_network.IsConnected && _settings.ShowSliders)))
             {
                 _network.SendMessage($"SetActive:{channel}={(enabled?1:0)}");
             }
+            _settings.SigMan[channel].SetActive(enabled);
         }
 
-        private void OnPropertyValueChanged(string channel, string property, float value)
+        private void OnPropertyValueChanged(string channel, string property, float value, bool selfChange)
         {
-            Debug.WriteLine($"{channel}.{property} = {value}");
-            if (_isLive || (_network.IsConnected && _settings.ShowSliders))
+            if (selfChange && (_isLive || (_network.IsConnected && _settings.ShowSliders)))
             {
                 _network.SendMessage($"SetProperty:{channel}.{property}={value}");
             }
 
             _settings.SigMan.SetParameter(channel, property, value);
             channelView.UpdateParameters();
+            _settings.Sliders.Find(x => x.Channel.Equals(channel) && x.Property.Equals(property)).StartValue = value;
             PlotSignals(_settings.SigMan);
         }
 
