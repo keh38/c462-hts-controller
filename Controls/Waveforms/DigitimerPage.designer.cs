@@ -40,6 +40,10 @@
             this.dwellNumeric = new KLib.Controls.KNumericBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.demandDropDown = new System.Windows.Forms.ComboBox();
+            this.demandLabel = new System.Windows.Forms.Label();
+            this.demandNumeric = new KLib.Controls.KNumericBox();
             this.SuspendLayout();
             // 
             // label1
@@ -128,8 +132,8 @@
             this.widthNumeric.AutoSize = true;
             this.widthNumeric.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.widthNumeric.ClearOnDisable = false;
-            this.widthNumeric.FloatValue = 0F;
-            this.widthNumeric.IntValue = 0;
+            this.widthNumeric.FloatValue = 50F;
+            this.widthNumeric.IntValue = 50;
             this.widthNumeric.IsInteger = true;
             this.widthNumeric.Location = new System.Drawing.Point(96, 77);
             this.widthNumeric.Margin = new System.Windows.Forms.Padding(3, 0, 0, 3);
@@ -145,7 +149,7 @@
             this.widthNumeric.TextFormat = "K4";
             this.widthNumeric.ToolTip = "";
             this.widthNumeric.Units = "";
-            this.widthNumeric.Value = 0D;
+            this.widthNumeric.Value = 50D;
             this.widthNumeric.ValueChanged += new System.EventHandler(this.widthNumeric_ValueChanged);
             // 
             // label4
@@ -227,12 +231,72 @@
             this.label6.TabIndex = 11;
             this.label6.Text = "Dwell (us)";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(35, 152);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(41, 13);
+            this.label7.TabIndex = 13;
+            this.label7.Text = "Source";
+            // 
+            // demandDropDown
+            // 
+            this.demandDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.demandDropDown.FormattingEnabled = true;
+            this.demandDropDown.Items.AddRange(new object[] {
+            "Internal",
+            "External"});
+            this.demandDropDown.Location = new System.Drawing.Point(79, 149);
+            this.demandDropDown.Name = "demandDropDown";
+            this.demandDropDown.Size = new System.Drawing.Size(92, 21);
+            this.demandDropDown.TabIndex = 12;
+            this.demandDropDown.SelectedIndexChanged += new System.EventHandler(this.demandDropDown_SelectedIndexChanged);
+            // 
+            // demandLabel
+            // 
+            this.demandLabel.AutoSize = true;
+            this.demandLabel.Location = new System.Drawing.Point(17, 179);
+            this.demandLabel.Name = "demandLabel";
+            this.demandLabel.Size = new System.Drawing.Size(71, 13);
+            this.demandLabel.TabIndex = 15;
+            this.demandLabel.Text = "Demand (mA)";
+            // 
+            // demandNumeric
+            // 
+            this.demandNumeric.AllowInf = false;
+            this.demandNumeric.AutoSize = true;
+            this.demandNumeric.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.demandNumeric.ClearOnDisable = false;
+            this.demandNumeric.FloatValue = 0F;
+            this.demandNumeric.IntValue = 0;
+            this.demandNumeric.IsInteger = false;
+            this.demandNumeric.Location = new System.Drawing.Point(96, 175);
+            this.demandNumeric.Margin = new System.Windows.Forms.Padding(3, 0, 0, 3);
+            this.demandNumeric.MaxCoerce = false;
+            this.demandNumeric.MaximumSize = new System.Drawing.Size(20000, 20);
+            this.demandNumeric.MaxValue = double.PositiveInfinity;
+            this.demandNumeric.MinCoerce = false;
+            this.demandNumeric.MinimumSize = new System.Drawing.Size(10, 20);
+            this.demandNumeric.MinValue = 0D;
+            this.demandNumeric.Name = "demandNumeric";
+            this.demandNumeric.Size = new System.Drawing.Size(75, 20);
+            this.demandNumeric.TabIndex = 14;
+            this.demandNumeric.TextFormat = "K4";
+            this.demandNumeric.ToolTip = "";
+            this.demandNumeric.Units = "";
+            this.demandNumeric.Value = 0D;
+            // 
             // DigitimerPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.demandLabel);
+            this.Controls.Add(this.demandNumeric);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.demandDropDown);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.dwellNumeric);
@@ -246,7 +310,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.rateNumeric);
             this.Name = "DigitimerPage";
-            this.Size = new System.Drawing.Size(174, 146);
+            this.Size = new System.Drawing.Size(174, 198);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -266,5 +330,9 @@
         private KLib.Controls.KNumericBox dwellNumeric;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox demandDropDown;
+        private System.Windows.Forms.Label demandLabel;
+        private KLib.Controls.KNumericBox demandNumeric;
     }
 }

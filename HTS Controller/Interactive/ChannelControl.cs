@@ -59,8 +59,8 @@ namespace HTSController
                 {
                     var pc = new PropertyControl() { PropertyValueChanged = callback };
                     flowLayoutPanel.Controls.Add(pc);
-                    _propertyControls.Add(pc);
                 }
+                _propertyControls.Add(flowLayoutPanel.Controls[k+1] as PropertyControl);
                 _propertyControls[k].LayoutControl(controls[k]);
             }
 

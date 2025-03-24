@@ -541,5 +541,12 @@ namespace HTSController
                 _network.SendMessage($"SetParams:{KFile.ToXMLString(_settings)}");
             }
         }
+
+        private void sliderConfig_ValueChanged(object sender, EventArgs e)
+        {
+            Debug.WriteLine("go fuck yourself");
+            var x = sliderConfig.Value;
+            CurateControls();
+        }
     }
 }

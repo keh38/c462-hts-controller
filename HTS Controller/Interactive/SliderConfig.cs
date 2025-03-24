@@ -114,6 +114,7 @@ namespace HTSController.Interactive
 
             _value.Add(newSlider);
             sliderListBox.SelectedItem = newSlider.FullParameterName;
+            OnValueChanged();
         }
 
         private void sliderListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -161,6 +162,7 @@ namespace HTSController.Interactive
                 sliderListBox.Items[index] = _selectedSlider.FullParameterName;
                 propertyGrid.SelectedObject = _selectedSlider;
                 _renameInProgress = false;
+                OnValueChanged();
             }
         }
 
@@ -186,6 +188,7 @@ namespace HTSController.Interactive
                     _selectedSlider = null;
                     propertyGrid.SelectedObject = null;
                 }
+                OnValueChanged();
             }
         }
 
@@ -197,5 +200,6 @@ namespace HTSController.Interactive
                 OnShowSlidersChanged(ShowSliders);
             }
         }
+
     }
 }

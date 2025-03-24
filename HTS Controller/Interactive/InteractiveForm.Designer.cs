@@ -251,6 +251,7 @@
             this.sliderConfig.TabIndex = 0;
             this.sliderConfig.Value = null;
             this.sliderConfig.ShowSlidersChanged += new System.EventHandler<bool>(this.sliderConfig_ShowSlidersChanged);
+            this.sliderConfig.ValueChanged += new System.EventHandler(this.sliderConfig_ValueChanged);
             // 
             // flowLayoutPanel
             // 

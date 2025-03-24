@@ -42,7 +42,7 @@ namespace HTSController
 
         public void LayoutControl(ParameterSliderProperties control)
         {
-            if (_control==null || !control.Channel.Equals(_control.Channel) || !control.Property.Equals(_control.Property))
+            if (_control==null || !control.Channel.Equals(_control.Channel) || !control.Property.Equals(PropertyName))
             {
                 PropertyName = control.Property;
                 _control = control;

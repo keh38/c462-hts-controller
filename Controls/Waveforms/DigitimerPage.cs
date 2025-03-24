@@ -98,5 +98,11 @@ namespace KLib.Unity.Controls.Signals
                 OnValueChanged();
             }
         }
+
+        private void demandDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            demandLabel.Visible = demandDropDown.SelectedText.Equals("Internal");
+            demandNumeric.Visible = demandLabel.Visible;
+        }
     }
 }

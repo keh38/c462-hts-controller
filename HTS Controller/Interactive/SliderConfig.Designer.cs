@@ -63,7 +63,7 @@
             // 
             this.propertyGrid.HelpVisible = false;
             this.propertyGrid.Location = new System.Drawing.Point(188, 2);
-            this.propertyGrid.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.propertyGrid.Margin = new System.Windows.Forms.Padding(2);
             this.propertyGrid.Name = "propertyGrid";
             this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
             this.propertyGrid.Size = new System.Drawing.Size(214, 283);
@@ -103,7 +103,7 @@
             // 
             this.showCheckBox.AutoSize = true;
             this.showCheckBox.Location = new System.Drawing.Point(10, 9);
-            this.showCheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.showCheckBox.Margin = new System.Windows.Forms.Padding(2);
             this.showCheckBox.Name = "showCheckBox";
             this.showCheckBox.Size = new System.Drawing.Size(134, 17);
             this.showCheckBox.TabIndex = 18;

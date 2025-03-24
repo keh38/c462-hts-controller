@@ -11,6 +11,7 @@ using System.Windows.Forms;
 
 using KLib.Controls;
 using KLib.Signals;
+using KLib.Signals.Waveforms;
 using KLib.Signals.Enumerations;
 
 namespace KLib.Unity.Controls.Signals
@@ -119,6 +120,10 @@ namespace KLib.Unity.Controls.Signals
 
                 _ignoreEvents = false;
                 DrawingControl.ResumeDrawing(this);
+            }
+            if (ch != null && ch.waveform.Shape == Waveshape.Digitimer)
+            {
+                levelView.Visible = (ch.waveform as Digitimer).Source == Digitimer.DemandSource.External;
             }
         }
 
