@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using Serilog;
 using SerilogTraceListener;
 
+using KLib;
 using KLib.Net;
 
 namespace HTSController
@@ -221,6 +222,14 @@ namespace HTSController
             }
 
             connectionTimer.Start();
+        }
+
+        private void turandotPageControl_TransferClick(object sender, string settingsPath)
+        {
+            if (_network.IsConnected)
+            {
+                _network.SendMessage($"TransferFile:Config Files:{Path.GetFileName(settingsPath)}:{File.ReadAllText(settingsPath)}");
+            }
         }
     }
 }

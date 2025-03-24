@@ -239,9 +239,10 @@
             this.turandotPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.turandotPageControl.Location = new System.Drawing.Point(6, 3);
             this.turandotPageControl.Name = "turandotPageControl";
-            this.turandotPageControl.Size = new System.Drawing.Size(313, 244);
+            this.turandotPageControl.Size = new System.Drawing.Size(357, 284);
             this.turandotPageControl.TabIndex = 0;
             this.turandotPageControl.InteractiveClick += new System.EventHandler<string>(this.turandotPageControl_InteractiveClick);
+            this.turandotPageControl.TransferClick += new System.EventHandler<string>(this.turandotPageControl_TransferClick);
             // 
             // messagePage
             // 

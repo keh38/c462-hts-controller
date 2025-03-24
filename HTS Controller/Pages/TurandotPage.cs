@@ -25,10 +25,13 @@ namespace HTSController.Pages
         public event EventHandler<string> InteractiveClick;
         protected virtual void OnInteractiveClick(string settingsPath)
         {
-            if (this.InteractiveClick != null)
-            {
-                InteractiveClick(this, settingsPath);
-            }
+            InteractiveClick?.Invoke(this, settingsPath);
+        }
+
+        public event EventHandler<string> TransferClick;
+        protected virtual void OnTransferClick(string settingsPath)
+        {
+            TransferClick?.Invoke(this, settingsPath);
         }
 
         public TurandotPage()
@@ -75,6 +78,17 @@ namespace HTSController.Pages
                     _interactiveSettings.Remove(fileToDelete);
                     interactiveSettingsListBox.Items.RemoveAt(interactiveSettingsListBox.SelectedIndex);
                 }
+            }
+        }
+
+        private void copyButton_Click(object sender, EventArgs e)
+        {
+            var settingsPath = interactiveSettingsListBox.SelectedIndex > -1 ? _interactiveSettings[interactiveSettingsListBox.SelectedIndex] : "";
+            if (!string.IsNullOrEmpty(settingsPath))
+            {
+                OnTransferClick(settingsPath);
+                messageLabel.Text = "Transfered file to tablet";
+                messageLabel.Visible = true;
             }
         }
     }
