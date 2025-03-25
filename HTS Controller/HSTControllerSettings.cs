@@ -7,7 +7,7 @@ using KLib;
 
 namespace HTSController
 {
-    public class HSTControllerSettings
+    public class HTSControllerSettings
     {
         public class SerializeableDictionary
         {
@@ -37,8 +37,8 @@ namespace HTSController
         }
         public SerializeableDictionary lastUsed = new SerializeableDictionary();
 
-        private static HSTControllerSettings _instance = null;
-        private static HSTControllerSettings instance
+        private static HTSControllerSettings _instance = null;
+        private static HTSControllerSettings instance
         {
             get
             {
@@ -46,11 +46,11 @@ namespace HTSController
                 {
                     if (File.Exists(FileLocations.StateFile))
                     {
-                        _instance = KFile.XmlDeserialize<HSTControllerSettings>(FileLocations.StateFile);
+                        _instance = KFile.XmlDeserialize<HTSControllerSettings>(FileLocations.StateFile);
                     }
                     else
                     {
-                        _instance = new HSTControllerSettings();
+                        _instance = new HTSControllerSettings();
                     }
                 }
                 return _instance;

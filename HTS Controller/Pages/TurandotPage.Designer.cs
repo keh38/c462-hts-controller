@@ -39,11 +39,9 @@
             // listBox
             // 
             this.listBox.FormattingEnabled = true;
-            this.listBox.ItemHeight = 16;
-            this.listBox.Location = new System.Drawing.Point(19, 42);
-            this.listBox.Margin = new System.Windows.Forms.Padding(4);
+            this.listBox.Location = new System.Drawing.Point(14, 34);
             this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(191, 116);
+            this.listBox.Size = new System.Drawing.Size(144, 95);
             this.listBox.TabIndex = 3;
             this.listBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.interactiveSettingsListBox_KeyUp);
             // 
@@ -51,23 +49,21 @@
             // 
             this.startButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
             this.startButton.ForeColor = System.Drawing.Color.White;
-            this.startButton.Location = new System.Drawing.Point(19, 168);
-            this.startButton.Margin = new System.Windows.Forms.Padding(4);
+            this.startButton.Location = new System.Drawing.Point(14, 136);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(192, 44);
+            this.startButton.Size = new System.Drawing.Size(144, 36);
             this.startButton.TabIndex = 2;
             this.startButton.Text = "Start";
             this.startButton.UseVisualStyleBackColor = false;
-            this.startButton.Click += new System.EventHandler(this.interactiveButton_Click);
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
             // copyButton
             // 
             this.copyButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
             this.copyButton.ForeColor = System.Drawing.Color.White;
-            this.copyButton.Location = new System.Drawing.Point(19, 220);
-            this.copyButton.Margin = new System.Windows.Forms.Padding(4);
+            this.copyButton.Location = new System.Drawing.Point(14, 179);
             this.copyButton.Name = "copyButton";
-            this.copyButton.Size = new System.Drawing.Size(192, 44);
+            this.copyButton.Size = new System.Drawing.Size(144, 36);
             this.copyButton.TabIndex = 5;
             this.copyButton.Text = "Transfer to tablet";
             this.copyButton.UseVisualStyleBackColor = false;
@@ -76,10 +72,9 @@
             // messageLabel
             // 
             this.messageLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.messageLabel.Location = new System.Drawing.Point(18, 337);
-            this.messageLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.messageLabel.Location = new System.Drawing.Point(14, 274);
             this.messageLabel.Name = "messageLabel";
-            this.messageLabel.Size = new System.Drawing.Size(393, 28);
+            this.messageLabel.Size = new System.Drawing.Size(295, 23);
             this.messageLabel.TabIndex = 6;
             this.messageLabel.Text = "message";
             this.messageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -92,9 +87,10 @@
             this.fileTypeDropDown.Items.AddRange(new object[] {
             "Interactive",
             "Turandot"});
-            this.fileTypeDropDown.Location = new System.Drawing.Point(18, 11);
+            this.fileTypeDropDown.Location = new System.Drawing.Point(14, 9);
+            this.fileTypeDropDown.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.fileTypeDropDown.Name = "fileTypeDropDown";
-            this.fileTypeDropDown.Size = new System.Drawing.Size(192, 24);
+            this.fileTypeDropDown.Size = new System.Drawing.Size(145, 21);
             this.fileTypeDropDown.TabIndex = 7;
             this.fileTypeDropDown.SelectedIndexChanged += new System.EventHandler(this.fileTypeDropDown_SelectedIndexChanged);
             // 
@@ -102,17 +98,17 @@
             // 
             this.editButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
             this.editButton.ForeColor = System.Drawing.Color.White;
-            this.editButton.Location = new System.Drawing.Point(19, 272);
-            this.editButton.Margin = new System.Windows.Forms.Padding(4);
+            this.editButton.Location = new System.Drawing.Point(14, 221);
             this.editButton.Name = "editButton";
-            this.editButton.Size = new System.Drawing.Size(192, 44);
+            this.editButton.Size = new System.Drawing.Size(144, 36);
             this.editButton.TabIndex = 8;
             this.editButton.Text = "Edit";
             this.editButton.UseVisualStyleBackColor = false;
+            this.editButton.Click += new System.EventHandler(this.editButton_Click);
             // 
             // TurandotPage
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.editButton);
@@ -121,9 +117,8 @@
             this.Controls.Add(this.copyButton);
             this.Controls.Add(this.listBox);
             this.Controls.Add(this.startButton);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TurandotPage";
-            this.Size = new System.Drawing.Size(443, 397);
+            this.Size = new System.Drawing.Size(332, 323);
             this.ResumeLayout(false);
 
         }

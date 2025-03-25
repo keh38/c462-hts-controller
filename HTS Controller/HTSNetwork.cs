@@ -23,12 +23,12 @@ namespace HTSController
 {
     public class HTSNetwork
     {
-        public delegate void RemoteMessageHandlerDelegate (string message);
-        public RemoteMessageHandlerDelegate RemoteMessageHandler { set; get; } = null;
+        public event EventHandler<string> RemoteMessageHandler;
+        private void OnRemoteMessage(string message) { RemoteMessageHandler?.Invoke(this, message); }
+
 
         private IPEndPoint _ipEndPoint;
         private string _serverAddress;
-        private int _serverPort = 4951;
         private bool _lastPingSucceeded = false;
 
         private CancellationTokenSource _serverCancellationToken;
@@ -142,17 +142,19 @@ namespace HTSController
 
         public void StartListener()
         {
+            var serverEndPoint = Discovery.FindNextAvailableEndPoint();
+
             _serverCancellationToken = new CancellationTokenSource();
             Task.Run(() =>
             {
-                Listener(_serverCancellationToken.Token);
+                Listener(serverEndPoint, _serverCancellationToken.Token);
             }, _serverCancellationToken.Token);
         }
 
-        private void Listener(CancellationToken ct)
+        private void Listener(IPEndPoint serverEndPoint, CancellationToken ct)
         {
             var server = new KTcpListener();
-            server.StartListener(_serverPort);
+            server.StartListener(serverEndPoint);
 
             _serverAddress = server.ListeningOn;
             if (_serverAddress.StartsWith("localhost"))
@@ -188,10 +190,7 @@ namespace HTSController
             server.SendAcknowledgement();
             server.CloseTcpClient();
 
-            if (RemoteMessageHandler != null)
-            {
-                RemoteMessageHandler.Invoke(input);
-            }
+            OnRemoteMessage(input);
         }
 
     }

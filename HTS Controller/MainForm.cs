@@ -25,6 +25,8 @@ namespace HTSController
     {
         HTSNetwork _network;
 
+        TurandotLiveForm _liveForm = null;
+
         List<Tuple<CheckBox, TabPage>> _menu;
         bool _ignoreEvents = false;
 
@@ -34,7 +36,7 @@ namespace HTSController
 
             _menu = new List<Tuple<CheckBox, TabPage>>();
             _menu.Add(new Tuple<CheckBox, TabPage>(subjectButton, subjectPage));
-            _menu.Add(new Tuple<CheckBox, TabPage>(turandotButton, turandotPage));
+            _menu.Add(new Tuple<CheckBox, TabPage>(turandotButton, turandotSettingsPage));
         }
 
         private async Task StartLogging()
@@ -58,7 +60,7 @@ namespace HTSController
         private void MainForm_Load(object sender, EventArgs e)
         {
             _network = new HTSNetwork();
-            _network.RemoteMessageHandler = HandleRemoteMessage;
+            _network.RemoteMessageHandler += OnRemoteMessage;
 
             subjectPageControl.Initialize(_network);
             turandotPageControl.Initialize(_network);
@@ -89,6 +91,7 @@ namespace HTSController
             {
                 try
                 {
+                    connectionTimer.Enabled = false;
                     var success = await ConnectToTablet();
                     if (success)
                     {
@@ -98,6 +101,7 @@ namespace HTSController
                     }
                 }
                 catch (Exception ex) { Debug.WriteLine(ex.Message); }
+                connectionTimer.Enabled = true;
             }
             else
             {
@@ -190,7 +194,7 @@ namespace HTSController
             subjectButton.Text = string.IsNullOrEmpty(subjectPageControl.Subject) ? "Subject" : subjectPageControl.Subject;
         }
 
-        private void HandleRemoteMessage(string fullMessage)
+        private void OnRemoteMessage(object sender, string fullMessage)
         {
             var parts = fullMessage.Split(':');
             string message = parts[0];
@@ -218,17 +222,42 @@ namespace HTSController
                 _network.SendMessage("ChangeScene:Turandot Interactive");
             }
 
-            HSTControllerSettings.SetLastUsed("Turandot Interactive", settingsPath);
             var dlg = new InteractiveForm(_network, settingsPath);
             dlg.ShowDialog();
 
-            if (!dlg.SettingsPath.Equals(settingsPath))
+            connectionTimer.Start();
+        }
+
+        private void turandotPageControl_StartTurandotClick(object sender, string settingsPath)
+        {
+            connectionTimer.Stop();
+
+            if (_network.IsConnected)
             {
-                HSTControllerSettings.SetLastUsed("Interactive", dlg.SettingsPath);
-                //turandotPageControl.FillListBox();
+                _network.SendMessage("ChangeScene:Turandot");
             }
 
-            connectionTimer.Start();
+            menuPanel.Enabled = false;
+
+            if (_liveForm == null)
+            {
+                _liveForm = new TurandotLiveForm(_network);
+                _liveForm.TopLevel = false;
+                _liveForm.ClosePage += OnTurandotRunPageClose;
+                 runTurandotPage.Controls.Add(_liveForm);
+                _liveForm.FormBorderStyle = FormBorderStyle.None;
+                _liveForm.Dock = DockStyle.Fill;
+                _liveForm.Show();
+            }
+            _liveForm.Initialize(settingsPath);
+
+            tabControl.SelectedTab = runTurandotPage;
+        }
+
+        private void OnTurandotRunPageClose(object sender, EventArgs e)
+        {
+            tabControl.SelectedTab = turandotSettingsPage;
+            menuPanel.Enabled = true;
         }
     }
 }
