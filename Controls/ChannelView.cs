@@ -119,12 +119,13 @@ namespace KLib.Unity.Controls.Signals
                 waveformView.IPD = ch.binaural.IPD;
 
                 _ignoreEvents = false;
-                DrawingControl.ResumeDrawing(this);
             }
             if (ch != null && ch.waveform.Shape == Waveshape.Digitimer)
             {
                 levelView.Visible = (ch.waveform as Digitimer).Source == Digitimer.DemandSource.External;
             }
+
+            DrawingControl.ResumeDrawing(this);
         }
 
         private void ShowModalitySpecific()
