@@ -77,6 +77,9 @@ namespace HTSController
             Log.Information("Starting TCP listener");
             _network.StartListener();
 
+            connectionStatusLabel.Image = imageList.Images[0];
+            connectionStatusLabel.Text = "No tablet connection, retrying..."; // (double-click to retry)";
+
             connectionTimer.Start();
         }
 
@@ -91,6 +94,7 @@ namespace HTSController
                     {
                         connectionTimer.Interval = 5000;
                         subjectPageControl.Enabled = true;
+                        turandotPageControl.NetworkStatusChanged();
                     }
                 }
                 catch (Exception ex) { Debug.WriteLine(ex.Message); }
@@ -102,6 +106,9 @@ namespace HTSController
                 {
                     Log.Information("Tablet connection lost");
                     subjectPageControl.Enabled = false;
+                    turandotPageControl.NetworkStatusChanged();
+                    connectionStatusLabel.Image = imageList.Images[0];
+                    connectionStatusLabel.Text = "No tablet connection, retrying..."; // (double-click to retry)";
                     connectionTimer.Interval = 500;
                 }
             }
@@ -159,8 +166,8 @@ namespace HTSController
             }
             else
             {
-                connectionStatusLabel.Image = imageList.Images[0];
-                connectionStatusLabel.Text = "No tablet connection, retrying..."; // (double-click to retry)";
+                ////connectionStatusLabel.Image = imageList.Images[0];
+                //connectionStatusLabel.Text = "No tablet connection, retrying..."; // (double-click to retry)";
             }
             return success;
         }
@@ -217,19 +224,11 @@ namespace HTSController
 
             if (!dlg.SettingsPath.Equals(settingsPath))
             {
-                HSTControllerSettings.SetLastUsed("Turandot Interactive", dlg.SettingsPath);
-                turandotPageControl.FillInteractiveList();
+                HSTControllerSettings.SetLastUsed("Interactive", dlg.SettingsPath);
+                //turandotPageControl.FillListBox();
             }
 
             connectionTimer.Start();
-        }
-
-        private void turandotPageControl_TransferClick(object sender, string settingsPath)
-        {
-            if (_network.IsConnected)
-            {
-                _network.SendMessage($"TransferFile:Config Files:{Path.GetFileName(settingsPath)}:{File.ReadAllText(settingsPath)}");
-            }
         }
     }
 }

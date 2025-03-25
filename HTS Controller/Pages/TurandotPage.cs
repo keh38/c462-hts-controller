@@ -19,19 +19,13 @@ namespace HTSController.Pages
     public partial class TurandotPage : KUserControl
     {
         private HTSNetwork _network;
-        private List<string> _interactiveSettings;
+        private List<string> _settings;
 
         [Description("Occurs when Interactive button pressed")]
         public event EventHandler<string> InteractiveClick;
         protected virtual void OnInteractiveClick(string settingsPath)
         {
             InteractiveClick?.Invoke(this, settingsPath);
-        }
-
-        public event EventHandler<string> TransferClick;
-        protected virtual void OnTransferClick(string settingsPath)
-        {
-            TransferClick?.Invoke(this, settingsPath);
         }
 
         public TurandotPage()
@@ -42,27 +36,47 @@ namespace HTSController.Pages
         public void Initialize(HTSNetwork network)
         {
             _network = network;
-            FillInteractiveList();
+            var lastItem = HSTControllerSettings.GetLastUsed("TurandotPage");
+            if (string.IsNullOrEmpty(lastItem))
+            {
+                lastItem = "Turandot";
+            }
+            fileTypeDropDown.SelectedItem = lastItem;
         }
 
-        public void FillInteractiveList()
+        public void NetworkStatusChanged()
         {
-            _interactiveSettings = Directory.EnumerateFiles(FileLocations.ConfigFolder, "Interactive.*.xml").ToList();
+            EnableButtons();
+        }
 
-            interactiveSettingsListBox.Items.Clear();
-            foreach (var i in _interactiveSettings)
+        public void SetFileType(string fileType)
+        {
+            _settings = Directory.EnumerateFiles(FileLocations.ConfigFolder, $"{fileType}.*.xml").ToList();
+
+            listBox.Items.Clear();
+            foreach (var i in _settings)
             {
-                interactiveSettingsListBox.Items.Add(Path.GetFileNameWithoutExtension(i).Remove(0, ("Interactive.").Length));
+                listBox.Items.Add(Path.GetFileNameWithoutExtension(i).Remove(0, fileType.Length + 1));
             }
 
-            var last = HSTControllerSettings.GetLastUsed("Turandot Interactive");
-            var index = _interactiveSettings.IndexOf(last);
-            interactiveSettingsListBox.SelectedIndex = index;
+            var last = HSTControllerSettings.GetLastUsed(fileType);
+            var index = _settings.IndexOf(last);
+            listBox.SelectedIndex = index;
+
+            EnableButtons();
+        }
+
+        private void EnableButtons()
+        {
+            string fileType = fileTypeDropDown.SelectedItem.ToString();
+            startButton.Enabled = _network.IsConnected || fileType.Equals("Interactive");
+            copyButton.Enabled = _network.IsConnected;
+            editButton.Visible = fileType.Equals("Turandot");
         }
 
         private void interactiveButton_Click(object sender, EventArgs e)
         {
-            var settingsPath = interactiveSettingsListBox.SelectedIndex > -1 ?_interactiveSettings[interactiveSettingsListBox.SelectedIndex] : "";
+            var settingsPath = listBox.SelectedIndex > -1 ?_settings[listBox.SelectedIndex] : "";
             OnInteractiveClick(settingsPath);
         }
 
@@ -70,26 +84,34 @@ namespace HTSController.Pages
         {
             if (e.KeyCode == Keys.Delete)
             {
-                var result = System.Windows.Forms.MessageBox.Show($"Delete '{interactiveSettingsListBox.Text}'?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var result = System.Windows.Forms.MessageBox.Show($"Delete '{listBox.Text}'?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
-                    var fileToDelete = _interactiveSettings[interactiveSettingsListBox.SelectedIndex];
+                    var fileToDelete = _settings[listBox.SelectedIndex];
                     File.Delete(fileToDelete);
-                    _interactiveSettings.Remove(fileToDelete);
-                    interactiveSettingsListBox.Items.RemoveAt(interactiveSettingsListBox.SelectedIndex);
+                    _settings.Remove(fileToDelete);
+                    listBox.Items.RemoveAt(listBox.SelectedIndex);
                 }
             }
         }
 
         private void copyButton_Click(object sender, EventArgs e)
         {
-            var settingsPath = interactiveSettingsListBox.SelectedIndex > -1 ? _interactiveSettings[interactiveSettingsListBox.SelectedIndex] : "";
+            var settingsPath = listBox.SelectedIndex > -1 ? _settings[listBox.SelectedIndex] : "";
             if (!string.IsNullOrEmpty(settingsPath))
             {
-                OnTransferClick(settingsPath);
-                messageLabel.Text = "Transfered file to tablet";
-                messageLabel.Visible = true;
+                if (_network.IsConnected)
+                {
+                    _network.SendMessage($"TransferFile:Config Files:{Path.GetFileName(settingsPath)}:{File.ReadAllText(settingsPath)}");
+                    messageLabel.Text = "Transfered file to tablet";
+                    messageLabel.Visible = true;
+                }
             }
+        }
+
+        private void fileTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetFileType(fileTypeDropDown.SelectedItem.ToString());
         }
     }
 }

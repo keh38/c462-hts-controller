@@ -28,50 +28,46 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.interactiveSettingsListBox = new System.Windows.Forms.ListBox();
-            this.interactiveButton = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.listBox = new System.Windows.Forms.ListBox();
+            this.startButton = new System.Windows.Forms.Button();
             this.copyButton = new System.Windows.Forms.Button();
             this.messageLabel = new System.Windows.Forms.Label();
+            this.fileTypeDropDown = new System.Windows.Forms.ComboBox();
+            this.editButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // interactiveSettingsListBox
+            // listBox
             // 
-            this.interactiveSettingsListBox.FormattingEnabled = true;
-            this.interactiveSettingsListBox.Location = new System.Drawing.Point(14, 34);
-            this.interactiveSettingsListBox.Name = "interactiveSettingsListBox";
-            this.interactiveSettingsListBox.Size = new System.Drawing.Size(144, 82);
-            this.interactiveSettingsListBox.TabIndex = 3;
-            this.interactiveSettingsListBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.interactiveSettingsListBox_KeyUp);
+            this.listBox.FormattingEnabled = true;
+            this.listBox.ItemHeight = 16;
+            this.listBox.Location = new System.Drawing.Point(19, 42);
+            this.listBox.Margin = new System.Windows.Forms.Padding(4);
+            this.listBox.Name = "listBox";
+            this.listBox.Size = new System.Drawing.Size(191, 116);
+            this.listBox.TabIndex = 3;
+            this.listBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.interactiveSettingsListBox_KeyUp);
             // 
-            // interactiveButton
+            // startButton
             // 
-            this.interactiveButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
-            this.interactiveButton.ForeColor = System.Drawing.Color.White;
-            this.interactiveButton.Location = new System.Drawing.Point(14, 122);
-            this.interactiveButton.Name = "interactiveButton";
-            this.interactiveButton.Size = new System.Drawing.Size(144, 36);
-            this.interactiveButton.TabIndex = 2;
-            this.interactiveButton.Text = "Start";
-            this.interactiveButton.UseVisualStyleBackColor = false;
-            this.interactiveButton.Click += new System.EventHandler(this.interactiveButton_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(11, 18);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(92, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Interactive control";
+            this.startButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
+            this.startButton.ForeColor = System.Drawing.Color.White;
+            this.startButton.Location = new System.Drawing.Point(19, 168);
+            this.startButton.Margin = new System.Windows.Forms.Padding(4);
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(192, 44);
+            this.startButton.TabIndex = 2;
+            this.startButton.Text = "Start";
+            this.startButton.UseVisualStyleBackColor = false;
+            this.startButton.Click += new System.EventHandler(this.interactiveButton_Click);
             // 
             // copyButton
             // 
             this.copyButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
             this.copyButton.ForeColor = System.Drawing.Color.White;
-            this.copyButton.Location = new System.Drawing.Point(14, 164);
+            this.copyButton.Location = new System.Drawing.Point(19, 220);
+            this.copyButton.Margin = new System.Windows.Forms.Padding(4);
             this.copyButton.Name = "copyButton";
-            this.copyButton.Size = new System.Drawing.Size(144, 36);
+            this.copyButton.Size = new System.Drawing.Size(192, 44);
             this.copyButton.TabIndex = 5;
             this.copyButton.Text = "Transfer to tablet";
             this.copyButton.UseVisualStyleBackColor = false;
@@ -80,37 +76,65 @@
             // messageLabel
             // 
             this.messageLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.messageLabel.Location = new System.Drawing.Point(14, 226);
+            this.messageLabel.Location = new System.Drawing.Point(18, 337);
+            this.messageLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.messageLabel.Name = "messageLabel";
-            this.messageLabel.Size = new System.Drawing.Size(295, 23);
+            this.messageLabel.Size = new System.Drawing.Size(393, 28);
             this.messageLabel.TabIndex = 6;
             this.messageLabel.Text = "message";
             this.messageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.messageLabel.Visible = false;
             // 
+            // fileTypeDropDown
+            // 
+            this.fileTypeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.fileTypeDropDown.FormattingEnabled = true;
+            this.fileTypeDropDown.Items.AddRange(new object[] {
+            "Interactive",
+            "Turandot"});
+            this.fileTypeDropDown.Location = new System.Drawing.Point(18, 11);
+            this.fileTypeDropDown.Name = "fileTypeDropDown";
+            this.fileTypeDropDown.Size = new System.Drawing.Size(192, 24);
+            this.fileTypeDropDown.TabIndex = 7;
+            this.fileTypeDropDown.SelectedIndexChanged += new System.EventHandler(this.fileTypeDropDown_SelectedIndexChanged);
+            // 
+            // editButton
+            // 
+            this.editButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
+            this.editButton.ForeColor = System.Drawing.Color.White;
+            this.editButton.Location = new System.Drawing.Point(19, 272);
+            this.editButton.Margin = new System.Windows.Forms.Padding(4);
+            this.editButton.Name = "editButton";
+            this.editButton.Size = new System.Drawing.Size(192, 44);
+            this.editButton.TabIndex = 8;
+            this.editButton.Text = "Edit";
+            this.editButton.UseVisualStyleBackColor = false;
+            // 
             // TurandotPage
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.editButton);
+            this.Controls.Add(this.fileTypeDropDown);
             this.Controls.Add(this.messageLabel);
             this.Controls.Add(this.copyButton);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.interactiveSettingsListBox);
-            this.Controls.Add(this.interactiveButton);
+            this.Controls.Add(this.listBox);
+            this.Controls.Add(this.startButton);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TurandotPage";
-            this.Size = new System.Drawing.Size(332, 271);
+            this.Size = new System.Drawing.Size(443, 397);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.ListBox interactiveSettingsListBox;
-        private System.Windows.Forms.Button interactiveButton;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ListBox listBox;
+        private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.Button copyButton;
         private System.Windows.Forms.Label messageLabel;
+        private System.Windows.Forms.ComboBox fileTypeDropDown;
+        private System.Windows.Forms.Button editButton;
     }
 }
