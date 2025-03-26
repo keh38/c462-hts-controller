@@ -17,6 +17,9 @@ namespace HTSController.Data_Streams
     {
         private DataStream _stream;
 
+        public event EventHandler RecordSelectionChanged;
+        private void OnRecordSelectionChanged() { RecordSelectionChanged?.Invoke(this, null); }
+
         public DataStreamIndicator()
         {
             InitializeComponent();
@@ -27,27 +30,49 @@ namespace HTSController.Data_Streams
             _stream = stream;
             InitializeComponent();
 
+            _ignoreEvents = true;
+
             checkBox.Text = _stream.Name;
             checkBox.Checked = _stream.Record;
             statusLabel.Text = "";
             addressLabel.Text = "";
 
-            string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS");
+            pictureBox.Image = Image.FromFile(Path.Combine(DataStreamManager.ConfigFolder, stream.Icon));
 
-            pictureBox.Image = Image.FromFile(Path.Combine(folder, "tablet.png"));
+            _ignoreEvents = false;
         }
 
         public void ConnectionStatusUpdated()
         {
-            BackColor = StatusToColor(_stream.Status);
+            BackColor = _stream.IsPresent ? StatusToColor(_stream.Status) : Color.LightGray;
             statusLabel.Text = _stream.LastActivity.ToLongTimeString();
-            addressLabel.Text = _stream.IPEndPoint.ToString();
+            addressLabel.Text = _stream.IsPresent ? _stream.IPEndPoint.ToString() : "";
+
+            //checkBox.Enabled = _stream.Status == DataStream.StreamStatus.Idle;
         }
 
         private Color StatusToColor(DataStream.StreamStatus status)
         {
+            switch (status)
+            {
+                //case DataStream.StreamStatus.Idle:
+                //    return SystemColors.Control;
+                case DataStream.StreamStatus.Recording:
+                    return Color.LightGreen;
+                case DataStream.StreamStatus.Missed:
+                    return Color.Orange;
+                case DataStream.StreamStatus.Error:
+                    return Color.Red;
+            }
             return SystemColors.Control;
-            //return Color.LightGreen;
+        }
+
+        private void checkBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_ignoreEvents) return;
+
+            _stream.Record = checkBox.Checked;
+            OnRecordSelectionChanged();
         }
     }
 }

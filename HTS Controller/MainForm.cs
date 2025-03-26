@@ -125,6 +125,8 @@ namespace HTSController
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            _streamManager.Cleanup();
+
             if (!e.Cancel)
             {
                 _network.Disconnect();
@@ -215,7 +217,10 @@ namespace HTSController
 
         private void homeButton_Click(object sender, EventArgs e)
         {
-            _network.SendMessage("ChangeScene:Home");
+            if (_network.IsConnected)
+            {
+                _network.SendMessage("ChangeScene:Home");
+            }
         }
 
         private void turandotPageControl_InteractiveClick(object sender, string settingsPath)
@@ -246,7 +251,7 @@ namespace HTSController
 
             if (_liveForm == null)
             {
-                _liveForm = new TurandotLiveForm(_network);
+                _liveForm = new TurandotLiveForm(_network, _streamManager);
                 _liveForm.TopLevel = false;
                 _liveForm.ClosePage += OnTurandotRunPageClose;
                  runTurandotPage.Controls.Add(_liveForm);

@@ -10,7 +10,13 @@ namespace HTSController.Data_Streams
 { 
     public class DataStream
     {
-        public enum StreamStatus { OK, Missed, Error}
+        public enum StreamStatus
+        {
+            Missed = -1,
+            Idle = 0,
+            Recording = 1,
+            Error = 2
+        }
 
         public string Name { get; set; }
         public string MulticastName { get; set; }
@@ -18,10 +24,10 @@ namespace HTSController.Data_Streams
         public bool Record { get; set; }
 
         [XmlIgnore]
-        public bool IsPresent { get; set; }
+        public IPEndPoint IPEndPoint { get; set; } = null;
 
         [XmlIgnore]
-        public IPEndPoint IPEndPoint { get; set; }
+        public bool IsPresent { get { return IPEndPoint != null; } }
 
         [XmlIgnore]
         public DateTime LastActivity { get; set; }

@@ -32,6 +32,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.dataFileLabel = new System.Windows.Forms.Label();
             this.receivedMessageTextBox = new System.Windows.Forms.TextBox();
+            this.logTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // startButton
@@ -71,11 +72,22 @@
             this.receivedMessageTextBox.Size = new System.Drawing.Size(291, 20);
             this.receivedMessageTextBox.TabIndex = 5;
             // 
+            // logTextBox
+            // 
+            this.logTextBox.Location = new System.Drawing.Point(34, 169);
+            this.logTextBox.Multiline = true;
+            this.logTextBox.Name = "logTextBox";
+            this.logTextBox.ReadOnly = true;
+            this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logTextBox.Size = new System.Drawing.Size(268, 255);
+            this.logTextBox.TabIndex = 6;
+            // 
             // TurandotLiveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(930, 668);
+            this.Controls.Add(this.logTextBox);
             this.Controls.Add(this.receivedMessageTextBox);
             this.Controls.Add(this.dataFileLabel);
             this.Controls.Add(this.button1);
@@ -93,5 +105,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label dataFileLabel;
         private System.Windows.Forms.TextBox receivedMessageTextBox;
+        private System.Windows.Forms.TextBox logTextBox;
     }
 }
