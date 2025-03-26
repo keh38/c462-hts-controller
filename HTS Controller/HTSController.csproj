@@ -146,6 +146,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data Streams\DataStream.cs" />
+    <Compile Include="Data Streams\DataStreamManager.cs" />
+    <Compile Include="Data Streams\DataStreamIndicator.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Data Streams\DataStreamIndicator.Designer.cs">
+      <DependentUpon>DataStreamIndicator.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interactive\ChannelControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -199,6 +207,9 @@
     <Compile Include="TurandotLiveForm.Designer.cs">
       <DependentUpon>TurandotLiveForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Data Streams\DataStreamIndicator.resx">
+      <DependentUpon>DataStreamIndicator.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interactive\ChannelControl.resx">
       <DependentUpon>ChannelControl.cs</DependentUpon>
     </EmbeddedResource>

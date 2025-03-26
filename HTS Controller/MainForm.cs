@@ -19,12 +19,14 @@ using SerilogTraceListener;
 using KLib;
 using KLib.Net;
 
+using HTSController.Data_Streams;
+
 namespace HTSController
 {
     public partial class MainForm : Form
     {
         HTSNetwork _network;
-
+        DataStreamManager _streamManager;
         TurandotLiveForm _liveForm = null;
 
         List<Tuple<CheckBox, TabPage>> _menu;
@@ -81,6 +83,9 @@ namespace HTSController
 
             connectionStatusLabel.Image = imageList.Images[0];
             connectionStatusLabel.Text = "No tablet connection, retrying..."; // (double-click to retry)";
+
+            _streamManager = new DataStreamManager();
+            _streamManager.Initialize(_network, flowLayoutPanel1);
 
             connectionTimer.Start();
         }
