@@ -119,7 +119,7 @@ namespace HTSController.Data_Streams
             foreach (var s in streamsToStart)
             {
                 Debug.WriteLine($"{s.Name}: writing to {s.IPEndPoint}");
-                await KTcpClient.SendMessageAsync(s.IPEndPoint, $"Record:{filename}");
+                await KTcpClient.SendMessageAsync(s.IPEndPoint, $"Record:{Path.Combine(FileLocations.SubjectDataFolder, filename)}");
             }
 
             var startTime = DateTime.Now;
@@ -171,7 +171,7 @@ namespace HTSController.Data_Streams
             for (int k = 0; k < _numTrialsPerSync; k++)
             {
                 var rttHeader = $"RTT{k + 1}";
-                headerText += $"{rttHeader,-6}\t";
+                headerText += $"{rttHeader,-10}\t";
             }
 
             File.WriteAllText(_logPath, headerText + Environment.NewLine);
@@ -223,7 +223,7 @@ namespace HTSController.Data_Streams
 
             for (int k = 0; k < data.rtt.Length; k++)
             {
-                var rttEntry = $"{(data.valid ? data.rtt[k] : float.NaN),-6:0.000000}\t";
+                var rttEntry = $"{(data.valid ? data.rtt[k] : float.NaN),-10:0.000000}\t";
                 logEntry += rttEntry;
             }
 

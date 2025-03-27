@@ -116,6 +116,7 @@ namespace HTSController
                 startButton.Enabled = true;
                 startButton.Visible = true;
                 closeButton.Visible = true;
+                progressBar.Value = 0;
                 _streamManager.RestartStatusTimer();
             }));
 
