@@ -43,6 +43,8 @@ namespace HTSController.Data_Streams
         private int _syncInterval = 5000;
         private int _numTrialsPerSync = 4;
 
+        private bool _exiting = false;
+
         public DataStreamManager()
         {
             if (File.Exists(ConfigFile))
@@ -192,7 +194,7 @@ namespace HTSController.Data_Streams
             _syncTimer.Enabled = false;
             await SyncConnections();
             _syncTimer.Interval = _syncInterval;
-            _syncTimer.Enabled = true;
+            _syncTimer.Enabled = !_exiting;
         }
 
         public async Task SyncConnections()
@@ -272,7 +274,7 @@ namespace HTSController.Data_Streams
             _statusTimer.Enabled = false;
             await CheckConnections();
             _statusTimer.Interval = _statusTimerInterval;
-            _statusTimer.Enabled = true;
+            _statusTimer.Enabled = !_exiting;
         }
 
         public async Task CheckConnections()
