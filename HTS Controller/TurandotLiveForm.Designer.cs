@@ -29,15 +29,17 @@
         private void InitializeComponent()
         {
             this.startButton = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.dataFileLabel = new System.Windows.Forms.Label();
-            this.receivedMessageTextBox = new System.Windows.Forms.TextBox();
+            this.statusTextBox = new System.Windows.Forms.TextBox();
             this.logTextBox = new System.Windows.Forms.TextBox();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.closeButton = new System.Windows.Forms.Button();
+            this.stopButton = new System.Windows.Forms.Button();
+            this.dataFileTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(22, 64);
+            this.startButton.Location = new System.Drawing.Point(27, 15);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(80, 26);
             this.startButton.TabIndex = 1;
@@ -45,53 +47,74 @@
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
-            // button1
+            // statusTextBox
             // 
-            this.button1.Location = new System.Drawing.Point(611, 498);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(105, 20);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // dataFileLabel
-            // 
-            this.dataFileLabel.AutoSize = true;
-            this.dataFileLabel.Location = new System.Drawing.Point(28, 26);
-            this.dataFileLabel.Name = "dataFileLabel";
-            this.dataFileLabel.Size = new System.Drawing.Size(35, 13);
-            this.dataFileLabel.TabIndex = 4;
-            this.dataFileLabel.Text = "label1";
-            // 
-            // receivedMessageTextBox
-            // 
-            this.receivedMessageTextBox.Location = new System.Drawing.Point(22, 110);
-            this.receivedMessageTextBox.Name = "receivedMessageTextBox";
-            this.receivedMessageTextBox.ReadOnly = true;
-            this.receivedMessageTextBox.Size = new System.Drawing.Size(291, 20);
-            this.receivedMessageTextBox.TabIndex = 5;
+            this.statusTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.statusTextBox.Location = new System.Drawing.Point(27, 81);
+            this.statusTextBox.Name = "statusTextBox";
+            this.statusTextBox.ReadOnly = true;
+            this.statusTextBox.Size = new System.Drawing.Size(268, 20);
+            this.statusTextBox.TabIndex = 5;
             // 
             // logTextBox
             // 
-            this.logTextBox.Location = new System.Drawing.Point(34, 169);
+            this.logTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.logTextBox.Location = new System.Drawing.Point(27, 118);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
             this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTextBox.Size = new System.Drawing.Size(268, 255);
+            this.logTextBox.Size = new System.Drawing.Size(285, 255);
             this.logTextBox.TabIndex = 6;
+            // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(27, 389);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(268, 23);
+            this.progressBar.TabIndex = 7;
+            // 
+            // closeButton
+            // 
+            this.closeButton.Location = new System.Drawing.Point(215, 15);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(80, 26);
+            this.closeButton.TabIndex = 8;
+            this.closeButton.Text = "Close";
+            this.closeButton.UseVisualStyleBackColor = true;
+            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+            // 
+            // stopButton
+            // 
+            this.stopButton.Location = new System.Drawing.Point(27, 15);
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(80, 26);
+            this.stopButton.TabIndex = 9;
+            this.stopButton.Text = "Stop";
+            this.stopButton.UseVisualStyleBackColor = true;
+            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+            // 
+            // dataFileTextBox
+            // 
+            this.dataFileTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.dataFileTextBox.Location = new System.Drawing.Point(27, 55);
+            this.dataFileTextBox.Name = "dataFileTextBox";
+            this.dataFileTextBox.ReadOnly = true;
+            this.dataFileTextBox.Size = new System.Drawing.Size(268, 20);
+            this.dataFileTextBox.TabIndex = 10;
             // 
             // TurandotLiveForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(930, 668);
+            this.ClientSize = new System.Drawing.Size(328, 446);
+            this.Controls.Add(this.dataFileTextBox);
+            this.Controls.Add(this.closeButton);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.logTextBox);
-            this.Controls.Add(this.receivedMessageTextBox);
-            this.Controls.Add(this.dataFileLabel);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.statusTextBox);
             this.Controls.Add(this.startButton);
+            this.Controls.Add(this.stopButton);
             this.Name = "TurandotLiveForm";
             this.Text = "TurandotLiveForm";
             this.ResumeLayout(false);
@@ -102,9 +125,11 @@
         #endregion
 
         private System.Windows.Forms.Button startButton;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label dataFileLabel;
-        private System.Windows.Forms.TextBox receivedMessageTextBox;
+        private System.Windows.Forms.TextBox statusTextBox;
         private System.Windows.Forms.TextBox logTextBox;
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Button closeButton;
+        private System.Windows.Forms.Button stopButton;
+        private System.Windows.Forms.TextBox dataFileTextBox;
     }
 }

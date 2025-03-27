@@ -49,6 +49,7 @@ namespace HTSController.Pages
             var parts = subjectInfo.Split('/');
             Project = parts[0];
             Subject = parts[1];
+            FileLocations.SetSubject(Subject);
 
             var projects = _network.SendMessageAndReceiveJSON<List<string>>("GetProjectList");
 

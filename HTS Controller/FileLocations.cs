@@ -20,5 +20,14 @@ namespace HTSController
             }
         }
         public static string StateFile { get { return Path.Combine(RootFolder, "State.xml"); } }
+        public static string SubjectDataFolder { get; private set; }
+        public static void SetSubject(string id)
+        {
+            SubjectDataFolder = Path.Combine(@"C:\Data", id);
+            if (!Directory.Exists(SubjectDataFolder))
+            {
+                Directory.CreateDirectory(SubjectDataFolder);
+            }
+        }
     }
 }

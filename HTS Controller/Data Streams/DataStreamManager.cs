@@ -36,6 +36,11 @@ namespace HTSController.Data_Streams
             else
             {
                 CreateDefaultStreams();
+
+                if (!Directory.Exists(ConfigFolder))
+                {
+                    Directory.CreateDirectory(ConfigFolder);
+                }
                 KFile.XmlSerialize(_streams, ConfigFile);
             }
         }

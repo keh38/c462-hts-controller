@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -57,14 +58,19 @@ namespace HTSController
             logTextBox.Text = "Starting run...";
 
             startButton.Enabled = false;
+            closeButton.Visible = false;
+
+            dataFileTextBox.Text = "";
+            progressBar.Value = 0;
             await Task.Run(() => InitializeTurandot());
 
-            dataFileLabel.Text = _dataFile;
+            dataFileTextBox.Text = _dataFile;
             if (!string.IsNullOrEmpty(_dataFile))
             {
                 var started = await _streamManager.StartRecording(_dataFile);
                 if (started)
                 {
+                    startButton.Visible = false;
                     logTextBox.AppendText("OK" + Environment.NewLine);
                     _network.SendMessage("Begin");
                 }
@@ -72,7 +78,14 @@ namespace HTSController
                 {
                     logTextBox.AppendText("failed" + Environment.NewLine);
                     startButton.Enabled = true;
+                    closeButton.Visible = true;
                 }
+            }
+            else
+            {
+                logTextBox.AppendText("didn't receive data file name from Turandot");
+                closeButton.Visible = true;
+                startButton.Enabled = true;
             }
         }
 
@@ -102,46 +115,65 @@ namespace HTSController
         {
             _network.SendMessage($"StopSynchronizing");
             await _streamManager.StopRecording();
+            _network.SendMessage("SendSyncLog");
 
             Invoke(new Action(() =>
             {
                 startButton.Enabled = true;
                 startButton.Visible = true;
+                closeButton.Visible = true;
                 _streamManager.RestartStatusTimer();
             }));
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            _network.SendMessage("Begin");
-        }
-
         private void OnRemoteMessage(object sender, string message)
         {
-            var parts = message.Split(new char[] { ':' }, 3);
-            if (parts.Length != 3) return;
+            var parts = message.Split(new char[] { ':' }, 4);
+            if (parts.Length < 2) return;
 
             string target = parts[0];
             if (!target.Equals("Turandot")) return;
 
             string command = parts[1];
-            string data = parts[2];
-
-            Invoke(new Action(() =>
-            {
-                receivedMessageTextBox.Text = $"{command}:{data}";
-            }));
+            string info = (parts.Length > 2) ? parts[2] : "";
+            string data = (parts.Length > 3) ? parts[3] : "";
 
             switch (command)
             {
                 case "File":
-                    _dataFile = data;
+                    _dataFile = info;
+                    break;
+                case "Trial":
+                    Invoke(new Action(() => logTextBox.Text = info));
+                    break;
+                case "Progress":
+                    int.TryParse(info, out int progress);
+                    Invoke(new Action(() => progressBar.Value = progress));
+                    break;
+                case "State":
+                    Invoke(new Action(() => statusTextBox.Text = info));
+                    break;
+                case "ReceiveData":
+                    Debug.WriteLine(info);
+                    string filePath = Path.Combine(FileLocations.SubjectDataFolder, info);
+                    Debug.WriteLine(filePath);
+                    File.WriteAllText(filePath, data);
                     break;
                 case "Finished":
                     EndRun();
                     break;
             }
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            OnClosePage();
+        }
+
+        private void stopButton_Click(object sender, EventArgs e)
+        {
+            _network.SendMessage("Abort");
         }
     }
 }
