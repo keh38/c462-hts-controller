@@ -202,10 +202,13 @@ namespace HTSController.Data_Streams
                 var status = await KTcpClient.SendMessageReceiveIntAsync(s.IPEndPoint, "Status");
                 s.Status = (DataStream.StreamStatus)status;
 
-                var data = await SynchronizeClocks(s);
-                AddLogEntry(s.Name, data);
+                if (s.Status != DataStream.StreamStatus.Idle)
+                {
+                    var data = await SynchronizeClocks(s);
+                    AddLogEntry(s.Name, data);
 
-                s.LastActivity = DateTime.Now;
+                    s.LastActivity = DateTime.Now;
+                }
             }
 
             foreach (var i in _indicators)
