@@ -47,12 +47,6 @@ namespace HTSController
             _network.RemoteMessageHandler += OnRemoteMessage;
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            _network.RemoteMessageHandler -= OnRemoteMessage;
-            OnClosePage();
-        }
-
         private async void startButton_Click(object sender, EventArgs e)
         {
             logTextBox.Text = "Starting run...";
@@ -168,6 +162,7 @@ namespace HTSController
 
         private void closeButton_Click(object sender, EventArgs e)
         {
+            _network.RemoteMessageHandler -= OnRemoteMessage;
             OnClosePage();
         }
 

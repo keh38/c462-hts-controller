@@ -39,9 +39,10 @@
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(27, 15);
+            this.startButton.Location = new System.Drawing.Point(36, 18);
+            this.startButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(80, 26);
+            this.startButton.Size = new System.Drawing.Size(107, 32);
             this.startButton.TabIndex = 1;
             this.startButton.Text = "Start";
             this.startButton.UseVisualStyleBackColor = true;
@@ -50,35 +51,38 @@
             // statusTextBox
             // 
             this.statusTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statusTextBox.Location = new System.Drawing.Point(27, 81);
+            this.statusTextBox.Location = new System.Drawing.Point(36, 100);
+            this.statusTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.statusTextBox.Name = "statusTextBox";
             this.statusTextBox.ReadOnly = true;
-            this.statusTextBox.Size = new System.Drawing.Size(268, 20);
+            this.statusTextBox.Size = new System.Drawing.Size(357, 22);
             this.statusTextBox.TabIndex = 5;
             // 
             // logTextBox
             // 
             this.logTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.logTextBox.Location = new System.Drawing.Point(27, 118);
+            this.logTextBox.Location = new System.Drawing.Point(36, 145);
+            this.logTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
-            this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTextBox.Size = new System.Drawing.Size(285, 255);
+            this.logTextBox.Size = new System.Drawing.Size(358, 173);
             this.logTextBox.TabIndex = 6;
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(27, 389);
+            this.progressBar.Location = new System.Drawing.Point(36, 337);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(268, 23);
+            this.progressBar.Size = new System.Drawing.Size(358, 19);
             this.progressBar.TabIndex = 7;
             // 
             // closeButton
             // 
-            this.closeButton.Location = new System.Drawing.Point(215, 15);
+            this.closeButton.Location = new System.Drawing.Point(287, 18);
+            this.closeButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(80, 26);
+            this.closeButton.Size = new System.Drawing.Size(107, 32);
             this.closeButton.TabIndex = 8;
             this.closeButton.Text = "Close";
             this.closeButton.UseVisualStyleBackColor = true;
@@ -86,9 +90,10 @@
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(27, 15);
+            this.stopButton.Location = new System.Drawing.Point(36, 18);
+            this.stopButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(80, 26);
+            this.stopButton.Size = new System.Drawing.Size(107, 32);
             this.stopButton.TabIndex = 9;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
@@ -97,17 +102,18 @@
             // dataFileTextBox
             // 
             this.dataFileTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dataFileTextBox.Location = new System.Drawing.Point(27, 55);
+            this.dataFileTextBox.Location = new System.Drawing.Point(36, 68);
+            this.dataFileTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dataFileTextBox.Name = "dataFileTextBox";
             this.dataFileTextBox.ReadOnly = true;
-            this.dataFileTextBox.Size = new System.Drawing.Size(268, 20);
+            this.dataFileTextBox.Size = new System.Drawing.Size(357, 22);
             this.dataFileTextBox.TabIndex = 10;
             // 
             // TurandotLiveForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 446);
+            this.ClientSize = new System.Drawing.Size(437, 383);
             this.Controls.Add(this.dataFileTextBox);
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.progressBar);
@@ -115,6 +121,7 @@
             this.Controls.Add(this.statusTextBox);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.stopButton);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "TurandotLiveForm";
             this.Text = "TurandotLiveForm";
             this.ResumeLayout(false);

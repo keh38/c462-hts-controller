@@ -16,6 +16,18 @@ namespace HTSController.Data_Streams
 {
     public class DataStreamManager
     {
+        internal class SyncData
+        {
+            public bool valid = false;
+            public long localTime = -1;
+            public long streamTime = -1;
+            public double[] rtt;
+
+            public SyncData() { }
+            public SyncData(int numRTT) { rtt = new double[numRTT]; }
+
+        }
+
         public static readonly string ConfigFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS", "Streams");
         private static readonly string ConfigFile = Path.Combine(ConfigFolder, "DataStreams.xml");
         private List<DataStream> _streams;
@@ -25,7 +37,11 @@ namespace HTSController.Data_Streams
         private System.Windows.Forms.Timer _statusTimer;
         private System.Windows.Forms.Timer _syncTimer;
 
+        private string _logPath;
+
         private int _statusTimerInterval = 5000;
+        private int _syncInterval = 5000;
+        private int _numTrialsPerSync = 4;
 
         public DataStreamManager()
         {
@@ -97,6 +113,8 @@ namespace HTSController.Data_Streams
         {
             _statusTimer.Stop();
 
+            InitializeSyncLogFile(filename);
+
             var streamsToStart = _streams.FindAll(x => x.Record && x.IsPresent);
             foreach (var s in streamsToStart)
             {
@@ -126,7 +144,7 @@ namespace HTSController.Data_Streams
 
             if (success)
             {
-                await SyncConnections();
+                _syncTimer.Interval = 500;
                 _syncTimer.Start();
             }
             else
@@ -139,6 +157,24 @@ namespace HTSController.Data_Streams
             }
 
             return success;
+        }
+
+        private void InitializeSyncLogFile(string logPath)
+        {
+                _logPath = Path.Combine(FileLocations.SubjectDataFolder, logPath.Replace(".json", "-StreamSync.log"));
+
+            string headerText =
+                $"{"DataStream",-20}\t" +
+                $"{"LocalTime",-20}\t" +
+                $"{"StreamTime",-20}\t";
+
+            for (int k = 0; k < _numTrialsPerSync; k++)
+            {
+                var rttHeader = $"RTT{k + 1}";
+                headerText += $"{rttHeader,-6}\t";
+            }
+
+            File.WriteAllText(_logPath, headerText + Environment.NewLine);
         }
 
         public async Task StopRecording()
@@ -155,6 +191,7 @@ namespace HTSController.Data_Streams
         {
             _syncTimer.Enabled = false;
             await SyncConnections();
+            _syncTimer.Interval = _syncInterval;
             _syncTimer.Enabled = true;
         }
 
@@ -164,12 +201,67 @@ namespace HTSController.Data_Streams
             {
                 var status = await KTcpClient.SendMessageReceiveIntAsync(s.IPEndPoint, "Status");
                 s.Status = (DataStream.StreamStatus)status;
+
+                var data = await SynchronizeClocks(s);
+                AddLogEntry(s.Name, data);
+
+                s.LastActivity = DateTime.Now;
             }
 
             foreach (var i in _indicators)
             {
                 i.ConnectionStatusUpdated();
             }
+        }
+
+        private void AddLogEntry(string streamName, SyncData data)
+        {
+            string logEntry =
+                 $"{streamName,-20}\t" +
+                 $"{data.localTime,-20}\t" +
+                 $"{data.streamTime,-20}\t";
+
+            for (int k = 0; k < data.rtt.Length; k++)
+            {
+                var rttEntry = $"{(data.valid ? data.rtt[k] : float.NaN),-6:0.000000}\t";
+                logEntry += rttEntry;
+            }
+
+            File.AppendAllText(_logPath, logEntry + Environment.NewLine);
+        }
+
+        private async Task<SyncData> SynchronizeClocks(DataStream stream)
+        {
+            var syncData = new SyncData(_numTrialsPerSync);
+
+            double maxRTT = double.MaxValue;
+
+            for (int k = 0; k < _numTrialsPerSync; k++)
+            {
+                try
+                {
+                    var t0 = HighPrecisionClock.UtcNowIn100nsTicks;
+                    var byteArray = await KTcpClient.SendMessageReceiveByteArrayAsync(stream.IPEndPoint, "Sync");
+                    var t1 = BitConverter.ToInt64(byteArray, 0);
+                    var t2 = BitConverter.ToInt64(byteArray, 8);
+                    var t3 = HighPrecisionClock.UtcNowIn100nsTicks;
+
+                    var rtt = (double)(t3 - t0) * 1e-4 - (t2 - t1) * 1e-4;
+
+                    if (rtt < maxRTT)
+                    {
+                        syncData.localTime = t0;
+                        syncData.streamTime = t1;
+                        maxRTT = rtt;
+                    }
+                    syncData.rtt[k] = rtt;
+                    syncData.valid = true;
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return syncData;
         }
 
         private async void statusTimer_Tick(object sender, EventArgs e)

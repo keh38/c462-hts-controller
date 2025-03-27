@@ -47,6 +47,7 @@ namespace HTSController.Data_Streams
             BackColor = _stream.IsPresent ? StatusToColor(_stream.Status) : Color.LightGray;
             statusLabel.Text = _stream.LastActivity.ToLongTimeString();
             addressLabel.Text = _stream.IsPresent ? _stream.IPEndPoint.ToString() : "";
+            statusLabel.Text = (_stream.IsPresent && _stream.Status != DataStream.StreamStatus.Idle) ? _stream.LastActivity.ToLongTimeString() : "";
 
             //checkBox.Enabled = _stream.Status == DataStream.StreamStatus.Idle;
         }
