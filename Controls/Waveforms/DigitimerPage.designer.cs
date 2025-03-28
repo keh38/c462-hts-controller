@@ -41,7 +41,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.demandDropDown = new System.Windows.Forms.ComboBox();
+            this.sourceDropDown = new System.Windows.Forms.ComboBox();
             this.demandLabel = new System.Windows.Forms.Label();
             this.demandNumeric = new KLib.Controls.KNumericBox();
             this.SuspendLayout();
@@ -240,18 +240,18 @@
             this.label7.TabIndex = 13;
             this.label7.Text = "Source";
             // 
-            // demandDropDown
+            // sourceDropDown
             // 
-            this.demandDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.demandDropDown.FormattingEnabled = true;
-            this.demandDropDown.Items.AddRange(new object[] {
+            this.sourceDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.sourceDropDown.FormattingEnabled = true;
+            this.sourceDropDown.Items.AddRange(new object[] {
             "Internal",
             "External"});
-            this.demandDropDown.Location = new System.Drawing.Point(79, 149);
-            this.demandDropDown.Name = "demandDropDown";
-            this.demandDropDown.Size = new System.Drawing.Size(92, 21);
-            this.demandDropDown.TabIndex = 12;
-            this.demandDropDown.SelectedIndexChanged += new System.EventHandler(this.demandDropDown_SelectedIndexChanged);
+            this.sourceDropDown.Location = new System.Drawing.Point(79, 149);
+            this.sourceDropDown.Name = "sourceDropDown";
+            this.sourceDropDown.Size = new System.Drawing.Size(92, 21);
+            this.sourceDropDown.TabIndex = 12;
+            this.sourceDropDown.SelectedIndexChanged += new System.EventHandler(this.demandDropDown_SelectedIndexChanged);
             // 
             // demandLabel
             // 
@@ -286,6 +286,7 @@
             this.demandNumeric.ToolTip = "";
             this.demandNumeric.Units = "";
             this.demandNumeric.Value = 0D;
+            this.demandNumeric.ValueChanged += new System.EventHandler(this.demandNumeric_ValueChanged);
             // 
             // DigitimerPage
             // 
@@ -296,7 +297,7 @@
             this.Controls.Add(this.demandLabel);
             this.Controls.Add(this.demandNumeric);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.demandDropDown);
+            this.Controls.Add(this.sourceDropDown);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.dwellNumeric);
@@ -331,7 +332,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.ComboBox demandDropDown;
+        private System.Windows.Forms.ComboBox sourceDropDown;
         private System.Windows.Forms.Label demandLabel;
         private KLib.Controls.KNumericBox demandNumeric;
     }
