@@ -117,15 +117,16 @@ namespace KLib.Unity.Controls.Signals
                 EnableBinauralProperties();
                 levelView.ILD = ch.binaural.ILD;
                 waveformView.IPD = ch.binaural.IPD;
-
-                _ignoreEvents = false;
             }
             if (ch != null && ch.waveform.Shape == Waveshape.Digitimer)
             {
-                levelView.Visible = (ch.waveform as Digitimer).Source == Digitimer.DemandSource.External;
+                var showLevel = (ch.waveform as Digitimer).Source == Digitimer.DemandSource.External;
+                levelView.Visible = showLevel;
+                modSep.Visible = showLevel;
             }
 
             DrawingControl.ResumeDrawing(this);
+            _ignoreEvents = false;
         }
 
         private void ShowModalitySpecific()
