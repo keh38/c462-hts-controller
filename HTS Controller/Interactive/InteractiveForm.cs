@@ -142,6 +142,7 @@ namespace HTSController
                 try
                 {
                     byte[] data = client.Receive(ref ip);
+                    Debug.WriteLine("packet received");
                     _packetQueue.Enqueue(data);
                 }
                 catch (Exception ex)
