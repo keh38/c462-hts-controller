@@ -268,6 +268,7 @@ namespace HTSController
         {
             tabControl.SelectedTab = turandotSettingsPage;
             menuPanel.Enabled = true;
+            connectionTimer.Start();
         }
     }
 }
