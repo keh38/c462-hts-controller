@@ -244,6 +244,9 @@
     <EmbeddedResource Include="TurandotLiveForm.resx">
       <DependentUpon>TurandotLiveForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="CHANGELOG.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -274,4 +277,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" ("C:\Program Files (x86)\Inno Setup 6\Compil32.exe" /cc "$(SolutionDir)Installer\HTS Controller.iss")</PostBuildEvent>
+  </PropertyGroup>
 </Project>

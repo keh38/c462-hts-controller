@@ -156,7 +156,7 @@ namespace HTSController.Pages
 #else
             string editorFolder = "";
             // https://stackoverflow.com/questions/2039186/reading-the-registry-and-wow6432node-key
-            string key = @"Software\EPL\Diagnostics\Turandot Editor";
+            string key = @"Software\EPL\C462\Turandot Editor";
             using (var view64 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
             {
                 using (var subKey = view64.OpenSubKey(key, false))
