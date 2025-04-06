@@ -45,6 +45,11 @@ namespace HTSController
             _dataFile = "";
             _parameterFile = parameterFile;
             _network.RemoteMessageHandler += OnRemoteMessage;
+
+            dataFileTextBox.Text = "";
+            progressBar.Value = 0;
+            statusTextBox.Text = "";
+            logTextBox.Text = "";
         }
 
         private async void startButton_Click(object sender, EventArgs e)
@@ -71,6 +76,10 @@ namespace HTSController
                 else
                 {
                     logTextBox.AppendText("failed" + Environment.NewLine);
+                    foreach (var s in _streamManager.ProblemStreams)
+                    {
+                        logTextBox.AppendText($"- {s}\n");
+                    }
                     startButton.Enabled = true;
                     closeButton.Visible = true;
                 }
@@ -105,7 +114,7 @@ namespace HTSController
             }
         }
 
-        private async void EndRun()
+        private async void EndRun(string message, string info)
         {
             _network.SendMessage($"StopSynchronizing");
             await _streamManager.StopRecording();
@@ -116,10 +125,14 @@ namespace HTSController
                 startButton.Enabled = true;
                 startButton.Visible = true;
                 closeButton.Visible = true;
+                statusTextBox.Text = message;
+                if (!string.IsNullOrEmpty(info))
+                {
+                    logTextBox.AppendText($"{Environment.NewLine}{info}");
+                }
                 progressBar.Value = 0;
                 _streamManager.RestartStatusTimer();
             }));
-
         }
 
         private void OnRemoteMessage(object sender, string message)
@@ -150,13 +163,14 @@ namespace HTSController
                     Invoke(new Action(() => statusTextBox.Text = info));
                     break;
                 case "ReceiveData":
-                    Debug.WriteLine(info);
                     string filePath = Path.Combine(FileLocations.SubjectDataFolder, info);
-                    Debug.WriteLine(filePath);
                     File.WriteAllText(filePath, data);
                     break;
+                case "Error":
+                    EndRun("Error", info);
+                    break;
                 case "Finished":
-                    EndRun();
+                    EndRun("Finished", info);
                     break;
             }
         }

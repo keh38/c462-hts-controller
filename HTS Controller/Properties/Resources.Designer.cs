@@ -83,6 +83,16 @@ namespace HTSController.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Tools_24 {
+            get {
+                object obj = ResourceManager.GetObject("Tools-24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Turandot_Black_24 {
             get {
                 object obj = ResourceManager.GetObject("Turandot Black 24", resourceCulture);

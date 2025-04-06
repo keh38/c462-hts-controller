@@ -119,8 +119,7 @@ namespace HTSController.Pages
                 if (_network.IsConnected)
                 {
                     _network.SendMessage($"TransferFile:Config Files:{Path.GetFileName(settingsPath)}:{File.ReadAllText(settingsPath)}");
-                    messageLabel.Text = "Transfered file to tablet";
-                    messageLabel.Visible = true;
+                    ShowMessage("Transfered file to tablet");
                 }
             }
         }
@@ -137,8 +136,7 @@ namespace HTSController.Pages
 
             if (!success)
             {
-                messageLabel.Text = "Could not start Turandot Editor";
-                messageLabel.Visible = true;
+                ShowMessage("Could not start Turandot Editor");
             }
         }
 
@@ -153,6 +151,10 @@ namespace HTSController.Pages
 
 #if DEBUG
             string editorFolder = @"D:\Development\C462\c462-turandot-editor\Turandot Editor\bin\Debug";
+            if (!Directory.Exists(editorFolder))
+            {
+                editorFolder = "C" + editorFolder.Substring(1);
+            }
 #else
             string editorFolder = "";
             // https://stackoverflow.com/questions/2039186/reading-the-registry-and-wow6432node-key
@@ -175,6 +177,19 @@ namespace HTSController.Pages
             var process = Process.Start(processStartInfo);
 
             return true;
+        }
+
+        private void ShowMessage(string message)
+        {
+            messageLabel.Text = message;
+            messageLabel.Visible = true;
+            messageTimer.Start();
+        }
+
+        private void messageTimer_Tick(object sender, EventArgs e)
+        {
+            messageTimer.Stop();
+            messageLabel.Visible = false;
         }
     }
 }

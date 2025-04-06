@@ -29,6 +29,7 @@ Name: "{commonappdata}\EPL";
 Source: "..\HTS Controller\Images\HTS.ico"; DestDir: "{app}"; Flags: replacesameversion;
 Source: "..\HTS Controller\bin\Release\*.*"; DestDir: "{app}"; Flags: replacesameversion;
 Source: "..\HTS Controller\Images\Streams\*.png"; DestDir: "{userdocs}\EPL\HTS\Streams"; Flags: onlyifdoesntexist;
+Source: "..\CHANGELOG.md"; DestDir: "{app}"; Flags: replacesameversion;
 
 [Icons]
 Name: "{commondesktop}\HTS Controller"; Filename: "{app}\HTSController.exe"; IconFilename: "{app}\HTS.ico"; IconIndex: 0;

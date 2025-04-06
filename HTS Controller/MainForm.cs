@@ -39,6 +39,7 @@ namespace HTSController
             _menu = new List<Tuple<CheckBox, TabPage>>();
             _menu.Add(new Tuple<CheckBox, TabPage>(subjectButton, subjectPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(turandotButton, turandotSettingsPage));
+            _menu.Add(new Tuple<CheckBox, TabPage>(adminButton, adminPage));
         }
 
         private async Task StartLogging()
@@ -269,6 +270,29 @@ namespace HTSController
             tabControl.SelectedTab = turandotSettingsPage;
             menuPanel.Enabled = true;
             connectionTimer.Start();
+        }
+
+        private void adminButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                SelectTab(sender as CheckBox);
+            }
+        }
+
+        private void logButton_Click(object sender, EventArgs e)
+        {
+            var folder = Path.Combine(FileLocations.RootFolder, "Remote Logs");
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+            var response = _network.SendMessageAndReceiveString("GetLog");
+            var parts = response.Split(new char[] { ':' }, 2);
+            var logPath = Path.Combine(folder, parts[0]);
+            File.WriteAllText(logPath, parts[1]);
+            System.Diagnostics.Process.Start(logPath);
         }
     }
 }

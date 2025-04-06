@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.listBox = new System.Windows.Forms.ListBox();
             this.startButton = new System.Windows.Forms.Button();
             this.copyButton = new System.Windows.Forms.Button();
             this.messageLabel = new System.Windows.Forms.Label();
             this.fileTypeDropDown = new System.Windows.Forms.ComboBox();
             this.editButton = new System.Windows.Forms.Button();
+            this.messageTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // listBox
@@ -88,7 +90,7 @@
             "Interactive",
             "Turandot"});
             this.fileTypeDropDown.Location = new System.Drawing.Point(14, 9);
-            this.fileTypeDropDown.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.fileTypeDropDown.Margin = new System.Windows.Forms.Padding(2);
             this.fileTypeDropDown.Name = "fileTypeDropDown";
             this.fileTypeDropDown.Size = new System.Drawing.Size(145, 21);
             this.fileTypeDropDown.TabIndex = 7;
@@ -105,6 +107,11 @@
             this.editButton.Text = "Edit";
             this.editButton.UseVisualStyleBackColor = false;
             this.editButton.Click += new System.EventHandler(this.editButton_Click);
+            // 
+            // messageTimer
+            // 
+            this.messageTimer.Interval = 3000;
+            this.messageTimer.Tick += new System.EventHandler(this.messageTimer_Tick);
             // 
             // TurandotPage
             // 
@@ -131,5 +138,6 @@
         private System.Windows.Forms.Label messageLabel;
         private System.Windows.Forms.ComboBox fileTypeDropDown;
         private System.Windows.Forms.Button editButton;
+        private System.Windows.Forms.Timer messageTimer;
     }
 }

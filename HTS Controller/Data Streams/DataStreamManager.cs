@@ -33,6 +33,8 @@ namespace HTSController.Data_Streams
         private List<DataStream> _streams;
         private List<DataStreamIndicator> _indicators;
 
+        private List<string> _problemChildren = new List<string>();
+
         private HTSNetwork _network;
         private System.Windows.Forms.Timer _statusTimer;
         private System.Windows.Forms.Timer _syncTimer;
@@ -44,6 +46,8 @@ namespace HTSController.Data_Streams
         private int _numTrialsPerSync = 4;
 
         private bool _exiting = false;
+
+        public List<string> ProblemStreams { get { return _problemChildren; } }
 
         public DataStreamManager()
         {
@@ -114,6 +118,7 @@ namespace HTSController.Data_Streams
         public async Task<bool> StartRecording(string filename)
         {
             _statusTimer.Stop();
+            _problemChildren.Clear();
 
             InitializeSyncLogFile(filename);
 
@@ -154,6 +159,10 @@ namespace HTSController.Data_Streams
                 foreach (var s in _streams.FindAll(x => x.Status != DataStream.StreamStatus.Idle))
                 {
                     await KTcpClient.SendMessageAsync(s.IPEndPoint, "Stop");
+                }
+                foreach (var s in streamsToStart)
+                {
+                    _problemChildren.Add(s.Name);
                 }
                 _statusTimer.Start();
             }
