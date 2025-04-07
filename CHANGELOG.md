@@ -1,6 +1,8 @@
 ## Changelog
 
-### v0.2 (unreleased)
+### v0.2 (2025-04-07)
+#### Added
+- retrieve log from tablet
 #### Changed
 - Install stream icons
 
