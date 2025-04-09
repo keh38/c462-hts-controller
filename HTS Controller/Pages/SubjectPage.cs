@@ -119,6 +119,7 @@ namespace HTSController.Pages
                 Subject = subjectDropDown.Text;
                 _network.SendMessage($"SetSubjectInfo:{Project}/{Subject}");
             }
+            FileLocations.SetSubject(Subject);
             _subjectMetadata = _network.SendMessageAndReceiveXml<SubjectMetadata>("GetSubjectMetadata");
             var itransducer = transducerDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList().IndexOf(_subjectMetadata.Transducer);
 
@@ -166,6 +167,8 @@ namespace HTSController.Pages
 
             subjectDropDown.SelectedIndex = subjects.IndexOf(Subject);
             subjectDropDown.Text = Subject;
+
+            FileLocations.SetSubject(Subject);
 
             _ignoreEvents = false;
         }

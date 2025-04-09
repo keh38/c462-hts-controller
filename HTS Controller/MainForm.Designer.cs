@@ -35,24 +35,26 @@
             this.sceneNameLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.menuPanel = new System.Windows.Forms.Panel();
-            this.adminButton = new System.Windows.Forms.CheckBox();
             this.homeButton = new System.Windows.Forms.Button();
-            this.turandotButton = new System.Windows.Forms.CheckBox();
-            this.subjectButton = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.subjectPage = new System.Windows.Forms.TabPage();
+            this.subjectPageControl = new HTSController.Pages.SubjectPage();
             this.turandotSettingsPage = new System.Windows.Forms.TabPage();
+            this.turandotPageControl = new HTSController.Pages.TurandotPage();
             this.messagePage = new System.Windows.Forms.TabPage();
             this.runTurandotPage = new System.Windows.Forms.TabPage();
             this.adminPage = new System.Windows.Forms.TabPage();
+            this.logButton = new System.Windows.Forms.Button();
             this.ipcPanel = new System.Windows.Forms.Panel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.connectionTimer = new System.Windows.Forms.Timer(this.components);
-            this.logButton = new System.Windows.Forms.Button();
-            this.subjectPageControl = new HTSController.Pages.SubjectPage();
-            this.turandotPageControl = new HTSController.Pages.TurandotPage();
+            this.pupilButton = new System.Windows.Forms.CheckBox();
+            this.adminButton = new System.Windows.Forms.CheckBox();
+            this.turandotButton = new System.Windows.Forms.CheckBox();
+            this.subjectButton = new System.Windows.Forms.CheckBox();
+            this.pupilPage = new System.Windows.Forms.TabPage();
             this.statusStrip.SuspendLayout();
             this.menuPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -107,6 +109,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.menuPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.menuPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.menuPanel.Controls.Add(this.pupilButton);
             this.menuPanel.Controls.Add(this.adminButton);
             this.menuPanel.Controls.Add(this.homeButton);
             this.menuPanel.Controls.Add(this.turandotButton);
@@ -115,6 +118,208 @@
             this.menuPanel.Name = "menuPanel";
             this.menuPanel.Size = new System.Drawing.Size(149, 499);
             this.menuPanel.TabIndex = 5;
+            // 
+            // homeButton
+            // 
+            this.homeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
+            this.homeButton.ForeColor = System.Drawing.Color.White;
+            this.homeButton.Location = new System.Drawing.Point(31, 352);
+            this.homeButton.Name = "homeButton";
+            this.homeButton.Size = new System.Drawing.Size(90, 36);
+            this.homeButton.TabIndex = 1;
+            this.homeButton.Text = "Home";
+            this.homeButton.UseVisualStyleBackColor = false;
+            this.homeButton.Click += new System.EventHandler(this.homeButton_Click);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 3;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 155F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 188F));
+            this.tableLayoutPanel1.Controls.Add(this.menuPanel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tabControl, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.ipcPanel, 2, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(905, 505);
+            this.tableLayoutPanel1.TabIndex = 6;
+            // 
+            // tabControl
+            // 
+            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
+            this.tabControl.Controls.Add(this.subjectPage);
+            this.tabControl.Controls.Add(this.turandotSettingsPage);
+            this.tabControl.Controls.Add(this.messagePage);
+            this.tabControl.Controls.Add(this.runTurandotPage);
+            this.tabControl.Controls.Add(this.adminPage);
+            this.tabControl.Controls.Add(this.pupilPage);
+            this.tabControl.ItemSize = new System.Drawing.Size(0, 1);
+            this.tabControl.Location = new System.Drawing.Point(158, 3);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(556, 499);
+            this.tabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabControl.TabIndex = 6;
+            // 
+            // subjectPage
+            // 
+            this.subjectPage.Controls.Add(this.subjectPageControl);
+            this.subjectPage.Location = new System.Drawing.Point(4, 5);
+            this.subjectPage.Name = "subjectPage";
+            this.subjectPage.Padding = new System.Windows.Forms.Padding(3);
+            this.subjectPage.Size = new System.Drawing.Size(548, 490);
+            this.subjectPage.TabIndex = 0;
+            this.subjectPage.Text = "tabPage1";
+            this.subjectPage.UseVisualStyleBackColor = true;
+            // 
+            // subjectPageControl
+            // 
+            this.subjectPageControl.AutoSize = true;
+            this.subjectPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.subjectPageControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.subjectPageControl.Location = new System.Drawing.Point(3, 3);
+            this.subjectPageControl.Margin = new System.Windows.Forms.Padding(4);
+            this.subjectPageControl.Name = "subjectPageControl";
+            this.subjectPageControl.Size = new System.Drawing.Size(542, 484);
+            this.subjectPageControl.TabIndex = 0;
+            this.subjectPageControl.ValueChanged += new System.EventHandler(this.subjectPageControl_ValueChanged);
+            // 
+            // turandotSettingsPage
+            // 
+            this.turandotSettingsPage.Controls.Add(this.turandotPageControl);
+            this.turandotSettingsPage.Location = new System.Drawing.Point(4, 5);
+            this.turandotSettingsPage.Name = "turandotSettingsPage";
+            this.turandotSettingsPage.Padding = new System.Windows.Forms.Padding(3);
+            this.turandotSettingsPage.Size = new System.Drawing.Size(548, 490);
+            this.turandotSettingsPage.TabIndex = 1;
+            this.turandotSettingsPage.Text = "tabPage2";
+            this.turandotSettingsPage.UseVisualStyleBackColor = true;
+            // 
+            // turandotPageControl
+            // 
+            this.turandotPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.turandotPageControl.Location = new System.Drawing.Point(6, 3);
+            this.turandotPageControl.Margin = new System.Windows.Forms.Padding(4);
+            this.turandotPageControl.Name = "turandotPageControl";
+            this.turandotPageControl.Size = new System.Drawing.Size(357, 331);
+            this.turandotPageControl.TabIndex = 0;
+            this.turandotPageControl.StartInteractiveClick += new System.EventHandler<string>(this.turandotPageControl_InteractiveClick);
+            this.turandotPageControl.StartTurandotClick += new System.EventHandler<string>(this.turandotPageControl_StartTurandotClick);
+            // 
+            // messagePage
+            // 
+            this.messagePage.Location = new System.Drawing.Point(4, 5);
+            this.messagePage.Name = "messagePage";
+            this.messagePage.Padding = new System.Windows.Forms.Padding(3);
+            this.messagePage.Size = new System.Drawing.Size(548, 490);
+            this.messagePage.TabIndex = 2;
+            this.messagePage.Text = "tabPage1";
+            this.messagePage.UseVisualStyleBackColor = true;
+            // 
+            // runTurandotPage
+            // 
+            this.runTurandotPage.Location = new System.Drawing.Point(4, 5);
+            this.runTurandotPage.Name = "runTurandotPage";
+            this.runTurandotPage.Padding = new System.Windows.Forms.Padding(3);
+            this.runTurandotPage.Size = new System.Drawing.Size(548, 490);
+            this.runTurandotPage.TabIndex = 3;
+            this.runTurandotPage.Text = "tabPage1";
+            this.runTurandotPage.UseVisualStyleBackColor = true;
+            // 
+            // adminPage
+            // 
+            this.adminPage.Controls.Add(this.logButton);
+            this.adminPage.Location = new System.Drawing.Point(4, 5);
+            this.adminPage.Name = "adminPage";
+            this.adminPage.Padding = new System.Windows.Forms.Padding(3);
+            this.adminPage.Size = new System.Drawing.Size(548, 490);
+            this.adminPage.TabIndex = 4;
+            this.adminPage.Text = "tabPage1";
+            this.adminPage.UseVisualStyleBackColor = true;
+            // 
+            // logButton
+            // 
+            this.logButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
+            this.logButton.ForeColor = System.Drawing.Color.White;
+            this.logButton.Location = new System.Drawing.Point(6, 29);
+            this.logButton.Name = "logButton";
+            this.logButton.Size = new System.Drawing.Size(90, 36);
+            this.logButton.TabIndex = 2;
+            this.logButton.Text = "Get log";
+            this.logButton.UseVisualStyleBackColor = false;
+            this.logButton.Click += new System.EventHandler(this.logButton_Click);
+            // 
+            // ipcPanel
+            // 
+            this.ipcPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ipcPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ipcPanel.Controls.Add(this.flowLayoutPanel1);
+            this.ipcPanel.Location = new System.Drawing.Point(720, 3);
+            this.ipcPanel.Name = "ipcPanel";
+            this.ipcPanel.Size = new System.Drawing.Size(182, 499);
+            this.ipcPanel.TabIndex = 7;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.BackColor = System.Drawing.SystemColors.Control;
+            this.flowLayoutPanel1.Controls.Add(this.label1);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(180, 497);
+            this.flowLayoutPanel1.TabIndex = 2;
+            // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label1.Location = new System.Drawing.Point(0, 0);
+            this.label1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(178, 30);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Data streams";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // connectionTimer
+            // 
+            this.connectionTimer.Interval = 1000;
+            this.connectionTimer.Tick += new System.EventHandler(this.connectionTimer_Tick);
+            // 
+            // pupilButton
+            // 
+            this.pupilButton.Appearance = System.Windows.Forms.Appearance.Button;
+            this.pupilButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.pupilButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.pupilButton.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.pupilButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.pupilButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.pupilButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.pupilButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pupilButton.ForeColor = System.Drawing.Color.Black;
+            this.pupilButton.Image = global::HTSController.Properties.Resources.eye_24;
+            this.pupilButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.pupilButton.Location = new System.Drawing.Point(31, 137);
+            this.pupilButton.Margin = new System.Windows.Forms.Padding(0);
+            this.pupilButton.Name = "pupilButton";
+            this.pupilButton.Padding = new System.Windows.Forms.Padding(12, 0, 0, 0);
+            this.pupilButton.Size = new System.Drawing.Size(118, 43);
+            this.pupilButton.TabIndex = 6;
+            this.pupilButton.Text = "Pupillometry";
+            this.pupilButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.pupilButton.UseVisualStyleBackColor = false;
+            this.pupilButton.CheckedChanged += new System.EventHandler(this.pupilButton_CheckedChanged);
             // 
             // adminButton
             // 
@@ -139,18 +344,6 @@
             this.adminButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.adminButton.UseVisualStyleBackColor = false;
             this.adminButton.CheckedChanged += new System.EventHandler(this.adminButton_CheckedChanged);
-            // 
-            // homeButton
-            // 
-            this.homeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
-            this.homeButton.ForeColor = System.Drawing.Color.White;
-            this.homeButton.Location = new System.Drawing.Point(31, 352);
-            this.homeButton.Name = "homeButton";
-            this.homeButton.Size = new System.Drawing.Size(90, 36);
-            this.homeButton.TabIndex = 1;
-            this.homeButton.Text = "Home";
-            this.homeButton.UseVisualStyleBackColor = false;
-            this.homeButton.Click += new System.EventHandler(this.homeButton_Click);
             // 
             // turandotButton
             // 
@@ -200,170 +393,15 @@
             this.subjectButton.UseVisualStyleBackColor = false;
             this.subjectButton.CheckedChanged += new System.EventHandler(this.menuButton_CheckedChanged);
             // 
-            // tableLayoutPanel1
+            // pupilPage
             // 
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 155F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 188F));
-            this.tableLayoutPanel1.Controls.Add(this.menuPanel, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.tabControl, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.ipcPanel, 2, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(905, 505);
-            this.tableLayoutPanel1.TabIndex = 6;
-            // 
-            // tabControl
-            // 
-            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-            this.tabControl.Controls.Add(this.subjectPage);
-            this.tabControl.Controls.Add(this.turandotSettingsPage);
-            this.tabControl.Controls.Add(this.messagePage);
-            this.tabControl.Controls.Add(this.runTurandotPage);
-            this.tabControl.Controls.Add(this.adminPage);
-            this.tabControl.ItemSize = new System.Drawing.Size(0, 1);
-            this.tabControl.Location = new System.Drawing.Point(158, 3);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(556, 499);
-            this.tabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.tabControl.TabIndex = 6;
-            // 
-            // subjectPage
-            // 
-            this.subjectPage.Controls.Add(this.subjectPageControl);
-            this.subjectPage.Location = new System.Drawing.Point(4, 5);
-            this.subjectPage.Name = "subjectPage";
-            this.subjectPage.Padding = new System.Windows.Forms.Padding(3);
-            this.subjectPage.Size = new System.Drawing.Size(548, 490);
-            this.subjectPage.TabIndex = 0;
-            this.subjectPage.Text = "tabPage1";
-            this.subjectPage.UseVisualStyleBackColor = true;
-            // 
-            // turandotSettingsPage
-            // 
-            this.turandotSettingsPage.Controls.Add(this.turandotPageControl);
-            this.turandotSettingsPage.Location = new System.Drawing.Point(4, 5);
-            this.turandotSettingsPage.Name = "turandotSettingsPage";
-            this.turandotSettingsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.turandotSettingsPage.Size = new System.Drawing.Size(548, 490);
-            this.turandotSettingsPage.TabIndex = 1;
-            this.turandotSettingsPage.Text = "tabPage2";
-            this.turandotSettingsPage.UseVisualStyleBackColor = true;
-            // 
-            // messagePage
-            // 
-            this.messagePage.Location = new System.Drawing.Point(4, 5);
-            this.messagePage.Name = "messagePage";
-            this.messagePage.Padding = new System.Windows.Forms.Padding(3);
-            this.messagePage.Size = new System.Drawing.Size(548, 490);
-            this.messagePage.TabIndex = 2;
-            this.messagePage.Text = "tabPage1";
-            this.messagePage.UseVisualStyleBackColor = true;
-            // 
-            // runTurandotPage
-            // 
-            this.runTurandotPage.Location = new System.Drawing.Point(4, 5);
-            this.runTurandotPage.Name = "runTurandotPage";
-            this.runTurandotPage.Padding = new System.Windows.Forms.Padding(3);
-            this.runTurandotPage.Size = new System.Drawing.Size(548, 490);
-            this.runTurandotPage.TabIndex = 3;
-            this.runTurandotPage.Text = "tabPage1";
-            this.runTurandotPage.UseVisualStyleBackColor = true;
-            // 
-            // adminPage
-            // 
-            this.adminPage.Controls.Add(this.logButton);
-            this.adminPage.Location = new System.Drawing.Point(4, 5);
-            this.adminPage.Name = "adminPage";
-            this.adminPage.Padding = new System.Windows.Forms.Padding(3);
-            this.adminPage.Size = new System.Drawing.Size(548, 490);
-            this.adminPage.TabIndex = 4;
-            this.adminPage.Text = "tabPage1";
-            this.adminPage.UseVisualStyleBackColor = true;
-            // 
-            // ipcPanel
-            // 
-            this.ipcPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ipcPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ipcPanel.Controls.Add(this.flowLayoutPanel1);
-            this.ipcPanel.Location = new System.Drawing.Point(720, 3);
-            this.ipcPanel.Name = "ipcPanel";
-            this.ipcPanel.Size = new System.Drawing.Size(182, 499);
-            this.ipcPanel.TabIndex = 7;
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.BackColor = System.Drawing.SystemColors.Control;
-            this.flowLayoutPanel1.Controls.Add(this.label1);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(180, 497);
-            this.flowLayoutPanel1.TabIndex = 2;
-            // 
-            // label1
-            // 
-            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
-            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label1.Location = new System.Drawing.Point(0, 0);
-            this.label1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(178, 30);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Data streams";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // connectionTimer
-            // 
-            this.connectionTimer.Interval = 1000;
-            this.connectionTimer.Tick += new System.EventHandler(this.connectionTimer_Tick);
-            // 
-            // logButton
-            // 
-            this.logButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
-            this.logButton.ForeColor = System.Drawing.Color.White;
-            this.logButton.Location = new System.Drawing.Point(6, 29);
-            this.logButton.Name = "logButton";
-            this.logButton.Size = new System.Drawing.Size(90, 36);
-            this.logButton.TabIndex = 2;
-            this.logButton.Text = "Get log";
-            this.logButton.UseVisualStyleBackColor = false;
-            this.logButton.Click += new System.EventHandler(this.logButton_Click);
-            // 
-            // subjectPageControl
-            // 
-            this.subjectPageControl.AutoSize = true;
-            this.subjectPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.subjectPageControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subjectPageControl.Location = new System.Drawing.Point(3, 3);
-            this.subjectPageControl.Margin = new System.Windows.Forms.Padding(4);
-            this.subjectPageControl.Name = "subjectPageControl";
-            this.subjectPageControl.Size = new System.Drawing.Size(542, 484);
-            this.subjectPageControl.TabIndex = 0;
-            this.subjectPageControl.ValueChanged += new System.EventHandler(this.subjectPageControl_ValueChanged);
-            // 
-            // turandotPageControl
-            // 
-            this.turandotPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.turandotPageControl.Location = new System.Drawing.Point(6, 3);
-            this.turandotPageControl.Margin = new System.Windows.Forms.Padding(4);
-            this.turandotPageControl.Name = "turandotPageControl";
-            this.turandotPageControl.Size = new System.Drawing.Size(357, 331);
-            this.turandotPageControl.TabIndex = 0;
-            this.turandotPageControl.StartInteractiveClick += new System.EventHandler<string>(this.turandotPageControl_InteractiveClick);
-            this.turandotPageControl.StartTurandotClick += new System.EventHandler<string>(this.turandotPageControl_StartTurandotClick);
+            this.pupilPage.Location = new System.Drawing.Point(4, 5);
+            this.pupilPage.Name = "pupilPage";
+            this.pupilPage.Padding = new System.Windows.Forms.Padding(3);
+            this.pupilPage.Size = new System.Drawing.Size(548, 490);
+            this.pupilPage.TabIndex = 5;
+            this.pupilPage.Text = "tabPage1";
+            this.pupilPage.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -421,6 +459,8 @@
         private System.Windows.Forms.CheckBox adminButton;
         private System.Windows.Forms.TabPage adminPage;
         private System.Windows.Forms.Button logButton;
+        private System.Windows.Forms.CheckBox pupilButton;
+        private System.Windows.Forms.TabPage pupilPage;
     }
 }
 

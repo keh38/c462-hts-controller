@@ -28,6 +28,7 @@ namespace HTSController
         HTSNetwork _network;
         DataStreamManager _streamManager;
         TurandotLiveForm _liveForm = null;
+        PupillometryForm _pupilForm = null;
 
         List<Tuple<CheckBox, TabPage>> _menu;
         bool _ignoreEvents = false;
@@ -39,6 +40,7 @@ namespace HTSController
             _menu = new List<Tuple<CheckBox, TabPage>>();
             _menu.Add(new Tuple<CheckBox, TabPage>(subjectButton, subjectPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(turandotButton, turandotSettingsPage));
+            _menu.Add(new Tuple<CheckBox, TabPage>(pupilButton, pupilPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(adminButton, adminPage));
         }
 
@@ -293,6 +295,29 @@ namespace HTSController
             var logPath = Path.Combine(folder, parts[0]);
             File.WriteAllText(logPath, parts[1]);
             System.Diagnostics.Process.Start(logPath);
+        }
+
+        private void pupilButton_CheckedChanged(object sender, EventArgs e)
+        {
+            connectionTimer.Stop();
+            SelectTab(sender as CheckBox);
+
+            //menuPanel.Enabled = false;
+
+            if (_pupilForm == null)
+            {
+                _pupilForm = new PupillometryForm(_network, _streamManager);
+                _pupilForm.TopLevel = false;
+                //_pupilForm.ClosePage += OnTurandotRunPageClose;
+                pupilPage.Controls.Add(_pupilForm);
+                _pupilForm.FormBorderStyle = FormBorderStyle.None;
+                _pupilForm.Dock = DockStyle.Fill;
+                _pupilForm.Show();
+            }
+            //_liveForm.Initialize(settingsPath);
+
+            tabControl.SelectedTab = pupilPage;
+
         }
     }
 }

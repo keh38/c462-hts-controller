@@ -201,6 +201,17 @@
     <Compile Include="Interactive\PropertyControl.Designer.cs">
       <DependentUpon>PropertyControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PupillometryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PupillometryForm.Designer.cs">
+      <DependentUpon>PupillometryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TurandotLiveForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -230,16 +241,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="Interactive\PropertyControl.resx">
       <DependentUpon>PropertyControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PupillometryForm.resx">
+      <DependentUpon>PupillometryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TurandotLiveForm.resx">
       <DependentUpon>TurandotLiveForm.cs</DependentUpon>
@@ -275,6 +284,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\Tools-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\eye-24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
