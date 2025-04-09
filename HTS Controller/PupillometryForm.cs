@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -14,30 +15,31 @@ using KLib;
 
 using HTSController.Data_Streams;
 
+using SREYELINKLib;
+
 namespace HTSController
 {
     public partial class PupillometryForm : Form
     {
         private HTSNetwork _network;
         private DataStreamManager _streamManager;
-        private string _parameterFile;
         private string _dataFile;
 
         public PupillometryForm(HTSNetwork network, DataStreamManager streamManager)
         {
             _network = network;
+            _network.RemoteMessageHandler += OnRemoteMessage;
+
             _streamManager = streamManager;
 
             InitializeComponent();
         }
 
-        public void Initialize(string parameterFile)
+        public void Initialize()
         {
             startButton.Visible = true;
 
             _dataFile = "";
-            _parameterFile = parameterFile;
-            _network.RemoteMessageHandler += OnRemoteMessage;
 
             dataFileTextBox.Text = "";
             progressBar.Value = 0;
@@ -52,11 +54,17 @@ namespace HTSController
                 return;
             }
 
-            logTextBox.Text = "Starting dynamic range measurement...";
-            _network.SendMessage("ChangeScene:PupilDynamicRange");
-            return;
-
             startButton.Enabled = false;
+
+            logTextBox.Text = "Starting dynamic range measurement...";
+            var success = await ChangeTabletScene();
+            if (!success)
+            {
+                startButton.Enabled = true;
+                logTextBox.Text = "failed to change scene on tablet";
+                Debug.WriteLine("failed to change to pupil dynamic range scene");
+                return;
+            }
 
             dataFileTextBox.Text = "";
             progressBar.Value = 0;
@@ -68,7 +76,8 @@ namespace HTSController
                 var started = await _streamManager.StartRecording(_dataFile);
                 if (started)
                 {
-                    startButton.Visible = false;
+                    stopButton.Enabled = true;
+                    stopButton.Visible = true;
                     logTextBox.AppendText("OK" + Environment.NewLine);
                     _network.SendMessage("Begin");
                 }
@@ -84,15 +93,36 @@ namespace HTSController
             }
             else
             {
-                logTextBox.AppendText("didn't receive data file name from Dynamic Range Scene");
+                logTextBox.AppendText("didn't receive data file name from Dynamic Range scene");
                 startButton.Enabled = true;
             }
         }
 
+        private async Task<bool> ChangeTabletScene()
+        {
+            string sceneName = "Pupil Dynamic Range";
+
+            bool success = false;
+            _network.SendMessage($"ChangeScene:{sceneName}");
+
+            var startTime = DateTime.Now;
+            while ((DateTime.Now - startTime).TotalSeconds < 5)
+            {
+                Debug.WriteLine(_network.CurrentScene);
+                await Task.Delay(200);
+                if (_network.CurrentScene.Equals(sceneName))
+                {
+                    success = true;
+                    break;
+                }
+            }
+
+            return success;
+        }
+
         private void InitializeDynamicRangeMeasurement()
         {
-            var p = KFile.XmlDeserialize<Turandot.Parameters>(_parameterFile);
-            _network.SendMessage($"SetParams:{KFile.ToXMLString(p)}");
+            _network.SendMessage("Initialize:");
 
             // wait for file name to get sent back
             var startTime = DateTime.Now;
@@ -120,7 +150,7 @@ namespace HTSController
             Invoke(new Action(() =>
             {
                 startButton.Enabled = true;
-                startButton.Visible = true;
+                stopButton.Visible = false;
                 if (!string.IsNullOrEmpty(info))
                 {
                     logTextBox.AppendText($"{Environment.NewLine}{info}");
@@ -136,7 +166,7 @@ namespace HTSController
             if (parts.Length < 2) return;
 
             string target = parts[0];
-            if (!target.Equals("PupilDynamicRange")) return;
+            if (!target.Equals("Pupil Dynamic Range")) return;
 
             string command = parts[1];
             string info = (parts.Length > 2) ? parts[2] : "";
@@ -166,7 +196,17 @@ namespace HTSController
 
         private void stopButton_Click(object sender, EventArgs e)
         {
+            stopButton.Enabled = false;
             _network.SendMessage("Abort");
+        }
+
+        private void TestEyeLink()
+        {
+            var e = new SREYELINKLib.EyeLink();
+            e.open("100.1.1.1");
+            e.sendCommand("screen_pixel_coords 0 0 1000 1000");
+            e.sendCommand("calibration_type = HS9");
+
         }
     }
 }

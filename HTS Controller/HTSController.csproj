@@ -57,6 +57,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\c462-diagnostics\Diagnostics\Library\ScriptAssemblies\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Interop.SREYELINKLib">
+      <HintPath>..\..\..\3rd Party\EyeLink\libs\Interop.SREYELINKLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="KLib">
       <HintPath>..\..\..\klib\Framework\KLib.dll</HintPath>
     </Reference>

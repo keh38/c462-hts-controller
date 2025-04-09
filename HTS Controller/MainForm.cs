@@ -299,7 +299,7 @@ namespace HTSController
 
         private void pupilButton_CheckedChanged(object sender, EventArgs e)
         {
-            connectionTimer.Stop();
+            //connectionTimer.Stop();
             SelectTab(sender as CheckBox);
 
             //menuPanel.Enabled = false;
@@ -314,7 +314,7 @@ namespace HTSController
                 _pupilForm.Dock = DockStyle.Fill;
                 _pupilForm.Show();
             }
-            //_liveForm.Initialize(settingsPath);
+            _pupilForm.Initialize();
 
             tabControl.SelectedTab = pupilPage;
 

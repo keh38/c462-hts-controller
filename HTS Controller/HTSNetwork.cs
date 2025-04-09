@@ -190,6 +190,11 @@ namespace HTSController
             server.SendAcknowledgement();
             server.CloseTcpClient();
 
+            if (input.StartsWith("ChangedScene"))
+            {
+                CurrentScene = input.Substring(("ChangedScene:").Length);
+            }
+
             OnRemoteMessage(input);
         }
 

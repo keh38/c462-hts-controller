@@ -33,6 +33,7 @@
             this.startButton = new System.Windows.Forms.Button();
             this.stopButton = new System.Windows.Forms.Button();
             this.logTextBox = new System.Windows.Forms.TextBox();
+            this.calButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // dataFileTextBox
@@ -82,11 +83,21 @@
             this.logTextBox.Size = new System.Drawing.Size(269, 83);
             this.logTextBox.TabIndex = 18;
             // 
+            // calButton
+            // 
+            this.calButton.Location = new System.Drawing.Point(12, 200);
+            this.calButton.Name = "calButton";
+            this.calButton.Size = new System.Drawing.Size(132, 26);
+            this.calButton.TabIndex = 19;
+            this.calButton.Text = "Calibrate gaze";
+            this.calButton.UseVisualStyleBackColor = true;
+            // 
             // PupillometryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(298, 204);
+            this.ClientSize = new System.Drawing.Size(298, 252);
+            this.Controls.Add(this.calButton);
             this.Controls.Add(this.logTextBox);
             this.Controls.Add(this.dataFileTextBox);
             this.Controls.Add(this.progressBar);
@@ -106,5 +117,6 @@
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.Button stopButton;
         private System.Windows.Forms.TextBox logTextBox;
+        private System.Windows.Forms.Button calButton;
     }
 }
