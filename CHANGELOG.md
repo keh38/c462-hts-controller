@@ -1,8 +1,10 @@
 ## Changelog
 
-### v0.2.1 (unreleased)
+### v0.3 (2025-04-10)
 #### Fixed
 - change data folder when subject is Changed
+#### Added
+- control of pupil dynamic range measurement
 
 ---
 
