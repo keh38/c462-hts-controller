@@ -38,6 +38,8 @@ namespace HTSController
         private EyeLink _eyeLink;
         private BusyCal _busyCal;
 
+        bool _stopCal = false;
+
         public PupillometryForm(HTSNetwork network, DataStreamManager streamManager)
         {
             _network = network;
@@ -208,7 +210,7 @@ namespace HTSController
                     File.WriteAllText(filePath, data);
                     break;
                 case "Response":
-                    _eyeLink.sendKeybutton(13, 0, 10);
+                    _eyeLink.sendKeybutton(13, (short)0, (short)10);
                     break;
                 case "Error":
                     EndRun("Error", info);
@@ -238,6 +240,7 @@ namespace HTSController
                 return;
             }
 
+            _stopCal = false;
             gazeStartButton.Enabled = false;
 
             gazeLogTextBox.Text = "Starting gaze calibration..." + Environment.NewLine;
@@ -256,7 +259,7 @@ namespace HTSController
             success = GetTabletScreenSize();
             if (success)
             {
-                gazeLogTextBox.AppendText($"- Screen size = {_tabletWidth} x {_tabletHeight}\n\n");
+                gazeLogTextBox.AppendText($"- Screen size = {_tabletWidth} x {_tabletHeight}" + Environment.NewLine);
                 gazePicture.Refresh();
             }
             else
@@ -266,7 +269,6 @@ namespace HTSController
                 gazeStartButton.Enabled = true;
                 return;
             }
-            return;
 
             _network.SendMessage($"Initialize:{KFile.ToXMLString(_gazeSettings)}");
 
@@ -279,16 +281,47 @@ namespace HTSController
                 return;
             }
 
-            _eyeLink.sendKeybutton(99, 0, 10);
+            gazeLogTextBox.AppendText("- Running..." + Environment.NewLine);
+            await Task.Run(() => PollForJobs());
+            //gazeCalTimer.Start();
+        }
 
-            gazeLogTextBox.AppendText("Running..." + Environment.NewLine);
-            gazeCalTimer.Start();
+        private void PollForJobs()
+        {
+            _eyeLink.sendKeybutton(99, 0, 10);
+            var job = _busyCal.job;
+
+            while (true)
+            {
+                if (job > 0 && job != 6) Log.Information($" job = {job}");
+
+                if (job == 9)
+                {
+                    _busyCal.getCalLocation(out short x, out short y);
+                    Log.Information($"target location = {x}, {y}");
+                    _targetPoint = new Point(x, y);
+                    _network.SendMessage($"Location:{x},{y}");
+                    Invoke(new Action(() => gazePicture.Refresh()));
+                }
+                else if (job == 14)
+                {
+                    break;
+                }
+
+                if (_stopCal) break;
+
+                Thread.Sleep(1);
+                job = _busyCal.job;
+            }
+
+            EndGazeCalibration();
         }
 
         private void gazeStopButton_Click(object sender, EventArgs e)
         {
+            _stopCal = true;
             _network.SendMessage("Abort");
-            EndGazeCalibration();
+            //EndGazeCalibration();
         }
 
         private bool GetTabletScreenSize()
@@ -338,12 +371,12 @@ namespace HTSController
                     break;
                 }
             }
-
             return success;
         }
 
         private void gazeCalTimer_Tick(object sender, EventArgs e)
         {
+            var job = _busyCal.job;
             if (_busyCal.job == 9)
             {
                 _busyCal.getCalLocation(out short x, out short y);
