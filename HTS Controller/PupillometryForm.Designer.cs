@@ -34,29 +34,38 @@
             this.stopButton = new System.Windows.Forms.Button();
             this.logTextBox = new System.Windows.Forms.TextBox();
             this.calButton = new System.Windows.Forms.Button();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.dynamicRangePage = new System.Windows.Forms.TabPage();
+            this.calibrationPage = new System.Windows.Forms.TabPage();
+            this.tabControl.SuspendLayout();
+            this.dynamicRangePage.SuspendLayout();
+            this.calibrationPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataFileTextBox
             // 
             this.dataFileTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dataFileTextBox.Location = new System.Drawing.Point(12, 52);
+            this.dataFileTextBox.Location = new System.Drawing.Point(7, 58);
+            this.dataFileTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dataFileTextBox.Name = "dataFileTextBox";
             this.dataFileTextBox.ReadOnly = true;
-            this.dataFileTextBox.Size = new System.Drawing.Size(268, 20);
+            this.dataFileTextBox.Size = new System.Drawing.Size(357, 22);
             this.dataFileTextBox.TabIndex = 17;
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(12, 78);
+            this.progressBar.Location = new System.Drawing.Point(7, 90);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(268, 15);
+            this.progressBar.Size = new System.Drawing.Size(357, 18);
             this.progressBar.TabIndex = 14;
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(12, 12);
+            this.startButton.Location = new System.Drawing.Point(7, 9);
+            this.startButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(132, 26);
+            this.startButton.Size = new System.Drawing.Size(176, 32);
             this.startButton.TabIndex = 11;
             this.startButton.Text = "Measure dynamic range";
             this.startButton.UseVisualStyleBackColor = true;
@@ -64,9 +73,10 @@
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(200, 12);
+            this.stopButton.Location = new System.Drawing.Point(258, 9);
+            this.stopButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(80, 26);
+            this.stopButton.Size = new System.Drawing.Size(107, 32);
             this.stopButton.TabIndex = 16;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
@@ -76,37 +86,74 @@
             // logTextBox
             // 
             this.logTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.logTextBox.Location = new System.Drawing.Point(11, 99);
+            this.logTextBox.Location = new System.Drawing.Point(6, 116);
+            this.logTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
-            this.logTextBox.Size = new System.Drawing.Size(269, 83);
+            this.logTextBox.Size = new System.Drawing.Size(358, 102);
             this.logTextBox.TabIndex = 18;
             // 
             // calButton
             // 
-            this.calButton.Location = new System.Drawing.Point(12, 200);
+            this.calButton.Location = new System.Drawing.Point(7, 7);
+            this.calButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.calButton.Name = "calButton";
-            this.calButton.Size = new System.Drawing.Size(132, 26);
+            this.calButton.Size = new System.Drawing.Size(176, 32);
             this.calButton.TabIndex = 19;
             this.calButton.Text = "Calibrate gaze";
             this.calButton.UseVisualStyleBackColor = true;
             // 
+            // tabControl
+            // 
+            this.tabControl.Controls.Add(this.dynamicRangePage);
+            this.tabControl.Controls.Add(this.calibrationPage);
+            this.tabControl.Location = new System.Drawing.Point(12, 12);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(518, 422);
+            this.tabControl.TabIndex = 20;
+            // 
+            // dynamicRangePage
+            // 
+            this.dynamicRangePage.Controls.Add(this.logTextBox);
+            this.dynamicRangePage.Controls.Add(this.progressBar);
+            this.dynamicRangePage.Controls.Add(this.dataFileTextBox);
+            this.dynamicRangePage.Controls.Add(this.stopButton);
+            this.dynamicRangePage.Controls.Add(this.startButton);
+            this.dynamicRangePage.Location = new System.Drawing.Point(4, 25);
+            this.dynamicRangePage.Name = "dynamicRangePage";
+            this.dynamicRangePage.Padding = new System.Windows.Forms.Padding(3);
+            this.dynamicRangePage.Size = new System.Drawing.Size(510, 393);
+            this.dynamicRangePage.TabIndex = 0;
+            this.dynamicRangePage.Text = "Dynamic range";
+            this.dynamicRangePage.UseVisualStyleBackColor = true;
+            // 
+            // calibrationPage
+            // 
+            this.calibrationPage.Controls.Add(this.calButton);
+            this.calibrationPage.Location = new System.Drawing.Point(4, 25);
+            this.calibrationPage.Name = "calibrationPage";
+            this.calibrationPage.Padding = new System.Windows.Forms.Padding(3);
+            this.calibrationPage.Size = new System.Drawing.Size(510, 393);
+            this.calibrationPage.TabIndex = 1;
+            this.calibrationPage.Text = "Calibration";
+            this.calibrationPage.UseVisualStyleBackColor = true;
+            // 
             // PupillometryForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(298, 252);
-            this.Controls.Add(this.calButton);
-            this.Controls.Add(this.logTextBox);
-            this.Controls.Add(this.dataFileTextBox);
-            this.Controls.Add(this.progressBar);
-            this.Controls.Add(this.startButton);
-            this.Controls.Add(this.stopButton);
+            this.ClientSize = new System.Drawing.Size(547, 459);
+            this.Controls.Add(this.tabControl);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "PupillometryForm";
             this.Text = "PupillometryForm";
+            this.tabControl.ResumeLayout(false);
+            this.dynamicRangePage.ResumeLayout(false);
+            this.dynamicRangePage.PerformLayout();
+            this.calibrationPage.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -118,5 +165,8 @@
         private System.Windows.Forms.Button stopButton;
         private System.Windows.Forms.TextBox logTextBox;
         private System.Windows.Forms.Button calButton;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage dynamicRangePage;
+        private System.Windows.Forms.TabPage calibrationPage;
     }
 }
