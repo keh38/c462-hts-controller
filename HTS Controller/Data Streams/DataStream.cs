@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
+using KLib.Net;
+
 namespace HTSController.Data_Streams
 { 
     public class DataStream
@@ -35,5 +37,9 @@ namespace HTSController.Data_Streams
         [XmlIgnore]
         public StreamStatus Status { set; get; } 
 
+        public async Task SendMessage(string message)
+        {
+            await KTcpClient.SendMessageAsync(IPEndPoint, message);
+        }
     }
 }

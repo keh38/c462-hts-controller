@@ -12,8 +12,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using KLib;
+using Pupillometry;
 
 using HTSController.Data_Streams;
+
+using Serilog;
 
 using SREYELINKLib;
 
@@ -24,6 +27,16 @@ namespace HTSController
         private HTSNetwork _network;
         private DataStreamManager _streamManager;
         private string _dataFile;
+
+        private GazeCalibrationSettings _gazeSettings;
+
+        private int _tabletWidth;
+        private int _tabletHeight;
+
+        private Point _targetPoint = new Point(-1, -1);
+
+        private EyeLink _eyeLink;
+        private BusyCal _busyCal;
 
         public PupillometryForm(HTSNetwork network, DataStreamManager streamManager)
         {
@@ -44,6 +57,18 @@ namespace HTSController
             dataFileTextBox.Text = "";
             progressBar.Value = 0;
             logTextBox.Text = "";
+
+            var configPath = Path.Combine(FileLocations.ConfigFolder, "Gaze.Defaults.xml");
+            if (File.Exists(configPath))
+            {
+                _gazeSettings = KFile.XmlDeserialize<GazeCalibrationSettings>(configPath);
+            }
+            else
+            {
+                _gazeSettings = new GazeCalibrationSettings();
+            }
+
+            propertyGrid.SelectedObject = _gazeSettings;
         }
 
         private async void startButton_Click(object sender, EventArgs e)
@@ -57,7 +82,7 @@ namespace HTSController
             startButton.Enabled = false;
 
             logTextBox.Text = "Starting dynamic range measurement...";
-            var success = await ChangeTabletScene();
+            var success = await ChangeTabletScene("Pupil Dynamic Range");
             if (!success)
             {
                 startButton.Enabled = true;
@@ -98,17 +123,14 @@ namespace HTSController
             }
         }
 
-        private async Task<bool> ChangeTabletScene()
+        private async Task<bool> ChangeTabletScene(string sceneName)
         {
-            string sceneName = "Pupil Dynamic Range";
-
             bool success = false;
             _network.SendMessage($"ChangeScene:{sceneName}");
 
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
             {
-                Debug.WriteLine(_network.CurrentScene);
                 await Task.Delay(200);
                 if (_network.CurrentScene.Equals(sceneName))
                 {
@@ -166,7 +188,7 @@ namespace HTSController
             if (parts.Length < 2) return;
 
             string target = parts[0];
-            if (!target.Equals("Pupil Dynamic Range")) return;
+            if (!target.Equals("Pupil Dynamic Range") && !target.Equals("Gaze Calibration")) return;
 
             string command = parts[1];
             string info = (parts.Length > 2) ? parts[2] : "";
@@ -185,6 +207,9 @@ namespace HTSController
                     string filePath = Path.Combine(FileLocations.SubjectDataFolder, info);
                     File.WriteAllText(filePath, data);
                     break;
+                case "Response":
+                    _eyeLink.sendKeybutton(13, 0, 10);
+                    break;
                 case "Error":
                     EndRun("Error", info);
                     break;
@@ -200,12 +225,178 @@ namespace HTSController
             _network.SendMessage("Abort");
         }
 
-        private void TestEyeLink()
+        private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            var e = new SREYELINKLib.EyeLink();
-            e.open("100.1.1.1");
-            e.sendCommand("screen_pixel_coords 0 0 1000 1000");
-            e.sendCommand("calibration_type = HS9");
+            Debug.WriteLine("property changed");
+        }
+
+        private async void gazeStartButton_Click(object sender, EventArgs e)
+        {
+            if (!_network.IsConnected)
+            {
+                gazeLogTextBox.Text = "Not connected to tablet";
+                return;
+            }
+
+            gazeStartButton.Enabled = false;
+
+            gazeLogTextBox.Text = "Starting gaze calibration..." + Environment.NewLine;
+            var success = await ChangeTabletScene("Gaze Calibration");
+            if (!success)
+            {
+                gazeStartButton.Enabled = true;
+                gazeLogTextBox.AppendText("failed to change scene on tablet" + Environment.NewLine);
+                Log.Error("failed to change to gaze calibration scene");
+                return;
+            }
+
+            // Stop EyeLink Interface if it's running
+            _streamManager.Find("EYELINK")?.SendMessage("Abort");
+
+            success = GetTabletScreenSize();
+            if (success)
+            {
+                gazeLogTextBox.AppendText($"- Screen size = {_tabletWidth} x {_tabletHeight}\n\n");
+                gazePicture.Refresh();
+            }
+            else
+            {
+                gazeLogTextBox.AppendText("- Could not retrieve tablet screen size" + Environment.NewLine);
+                Log.Error("could not retrieve tablet screen size");
+                gazeStartButton.Enabled = true;
+                return;
+            }
+            return;
+
+            _network.SendMessage($"Initialize:{KFile.ToXMLString(_gazeSettings)}");
+
+            success = await StartEyeLink();
+            if (!success)
+            {
+                gazeLogTextBox.AppendText("- Could not start EyeLink" + Environment.NewLine);
+                Log.Error("could not start EyeLink");
+                gazeStartButton.Enabled = true;
+                return;
+            }
+
+            _eyeLink.sendKeybutton(99, 0, 10);
+
+            gazeLogTextBox.AppendText("Running..." + Environment.NewLine);
+            gazeCalTimer.Start();
+        }
+
+        private void gazeStopButton_Click(object sender, EventArgs e)
+        {
+            _network.SendMessage("Abort");
+            EndGazeCalibration();
+        }
+
+        private bool GetTabletScreenSize()
+        {
+            bool success = false;
+
+            var response = _network.SendMessageAndReceiveString("GetScreenSize");
+            var parts = response.Split(',');
+            if (parts.Length == 2)
+            {
+                _tabletWidth = int.Parse(parts[0]);
+                _tabletHeight = int.Parse(parts[1]);
+                success = true;
+            }
+
+            return success;
+        }
+
+        private async Task<bool> StartEyeLink()
+        {
+            bool success = false;
+
+            _eyeLink = new EyeLink();
+            _eyeLink.open("100.1.1.1");
+
+            int width = _tabletWidth;
+            int height = _tabletHeight;
+
+            if (_gazeSettings.Width > 0)
+            {
+                width = _gazeSettings.Width;
+                height = _gazeSettings.Height;
+            }
+            _eyeLink.sendCommand($"screen_pixel_coords 0 0 {width} {height}");
+            _eyeLink.sendCommand($"calibration_type = {_gazeSettings.CalibrationType}");
+
+            _busyCal = new EyeLinkUtil().getBusyCal();
+            _busyCal.startCameraSetup();
+
+            var startTime = DateTime.Now;
+            while ((DateTime.Now - startTime).TotalSeconds < 5)
+            {
+                await Task.Delay(200);
+                if (_eyeLink.getTrackerMode() == 3)
+                {
+                    success = true;
+                    break;
+                }
+            }
+
+            return success;
+        }
+
+        private void gazeCalTimer_Tick(object sender, EventArgs e)
+        {
+            if (_busyCal.job == 9)
+            {
+                _busyCal.getCalLocation(out short x, out short y);
+                Log.Information($"target location = {x}, {y}");
+                _targetPoint = new Point(x, y);
+                _network.SendMessage($"Location:{x},{y}");
+                gazePicture.Refresh();
+            }
+            else if (_busyCal.job == 14)
+            {
+                gazeCalTimer.Stop();
+                EndGazeCalibration();
+            }
+        }
+
+        private void EndGazeCalibration()
+        {
+            _eyeLink.exitCalibration();
+            _eyeLink.setOfflineMode();
+            _eyeLink.close();
+        }
+
+        private void gazePicture_Paint(object sender, PaintEventArgs e)
+        {
+            if (_tabletWidth == 0) return;
+
+            float aspectRatio = (float) _tabletWidth / _tabletHeight;
+
+            float width = gazePicture.Width;
+            float height = gazePicture.Width / aspectRatio;
+            if (height > gazePicture.Height)
+            {
+                height = gazePicture.Height;
+                width = height * aspectRatio;
+            }
+
+            float xoff = (gazePicture.Width - width) / 2;
+            float yoff = (gazePicture.Height - height) / 2;
+
+            var rect = new RectangleF(xoff, yoff, width, height);
+            e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(_gazeSettings.BackgroundColor)), rect);
+
+            if (_targetPoint.X >= 0)
+            {
+                float x = xoff + (float)_targetPoint.X / _tabletWidth * width;
+                float y = yoff + (float)_targetPoint.Y / _tabletWidth * height;
+                float size = 10; // width / _gazeSettings.TargetSizeFactor;
+
+
+                rect = new RectangleF(x - size / 2, y - size / 2, size, size);
+
+                e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(_gazeSettings.TargetColor)), rect);
+            }
 
         }
     }

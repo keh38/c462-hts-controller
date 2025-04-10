@@ -28,44 +28,48 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.dataFileTextBox = new System.Windows.Forms.TextBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.startButton = new System.Windows.Forms.Button();
             this.stopButton = new System.Windows.Forms.Button();
             this.logTextBox = new System.Windows.Forms.TextBox();
-            this.calButton = new System.Windows.Forms.Button();
+            this.gazeStartButton = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.dynamicRangePage = new System.Windows.Forms.TabPage();
             this.calibrationPage = new System.Windows.Forms.TabPage();
+            this.gazePicture = new System.Windows.Forms.PictureBox();
+            this.gazeLogTextBox = new System.Windows.Forms.TextBox();
+            this.gazeStopButton = new System.Windows.Forms.Button();
+            this.propertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.gazeCalTimer = new System.Windows.Forms.Timer(this.components);
             this.tabControl.SuspendLayout();
             this.dynamicRangePage.SuspendLayout();
             this.calibrationPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gazePicture)).BeginInit();
             this.SuspendLayout();
             // 
             // dataFileTextBox
             // 
             this.dataFileTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dataFileTextBox.Location = new System.Drawing.Point(7, 58);
-            this.dataFileTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dataFileTextBox.Location = new System.Drawing.Point(5, 47);
             this.dataFileTextBox.Name = "dataFileTextBox";
             this.dataFileTextBox.ReadOnly = true;
-            this.dataFileTextBox.Size = new System.Drawing.Size(357, 22);
+            this.dataFileTextBox.Size = new System.Drawing.Size(268, 20);
             this.dataFileTextBox.TabIndex = 17;
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(7, 90);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.progressBar.Location = new System.Drawing.Point(5, 73);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(357, 18);
+            this.progressBar.Size = new System.Drawing.Size(268, 15);
             this.progressBar.TabIndex = 14;
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(7, 9);
-            this.startButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.startButton.Location = new System.Drawing.Point(5, 7);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(176, 32);
+            this.startButton.Size = new System.Drawing.Size(132, 26);
             this.startButton.TabIndex = 11;
             this.startButton.Text = "Measure dynamic range";
             this.startButton.UseVisualStyleBackColor = true;
@@ -73,10 +77,9 @@
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(258, 9);
-            this.stopButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.stopButton.Location = new System.Drawing.Point(194, 7);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(107, 32);
+            this.stopButton.Size = new System.Drawing.Size(80, 26);
             this.stopButton.TabIndex = 16;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
@@ -86,32 +89,32 @@
             // logTextBox
             // 
             this.logTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.logTextBox.Location = new System.Drawing.Point(6, 116);
-            this.logTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.logTextBox.Location = new System.Drawing.Point(4, 94);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
-            this.logTextBox.Size = new System.Drawing.Size(358, 102);
+            this.logTextBox.Size = new System.Drawing.Size(269, 83);
             this.logTextBox.TabIndex = 18;
             // 
-            // calButton
+            // gazeStartButton
             // 
-            this.calButton.Location = new System.Drawing.Point(7, 7);
-            this.calButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.calButton.Name = "calButton";
-            this.calButton.Size = new System.Drawing.Size(176, 32);
-            this.calButton.TabIndex = 19;
-            this.calButton.Text = "Calibrate gaze";
-            this.calButton.UseVisualStyleBackColor = true;
+            this.gazeStartButton.Location = new System.Drawing.Point(5, 15);
+            this.gazeStartButton.Name = "gazeStartButton";
+            this.gazeStartButton.Size = new System.Drawing.Size(115, 26);
+            this.gazeStartButton.TabIndex = 19;
+            this.gazeStartButton.Text = "Calibrate gaze";
+            this.gazeStartButton.UseVisualStyleBackColor = true;
+            this.gazeStartButton.Click += new System.EventHandler(this.gazeStartButton_Click);
             // 
             // tabControl
             // 
             this.tabControl.Controls.Add(this.dynamicRangePage);
             this.tabControl.Controls.Add(this.calibrationPage);
-            this.tabControl.Location = new System.Drawing.Point(12, 12);
+            this.tabControl.Location = new System.Drawing.Point(9, 10);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(518, 422);
+            this.tabControl.Size = new System.Drawing.Size(468, 376);
             this.tabControl.TabIndex = 20;
             // 
             // dynamicRangePage
@@ -121,38 +124,89 @@
             this.dynamicRangePage.Controls.Add(this.dataFileTextBox);
             this.dynamicRangePage.Controls.Add(this.stopButton);
             this.dynamicRangePage.Controls.Add(this.startButton);
-            this.dynamicRangePage.Location = new System.Drawing.Point(4, 25);
+            this.dynamicRangePage.Location = new System.Drawing.Point(4, 22);
+            this.dynamicRangePage.Margin = new System.Windows.Forms.Padding(2);
             this.dynamicRangePage.Name = "dynamicRangePage";
-            this.dynamicRangePage.Padding = new System.Windows.Forms.Padding(3);
-            this.dynamicRangePage.Size = new System.Drawing.Size(510, 393);
+            this.dynamicRangePage.Padding = new System.Windows.Forms.Padding(2);
+            this.dynamicRangePage.Size = new System.Drawing.Size(460, 350);
             this.dynamicRangePage.TabIndex = 0;
             this.dynamicRangePage.Text = "Dynamic range";
             this.dynamicRangePage.UseVisualStyleBackColor = true;
             // 
             // calibrationPage
             // 
-            this.calibrationPage.Controls.Add(this.calButton);
-            this.calibrationPage.Location = new System.Drawing.Point(4, 25);
+            this.calibrationPage.BackColor = System.Drawing.SystemColors.Control;
+            this.calibrationPage.Controls.Add(this.gazePicture);
+            this.calibrationPage.Controls.Add(this.gazeLogTextBox);
+            this.calibrationPage.Controls.Add(this.gazeStopButton);
+            this.calibrationPage.Controls.Add(this.propertyGrid);
+            this.calibrationPage.Controls.Add(this.gazeStartButton);
+            this.calibrationPage.Location = new System.Drawing.Point(4, 22);
+            this.calibrationPage.Margin = new System.Windows.Forms.Padding(2);
             this.calibrationPage.Name = "calibrationPage";
-            this.calibrationPage.Padding = new System.Windows.Forms.Padding(3);
-            this.calibrationPage.Size = new System.Drawing.Size(510, 393);
+            this.calibrationPage.Padding = new System.Windows.Forms.Padding(2);
+            this.calibrationPage.Size = new System.Drawing.Size(460, 350);
             this.calibrationPage.TabIndex = 1;
             this.calibrationPage.Text = "Calibration";
-            this.calibrationPage.UseVisualStyleBackColor = true;
+            // 
+            // gazePicture
+            // 
+            this.gazePicture.Location = new System.Drawing.Point(5, 47);
+            this.gazePicture.Name = "gazePicture";
+            this.gazePicture.Size = new System.Drawing.Size(218, 180);
+            this.gazePicture.TabIndex = 23;
+            this.gazePicture.TabStop = false;
+            this.gazePicture.Paint += new System.Windows.Forms.PaintEventHandler(this.gazePicture_Paint);
+            // 
+            // gazeLogTextBox
+            // 
+            this.gazeLogTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.gazeLogTextBox.Location = new System.Drawing.Point(5, 238);
+            this.gazeLogTextBox.Multiline = true;
+            this.gazeLogTextBox.Name = "gazeLogTextBox";
+            this.gazeLogTextBox.ReadOnly = true;
+            this.gazeLogTextBox.Size = new System.Drawing.Size(218, 91);
+            this.gazeLogTextBox.TabIndex = 22;
+            // 
+            // gazeStopButton
+            // 
+            this.gazeStopButton.Location = new System.Drawing.Point(143, 15);
+            this.gazeStopButton.Name = "gazeStopButton";
+            this.gazeStopButton.Size = new System.Drawing.Size(80, 26);
+            this.gazeStopButton.TabIndex = 21;
+            this.gazeStopButton.Text = "Stop";
+            this.gazeStopButton.UseVisualStyleBackColor = true;
+            this.gazeStopButton.Visible = false;
+            this.gazeStopButton.Click += new System.EventHandler(this.gazeStopButton_Click);
+            // 
+            // propertyGrid
+            // 
+            this.propertyGrid.Location = new System.Drawing.Point(229, 15);
+            this.propertyGrid.Name = "propertyGrid";
+            this.propertyGrid.Size = new System.Drawing.Size(226, 314);
+            this.propertyGrid.TabIndex = 20;
+            this.propertyGrid.ToolbarVisible = false;
+            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
+            // 
+            // gazeCalTimer
+            // 
+            this.gazeCalTimer.Interval = 5;
+            this.gazeCalTimer.Tick += new System.EventHandler(this.gazeCalTimer_Tick);
             // 
             // PupillometryForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(547, 459);
+            this.ClientSize = new System.Drawing.Size(489, 399);
             this.Controls.Add(this.tabControl);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "PupillometryForm";
             this.Text = "PupillometryForm";
             this.tabControl.ResumeLayout(false);
             this.dynamicRangePage.ResumeLayout(false);
             this.dynamicRangePage.PerformLayout();
             this.calibrationPage.ResumeLayout(false);
+            this.calibrationPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gazePicture)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -164,9 +218,14 @@
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.Button stopButton;
         private System.Windows.Forms.TextBox logTextBox;
-        private System.Windows.Forms.Button calButton;
+        private System.Windows.Forms.Button gazeStartButton;
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage dynamicRangePage;
         private System.Windows.Forms.TabPage calibrationPage;
+        private System.Windows.Forms.PictureBox gazePicture;
+        private System.Windows.Forms.TextBox gazeLogTextBox;
+        private System.Windows.Forms.Button gazeStopButton;
+        private System.Windows.Forms.PropertyGrid propertyGrid;
+        private System.Windows.Forms.Timer gazeCalTimer;
     }
 }

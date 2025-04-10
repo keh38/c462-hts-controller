@@ -49,6 +49,11 @@ namespace HTSController.Data_Streams
 
         public List<string> ProblemStreams { get { return _problemChildren; } }
 
+        public DataStream Find(string name)
+        {
+            return _streams.Find(x => x.MulticastName == name);
+        }
+
         public DataStreamManager()
         {
             if (File.Exists(ConfigFile))
