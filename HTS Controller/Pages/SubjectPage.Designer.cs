@@ -35,6 +35,8 @@
             this.createButton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.transducerDropDown = new System.Windows.Forms.ComboBox();
+            this.colorBox = new KLib.Controls.KColorBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -111,11 +113,32 @@
             this.transducerDropDown.TabIndex = 8;
             this.transducerDropDown.SelectedIndexChanged += new System.EventHandler(this.transducerDropDown_SelectedIndexChanged);
             // 
+            // colorBox
+            // 
+            this.colorBox.Location = new System.Drawing.Point(40, 218);
+            this.colorBox.Name = "colorBox";
+            this.colorBox.Size = new System.Drawing.Size(121, 20);
+            this.colorBox.TabIndex = 10;
+            this.colorBox.Value = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.colorBox.ValueAsUInt = ((uint)(4294967295u));
+            this.colorBox.ValueChanged += new System.EventHandler(this.colorBox_ValueChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(37, 202);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(91, 13);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Background color";
+            // 
             // SubjectPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.colorBox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.transducerDropDown);
             this.Controls.Add(this.createButton);
@@ -139,5 +162,7 @@
         private System.Windows.Forms.Button createButton;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox transducerDropDown;
+        private KLib.Controls.KColorBox colorBox;
+        private System.Windows.Forms.Label label4;
     }
 }

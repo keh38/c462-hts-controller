@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.4 (unreleased)
+#### Added
+- gaze calibration
+- subject-specific background color
+
+---
+
 ### v0.3 (2025-04-10)
 #### Fixed
 - change data folder when subject is Changed

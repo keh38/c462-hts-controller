@@ -127,6 +127,7 @@ namespace HTSController.Pages
             _ignoreEvents = true;
 
             transducerDropDown.SelectedIndex = itransducer;
+            colorBox.Value = Color.FromArgb(_subjectMetadata.BackgroundColor);
 
             _ignoreEvents = currentIgnore;
 
@@ -180,6 +181,15 @@ namespace HTSController.Pages
                 _subjectMetadata.Transducer = transducerDropDown.Text;
                 _network.SendMessage($"SetSubjectMetadata:{KLib.KFile.ToXMLString(_subjectMetadata)}");
 
+            }
+        }
+
+        private void colorBox_ValueChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                _subjectMetadata.BackgroundColor = (int) colorBox.ValueAsUInt;
+                _network.SendMessage($"SetSubjectMetadata:{KLib.KFile.ToXMLString(_subjectMetadata)}");
             }
         }
     }

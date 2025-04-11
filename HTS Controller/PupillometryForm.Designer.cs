@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.dataFileTextBox = new System.Windows.Forms.TextBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.startButton = new System.Windows.Forms.Button();
@@ -42,7 +41,6 @@
             this.gazeLogTextBox = new System.Windows.Forms.TextBox();
             this.gazeStopButton = new System.Windows.Forms.Button();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
-            this.gazeCalTimer = new System.Windows.Forms.Timer(this.components);
             this.tabControl.SuspendLayout();
             this.dynamicRangePage.SuspendLayout();
             this.calibrationPage.SuspendLayout();
@@ -53,7 +51,7 @@
             // 
             this.dataFileTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.dataFileTextBox.Location = new System.Drawing.Point(7, 58);
-            this.dataFileTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dataFileTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.dataFileTextBox.Name = "dataFileTextBox";
             this.dataFileTextBox.ReadOnly = true;
             this.dataFileTextBox.Size = new System.Drawing.Size(357, 22);
@@ -62,7 +60,7 @@
             // progressBar
             // 
             this.progressBar.Location = new System.Drawing.Point(7, 90);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(4);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(357, 18);
             this.progressBar.TabIndex = 14;
@@ -70,7 +68,7 @@
             // startButton
             // 
             this.startButton.Location = new System.Drawing.Point(7, 9);
-            this.startButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.startButton.Margin = new System.Windows.Forms.Padding(4);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(176, 32);
             this.startButton.TabIndex = 11;
@@ -81,7 +79,7 @@
             // stopButton
             // 
             this.stopButton.Location = new System.Drawing.Point(259, 9);
-            this.stopButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.stopButton.Margin = new System.Windows.Forms.Padding(4);
             this.stopButton.Name = "stopButton";
             this.stopButton.Size = new System.Drawing.Size(107, 32);
             this.stopButton.TabIndex = 16;
@@ -94,7 +92,7 @@
             // 
             this.logTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.logTextBox.Location = new System.Drawing.Point(5, 116);
-            this.logTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.logTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
@@ -104,7 +102,7 @@
             // gazeStartButton
             // 
             this.gazeStartButton.Location = new System.Drawing.Point(7, 18);
-            this.gazeStartButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gazeStartButton.Margin = new System.Windows.Forms.Padding(4);
             this.gazeStartButton.Name = "gazeStartButton";
             this.gazeStartButton.Size = new System.Drawing.Size(153, 32);
             this.gazeStartButton.TabIndex = 19;
@@ -158,7 +156,7 @@
             // gazePicture
             // 
             this.gazePicture.Location = new System.Drawing.Point(7, 58);
-            this.gazePicture.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gazePicture.Margin = new System.Windows.Forms.Padding(4);
             this.gazePicture.Name = "gazePicture";
             this.gazePicture.Size = new System.Drawing.Size(291, 222);
             this.gazePicture.TabIndex = 23;
@@ -169,7 +167,7 @@
             // 
             this.gazeLogTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.gazeLogTextBox.Location = new System.Drawing.Point(7, 293);
-            this.gazeLogTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gazeLogTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.gazeLogTextBox.Multiline = true;
             this.gazeLogTextBox.Name = "gazeLogTextBox";
             this.gazeLogTextBox.ReadOnly = true;
@@ -179,28 +177,24 @@
             // gazeStopButton
             // 
             this.gazeStopButton.Location = new System.Drawing.Point(191, 18);
-            this.gazeStopButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gazeStopButton.Margin = new System.Windows.Forms.Padding(4);
             this.gazeStopButton.Name = "gazeStopButton";
             this.gazeStopButton.Size = new System.Drawing.Size(107, 32);
             this.gazeStopButton.TabIndex = 21;
             this.gazeStopButton.Text = "Stop";
             this.gazeStopButton.UseVisualStyleBackColor = true;
+            this.gazeStopButton.Visible = false;
             this.gazeStopButton.Click += new System.EventHandler(this.gazeStopButton_Click);
             // 
             // propertyGrid
             // 
             this.propertyGrid.Location = new System.Drawing.Point(305, 18);
-            this.propertyGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.propertyGrid.Margin = new System.Windows.Forms.Padding(4);
             this.propertyGrid.Name = "propertyGrid";
             this.propertyGrid.Size = new System.Drawing.Size(301, 386);
             this.propertyGrid.TabIndex = 20;
             this.propertyGrid.ToolbarVisible = false;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
-            // 
-            // gazeCalTimer
-            // 
-            this.gazeCalTimer.Interval = 5;
-            this.gazeCalTimer.Tick += new System.EventHandler(this.gazeCalTimer_Tick);
             // 
             // PupillometryForm
             // 
@@ -208,7 +202,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(652, 491);
             this.Controls.Add(this.tabControl);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "PupillometryForm";
             this.Text = "PupillometryForm";
             this.tabControl.ResumeLayout(false);
@@ -236,6 +230,5 @@
         private System.Windows.Forms.TextBox gazeLogTextBox;
         private System.Windows.Forms.Button gazeStopButton;
         private System.Windows.Forms.PropertyGrid propertyGrid;
-        private System.Windows.Forms.Timer gazeCalTimer;
     }
 }

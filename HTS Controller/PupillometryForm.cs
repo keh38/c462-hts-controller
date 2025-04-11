@@ -218,6 +218,9 @@ namespace HTSController
                 case "Finished":
                     EndRun("Finished", info);
                     break;
+                case "GazeCalibrationFinished":
+                    _stopCal = true;
+                    break;
             }
         }
 
@@ -283,7 +286,6 @@ namespace HTSController
 
             gazeLogTextBox.AppendText("- Running..." + Environment.NewLine);
             await Task.Run(() => PollForJobs());
-            //gazeCalTimer.Start();
         }
 
         private void PollForJobs()
@@ -308,7 +310,11 @@ namespace HTSController
                     break;
                 }
 
-                if (_stopCal) break;
+                if (_stopCal)
+                {
+                    Thread.Sleep(200);
+                    break;
+                }
 
                 Thread.Sleep(1);
                 job = _busyCal.job;
@@ -321,7 +327,6 @@ namespace HTSController
         {
             _stopCal = true;
             _network.SendMessage("Abort");
-            //EndGazeCalibration();
         }
 
         private bool GetTabletScreenSize()
@@ -374,29 +379,16 @@ namespace HTSController
             return success;
         }
 
-        private void gazeCalTimer_Tick(object sender, EventArgs e)
-        {
-            var job = _busyCal.job;
-            if (_busyCal.job == 9)
-            {
-                _busyCal.getCalLocation(out short x, out short y);
-                Log.Information($"target location = {x}, {y}");
-                _targetPoint = new Point(x, y);
-                _network.SendMessage($"Location:{x},{y}");
-                gazePicture.Refresh();
-            }
-            else if (_busyCal.job == 14)
-            {
-                gazeCalTimer.Stop();
-                EndGazeCalibration();
-            }
-        }
-
         private void EndGazeCalibration()
         {
             _eyeLink.exitCalibration();
             _eyeLink.setOfflineMode();
             _eyeLink.close();
+
+            gazeStopButton.Visible = false;
+            gazeStartButton.Enabled = true;
+
+            _streamManager.Find("EYELINK")?.SendMessage("Free Run");
         }
 
         private void gazePicture_Paint(object sender, PaintEventArgs e)
@@ -422,9 +414,8 @@ namespace HTSController
             if (_targetPoint.X >= 0)
             {
                 float x = xoff + (float)_targetPoint.X / _tabletWidth * width;
-                float y = yoff + (float)_targetPoint.Y / _tabletWidth * height;
-                float size = 10; // width / _gazeSettings.TargetSizeFactor;
-
+                float y = yoff + (float)_targetPoint.Y / _tabletHeight * height;
+                float size = 10; 
 
                 rect = new RectangleF(x - size / 2, y - size / 2, size, size);
 
