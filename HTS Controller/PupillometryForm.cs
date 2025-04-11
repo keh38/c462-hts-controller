@@ -285,6 +285,8 @@ namespace HTSController
             }
 
             gazeLogTextBox.AppendText("- Running..." + Environment.NewLine);
+            gazeStopButton.Visible = true;
+
             await Task.Run(() => PollForJobs());
         }
 
@@ -387,6 +389,10 @@ namespace HTSController
 
             gazeStopButton.Visible = false;
             gazeStartButton.Enabled = true;
+
+            gazeLogTextBox.AppendText(" - finished." + Environment.NewLine);
+            _targetPoint = new Point(-1, -1);
+            gazePicture.Refresh();
 
             _streamManager.Find("EYELINK")?.SendMessage("Free Run");
         }
