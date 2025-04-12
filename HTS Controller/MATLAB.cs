@@ -15,6 +15,10 @@ namespace HTSController
     {
         private static dynamic _engine;
 
+        public delegate void UpdateMetricsDelegate(MATLABStruct data);
+        public static UpdateMetricsDelegate UpdateMetrics;
+        private static void OnUpdateMetrics(MATLABStruct data) { UpdateMetrics?.Invoke(data); }
+
         public static bool IsInitialized { get; private set; }
 
         public async static Task<bool> Initialize()
@@ -45,13 +49,31 @@ namespace HTSController
             }
         }
 
-        public static double RunFunction(string functionName, string dataFilePath)
+        public static string RunFunction(string functionName, string dataFilePath)
         {
-            double result = double.NaN;
+            string result = "";
 
             if (IsInitialized)
             {
-                result = _engine.eval($"{functionName}('{dataFilePath}')");
+                try
+                {
+                    MATLABStruct data = _engine.eval($"{functionName}('{dataFilePath}')");
+                    foreach (var n in data.GetFieldNames())
+                    {
+                        string value = "";
+                        dynamic x = data.GetField(n);
+                        try { value = x; } catch { double dval = x; value = dval.ToString(); }
+                        result += $"{n} = {value}" + Environment.NewLine;
+
+                        OnUpdateMetrics(data);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result = "Error evaluating MATLAB function";
+                    Log.Error($"Error evaluating MATLAB function '{functionName}'");
+                }
+
             }
 
             return result;

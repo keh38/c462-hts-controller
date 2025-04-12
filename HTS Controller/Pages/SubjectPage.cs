@@ -13,6 +13,8 @@ using Serilog;
 
 using KLib.Controls;
 
+using MathWorks.MATLAB.Types;
+
 namespace HTSController.Pages
 {
     [DefaultEvent(nameof(ValueChanged))]
@@ -57,6 +59,25 @@ namespace HTSController.Pages
             projectDropDown.Items.Clear();
             projectDropDown.Items.AddRange(projects.ToArray());
             projectDropDown.SelectedIndex = projects.IndexOf(Project);
+        }
+
+        public void UpdateMetrics(MATLABStruct data)
+        {
+            try
+            {
+                foreach (var n in data.GetFieldNames())
+                {
+                    string value = "";
+                    dynamic x = data.GetField(n);
+                    try { value = x; } catch { double dval = x; value = dval.ToString(); }
+
+                    Log.Information($"Set metric {n} = '{value}'");
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         private void projectDropDown_KeyDown(object sender, KeyEventArgs e)
@@ -127,7 +148,12 @@ namespace HTSController.Pages
             _ignoreEvents = true;
 
             transducerDropDown.SelectedIndex = itransducer;
-            colorBox.Value = Color.FromArgb(_subjectMetadata.BackgroundColor);
+
+            metricGridView.Rows.Clear();
+            foreach (var entry in _subjectMetadata.metrics.entries)
+            {
+                metricGridView.Rows.Add(entry.key, entry.value);
+            }
 
             _ignoreEvents = currentIgnore;
 
@@ -184,13 +210,55 @@ namespace HTSController.Pages
             }
         }
 
-        private void colorBox_ValueChanged(object sender, EventArgs e)
+        private void applyButton_Click(object sender, EventArgs e)
         {
-            if (!_ignoreEvents)
+
+        }
+
+        /*private void metricGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (!_ignoreEvents && metricGridView.CurrentCell != null)
             {
-                _subjectMetadata.BackgroundColor = (int) colorBox.ValueAsUInt;
-                _network.SendMessage($"SetSubjectMetadata:{KLib.KFile.ToXMLString(_subjectMetadata)}");
+                int rowIndex = metricGridView.CurrentCell.RowIndex;
+                var cells = metricGridView.Rows[rowIndex].Cells;
+
+                if (metricGridView.CurrentCell.ColumnIndex == 0)
+                {
+                    string metricName = cells["MetricName"].Value as string;
+                    if (rowIndex == _settings.metricTable.Count)
+                    {
+                        _settings.metricTable.Add(new MetricTableEntry(metricName, float.NaN));
+                    }
+                    else
+                    {
+                        _settings.metricTable[rowIndex].name = metricName;
+                    }
+                    MetricTableToMetricDictionary();
+                    SaveDefaults();
+                }
+                else if (metricGridView.CurrentCell.ColumnIndex == 1)
+                {
+                    _settings.metricTable[rowIndex].value = (float)Convert.ToDouble(cells["MetricValue"].Value as string);
+                    MetricTableToMetricDictionary();
+                    SaveDefaults();
+                }
             }
         }
+
+        private void metricGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            _settings.metricTable.RemoveAt(e.Row.Index);
+            MetricTableToMetricDictionary();
+            SaveDefaults();
+        }
+
+        private void MetricTableToMetricDictionary()
+        {
+            Expressions.Metrics.Clear();
+            foreach (MetricTableEntry te in _settings.metricTable)
+                Expressions.Metrics.Add(te.name, new MetricData(DateTime.Now, te.value));
+
+        }
+        */
     }
 }

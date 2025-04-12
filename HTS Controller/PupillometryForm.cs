@@ -41,6 +41,7 @@ namespace HTSController
         private BusyCal _busyCal;
 
         bool _stopCal = false;
+        bool _ignoreEvents = false;
 
         public PupillometryForm(HTSNetwork network, DataStreamManager streamManager)
         {
@@ -75,9 +76,19 @@ namespace HTSController
             propertyGrid.SelectedObject = _gazeSettings;
 
             matlabDropDown.Items.Clear();
-            foreach (var f in Directory.EnumerateFiles(FileLocations.GetMATLABFolder("+pupil"), "*.m"))
+            var mfiles = Directory.EnumerateFiles(FileLocations.GetMATLABFolder("+pupil"), "*.m")
+                .Select(x => Path.GetFileNameWithoutExtension(x))
+                .ToList();
+
+            matlabDropDown.Items.AddRange(mfiles.ToArray());
+            matlabDropDown.Items.Add("");
+
+            var lastmFile = HTSControllerSettings.GetLastUsed("PupilFunction");
+            if (!string.IsNullOrEmpty(lastmFile))
             {
-                matlabDropDown.Items.Add(Path.GetFileNameWithoutExtension(f));
+                _ignoreEvents = true;
+                matlabDropDown.SelectedIndex = mfiles.IndexOf(lastmFile);
+                _ignoreEvents = false;
             }
         }
 
@@ -444,15 +455,18 @@ namespace HTSController
                 var functionName = matlabDropDown.SelectedItem.ToString();
                 if (!string.IsNullOrEmpty(functionName))
                 {
-                    double x = MATLAB.RunFunction($"pupil.{functionName}", "shitbag");
-                    Debug.WriteLine($"x = {x}");
+                    var result = MATLAB.RunFunction($"pupil.{functionName}", "shitbag");
+                    logTextBox.AppendText(result);
                 }
             }
         }
 
         private void matlabDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if (!_ignoreEvents)
+            {
+                HTSControllerSettings.SetLastUsed("PupilFunction", matlabDropDown.SelectedItem.ToString());
+            }
         }
     }
 }
