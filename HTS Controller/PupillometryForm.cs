@@ -19,6 +19,8 @@ using HTSController.Data_Streams;
 using Serilog;
 
 using SREYELINKLib;
+using MathWorks.MATLAB.Engine;
+using MathWorks.MATLAB.Types;
 
 namespace HTSController
 {
@@ -428,6 +430,18 @@ namespace HTSController
                 e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(_gazeSettings.TargetColor)), rect);
             }
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string[] names = MATLABEngine.FindMATLAB();
+            Debug.WriteLine($"num shared sessions = {names.Length}");
+            //foreach (var n in names) Debug.WriteLine(n);
+            dynamic eng = MATLABEngine.StartMATLAB();
+            {
+                double x = eng.eval("fuckyou('shit dude')");
+                Debug.WriteLine($"x = {x}");
+            }
         }
     }
 }
