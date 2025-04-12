@@ -71,12 +71,14 @@ namespace HTSController.Pages
                     dynamic x = data.GetField(n);
                     try { value = x; } catch { double dval = x; value = dval.ToString(); }
 
+                    _subjectMetadata.metrics[n] = value;
                     Log.Information($"Set metric {n} = '{value}'");
+                    ApplyMetrics();
                 }
             }
             catch (Exception ex)
             {
-
+                Log.Error($"Failed to update metrics: {ex.Message}");
             }
         }
 
@@ -148,12 +150,7 @@ namespace HTSController.Pages
             _ignoreEvents = true;
 
             transducerDropDown.SelectedIndex = itransducer;
-
-            metricGridView.Rows.Clear();
-            foreach (var entry in _subjectMetadata.metrics.entries)
-            {
-                metricGridView.Rows.Add(entry.key, entry.value);
-            }
+            ShowMetrics();
 
             _ignoreEvents = currentIgnore;
 
@@ -206,59 +203,65 @@ namespace HTSController.Pages
             {
                 _subjectMetadata.Transducer = transducerDropDown.Text;
                 _network.SendMessage($"SetSubjectMetadata:{KLib.KFile.ToXMLString(_subjectMetadata)}");
-
             }
         }
 
         private void applyButton_Click(object sender, EventArgs e)
         {
-
+            ApplyMetrics();
         }
 
-        /*private void metricGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void ApplyMetrics()
         {
-            if (!_ignoreEvents && metricGridView.CurrentCell != null)
-            {
-                int rowIndex = metricGridView.CurrentCell.RowIndex;
-                var cells = metricGridView.Rows[rowIndex].Cells;
+            _network.SendMessage($"SetSubjectMetrics:{KLib.KFile.ToXMLString(_subjectMetadata.metrics)}");
+            ShowMetrics();
+            applyButton.Visible = false;
+        }
 
-                if (metricGridView.CurrentCell.ColumnIndex == 0)
+        private void ShowMetrics()
+        {
+            _subjectMetadata.metrics.Sort();
+            metricGridView.Rows.Clear();
+            foreach (var entry in _subjectMetadata.metrics.entries)
+            {
+                metricGridView.Rows.Add(entry.key, entry.value);
+            }
+        }
+
+        private void metricGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (_ignoreEvents || metricGridView.CurrentCell == null) return;
+
+            int rowIndex = metricGridView.CurrentCell.RowIndex;
+            var cells = metricGridView.Rows[rowIndex].Cells;
+            string metricName = cells["MetricName"].Value as string;
+
+            if (metricGridView.CurrentCell.ColumnIndex == 0)
+            {
+                if (rowIndex == _subjectMetadata.metrics.entries.Count)
                 {
-                    string metricName = cells["MetricName"].Value as string;
-                    if (rowIndex == _settings.metricTable.Count)
-                    {
-                        _settings.metricTable.Add(new MetricTableEntry(metricName, float.NaN));
-                    }
-                    else
-                    {
-                        _settings.metricTable[rowIndex].name = metricName;
-                    }
-                    MetricTableToMetricDictionary();
-                    SaveDefaults();
+                    _subjectMetadata.metrics[metricName] = "";
                 }
-                else if (metricGridView.CurrentCell.ColumnIndex == 1)
-                {
-                    _settings.metricTable[rowIndex].value = (float)Convert.ToDouble(cells["MetricValue"].Value as string);
-                    MetricTableToMetricDictionary();
-                    SaveDefaults();
+                else
+                { 
+                    _subjectMetadata.metrics.RenameKey(rowIndex, metricName);
                 }
             }
+            else if (metricGridView.CurrentCell.ColumnIndex == 1)
+            {
+                _subjectMetadata.metrics[metricName] = cells["MetricValue"].Value.ToString();
+            }
+
+            applyButton.Visible = true;
         }
 
         private void metricGridView_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
-            _settings.metricTable.RemoveAt(e.Row.Index);
-            MetricTableToMetricDictionary();
-            SaveDefaults();
+            var metricName = e.Row.Cells["MetricName"].Value.ToString();
+            _subjectMetadata.metrics.RemoveKey(metricName);
+
+            applyButton.Visible = true;
         }
 
-        private void MetricTableToMetricDictionary()
-        {
-            Expressions.Metrics.Clear();
-            foreach (MetricTableEntry te in _settings.metricTable)
-                Expressions.Metrics.Add(te.name, new MetricData(DateTime.Now, te.value));
-
-        }
-        */
     }
 }
