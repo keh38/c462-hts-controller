@@ -191,6 +191,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="HTSNetwork.cs" />
+    <Compile Include="MATLAB.cs" />
     <Compile Include="Pages\TurandotPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -297,6 +298,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\eye-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Matlab_Logo-32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

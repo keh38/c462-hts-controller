@@ -73,6 +73,12 @@ namespace HTSController
             }
 
             propertyGrid.SelectedObject = _gazeSettings;
+
+            matlabDropDown.Items.Clear();
+            foreach (var f in Directory.EnumerateFiles(FileLocations.GetMATLABFolder("+pupil"), "*.m"))
+            {
+                matlabDropDown.Items.Add(Path.GetFileNameWithoutExtension(f));
+            }
         }
 
         private async void startButton_Click(object sender, EventArgs e)
@@ -429,19 +435,24 @@ namespace HTSController
 
                 e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(_gazeSettings.TargetColor)), rect);
             }
-
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void runButton_Click(object sender, EventArgs e)
         {
-            string[] names = MATLABEngine.FindMATLAB();
-            Debug.WriteLine($"num shared sessions = {names.Length}");
-            //foreach (var n in names) Debug.WriteLine(n);
-            dynamic eng = MATLABEngine.StartMATLAB();
+            if (MATLAB.IsInitialized)
             {
-                double x = eng.eval("fuckyou('shit dude')");
-                Debug.WriteLine($"x = {x}");
+                var functionName = matlabDropDown.SelectedItem.ToString();
+                if (!string.IsNullOrEmpty(functionName))
+                {
+                    double x = MATLAB.RunFunction($"pupil.{functionName}", "shitbag");
+                    Debug.WriteLine($"x = {x}");
+                }
             }
+        }
+
+        private void matlabDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

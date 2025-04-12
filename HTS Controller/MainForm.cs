@@ -36,6 +36,7 @@ namespace HTSController
         public MainForm()
         {
             InitializeComponent();
+            tableLayoutPanel.ColumnStyles[1].Width = 0;
 
             _menu = new List<Tuple<CheckBox, TabPage>>();
             _menu.Add(new Tuple<CheckBox, TabPage>(subjectButton, subjectPage));
@@ -85,12 +86,15 @@ namespace HTSController
             _network.StartListener();
 
             connectionStatusLabel.Image = imageList.Images[0];
-            connectionStatusLabel.Text = "No tablet connection, retrying..."; // (double-click to retry)";
+            connectionStatusLabel.Text = "No tablet connection yet"; // (double-click to retry)";
 
             _streamManager = new DataStreamManager();
-            _streamManager.Initialize(_network, flowLayoutPanel1);
+            _streamManager.Initialize(_network, ipcLayoutPanel);
 
             connectionTimer.Start();
+
+            var haveMATLAB = await MATLAB.Initialize();
+            matlabStatusLabel.Visible = haveMATLAB;
         }
 
         private async void connectionTimer_Tick(object sender, EventArgs e)

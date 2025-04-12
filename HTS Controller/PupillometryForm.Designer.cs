@@ -36,12 +36,14 @@
             this.gazeStartButton = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.dynamicRangePage = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.matlabDropDown = new System.Windows.Forms.ComboBox();
+            this.runButton = new System.Windows.Forms.Button();
             this.calibrationPage = new System.Windows.Forms.TabPage();
             this.gazePicture = new System.Windows.Forms.PictureBox();
             this.gazeLogTextBox = new System.Windows.Forms.TextBox();
             this.gazeStopButton = new System.Windows.Forms.Button();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
-            this.button1 = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.dynamicRangePage.SuspendLayout();
             this.calibrationPage.SuspendLayout();
@@ -110,7 +112,7 @@
             this.tabControl.Controls.Add(this.dynamicRangePage);
             this.tabControl.Controls.Add(this.calibrationPage);
             this.tabControl.Location = new System.Drawing.Point(9, 10);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(468, 376);
@@ -118,20 +120,51 @@
             // 
             // dynamicRangePage
             // 
-            this.dynamicRangePage.Controls.Add(this.button1);
+            this.dynamicRangePage.Controls.Add(this.label1);
+            this.dynamicRangePage.Controls.Add(this.matlabDropDown);
+            this.dynamicRangePage.Controls.Add(this.runButton);
             this.dynamicRangePage.Controls.Add(this.logTextBox);
             this.dynamicRangePage.Controls.Add(this.progressBar);
             this.dynamicRangePage.Controls.Add(this.dataFileTextBox);
             this.dynamicRangePage.Controls.Add(this.stopButton);
             this.dynamicRangePage.Controls.Add(this.startButton);
             this.dynamicRangePage.Location = new System.Drawing.Point(4, 22);
-            this.dynamicRangePage.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dynamicRangePage.Margin = new System.Windows.Forms.Padding(2);
             this.dynamicRangePage.Name = "dynamicRangePage";
-            this.dynamicRangePage.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dynamicRangePage.Padding = new System.Windows.Forms.Padding(2);
             this.dynamicRangePage.Size = new System.Drawing.Size(460, 350);
             this.dynamicRangePage.TabIndex = 0;
             this.dynamicRangePage.Text = "Dynamic range";
             this.dynamicRangePage.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(5, 192);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(131, 13);
+            this.label1.TabIndex = 21;
+            this.label1.Text = "MATLAB analysis function";
+            // 
+            // matlabDropDown
+            // 
+            this.matlabDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.matlabDropDown.FormattingEnabled = true;
+            this.matlabDropDown.Location = new System.Drawing.Point(3, 208);
+            this.matlabDropDown.Name = "matlabDropDown";
+            this.matlabDropDown.Size = new System.Drawing.Size(175, 21);
+            this.matlabDropDown.TabIndex = 20;
+            this.matlabDropDown.SelectedIndexChanged += new System.EventHandler(this.matlabDropDown_SelectedIndexChanged);
+            // 
+            // runButton
+            // 
+            this.runButton.Location = new System.Drawing.Point(194, 208);
+            this.runButton.Name = "runButton";
+            this.runButton.Size = new System.Drawing.Size(75, 23);
+            this.runButton.TabIndex = 19;
+            this.runButton.Text = "Run";
+            this.runButton.UseVisualStyleBackColor = true;
+            this.runButton.Click += new System.EventHandler(this.runButton_Click);
             // 
             // calibrationPage
             // 
@@ -142,9 +175,9 @@
             this.calibrationPage.Controls.Add(this.propertyGrid);
             this.calibrationPage.Controls.Add(this.gazeStartButton);
             this.calibrationPage.Location = new System.Drawing.Point(4, 22);
-            this.calibrationPage.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.calibrationPage.Margin = new System.Windows.Forms.Padding(2);
             this.calibrationPage.Name = "calibrationPage";
-            this.calibrationPage.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.calibrationPage.Padding = new System.Windows.Forms.Padding(2);
             this.calibrationPage.Size = new System.Drawing.Size(460, 350);
             this.calibrationPage.TabIndex = 1;
             this.calibrationPage.Text = "Calibration";
@@ -188,16 +221,6 @@
             this.propertyGrid.ToolbarVisible = false;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(95, 239);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 19;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // PupillometryForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -231,6 +254,8 @@
         private System.Windows.Forms.TextBox gazeLogTextBox;
         private System.Windows.Forms.Button gazeStopButton;
         private System.Windows.Forms.PropertyGrid propertyGrid;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button runButton;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox matlabDropDown;
     }
 }

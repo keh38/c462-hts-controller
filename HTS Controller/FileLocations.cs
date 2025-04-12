@@ -29,5 +29,10 @@ namespace HTSController
                 Directory.CreateDirectory(SubjectDataFolder);
             }
         }
+        private static string MATLABFolder { get { return Path.Combine(RootFolder, "MATLAB"); } }
+        public static string GetMATLABFolder(string subFolder)
+        {
+            return Path.Combine(MATLABFolder, subFolder);
+        }
     }
 }
