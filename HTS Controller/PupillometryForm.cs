@@ -19,8 +19,8 @@ using HTSController.Data_Streams;
 using Serilog;
 
 using SREYELINKLib;
-using MathWorks.MATLAB.Engine;
-using MathWorks.MATLAB.Types;
+//using MathWorks.MATLAB.Engine;
+//using MathWorks.MATLAB.Types;
 
 namespace HTSController
 {
@@ -76,19 +76,21 @@ namespace HTSController
             propertyGrid.SelectedObject = _gazeSettings;
 
             matlabDropDown.Items.Clear();
-            var mfiles = Directory.EnumerateFiles(FileLocations.GetMATLABFolder("+pupil"), "*.m")
-                .Select(x => Path.GetFileNameWithoutExtension(x))
-                .ToList();
-
-            matlabDropDown.Items.AddRange(mfiles.ToArray());
-            matlabDropDown.Items.Add("");
-
-            var lastmFile = HTSControllerSettings.GetLastUsed("PupilFunction");
-            if (!string.IsNullOrEmpty(lastmFile))
+            if (Directory.Exists(FileLocations.GetMATLABFolder("+pupil")))
             {
-                _ignoreEvents = true;
-                matlabDropDown.SelectedIndex = mfiles.IndexOf(lastmFile);
-                _ignoreEvents = false;
+                var mfiles = Directory.EnumerateFiles(FileLocations.GetMATLABFolder("+pupil"), "*.m")
+                    .Select(x => Path.GetFileNameWithoutExtension(x))
+                    .ToList();
+
+                matlabDropDown.Items.AddRange(mfiles.ToArray());
+                matlabDropDown.Items.Add("");
+                var lastmFile = HTSControllerSettings.GetLastUsed("PupilFunction");
+                if (!string.IsNullOrEmpty(lastmFile))
+                {
+                    _ignoreEvents = true;
+                    matlabDropDown.SelectedIndex = mfiles.IndexOf(lastmFile);
+                    _ignoreEvents = false;
+                }
             }
         }
 

@@ -95,7 +95,7 @@ namespace HTSController
 
             var haveMATLAB = await MATLAB.Initialize();
             matlabStatusLabel.Visible = haveMATLAB;
-            MATLAB.UpdateMetrics = subjectPageControl.UpdateMetrics;
+            //MATLAB.UpdateMetrics = subjectPageControl.UpdateMetrics;
         }
 
         private async void connectionTimer_Tick(object sender, EventArgs e)
