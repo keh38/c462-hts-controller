@@ -56,6 +56,7 @@ namespace HTSController
         public InteractiveForm(HTSNetwork network, string settingsPath)
         {
             _network = network;
+            _network.RemoteMessageHandler += OnRemoteMessage;
             SettingsPath = settingsPath;
 
             _packetQueue = new Queue<byte[]>();
@@ -76,6 +77,7 @@ namespace HTSController
 
         private void InteractiveForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            _network.RemoteMessageHandler -= OnRemoteMessage;
             Debug.WriteLine("cancelling tokens");
             _udpCancellationToken.Cancel();
             _queueCancellationToken.Cancel();
@@ -544,9 +546,34 @@ namespace HTSController
 
         private void sliderConfig_ValueChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("go fuck yourself");
             var x = sliderConfig.Value;
             CurateControls();
         }
+
+        private void OnRemoteMessage(object sender, string message)
+        {
+            var parts = message.Split(new char[] { ':' }, 4);
+            if (parts.Length < 2) return;
+
+            string target = parts[0];
+            if (!target.Equals("TurandotInteractive")) return;
+
+            string command = parts[1];
+            string info = (parts.Length > 2) ? parts[2] : "";
+            string data = (parts.Length > 3) ? parts[3] : "";
+
+            switch (command)
+            {
+                case "Error":
+                    Invoke(new Action(() =>
+                    {
+                        audioErrorTextBox.Text = $"Remote error: {info}" + Environment.NewLine;
+                        graphTabControl.SelectedTab = errorPage;
+                    }));
+                    break;
+            }
+        }
+
+
     }
 }

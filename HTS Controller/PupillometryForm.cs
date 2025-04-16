@@ -19,8 +19,8 @@ using HTSController.Data_Streams;
 using Serilog;
 
 using SREYELINKLib;
-//using MathWorks.MATLAB.Engine;
-//using MathWorks.MATLAB.Types;
+using MathWorks.MATLAB.Engine;
+using MathWorks.MATLAB.Types;
 
 namespace HTSController
 {

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-//using MathWorks.MATLAB.Engine;
-//using MathWorks.MATLAB.Types;
+using MathWorks.MATLAB.Engine;
+using MathWorks.MATLAB.Types;
 
 using Serilog;
 
@@ -15,9 +15,9 @@ namespace HTSController
     {
         private static dynamic _engine;
 
-        //public delegate void UpdateMetricsDelegate(MATLABStruct data);
-        //public static UpdateMetricsDelegate UpdateMetrics;
-        //private static void OnUpdateMetrics(MATLABStruct data) { UpdateMetrics?.Invoke(data); }
+        public delegate void UpdateMetricsDelegate(MATLABStruct data);
+        public static UpdateMetricsDelegate UpdateMetrics;
+        private static void OnUpdateMetrics(MATLABStruct data) { UpdateMetrics?.Invoke(data); }
 
         public static bool IsInitialized { get; private set; }
 
@@ -26,7 +26,7 @@ namespace HTSController
             IsInitialized = false;
             try
             {
-                //_engine = await MATLABEngine.StartMATLABAsync();
+                _engine = await MATLABEngine.StartMATLABAsync();
                 IsInitialized = false;
             }
             catch (Exception ex)
@@ -43,7 +43,7 @@ namespace HTSController
             {
                 try
                 {
-                    //MATLABEngine.TerminateEngineClient();
+                    MATLABEngine.TerminateEngineClient();
                 }
                 catch { }
             }
@@ -57,16 +57,16 @@ namespace HTSController
             {
                 try
                 {
-                    //MATLABStruct data = _engine.eval($"{functionName}('{dataFilePath}')");
-                    //foreach (var n in data.GetFieldNames())
-                    //{
-                    //    string value = "";
-                    //    dynamic x = data.GetField(n);
-                    //    try { value = x; } catch { double dval = x; value = dval.ToString(); }
-                    //    result += $"{n} = {value}" + Environment.NewLine;
+                    MATLABStruct data = _engine.eval($"{functionName}('{dataFilePath}')");
+                    foreach (var n in data.GetFieldNames())
+                    {
+                        string value = "";
+                        dynamic x = data.GetField(n);
+                        try { value = x; } catch { double dval = x; value = dval.ToString(); }
+                        result += $"{n} = {value}" + Environment.NewLine;
 
-                    //    OnUpdateMetrics(data);
-                    //}
+                        OnUpdateMetrics(data);
+                    }
                 }
                 catch (Exception ex)
                 {

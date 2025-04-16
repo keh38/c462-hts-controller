@@ -13,7 +13,7 @@ using Serilog;
 
 using KLib.Controls;
 
-//using MathWorks.MATLAB.Types;
+using MathWorks.MATLAB.Types;
 
 namespace HTSController.Pages
 {
@@ -61,26 +61,26 @@ namespace HTSController.Pages
             projectDropDown.SelectedIndex = projects.IndexOf(Project);
         }
 
-        //public void UpdateMetrics(MATLABStruct data)
-        //{
-        //    try
-        //    {
-        //        foreach (var n in data.GetFieldNames())
-        //        {
-        //            string value = "";
-        //            dynamic x = data.GetField(n);
-        //            try { value = x; } catch { double dval = x; value = dval.ToString(); }
+        public void UpdateMetrics(MATLABStruct data)
+        {
+            try
+            {
+                foreach (var n in data.GetFieldNames())
+                {
+                    string value = "";
+                    dynamic x = data.GetField(n);
+                    try { value = x; } catch { double dval = x; value = dval.ToString(); }
 
-        //            _subjectMetadata.metrics[n] = value;
-        //            Log.Information($"Set metric {n} = '{value}'");
-        //            ApplyMetrics();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error($"Failed to update metrics: {ex.Message}");
-        //    }
-        //}
+                    _subjectMetadata.metrics[n] = value;
+                    Log.Information($"Set metric {n} = '{value}'");
+                    ApplyMetrics();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to update metrics: {ex.Message}");
+            }
+        }
 
         private void projectDropDown_KeyDown(object sender, KeyEventArgs e)
         {
