@@ -27,7 +27,7 @@ namespace HTSController
             try
             {
                 _engine = await MATLABEngine.StartMATLABAsync();
-                IsInitialized = false;
+                IsInitialized = true;
             }
             catch (Exception ex)
             {

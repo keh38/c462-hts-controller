@@ -23,6 +23,7 @@ namespace HTSController
         private DataStreamManager _streamManager;
         private string _parameterFile;
         private string _dataFile;
+        private string _postRunMATLABFile = "";
 
         public event EventHandler ClosePage;
         protected virtual void OnClosePage()
@@ -95,6 +96,7 @@ namespace HTSController
         private void InitializeTurandot()
         {
             var p = KFile.XmlDeserialize<Turandot.Parameters>(_parameterFile);
+            _postRunMATLABFile = p.matlabFunction;
             _network.SendMessage($"SetParams:{KFile.ToXMLString(p)}");
 
             // wait for file name to get sent back
@@ -114,7 +116,7 @@ namespace HTSController
             }
         }
 
-        private async void EndRun(string message, string info)
+        private async void EndRun(string message, string status)
         {
             _network.SendMessage($"StopSynchronizing");
             await _streamManager.StopRecording();
@@ -122,14 +124,23 @@ namespace HTSController
 
             Invoke(new Action(() =>
             {
+                statusTextBox.Text = message;
+                if (!string.IsNullOrEmpty(status))
+                {
+                    logTextBox.AppendText($"{Environment.NewLine}{status}{Environment.NewLine}");
+                }
+
+                if (!status.Equals("error") && !string.IsNullOrEmpty(_postRunMATLABFile) && MATLAB.IsInitialized)
+                {
+                    logTextBox.AppendText($"{Environment.NewLine}Calling MATLAB function...{Environment.NewLine}");
+
+                    var result = MATLAB.RunFunction(Path.GetFileNameWithoutExtension(_postRunMATLABFile), _dataFile);
+                    logTextBox.AppendText(result);
+                }
+
                 startButton.Enabled = true;
                 startButton.Visible = true;
                 closeButton.Visible = true;
-                statusTextBox.Text = message;
-                if (!string.IsNullOrEmpty(info))
-                {
-                    logTextBox.AppendText($"{Environment.NewLine}{info}");
-                }
                 progressBar.Value = 0;
                 _streamManager.RestartStatusTimer();
             }));

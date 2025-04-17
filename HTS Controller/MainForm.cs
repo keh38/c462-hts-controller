@@ -93,8 +93,11 @@ namespace HTSController
 
             connectionTimer.Start();
 
+            matlabStatusLabel.Text = "Connecting...";
+            matlabStatusLabel.Visible = true;
             var haveMATLAB = await MATLAB.Initialize();
             matlabStatusLabel.Visible = haveMATLAB;
+            matlabStatusLabel.Text = "Available";
             MATLAB.UpdateMetrics = subjectPageControl.UpdateMetrics;
         }
 
