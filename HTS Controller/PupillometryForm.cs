@@ -76,9 +76,9 @@ namespace HTSController
             propertyGrid.SelectedObject = _gazeSettings;
 
             matlabDropDown.Items.Clear();
-            if (Directory.Exists(FileLocations.GetMATLABFolder("+pupil")))
+            if (Directory.Exists(FileLocations.GetMATLABFolder("pupil")))
             {
-                var mfiles = Directory.EnumerateFiles(FileLocations.GetMATLABFolder("+pupil"), "*.m")
+                var mfiles = Directory.EnumerateFiles(FileLocations.GetMATLABFolder("pupil"), "*.m")
                     .Select(x => Path.GetFileNameWithoutExtension(x))
                     .ToList();
 
