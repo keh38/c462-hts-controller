@@ -186,7 +186,7 @@ namespace HTSController
             }
         }
 
-        private async void EndRun(string message, string info)
+        private async void EndRun(string message, string status)
         {
             _network.SendMessage($"StopSynchronizing");
             await _streamManager.StopRecording();
@@ -196,9 +196,19 @@ namespace HTSController
             {
                 startButton.Enabled = true;
                 stopButton.Visible = false;
-                if (!string.IsNullOrEmpty(info))
+                if (!string.IsNullOrEmpty(status))
                 {
-                    logTextBox.AppendText($"{Environment.NewLine}{info}");
+                    logTextBox.AppendText($"{Environment.NewLine}{status}");
+                }
+
+                var functionName = matlabDropDown.SelectedItem.ToString();
+                _dataFile = @"C:\Users\hancock\OneDrive\Engineering\Polley\HTS\_Yu-PupilDR-2025-04-14_103307.json";
+                if (!status.Equals("error") && !string.IsNullOrEmpty(functionName) && MATLAB.IsInitialized)
+                {
+                    logTextBox.AppendText($"{Environment.NewLine}Calling MATLAB function...{Environment.NewLine}");
+
+                    var result = MATLAB.RunFunction(functionName, _dataFile);
+                    logTextBox.AppendText(result);
                 }
                 progressBar.Value = 0;
                 _streamManager.RestartStatusTimer();

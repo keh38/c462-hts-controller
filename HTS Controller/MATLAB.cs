@@ -73,7 +73,7 @@ namespace HTSController
                     }
                     else if (data is MATLABArray)
                     {
-                        Log.Information(data.ToString());
+                        result = data;
                     }
                 }
                 catch (Exception ex)
