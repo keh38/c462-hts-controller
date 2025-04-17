@@ -457,7 +457,7 @@ namespace HTSController
                 var functionName = matlabDropDown.SelectedItem.ToString();
                 if (!string.IsNullOrEmpty(functionName))
                 {
-                    var result = MATLAB.RunFunction($"pupil.{functionName}", "shitbag");
+                    var result = MATLAB.RunFunction($"{functionName}", @"C:\Users\hancock\OneDrive\Engineering\Polley\HTS\_Yu-PupilDR-2025-04-14_103307.json");
                     logTextBox.AppendText(result);
                 }
             }

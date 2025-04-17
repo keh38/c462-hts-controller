@@ -57,21 +57,29 @@ namespace HTSController
             {
                 try
                 {
-                    MATLABStruct data = _engine.eval($"{functionName}('{dataFilePath}')");
-                    foreach (var n in data.GetFieldNames())
+                    dynamic data = _engine.eval($"{functionName}('{dataFilePath}')");
+                    Log.Information(data.GetType().ToString());
+                    if (data is MATLABStruct)
                     {
-                        string value = "";
-                        dynamic x = data.GetField(n);
-                        try { value = x; } catch { double dval = x; value = dval.ToString(); }
-                        result += $"{n} = {value}" + Environment.NewLine;
+                        foreach (var n in data.GetFieldNames())
+                        {
+                            string value = "";
+                            dynamic x = data.GetField(n);
+                            try { value = x; } catch { double dval = x; value = dval.ToString(); }
+                            result += $"{n} = {value}" + Environment.NewLine;
 
-                        OnUpdateMetrics(data);
+                            OnUpdateMetrics(data);
+                        }
+                    }
+                    else if (data is MATLABArray)
+                    {
+                        Log.Information(data.ToString());
                     }
                 }
                 catch (Exception ex)
                 {
-                    result = "Error evaluating MATLAB function";
-                    Log.Error($"Error evaluating MATLAB function '{functionName}'");
+                    result = ex.Message.Replace("\n", Environment.NewLine); // "Error evaluating MATLAB function";
+                    Log.Error($"Error evaluating MATLAB function '{functionName}'\n{ex.Message}");
                 }
 
             }
