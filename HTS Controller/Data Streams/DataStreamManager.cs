@@ -180,7 +180,7 @@ namespace HTSController.Data_Streams
                 _logPath = Path.Combine(FileLocations.SubjectDataFolder, logPath.Replace(".json", "-StreamSync.log"));
 
             string headerText =
-                $"{"DataStream",-20}\t" +
+                $"{"DataStream",-30}\t" +
                 $"{"LocalTime",-20}\t" +
                 $"{"StreamTime",-20}\t";
 
@@ -221,7 +221,7 @@ namespace HTSController.Data_Streams
                 if (s.Status != DataStream.StreamStatus.Idle)
                 {
                     var data = await SynchronizeClocks(s);
-                    AddLogEntry(s.Name, data);
+                    AddLogEntry(s.MulticastName, data);
 
                     s.LastActivity = DateTime.Now;
                 }
@@ -236,7 +236,7 @@ namespace HTSController.Data_Streams
         private void AddLogEntry(string streamName, SyncData data)
         {
             string logEntry =
-                 $"{streamName,-20}\t" +
+                 $"{streamName,-30}\t" +
                  $"{data.localTime,-20}\t" +
                  $"{data.streamTime,-20}\t";
 

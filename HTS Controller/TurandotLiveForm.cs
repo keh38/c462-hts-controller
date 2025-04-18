@@ -134,7 +134,7 @@ namespace HTSController
                 {
                     logTextBox.AppendText($"{Environment.NewLine}Calling MATLAB function...{Environment.NewLine}");
 
-                    var result = MATLAB.RunFunction(Path.GetFileNameWithoutExtension(_postRunMATLABFile), _dataFile);
+                    var result = MATLAB.RunFunction(Path.GetFileNameWithoutExtension(_postRunMATLABFile), Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
                     logTextBox.AppendText(result);
                 }
 

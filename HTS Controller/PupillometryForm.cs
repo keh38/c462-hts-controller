@@ -41,6 +41,7 @@ namespace HTSController
         private BusyCal _busyCal;
 
         bool _stopCal = false;
+        bool _runAborted = false;
         bool _ignoreEvents = false;
 
         public PupillometryForm(HTSNetwork network, DataStreamManager streamManager)
@@ -114,6 +115,7 @@ namespace HTSController
                 return;
             }
 
+            _runAborted = false;
             dataFileTextBox.Text = "";
             progressBar.Value = 0;
             await Task.Run(() => InitializeDynamicRangeMeasurement());
@@ -192,6 +194,15 @@ namespace HTSController
             await _streamManager.StopRecording();
             _network.SendMessage("SendSyncLog");
 
+            var functionName = matlabDropDown.SelectedItem.ToString();
+            bool analyzeData = !_runAborted && !status.Equals("error") && !string.IsNullOrEmpty(functionName) && MATLAB.IsInitialized;
+            bool haveData = false;
+            if (analyzeData)
+            {
+                Invoke(new Action(() => { logTextBox.AppendText("Waiting for EyeLink data" + Environment.NewLine); }));
+                haveData = await WaitForEyeLinkData(Path.Combine(FileLocations.SubjectDataFolder, _dataFile.Replace(".json", ".edf")));
+            }
+
             Invoke(new Action(() =>
             {
                 startButton.Enabled = true;
@@ -201,18 +212,41 @@ namespace HTSController
                     logTextBox.AppendText($"{Environment.NewLine}{status}");
                 }
 
-                var functionName = matlabDropDown.SelectedItem.ToString();
-                _dataFile = @"C:\Users\hancock\OneDrive\Engineering\Polley\HTS\_Yu-PupilDR-2025-04-14_103307.json";
-                if (!status.Equals("error") && !string.IsNullOrEmpty(functionName) && MATLAB.IsInitialized)
+                if (analyzeData)
                 {
-                    logTextBox.AppendText($"{Environment.NewLine}Calling MATLAB function...{Environment.NewLine}");
+                    if (haveData)
+                    {
+                        logTextBox.AppendText($"{Environment.NewLine}Calling MATLAB function...{Environment.NewLine}");
 
-                    var result = MATLAB.RunFunction(functionName, _dataFile);
-                    logTextBox.AppendText(result);
+                        var result = MATLAB.RunFunction(functionName, Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
+                        logTextBox.AppendText(result);
+                    }
+                    else
+                    {
+                        logTextBox.AppendText("Timed out waiting for EyeLink data");
+                        Log.Information("Timed out waiting for EyeLink data");
+                    }
                 }
                 progressBar.Value = 0;
                 _streamManager.RestartStatusTimer();
             }));
+        }
+
+        private async Task<bool> WaitForEyeLinkData(string fn)
+        {
+            bool success = false;
+
+            var startTime = DateTime.Now;
+            while ((DateTime.Now - startTime).TotalSeconds < 10)
+            {
+                await Task.Delay(200);
+                if (File.Exists(fn))
+                {
+                    success = true;
+                    break;
+                }
+            }
+            return success;
         }
 
         private void OnRemoteMessage(object sender, string message)
@@ -257,6 +291,7 @@ namespace HTSController
 
         private void stopButton_Click(object sender, EventArgs e)
         {
+            _runAborted = true;
             stopButton.Enabled = false;
             _network.SendMessage("Abort");
         }
@@ -467,7 +502,8 @@ namespace HTSController
                 var functionName = matlabDropDown.SelectedItem.ToString();
                 if (!string.IsNullOrEmpty(functionName))
                 {
-                    var result = MATLAB.RunFunction($"{functionName}", @"C:\Users\hancock\OneDrive\Engineering\Polley\HTS\_Yu-PupilDR-2025-04-14_103307.json");
+                    //_dataFile = @"C:\Users\hancock\OneDrive\Engineering\Polley\HTS\_Yu-PupilDR-2025-04-14_103307.json";
+                    var result = MATLAB.RunFunction($"{functionName}", Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
                     logTextBox.AppendText(result);
                 }
             }

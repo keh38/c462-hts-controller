@@ -1,5 +1,12 @@
 ## Changelog
 
+### v0.5 (2025-04-18)
+#### Added
+- connection to MATLAB engine
+- user metrics
+
+---
+
 ### v0.4 (2025-04-11)
 #### Added
 - gaze calibration

@@ -2,7 +2,7 @@
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 #define SemanticVersion() \
-   GetVersionComponents("..\HTS Controller\bin\Release\HTSController.exe", Local[0], Local[1], Local[2], Local[3]), \
+   GetVersionComponents("..\HTS Controller\bin\x64\Release\HTSController.exe", Local[0], Local[1], Local[2], Local[3]), \
    Str(Local[0]) + "." + Str(Local[1]) + ((Local[2]>0) ? "." + Str(Local[2]) : "")
     
 
@@ -27,7 +27,7 @@ Name: "{commonappdata}\EPL";
 
 [Files]
 Source: "..\HTS Controller\Images\HTS.ico"; DestDir: "{app}"; Flags: replacesameversion;
-Source: "..\HTS Controller\bin\Release\*.*"; DestDir: "{app}"; Flags: replacesameversion;
+Source: "..\HTS Controller\bin\x64\Release\*.*"; DestDir: "{app}"; Flags: replacesameversion;
 Source: "..\HTS Controller\Images\Streams\*.png"; DestDir: "{userdocs}\EPL\HTS\Streams"; Flags: onlyifdoesntexist;
 Source: "..\CHANGELOG.md"; DestDir: "{app}"; Flags: replacesameversion;
 
