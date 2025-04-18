@@ -42,6 +42,7 @@ namespace HTSController
             _menu.Add(new Tuple<CheckBox, TabPage>(subjectButton, subjectPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(turandotButton, turandotSettingsPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(pupilButton, pupilPage));
+            _menu.Add(new Tuple<CheckBox, TabPage>(protocolButton, protocolPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(adminButton, adminPage));
         }
 
@@ -326,6 +327,17 @@ namespace HTSController
 
             tabControl.SelectedTab = pupilPage;
 
+        }
+
+        private void protocolButton_CheckedChanged(object sender, EventArgs e)
+        {
+            SelectTab(sender as CheckBox);
+
+        }
+
+        private void protocolControl_StartProtocol(object sender, Pages.ProtocolControl.ProtocolItem e)
+        {
+            tableLayoutPanel.ColumnStyles[1].Width = 188;
         }
     }
 }

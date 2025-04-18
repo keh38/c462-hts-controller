@@ -195,6 +195,12 @@
     </Compile>
     <Compile Include="HTSNetwork.cs" />
     <Compile Include="MATLAB.cs" />
+    <Compile Include="Pages\ProtocolControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\ProtocolControl.Designer.cs">
+      <DependentUpon>ProtocolControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pages\TurandotPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -246,6 +252,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\ProtocolControl.resx">
+      <DependentUpon>ProtocolControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\TurandotPage.resx">
       <DependentUpon>TurandotPage.cs</DependentUpon>
@@ -304,6 +313,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\Matlab_Logo-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\checklist-32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
