@@ -40,9 +40,9 @@
             this.transducerDropDown = new System.Windows.Forms.ComboBox();
             this.label12 = new System.Windows.Forms.Label();
             this.metricGridView = new System.Windows.Forms.DataGridView();
-            this.applyButton = new System.Windows.Forms.Button();
             this.MetricName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MetricValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.applyButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.metricGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -132,6 +132,8 @@
             // 
             // metricGridView
             // 
+            this.metricGridView.AllowUserToResizeColumns = false;
+            this.metricGridView.AllowUserToResizeRows = false;
             this.metricGridView.BackgroundColor = System.Drawing.SystemColors.Control;
             this.metricGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.metricGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
@@ -168,22 +170,12 @@
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.metricGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.metricGridView.RowHeadersVisible = false;
-            this.metricGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+            this.metricGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.metricGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.metricGridView.Size = new System.Drawing.Size(250, 240);
             this.metricGridView.TabIndex = 12;
             this.metricGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.metricGridView_CellValueChanged);
             this.metricGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.metricGridView_UserDeletingRow);
-            // 
-            // applyButton
-            // 
-            this.applyButton.Location = new System.Drawing.Point(297, 220);
-            this.applyButton.Name = "applyButton";
-            this.applyButton.Size = new System.Drawing.Size(75, 23);
-            this.applyButton.TabIndex = 15;
-            this.applyButton.Text = "Apply";
-            this.applyButton.UseVisualStyleBackColor = true;
-            this.applyButton.Visible = false;
-            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
             // MetricName
             // 
@@ -199,6 +191,17 @@
             this.MetricValue.HeaderText = "Value";
             this.MetricValue.Name = "MetricValue";
             this.MetricValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // applyButton
+            // 
+            this.applyButton.Location = new System.Drawing.Point(297, 220);
+            this.applyButton.Name = "applyButton";
+            this.applyButton.Size = new System.Drawing.Size(75, 23);
+            this.applyButton.TabIndex = 15;
+            this.applyButton.Text = "Apply";
+            this.applyButton.UseVisualStyleBackColor = true;
+            this.applyButton.Visible = false;
+            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
             // SubjectPage
             // 

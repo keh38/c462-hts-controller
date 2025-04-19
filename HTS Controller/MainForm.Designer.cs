@@ -53,18 +53,11 @@
             this.adminPage = new System.Windows.Forms.TabPage();
             this.logButton = new System.Windows.Forms.Button();
             this.pupilPage = new System.Windows.Forms.TabPage();
-            this.protocolPage = new System.Windows.Forms.TabPage();
-            this.protocolControl = new HTSController.Pages.ProtocolControl();
             this.ipcPanel = new System.Windows.Forms.Panel();
             this.ipcLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.protocolPanel = new System.Windows.Forms.Panel();
-            this.protocolLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.label2 = new System.Windows.Forms.Label();
+            this.protocolControl1 = new HTSController.Pages.ProtocolControl();
             this.connectionTimer = new System.Windows.Forms.Timer(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.statusStrip.SuspendLayout();
             this.menuPanel.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
@@ -72,11 +65,8 @@
             this.subjectPage.SuspendLayout();
             this.turandotSettingsPage.SuspendLayout();
             this.adminPage.SuspendLayout();
-            this.protocolPage.SuspendLayout();
             this.ipcPanel.SuspendLayout();
             this.ipcLayoutPanel.SuspendLayout();
-            this.protocolPanel.SuspendLayout();
-            this.protocolLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -165,7 +155,6 @@
             this.protocolButton.Text = "Protocols";
             this.protocolButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.protocolButton.UseVisualStyleBackColor = false;
-            this.protocolButton.Visible = false;
             this.protocolButton.CheckedChanged += new System.EventHandler(this.protocolButton_CheckedChanged);
             // 
             // pupilButton
@@ -286,7 +275,7 @@
             this.tableLayoutPanel.Controls.Add(this.menuPanel, 0, 0);
             this.tableLayoutPanel.Controls.Add(this.tabControl, 2, 0);
             this.tableLayoutPanel.Controls.Add(this.ipcPanel, 3, 0);
-            this.tableLayoutPanel.Controls.Add(this.protocolPanel, 1, 0);
+            this.tableLayoutPanel.Controls.Add(this.protocolControl1, 1, 0);
             this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel.Name = "tableLayoutPanel";
@@ -307,7 +296,6 @@
             this.tabControl.Controls.Add(this.runTurandotPage);
             this.tabControl.Controls.Add(this.adminPage);
             this.tabControl.Controls.Add(this.pupilPage);
-            this.tabControl.Controls.Add(this.protocolPage);
             this.tabControl.ItemSize = new System.Drawing.Size(0, 1);
             this.tabControl.Location = new System.Drawing.Point(346, 3);
             this.tabControl.Name = "tabControl";
@@ -345,7 +333,7 @@
             this.turandotSettingsPage.Location = new System.Drawing.Point(4, 5);
             this.turandotSettingsPage.Name = "turandotSettingsPage";
             this.turandotSettingsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.turandotSettingsPage.Size = new System.Drawing.Size(360, 490);
+            this.turandotSettingsPage.Size = new System.Drawing.Size(360, 485);
             this.turandotSettingsPage.TabIndex = 1;
             this.turandotSettingsPage.Text = "tabPage2";
             this.turandotSettingsPage.UseVisualStyleBackColor = true;
@@ -366,7 +354,7 @@
             this.messagePage.Location = new System.Drawing.Point(4, 5);
             this.messagePage.Name = "messagePage";
             this.messagePage.Padding = new System.Windows.Forms.Padding(3);
-            this.messagePage.Size = new System.Drawing.Size(360, 490);
+            this.messagePage.Size = new System.Drawing.Size(360, 485);
             this.messagePage.TabIndex = 2;
             this.messagePage.Text = "tabPage1";
             this.messagePage.UseVisualStyleBackColor = true;
@@ -376,7 +364,7 @@
             this.runTurandotPage.Location = new System.Drawing.Point(4, 5);
             this.runTurandotPage.Name = "runTurandotPage";
             this.runTurandotPage.Padding = new System.Windows.Forms.Padding(3);
-            this.runTurandotPage.Size = new System.Drawing.Size(360, 490);
+            this.runTurandotPage.Size = new System.Drawing.Size(360, 485);
             this.runTurandotPage.TabIndex = 3;
             this.runTurandotPage.Text = "tabPage1";
             this.runTurandotPage.UseVisualStyleBackColor = true;
@@ -387,7 +375,7 @@
             this.adminPage.Location = new System.Drawing.Point(4, 5);
             this.adminPage.Name = "adminPage";
             this.adminPage.Padding = new System.Windows.Forms.Padding(3);
-            this.adminPage.Size = new System.Drawing.Size(360, 490);
+            this.adminPage.Size = new System.Drawing.Size(360, 485);
             this.adminPage.TabIndex = 4;
             this.adminPage.Text = "tabPage1";
             this.adminPage.UseVisualStyleBackColor = true;
@@ -409,29 +397,10 @@
             this.pupilPage.Location = new System.Drawing.Point(4, 5);
             this.pupilPage.Name = "pupilPage";
             this.pupilPage.Padding = new System.Windows.Forms.Padding(3);
-            this.pupilPage.Size = new System.Drawing.Size(360, 490);
+            this.pupilPage.Size = new System.Drawing.Size(360, 485);
             this.pupilPage.TabIndex = 5;
             this.pupilPage.Text = "tabPage1";
             this.pupilPage.UseVisualStyleBackColor = true;
-            // 
-            // protocolPage
-            // 
-            this.protocolPage.Controls.Add(this.protocolControl);
-            this.protocolPage.Location = new System.Drawing.Point(4, 5);
-            this.protocolPage.Name = "protocolPage";
-            this.protocolPage.Padding = new System.Windows.Forms.Padding(3);
-            this.protocolPage.Size = new System.Drawing.Size(360, 490);
-            this.protocolPage.TabIndex = 6;
-            this.protocolPage.Text = "tabPage1";
-            this.protocolPage.UseVisualStyleBackColor = true;
-            // 
-            // protocolControl
-            // 
-            this.protocolControl.Location = new System.Drawing.Point(6, 6);
-            this.protocolControl.Name = "protocolControl";
-            this.protocolControl.Size = new System.Drawing.Size(161, 281);
-            this.protocolControl.TabIndex = 0;
-            this.protocolControl.StartProtocol += new System.EventHandler<HTSController.Pages.ProtocolControl.ProtocolItem>(this.protocolControl_StartProtocol);
             // 
             // ipcPanel
             // 
@@ -469,74 +438,21 @@
             this.label1.Text = "Data streams";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // protocolPanel
+            // protocolControl1
             // 
-            this.protocolPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.protocolControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.protocolPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.protocolPanel.Controls.Add(this.protocolLayoutPanel);
-            this.protocolPanel.Location = new System.Drawing.Point(158, 3);
-            this.protocolPanel.Name = "protocolPanel";
-            this.protocolPanel.Size = new System.Drawing.Size(182, 499);
-            this.protocolPanel.TabIndex = 8;
-            // 
-            // protocolLayoutPanel
-            // 
-            this.protocolLayoutPanel.BackColor = System.Drawing.SystemColors.Control;
-            this.protocolLayoutPanel.Controls.Add(this.label2);
-            this.protocolLayoutPanel.Controls.Add(this.panel1);
-            this.protocolLayoutPanel.Controls.Add(this.textBox1);
-            this.protocolLayoutPanel.Controls.Add(this.button1);
-            this.protocolLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.protocolLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.protocolLayoutPanel.Location = new System.Drawing.Point(0, 0);
-            this.protocolLayoutPanel.Margin = new System.Windows.Forms.Padding(2);
-            this.protocolLayoutPanel.Name = "protocolLayoutPanel";
-            this.protocolLayoutPanel.Size = new System.Drawing.Size(180, 497);
-            this.protocolLayoutPanel.TabIndex = 3;
-            // 
-            // label2
-            // 
-            this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
-            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label2.Location = new System.Drawing.Point(0, 0);
-            this.label2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(181, 30);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Protocol";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.protocolControl1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.protocolControl1.Location = new System.Drawing.Point(158, 3);
+            this.protocolControl1.Name = "protocolControl1";
+            this.protocolControl1.Size = new System.Drawing.Size(182, 499);
+            this.protocolControl1.TabIndex = 8;
             // 
             // connectionTimer
             // 
             this.connectionTimer.Interval = 1000;
             this.connectionTimer.Tick += new System.EventHandler(this.connectionTimer_Tick);
-            // 
-            // panel1
-            // 
-            this.panel1.Location = new System.Drawing.Point(3, 38);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(174, 176);
-            this.panel1.TabIndex = 2;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(3, 246);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(174, 30);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // textBox1
-            // 
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Location = new System.Drawing.Point(3, 220);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(174, 20);
-            this.textBox1.TabIndex = 4;
             // 
             // MainForm
             // 
@@ -562,12 +478,8 @@
             this.subjectPage.PerformLayout();
             this.turandotSettingsPage.ResumeLayout(false);
             this.adminPage.ResumeLayout(false);
-            this.protocolPage.ResumeLayout(false);
             this.ipcPanel.ResumeLayout(false);
             this.ipcLayoutPanel.ResumeLayout(false);
-            this.protocolPanel.ResumeLayout(false);
-            this.protocolLayoutPanel.ResumeLayout(false);
-            this.protocolLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -600,16 +512,9 @@
         private System.Windows.Forms.Button logButton;
         private System.Windows.Forms.CheckBox pupilButton;
         private System.Windows.Forms.TabPage pupilPage;
-        private System.Windows.Forms.Panel protocolPanel;
-        private System.Windows.Forms.FlowLayoutPanel protocolLayoutPanel;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ToolStripStatusLabel matlabStatusLabel;
         private System.Windows.Forms.CheckBox protocolButton;
-        private System.Windows.Forms.TabPage protocolPage;
-        private Pages.ProtocolControl protocolControl;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
+        private Pages.ProtocolControl protocolControl1;
     }
 }
 

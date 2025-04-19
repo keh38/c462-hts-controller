@@ -42,7 +42,6 @@ namespace HTSController
             _menu.Add(new Tuple<CheckBox, TabPage>(subjectButton, subjectPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(turandotButton, turandotSettingsPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(pupilButton, pupilPage));
-            _menu.Add(new Tuple<CheckBox, TabPage>(protocolButton, protocolPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(adminButton, adminPage));
         }
 
@@ -73,8 +72,9 @@ namespace HTSController
             turandotPageControl.Initialize(_network);
 
             //menuPanel.Enabled = false;
-            tabControl.SelectedTab = subjectPage;
-            SelectTab(null);
+            //            tabControl.SelectedTab = subjectPage;
+            subjectButton.Checked = true;
+//            SelectTab(null);
         }
 
         private async void MainForm_Shown(object sender, EventArgs e)
@@ -138,6 +138,7 @@ namespace HTSController
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             _streamManager.Cleanup();
+            MATLAB.CleanUp();
 
             if (!e.Cancel)
             {
@@ -154,11 +155,8 @@ namespace HTSController
             foreach (var m in _menu)
             {
                 bool isSelected = (m.Item1 == button);
-                subjectButton.Checked = isSelected;
-                m.Item1.FlatAppearance.BorderColor = isSelected ? Color.Black : menuPanel.BackColor;
-                m.Item1.BackColor = isSelected ? MainForm.DefaultBackColor : menuPanel.BackColor;
-                m.Item1.FlatAppearance.CheckedBackColor = isSelected ? MainForm.DefaultBackColor : menuPanel.BackColor;
-                m.Item1.FlatAppearance.MouseOverBackColor = isSelected ? MainForm.DefaultBackColor : menuPanel.BackColor;
+                m.Item1.Checked = isSelected;
+                SetMenuButtonColors(m.Item1);
                 if (isSelected)
                 {
                     tabControl.SelectedTab = m.Item2;
@@ -166,6 +164,14 @@ namespace HTSController
             }
             tabControl.SelectedTab.Focus();
             _ignoreEvents = false;
+        }
+
+        private void SetMenuButtonColors(CheckBox button)
+        {
+            button.FlatAppearance.BorderColor = button.Checked ? Color.Black : menuPanel.BackColor;
+            button.BackColor = button.Checked ? MainForm.DefaultBackColor : menuPanel.BackColor;
+            button.FlatAppearance.CheckedBackColor = button.Checked ? MainForm.DefaultBackColor : menuPanel.BackColor;
+            button.FlatAppearance.MouseOverBackColor = button.Checked ? MainForm.DefaultBackColor : menuPanel.BackColor;
         }
 
         private async Task<bool> ConnectToTablet()
@@ -308,6 +314,8 @@ namespace HTSController
 
         private void pupilButton_CheckedChanged(object sender, EventArgs e)
         {
+            if (_ignoreEvents) return;
+
             //connectionTimer.Stop();
             SelectTab(sender as CheckBox);
 
@@ -331,8 +339,8 @@ namespace HTSController
 
         private void protocolButton_CheckedChanged(object sender, EventArgs e)
         {
-            SelectTab(sender as CheckBox);
-
+            tableLayoutPanel.ColumnStyles[1].Width = protocolButton.Checked ? 188 : 0;
+            SetMenuButtonColors(protocolButton);
         }
 
         private void protocolControl_StartProtocol(object sender, Pages.ProtocolControl.ProtocolItem e)

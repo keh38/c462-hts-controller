@@ -17,6 +17,10 @@ namespace HTSController.Pages
         public ProtocolControl()
         {
             InitializeComponent();
+
+            titleLabel.Visible = false;
+            questionPanel.Visible = false;
+            startstopButton.Visible = false;
         }
 
         private void startButton_Click(object sender, EventArgs e)
