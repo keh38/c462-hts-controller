@@ -56,7 +56,7 @@
             this.ipcPanel = new System.Windows.Forms.Panel();
             this.ipcLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.protocolControl1 = new HTSController.Pages.ProtocolControl();
+            this.protocolControl = new HTSController.Pages.ProtocolControl();
             this.connectionTimer = new System.Windows.Forms.Timer(this.components);
             this.statusStrip.SuspendLayout();
             this.menuPanel.SuspendLayout();
@@ -275,7 +275,7 @@
             this.tableLayoutPanel.Controls.Add(this.menuPanel, 0, 0);
             this.tableLayoutPanel.Controls.Add(this.tabControl, 2, 0);
             this.tableLayoutPanel.Controls.Add(this.ipcPanel, 3, 0);
-            this.tableLayoutPanel.Controls.Add(this.protocolControl1, 1, 0);
+            this.tableLayoutPanel.Controls.Add(this.protocolControl, 1, 0);
             this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel.Name = "tableLayoutPanel";
@@ -333,7 +333,7 @@
             this.turandotSettingsPage.Location = new System.Drawing.Point(4, 5);
             this.turandotSettingsPage.Name = "turandotSettingsPage";
             this.turandotSettingsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.turandotSettingsPage.Size = new System.Drawing.Size(360, 485);
+            this.turandotSettingsPage.Size = new System.Drawing.Size(360, 490);
             this.turandotSettingsPage.TabIndex = 1;
             this.turandotSettingsPage.Text = "tabPage2";
             this.turandotSettingsPage.UseVisualStyleBackColor = true;
@@ -354,7 +354,7 @@
             this.messagePage.Location = new System.Drawing.Point(4, 5);
             this.messagePage.Name = "messagePage";
             this.messagePage.Padding = new System.Windows.Forms.Padding(3);
-            this.messagePage.Size = new System.Drawing.Size(360, 485);
+            this.messagePage.Size = new System.Drawing.Size(360, 490);
             this.messagePage.TabIndex = 2;
             this.messagePage.Text = "tabPage1";
             this.messagePage.UseVisualStyleBackColor = true;
@@ -364,7 +364,7 @@
             this.runTurandotPage.Location = new System.Drawing.Point(4, 5);
             this.runTurandotPage.Name = "runTurandotPage";
             this.runTurandotPage.Padding = new System.Windows.Forms.Padding(3);
-            this.runTurandotPage.Size = new System.Drawing.Size(360, 485);
+            this.runTurandotPage.Size = new System.Drawing.Size(360, 490);
             this.runTurandotPage.TabIndex = 3;
             this.runTurandotPage.Text = "tabPage1";
             this.runTurandotPage.UseVisualStyleBackColor = true;
@@ -375,7 +375,7 @@
             this.adminPage.Location = new System.Drawing.Point(4, 5);
             this.adminPage.Name = "adminPage";
             this.adminPage.Padding = new System.Windows.Forms.Padding(3);
-            this.adminPage.Size = new System.Drawing.Size(360, 485);
+            this.adminPage.Size = new System.Drawing.Size(360, 490);
             this.adminPage.TabIndex = 4;
             this.adminPage.Text = "tabPage1";
             this.adminPage.UseVisualStyleBackColor = true;
@@ -397,7 +397,7 @@
             this.pupilPage.Location = new System.Drawing.Point(4, 5);
             this.pupilPage.Name = "pupilPage";
             this.pupilPage.Padding = new System.Windows.Forms.Padding(3);
-            this.pupilPage.Size = new System.Drawing.Size(360, 485);
+            this.pupilPage.Size = new System.Drawing.Size(360, 490);
             this.pupilPage.TabIndex = 5;
             this.pupilPage.Text = "tabPage1";
             this.pupilPage.UseVisualStyleBackColor = true;
@@ -438,16 +438,13 @@
             this.label1.Text = "Data streams";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // protocolControl1
+            // protocolControl
             // 
-            this.protocolControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.protocolControl1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.protocolControl1.Location = new System.Drawing.Point(158, 3);
-            this.protocolControl1.Name = "protocolControl1";
-            this.protocolControl1.Size = new System.Drawing.Size(182, 499);
-            this.protocolControl1.TabIndex = 8;
+            this.protocolControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.protocolControl.Location = new System.Drawing.Point(158, 3);
+            this.protocolControl.Name = "protocolControl";
+            this.protocolControl.Size = new System.Drawing.Size(181, 497);
+            this.protocolControl.TabIndex = 8;
             // 
             // connectionTimer
             // 
@@ -462,7 +459,7 @@
             this.Controls.Add(this.tableLayoutPanel);
             this.Controls.Add(this.statusStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(800, 471);
+            this.MinimumSize = new System.Drawing.Size(800, 469);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Hearing Test Suite Controller";
@@ -515,6 +512,7 @@
         private System.Windows.Forms.ToolStripStatusLabel matlabStatusLabel;
         private System.Windows.Forms.CheckBox protocolButton;
         private Pages.ProtocolControl protocolControl1;
+        private Pages.ProtocolControl protocolControl;
     }
 }
 

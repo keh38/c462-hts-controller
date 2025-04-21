@@ -70,6 +70,7 @@ namespace HTSController
 
             subjectPageControl.Initialize(_network);
             turandotPageControl.Initialize(_network);
+            protocolControl.Initialize(_network);
 
             //menuPanel.Enabled = false;
             //            tabControl.SelectedTab = subjectPage;
@@ -341,6 +342,7 @@ namespace HTSController
         {
             tableLayoutPanel.ColumnStyles[1].Width = protocolButton.Checked ? 188 : 0;
             SetMenuButtonColors(protocolButton);
+            protocolControl.UpdateList();
         }
 
         private void protocolControl_StartProtocol(object sender, Pages.ProtocolControl.ProtocolItem e)

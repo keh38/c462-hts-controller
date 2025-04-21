@@ -35,14 +35,18 @@
             this.titleLabel = new System.Windows.Forms.Label();
             this.startstopButton = new System.Windows.Forms.Button();
             this.questionPanel = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
+            this.controlPanel = new System.Windows.Forms.Panel();
+            this.closeButton = new System.Windows.Forms.Button();
+            this.statusTextBox = new System.Windows.Forms.TextBox();
             this.filePanel.SuspendLayout();
             this.questionPanel.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel.SuspendLayout();
+            this.controlPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // editButton
@@ -74,7 +78,7 @@
             this.openButton.TabIndex = 9;
             this.openButton.Text = "Open";
             this.openButton.UseVisualStyleBackColor = false;
-            this.openButton.Click += new System.EventHandler(this.startButton_Click);
+            this.openButton.Click += new System.EventHandler(this.openButton_Click);
             // 
             // filePanel
             // 
@@ -91,6 +95,7 @@
             // 
             this.titleLabel.BackColor = System.Drawing.Color.White;
             this.titleLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.titleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.titleLabel.Location = new System.Drawing.Point(0, 231);
             this.titleLabel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
             this.titleLabel.Name = "titleLabel";
@@ -101,9 +106,9 @@
             // 
             // startstopButton
             // 
-            this.startstopButton.Location = new System.Drawing.Point(3, 366);
+            this.startstopButton.Location = new System.Drawing.Point(3, 3);
             this.startstopButton.Name = "startstopButton";
-            this.startstopButton.Size = new System.Drawing.Size(178, 35);
+            this.startstopButton.Size = new System.Drawing.Size(84, 35);
             this.startstopButton.TabIndex = 16;
             this.startstopButton.Text = "Start";
             this.startstopButton.UseVisualStyleBackColor = true;
@@ -119,6 +124,24 @@
             this.questionPanel.Size = new System.Drawing.Size(178, 91);
             this.questionPanel.TabIndex = 17;
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(89, 56);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(80, 29);
+            this.button3.TabIndex = 2;
+            this.button3.Text = "No";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(3, 56);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(80, 29);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "Yes";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
             // label1
             // 
             this.label1.Location = new System.Drawing.Point(3, 3);
@@ -128,37 +151,20 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "label1";
             // 
-            // button2
+            // flowLayoutPanel
             // 
-            this.button2.Location = new System.Drawing.Point(3, 56);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(80, 29);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Controls.Add(this.label3);
-            this.flowLayoutPanel1.Controls.Add(this.filePanel);
-            this.flowLayoutPanel1.Controls.Add(this.titleLabel);
-            this.flowLayoutPanel1.Controls.Add(this.questionPanel);
-            this.flowLayoutPanel1.Controls.Add(this.startstopButton);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(181, 459);
-            this.flowLayoutPanel1.TabIndex = 18;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(89, 56);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(80, 29);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "button3";
-            this.button3.UseVisualStyleBackColor = true;
+            this.flowLayoutPanel.Controls.Add(this.label3);
+            this.flowLayoutPanel.Controls.Add(this.filePanel);
+            this.flowLayoutPanel.Controls.Add(this.titleLabel);
+            this.flowLayoutPanel.Controls.Add(this.questionPanel);
+            this.flowLayoutPanel.Controls.Add(this.controlPanel);
+            this.flowLayoutPanel.Controls.Add(this.statusTextBox);
+            this.flowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel.Name = "flowLayoutPanel";
+            this.flowLayoutPanel.Size = new System.Drawing.Size(181, 497);
+            this.flowLayoutPanel.TabIndex = 18;
             // 
             // label3
             // 
@@ -172,16 +178,46 @@
             this.label3.Text = "Protocol";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // controlPanel
+            // 
+            this.controlPanel.Controls.Add(this.startstopButton);
+            this.controlPanel.Controls.Add(this.closeButton);
+            this.controlPanel.Location = new System.Drawing.Point(3, 366);
+            this.controlPanel.Name = "controlPanel";
+            this.controlPanel.Size = new System.Drawing.Size(178, 42);
+            this.controlPanel.TabIndex = 23;
+            // 
+            // closeButton
+            // 
+            this.closeButton.Location = new System.Drawing.Point(90, 3);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(84, 35);
+            this.closeButton.TabIndex = 20;
+            this.closeButton.Text = "Close";
+            this.closeButton.UseVisualStyleBackColor = true;
+            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+            // 
+            // statusTextBox
+            // 
+            this.statusTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.statusTextBox.Location = new System.Drawing.Point(3, 414);
+            this.statusTextBox.Name = "statusTextBox";
+            this.statusTextBox.ReadOnly = true;
+            this.statusTextBox.Size = new System.Drawing.Size(175, 20);
+            this.statusTextBox.TabIndex = 22;
+            // 
             // ProtocolControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.flowLayoutPanel1);
+            this.Controls.Add(this.flowLayoutPanel);
             this.Name = "ProtocolControl";
-            this.Size = new System.Drawing.Size(181, 459);
+            this.Size = new System.Drawing.Size(181, 497);
             this.filePanel.ResumeLayout(false);
             this.questionPanel.ResumeLayout(false);
-            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel.ResumeLayout(false);
+            this.flowLayoutPanel.PerformLayout();
+            this.controlPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -198,7 +234,11 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox statusTextBox;
+        private System.Windows.Forms.Panel controlPanel;
+        private System.Windows.Forms.Button closeButton;
+        private System.Windows.Forms.ListBox listBox1;
     }
 }

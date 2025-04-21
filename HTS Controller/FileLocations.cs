@@ -19,6 +19,19 @@ namespace HTSController
                 return folder;
             }
         }
+        public static string ProtocolFolder
+        {
+            get
+            {
+                var folder = Path.Combine(RootFolder, "Protocols");
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                }
+
+                return folder;
+            }
+        }
         public static string StateFile { get { return Path.Combine(RootFolder, "State.xml"); } }
         public static string SubjectDataFolder { get; private set; }
         public static void SetSubject(string id)
