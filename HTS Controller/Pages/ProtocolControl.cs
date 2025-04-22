@@ -27,14 +27,15 @@ namespace HTSController.Pages
 
         private Protocol _protocol;
         private ProtocolHistory _history;
+        private string _historyPath;
 
         private List<Label> _labels = new List<Label>();
+        private int _nextTestIndex = 0;
 
         public ProtocolControl()
         {
             InitializeComponent();
 
-            titleLabel.Visible = false;
             questionPanel.Visible = false;
             controlPanel.Visible = false;
             statusTextBox.Visible = false;
@@ -79,7 +80,7 @@ namespace HTSController.Pages
             filePanel.Visible = false;
 
             titleLabel.Text = _protocol.Title;
-            titleLabel.Visible = true;
+            titleLabel.Font = new Font(titleLabel.Font, FontStyle.Bold);
 
             _labels.Clear();
             int index = flowLayoutPanel.Controls.GetChildIndex(titleLabel);
@@ -112,7 +113,8 @@ namespace HTSController.Pages
             }
             _labels.Clear();
 
-            titleLabel.Visible = false;
+            titleLabel.Text = "Protocol";
+            titleLabel.Font = new Font(titleLabel.Font, FontStyle.Regular);
             controlPanel.Visible = false;
             statusTextBox.Visible = false;
 
@@ -135,6 +137,16 @@ namespace HTSController.Pages
             closeButton.Enabled = false;
             stopButton.Checked = false;
 
+
+            startButton.Visible = false;
+
+            StartRemote();
+
+            OnProtocolStateChange(running: true);
+        }
+
+        private async void StartRemote()
+        {
             var success = await ChangeTabletScene("Protocol");
             if (!success)
             {
@@ -142,17 +154,15 @@ namespace HTSController.Pages
                 closeButton.Enabled = true;
                 statusTextBox.Text = "error changing scene";
                 Log.Error("failed to change to protocol scene");
+                StopProtocol();
                 return;
             }
 
-            startButton.Visible = false;
-
             _network.SendMessage($"SetProtocol:{KLib.KFile.ToXMLString(_protocol)}");
             _network.SendMessage($"SetHistory:{KLib.KFile.ToXMLString(_history)}");
-            _network.SendMessage($"Begin:{0}");
+            _network.SendMessage($"Begin:{_nextTestIndex}");
 
             _state = ProtocolState.WaitingForUser;
-            //OnOpenProtocol(new ProtocolItem("hello"));
         }
 
         private void label_Click(object sender, EventArgs e)
@@ -165,6 +175,10 @@ namespace HTSController.Pages
             var protocolPath = Path.Combine(FileLocations.ProtocolFolder, $"{name}.xml");
             _protocol = KLib.KFile.XmlDeserialize<Protocol>(protocolPath);
             _history = new ProtocolHistory(_protocol);
+
+            _historyPath = Path.Combine(
+                FileLocations.SubjectDataFolder,
+                $"{FileLocations.Subject}-{name}-History-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.json");
 
             HTSControllerSettings.SetLastUsed("Protocol", protocolPath);
         }
@@ -211,6 +225,44 @@ namespace HTSController.Pages
             return success;
         }
 
+        private void Advance()
+        {
+            _state = ProtocolState.TestInProgress;
+            statusTextBox.Text = "Running...";
+            var nextTest = _history.Data[_nextTestIndex];
+            OnAdvanceProtocol(new ProtocolItem(nextTest.Scene, nextTest.Settings));
+        }
+
+        public void TestFinished(bool success, string dataFile)
+        {
+            if (success)
+            {
+                _history.Data[_nextTestIndex].Date = DateTime.Now.ToString();
+                _history.Data[_nextTestIndex].DataFile = dataFile;
+                KLib.KFile.SaveToJson(_history, _historyPath);
+
+                _nextTestIndex++;
+                ShowProtocolProgress(_nextTestIndex);
+                if (stopButton.Checked)
+                {
+                    StopProtocol();
+                    stopButton.Checked = false;
+                }
+                else if (_nextTestIndex == _protocol.Tests.Count)
+                {
+                    StopProtocol(finished: true);
+                }
+                else
+                {
+                    StartRemote();
+                }
+            }
+            else
+            {
+                StopProtocol(finished: false, message: "There was a problem");
+            }
+        }
+
         private void OnRemoteMessage(object sender, string message)
         {
             var parts = message.Split(new char[] { ':' }, 4);
@@ -234,8 +286,7 @@ namespace HTSController.Pages
                     _state = ProtocolState.WaitingForUser;
                     break;
                 case "Advance":
-                    Invoke(new Action(() => { statusTextBox.Text = "Advancing..."; }));
-                    _state = ProtocolState.WaitingForUser;
+                    Invoke(new Action(() => { Advance(); }));
                     break;
 
             }
@@ -245,28 +296,51 @@ namespace HTSController.Pages
         {
             if (_state != ProtocolState.TestInProgress)
             {
-                PauseProtocol();
+                StopProtocol();
             }
         }
 
-        private void PauseProtocol()
+        private void StopProtocol(bool finished = false, string message = "")
         {
-            _state = ProtocolState.Stopped;
-            statusTextBox.Text = "Stopped";
+            if (finished)
+            {
+                _state = ProtocolState.Finished;
+                statusTextBox.Text = string.IsNullOrEmpty(message) ? "Finished" : message;
+            }
+            else
+            {
+                _state = ProtocolState.Stopped;
+                statusTextBox.Text = string.IsNullOrEmpty(message) ? "Stopped" : message;
+            }
             startButton.Visible = true;
             startButton.Enabled = true;
             closeButton.Enabled = true;
+
+            OnProtocolStateChange(running: false);
         }
 
         #region Events
         public class ProtocolItem : EventArgs
         {
-            public string filePath;
-            public ProtocolItem(string filePath) { this.filePath = filePath; }
+            public string sceneName;
+            public string settingsFile;
+            public ProtocolItem(string sceneName, string settingsFile)
+            {
+                this.sceneName = sceneName;
+                this.settingsFile = settingsFile;
+            }
         }
 
-        public event EventHandler<ProtocolItem> OpenProtocol;
-        private void OnOpenProtocol(ProtocolItem protocolItem) { OpenProtocol?.Invoke(this, protocolItem); }
+        public event EventHandler<ProtocolItem> AdvanceProtocol;
+        private void OnAdvanceProtocol(ProtocolItem protocolItem) { AdvanceProtocol?.Invoke(this, protocolItem); }
+
+        public class ProtocolStateChangeEventArgs : EventArgs
+        {
+            public bool running;
+            public ProtocolStateChangeEventArgs(bool running) { this.running = running; }
+        }
+        public event EventHandler<ProtocolStateChangeEventArgs> ProtocolStateChange;
+        private void OnProtocolStateChange(bool running) { ProtocolStateChange?.Invoke(this, new ProtocolStateChangeEventArgs(running)); }
         #endregion
     }
 }

@@ -167,6 +167,7 @@
     <Compile Include="Data Streams\DataStreamIndicator.Designer.cs">
       <DependentUpon>DataStreamIndicator.cs</DependentUpon>
     </Compile>
+    <Compile Include="Events.cs" />
     <Compile Include="Interactive\ChannelControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -277,6 +277,7 @@ namespace HTSController
                 _liveForm = new TurandotLiveForm(_network, _streamManager);
                 _liveForm.TopLevel = false;
                 _liveForm.ClosePage += OnTurandotRunPageClose;
+                _liveForm.AutoRunEnd += TestRunEnded;
                  runTurandotPage.Controls.Add(_liveForm);
                 _liveForm.FormBorderStyle = FormBorderStyle.None;
                 _liveForm.Dock = DockStyle.Fill;
@@ -335,6 +336,7 @@ namespace HTSController
             {
                 _pupilForm = new PupillometryForm(_network, _streamManager);
                 _pupilForm.TopLevel = false;
+                _pupilForm.AutoRunEnd += TestRunEnded;
                 //_pupilForm.ClosePage += OnTurandotRunPageClose;
                 pupilPage.Controls.Add(_pupilForm);
                 _pupilForm.FormBorderStyle = FormBorderStyle.None;
@@ -344,7 +346,6 @@ namespace HTSController
             _pupilForm.Initialize();
 
             tabControl.SelectedTab = pupilPage;
-
         }
 
         private void protocolButton_CheckedChanged(object sender, EventArgs e)
@@ -354,10 +355,30 @@ namespace HTSController
             protocolControl.UpdateList();
         }
 
-        private void protocolControl_StartProtocol(object sender, Pages.ProtocolControl.ProtocolItem e)
+        private void protocolControl_AdvanceProtocol(object sender, Pages.ProtocolControl.ProtocolItem e)
         {
-            tableLayoutPanel.ColumnStyles[1].Width = 188;
+            switch (e.sceneName)
+            {
+                case "Pupil Dynamic Range":
+                    pupilButton.Checked = true;
+                    _pupilForm.AutoRunDynamicRange();
+                    break;
+                case "Turandot":
+                    turandotButton.Checked = true;
+                    turandotPageControl_StartTurandotClick(this, Path.Combine(FileLocations.ConfigFolder, $"Turandot.{e.settingsFile}.xml"));
+                    _liveForm.AutoRun();
+                    break;
+            }
         }
 
+        private void protocolControl_ProtocolStateChange(object sender, Pages.ProtocolControl.ProtocolStateChangeEventArgs e)
+        {
+            tableLayoutPanel.ColumnStyles[0].Width = e.running ? 0 : 155;
+        }
+
+        private void TestRunEnded(object sender, AutoRunEndEventArgs e)
+        {
+            protocolControl.TestFinished(e.success, e.dataFile);
+        }
     }
 }

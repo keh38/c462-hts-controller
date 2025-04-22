@@ -25,11 +25,18 @@ namespace HTSController
         private string _dataFile;
         private string _postRunMATLABFile = "";
 
+        private bool _autoRun;
+
+        #region EVENTS
+        public event EventHandler<AutoRunEndEventArgs> AutoRunEnd;
+        private void OnAutoRunEnd(bool success, string dataFile) { AutoRunEnd?.Invoke(this, new AutoRunEndEventArgs(success, dataFile)); }
+
         public event EventHandler ClosePage;
         protected virtual void OnClosePage()
         {
             ClosePage?.Invoke(this, null);
         }
+        #endregion
 
         public TurandotLiveForm(HTSNetwork network, DataStreamManager streamManager)
         {
@@ -51,6 +58,12 @@ namespace HTSController
             progressBar.Value = 0;
             statusTextBox.Text = "";
             logTextBox.Text = "";
+        }
+
+        public void AutoRun()
+        {
+            _autoRun = true;
+            startButton_Click(null, null);
         }
 
         private async void startButton_Click(object sender, EventArgs e)
@@ -122,28 +135,36 @@ namespace HTSController
             await _streamManager.StopRecording();
             _network.SendMessage("SendSyncLog");
 
-            Invoke(new Action(() =>
+            statusTextBox.Text = message;
+            if (!string.IsNullOrEmpty(status))
             {
-                statusTextBox.Text = message;
-                if (!string.IsNullOrEmpty(status))
-                {
-                    logTextBox.AppendText($"{Environment.NewLine}{status}{Environment.NewLine}");
-                }
+                logTextBox.AppendText($"{Environment.NewLine}{status}{Environment.NewLine}");
+            }
 
-                if (!status.Equals("error") && !string.IsNullOrEmpty(_postRunMATLABFile) && MATLAB.IsInitialized)
-                {
-                    logTextBox.AppendText($"{Environment.NewLine}Calling MATLAB function...{Environment.NewLine}");
+            if (!message.Equals("Error") && !string.IsNullOrEmpty(_postRunMATLABFile) && MATLAB.IsInitialized)
+            {
+                logTextBox.AppendText($"{Environment.NewLine}Calling MATLAB function...{Environment.NewLine}");
 
-                    var result = MATLAB.RunFunction(Path.GetFileNameWithoutExtension(_postRunMATLABFile), Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
-                    logTextBox.AppendText(result);
-                }
+                var result = MATLAB.RunFunction(Path.GetFileNameWithoutExtension(_postRunMATLABFile), Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
+                logTextBox.AppendText(result);
+            }
 
-                startButton.Enabled = true;
-                startButton.Visible = true;
-                closeButton.Visible = true;
-                progressBar.Value = 0;
-                _streamManager.RestartStatusTimer();
-            }));
+            startButton.Enabled = true;
+            startButton.Visible = true;
+            closeButton.Visible = true;
+            progressBar.Value = 0;
+            _streamManager.RestartStatusTimer();
+
+            EndAutoRun(success: !message.Equals("Error"), dataFile: _dataFile);
+        }
+
+        private void EndAutoRun(bool success, string dataFile)
+        {
+            if (!_autoRun) return;
+            _autoRun = false;
+
+            OnAutoRunEnd(success, dataFile);
+            closeButton_Click(null, null);
         }
 
         private void OnRemoteMessage(object sender, string message)
@@ -178,10 +199,10 @@ namespace HTSController
                     File.WriteAllText(filePath, data);
                     break;
                 case "Error":
-                    EndRun("Error", info);
+                    Invoke(new Action(() => { EndRun("Error", info); }));
                     break;
                 case "Finished":
-                    EndRun("Finished", info);
+                    Invoke(new Action(() => { EndRun("Finished", info); }));
                     break;
             }
         }

@@ -454,10 +454,13 @@
             // protocolControl
             // 
             this.protocolControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.protocolControl.Location = new System.Drawing.Point(158, 3);
+            this.protocolControl.Location = new System.Drawing.Point(159, 4);
+            this.protocolControl.Margin = new System.Windows.Forms.Padding(4);
             this.protocolControl.Name = "protocolControl";
-            this.protocolControl.Size = new System.Drawing.Size(181, 497);
+            this.protocolControl.Size = new System.Drawing.Size(180, 497);
             this.protocolControl.TabIndex = 8;
+            this.protocolControl.AdvanceProtocol += new System.EventHandler<HTSController.Pages.ProtocolControl.ProtocolItem>(this.protocolControl_AdvanceProtocol);
+            this.protocolControl.ProtocolStateChange += new System.EventHandler<HTSController.Pages.ProtocolControl.ProtocolStateChangeEventArgs>(this.protocolControl_ProtocolStateChange);
             // 
             // connectionTimer
             // 
@@ -472,7 +475,7 @@
             this.Controls.Add(this.tableLayoutPanel);
             this.Controls.Add(this.statusStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(800, 469);
+            this.MinimumSize = new System.Drawing.Size(800, 467);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Hearing Test Suite Controller";

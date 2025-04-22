@@ -43,6 +43,12 @@ namespace HTSController
         bool _stopCal = false;
         bool _runAborted = false;
         bool _ignoreEvents = false;
+        bool _autoRun = false;
+
+        #region EVENTS
+        public event EventHandler<AutoRunEndEventArgs> AutoRunEnd;
+        private void OnAutoRunEnd(bool success, string dataFile) { AutoRunEnd?.Invoke(this, new AutoRunEndEventArgs(success, dataFile)); }
+        #endregion
 
         public PupillometryForm(HTSNetwork network, DataStreamManager streamManager)
         {
@@ -93,6 +99,13 @@ namespace HTSController
                     _ignoreEvents = false;
                 }
             }
+        }
+
+        public void AutoRunDynamicRange()
+        {
+            _autoRun = true;
+            tabControl.SelectedTab = dynamicRangePage;
+            startButton_Click(this, null);
         }
 
         private async void startButton_Click(object sender, EventArgs e)
@@ -203,33 +216,40 @@ namespace HTSController
                 haveData = await WaitForEyeLinkData(Path.Combine(FileLocations.SubjectDataFolder, _dataFile.Replace(".json", ".edf")));
             }
 
-            Invoke(new Action(() =>
+            startButton.Enabled = true;
+            stopButton.Visible = false;
+            if (!string.IsNullOrEmpty(status))
             {
-                startButton.Enabled = true;
-                stopButton.Visible = false;
-                if (!string.IsNullOrEmpty(status))
-                {
-                    logTextBox.AppendText($"{Environment.NewLine}{status}");
-                }
+                logTextBox.AppendText($"{Environment.NewLine}{status}");
+            }
 
-                if (analyzeData)
+            if (analyzeData)
+            {
+                if (haveData)
                 {
-                    if (haveData)
-                    {
-                        logTextBox.AppendText($"{Environment.NewLine}Calling MATLAB function...{Environment.NewLine}");
+                    logTextBox.AppendText($"{Environment.NewLine}Calling MATLAB function...{Environment.NewLine}");
 
-                        var result = MATLAB.RunFunction(functionName, Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
-                        logTextBox.AppendText(result);
-                    }
-                    else
-                    {
-                        logTextBox.AppendText("Timed out waiting for EyeLink data");
-                        Log.Information("Timed out waiting for EyeLink data");
-                    }
+                    var result = MATLAB.RunFunction(functionName, Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
+                    logTextBox.AppendText(result);
                 }
-                progressBar.Value = 0;
-                _streamManager.RestartStatusTimer();
-            }));
+                else
+                {
+                    logTextBox.AppendText("Timed out waiting for EyeLink data");
+                    Log.Information("Timed out waiting for EyeLink data");
+                }
+            }
+            progressBar.Value = 0;
+            _streamManager.RestartStatusTimer();
+
+            EndAutoRun(success: !_runAborted, dataFile:_dataFile);
+        }
+
+        private void EndAutoRun(bool success, string dataFile)
+        {
+            if (!_autoRun) return;
+            _autoRun = false;
+
+            OnAutoRunEnd(success, dataFile);
         }
 
         private async Task<bool> WaitForEyeLinkData(string fn)
@@ -278,10 +298,10 @@ namespace HTSController
                     _eyeLink.sendKeybutton(13, (short)0, (short)10);
                     break;
                 case "Error":
-                    EndRun("Error", info);
+                    Invoke(new Action(() => { EndRun("Error", info); }));
                     break;
                 case "Finished":
-                    EndRun("Finished", info);
+                    Invoke(new Action(() => { EndRun("Finished", info); }));
                     break;
                 case "GazeCalibrationFinished":
                     _stopCal = true;

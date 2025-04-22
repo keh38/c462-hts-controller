@@ -32,17 +32,16 @@
             this.listBox = new System.Windows.Forms.ListBox();
             this.openButton = new System.Windows.Forms.Button();
             this.filePanel = new System.Windows.Forms.Panel();
-            this.titleLabel = new System.Windows.Forms.Label();
             this.startButton = new System.Windows.Forms.Button();
             this.questionPanel = new System.Windows.Forms.Panel();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.label3 = new System.Windows.Forms.Label();
+            this.titleLabel = new System.Windows.Forms.Label();
+            this.statusTextBox = new System.Windows.Forms.TextBox();
             this.controlPanel = new System.Windows.Forms.Panel();
             this.closeButton = new System.Windows.Forms.Button();
-            this.statusTextBox = new System.Windows.Forms.TextBox();
             this.stopButton = new System.Windows.Forms.CheckBox();
             this.filePanel.SuspendLayout();
             this.questionPanel.SuspendLayout();
@@ -93,19 +92,6 @@
             this.filePanel.Size = new System.Drawing.Size(175, 190);
             this.filePanel.TabIndex = 14;
             // 
-            // titleLabel
-            // 
-            this.titleLabel.BackColor = System.Drawing.Color.White;
-            this.titleLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.titleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.titleLabel.Location = new System.Drawing.Point(0, 231);
-            this.titleLabel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.titleLabel.Name = "titleLabel";
-            this.titleLabel.Size = new System.Drawing.Size(181, 30);
-            this.titleLabel.TabIndex = 15;
-            this.titleLabel.Text = "Protocol";
-            this.titleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // startButton
             // 
             this.startButton.Location = new System.Drawing.Point(4, 3);
@@ -122,7 +108,7 @@
             this.questionPanel.Controls.Add(this.button3);
             this.questionPanel.Controls.Add(this.button2);
             this.questionPanel.Controls.Add(this.label1);
-            this.questionPanel.Location = new System.Drawing.Point(3, 300);
+            this.questionPanel.Location = new System.Drawing.Point(3, 265);
             this.questionPanel.Name = "questionPanel";
             this.questionPanel.Size = new System.Drawing.Size(178, 91);
             this.questionPanel.TabIndex = 17;
@@ -156,9 +142,8 @@
             // 
             // flowLayoutPanel
             // 
-            this.flowLayoutPanel.Controls.Add(this.label3);
-            this.flowLayoutPanel.Controls.Add(this.filePanel);
             this.flowLayoutPanel.Controls.Add(this.titleLabel);
+            this.flowLayoutPanel.Controls.Add(this.filePanel);
             this.flowLayoutPanel.Controls.Add(this.statusTextBox);
             this.flowLayoutPanel.Controls.Add(this.questionPanel);
             this.flowLayoutPanel.Controls.Add(this.controlPanel);
@@ -169,24 +154,34 @@
             this.flowLayoutPanel.Size = new System.Drawing.Size(181, 497);
             this.flowLayoutPanel.TabIndex = 18;
             // 
-            // label3
+            // titleLabel
             // 
-            this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
-            this.label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label3.Location = new System.Drawing.Point(0, 0);
-            this.label3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(181, 30);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "Protocol";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.titleLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.titleLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.titleLabel.Location = new System.Drawing.Point(0, 0);
+            this.titleLabel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.titleLabel.Name = "titleLabel";
+            this.titleLabel.Size = new System.Drawing.Size(181, 30);
+            this.titleLabel.TabIndex = 19;
+            this.titleLabel.Text = "Protocol";
+            this.titleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // statusTextBox
+            // 
+            this.statusTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.statusTextBox.Location = new System.Drawing.Point(3, 239);
+            this.statusTextBox.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
+            this.statusTextBox.Name = "statusTextBox";
+            this.statusTextBox.ReadOnly = true;
+            this.statusTextBox.Size = new System.Drawing.Size(175, 20);
+            this.statusTextBox.TabIndex = 22;
             // 
             // controlPanel
             // 
             this.controlPanel.Controls.Add(this.closeButton);
             this.controlPanel.Controls.Add(this.startButton);
             this.controlPanel.Controls.Add(this.stopButton);
-            this.controlPanel.Location = new System.Drawing.Point(3, 397);
+            this.controlPanel.Location = new System.Drawing.Point(3, 362);
             this.controlPanel.Name = "controlPanel";
             this.controlPanel.Size = new System.Drawing.Size(178, 42);
             this.controlPanel.TabIndex = 23;
@@ -200,16 +195,6 @@
             this.closeButton.Text = "Close";
             this.closeButton.UseVisualStyleBackColor = true;
             this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
-            // 
-            // statusTextBox
-            // 
-            this.statusTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statusTextBox.Location = new System.Drawing.Point(3, 274);
-            this.statusTextBox.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
-            this.statusTextBox.Name = "statusTextBox";
-            this.statusTextBox.ReadOnly = true;
-            this.statusTextBox.Size = new System.Drawing.Size(175, 20);
-            this.statusTextBox.TabIndex = 22;
             // 
             // stopButton
             // 
@@ -245,14 +230,13 @@
         private System.Windows.Forms.ListBox listBox;
         private System.Windows.Forms.Button openButton;
         private System.Windows.Forms.Panel filePanel;
-        private System.Windows.Forms.Label titleLabel;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.Panel questionPanel;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label titleLabel;
         private System.Windows.Forms.TextBox statusTextBox;
         private System.Windows.Forms.Panel controlPanel;
         private System.Windows.Forms.Button closeButton;

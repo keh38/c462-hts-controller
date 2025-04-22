@@ -5,6 +5,7 @@ namespace HTSController
 {
     public static class FileLocations
     {
+        public static string Subject { get; private set; }
         public static readonly string RootFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS");
         public static string ConfigFolder
         {
@@ -36,6 +37,7 @@ namespace HTSController
         public static string SubjectDataFolder { get; private set; }
         public static void SetSubject(string id)
         {
+            Subject = id;
             SubjectDataFolder = Path.Combine(@"C:\Data", id);
             if (!Directory.Exists(SubjectDataFolder))
             {
