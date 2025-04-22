@@ -31,6 +31,9 @@ namespace HTSController
         PupillometryForm _pupilForm = null;
 
         List<Tuple<CheckBox, TabPage>> _menu;
+
+        string _logPath;
+
         bool _ignoreEvents = false;
 
         public MainForm()
@@ -47,14 +50,20 @@ namespace HTSController
 
         private async Task StartLogging()
         {
+            _logPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), 
+                "EPL", 
+                "Logs", 
+                $"HTSController-{DateTime.Now.ToString("yyyyMMdd")}.txt");
+
             await Task.Run(() =>
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .WriteTo.Console()
                 .WriteTo.File(
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "EPL", "Logs", "HTSController-.txt"),
-                    rollingInterval: RollingInterval.Day,
+                    path: Path.Combine(_logPath),
                     retainedFileCountLimit: 30,
+                    flushToDiskInterval: TimeSpan.FromSeconds(5),
                     buffered: true)
                 .CreateLogger()
                 );
@@ -210,11 +219,6 @@ namespace HTSController
             }
         }
 
-        private async void connectionStatusLabel_DoubleClick(object sender, EventArgs e)
-        {
-            //await ConnectToTablet();
-        }
-
         private void subjectPageControl_ValueChanged(object sender, EventArgs e)
         {
             subjectButton.Text = string.IsNullOrEmpty(subjectPageControl.Subject) ? "Subject" : subjectPageControl.Subject;
@@ -313,6 +317,11 @@ namespace HTSController
             System.Diagnostics.Process.Start(logPath);
         }
 
+        private void localLogButton_Click(object sender, EventArgs e)
+        {
+            Process.Start(_logPath);
+        }
+
         private void pupilButton_CheckedChanged(object sender, EventArgs e)
         {
             if (_ignoreEvents) return;
@@ -349,5 +358,6 @@ namespace HTSController
         {
             tableLayoutPanel.ColumnStyles[1].Width = 188;
         }
+
     }
 }

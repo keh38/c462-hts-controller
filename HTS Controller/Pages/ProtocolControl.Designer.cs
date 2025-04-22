@@ -33,7 +33,7 @@
             this.openButton = new System.Windows.Forms.Button();
             this.filePanel = new System.Windows.Forms.Panel();
             this.titleLabel = new System.Windows.Forms.Label();
-            this.startstopButton = new System.Windows.Forms.Button();
+            this.startButton = new System.Windows.Forms.Button();
             this.questionPanel = new System.Windows.Forms.Panel();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -43,6 +43,7 @@
             this.controlPanel = new System.Windows.Forms.Panel();
             this.closeButton = new System.Windows.Forms.Button();
             this.statusTextBox = new System.Windows.Forms.TextBox();
+            this.stopButton = new System.Windows.Forms.CheckBox();
             this.filePanel.SuspendLayout();
             this.questionPanel.SuspendLayout();
             this.flowLayoutPanel.SuspendLayout();
@@ -59,6 +60,7 @@
             this.editButton.TabIndex = 13;
             this.editButton.Text = "Edit";
             this.editButton.UseVisualStyleBackColor = false;
+            this.editButton.Click += new System.EventHandler(this.editButton_Click);
             // 
             // listBox
             // 
@@ -104,14 +106,15 @@
             this.titleLabel.Text = "Protocol";
             this.titleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // startstopButton
+            // startButton
             // 
-            this.startstopButton.Location = new System.Drawing.Point(3, 3);
-            this.startstopButton.Name = "startstopButton";
-            this.startstopButton.Size = new System.Drawing.Size(84, 35);
-            this.startstopButton.TabIndex = 16;
-            this.startstopButton.Text = "Start";
-            this.startstopButton.UseVisualStyleBackColor = true;
+            this.startButton.Location = new System.Drawing.Point(4, 3);
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(84, 35);
+            this.startButton.TabIndex = 16;
+            this.startButton.Text = "Start";
+            this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.Click += new System.EventHandler(this.startButton_Click);
             // 
             // questionPanel
             // 
@@ -119,7 +122,7 @@
             this.questionPanel.Controls.Add(this.button3);
             this.questionPanel.Controls.Add(this.button2);
             this.questionPanel.Controls.Add(this.label1);
-            this.questionPanel.Location = new System.Drawing.Point(3, 269);
+            this.questionPanel.Location = new System.Drawing.Point(3, 300);
             this.questionPanel.Name = "questionPanel";
             this.questionPanel.Size = new System.Drawing.Size(178, 91);
             this.questionPanel.TabIndex = 17;
@@ -156,9 +159,9 @@
             this.flowLayoutPanel.Controls.Add(this.label3);
             this.flowLayoutPanel.Controls.Add(this.filePanel);
             this.flowLayoutPanel.Controls.Add(this.titleLabel);
+            this.flowLayoutPanel.Controls.Add(this.statusTextBox);
             this.flowLayoutPanel.Controls.Add(this.questionPanel);
             this.flowLayoutPanel.Controls.Add(this.controlPanel);
-            this.flowLayoutPanel.Controls.Add(this.statusTextBox);
             this.flowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel.Location = new System.Drawing.Point(0, 0);
@@ -180,9 +183,10 @@
             // 
             // controlPanel
             // 
-            this.controlPanel.Controls.Add(this.startstopButton);
             this.controlPanel.Controls.Add(this.closeButton);
-            this.controlPanel.Location = new System.Drawing.Point(3, 366);
+            this.controlPanel.Controls.Add(this.startButton);
+            this.controlPanel.Controls.Add(this.stopButton);
+            this.controlPanel.Location = new System.Drawing.Point(3, 397);
             this.controlPanel.Name = "controlPanel";
             this.controlPanel.Size = new System.Drawing.Size(178, 42);
             this.controlPanel.TabIndex = 23;
@@ -200,11 +204,24 @@
             // statusTextBox
             // 
             this.statusTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statusTextBox.Location = new System.Drawing.Point(3, 414);
+            this.statusTextBox.Location = new System.Drawing.Point(3, 274);
+            this.statusTextBox.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
             this.statusTextBox.Name = "statusTextBox";
             this.statusTextBox.ReadOnly = true;
             this.statusTextBox.Size = new System.Drawing.Size(175, 20);
             this.statusTextBox.TabIndex = 22;
+            // 
+            // stopButton
+            // 
+            this.stopButton.Appearance = System.Windows.Forms.Appearance.Button;
+            this.stopButton.Location = new System.Drawing.Point(4, 4);
+            this.stopButton.Name = "stopButton";
+            this.stopButton.Size = new System.Drawing.Size(83, 35);
+            this.stopButton.TabIndex = 24;
+            this.stopButton.Text = "Stop";
+            this.stopButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.stopButton.UseVisualStyleBackColor = true;
+            this.stopButton.CheckedChanged += new System.EventHandler(this.stopButton_CheckedChanged);
             // 
             // ProtocolControl
             // 
@@ -229,7 +246,7 @@
         private System.Windows.Forms.Button openButton;
         private System.Windows.Forms.Panel filePanel;
         private System.Windows.Forms.Label titleLabel;
-        private System.Windows.Forms.Button startstopButton;
+        private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.Panel questionPanel;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
@@ -240,5 +257,6 @@
         private System.Windows.Forms.Panel controlPanel;
         private System.Windows.Forms.Button closeButton;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.CheckBox stopButton;
     }
 }

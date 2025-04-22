@@ -51,7 +51,8 @@
             this.messagePage = new System.Windows.Forms.TabPage();
             this.runTurandotPage = new System.Windows.Forms.TabPage();
             this.adminPage = new System.Windows.Forms.TabPage();
-            this.logButton = new System.Windows.Forms.Button();
+            this.localLogButton = new System.Windows.Forms.Button();
+            this.tabletLogButton = new System.Windows.Forms.Button();
             this.pupilPage = new System.Windows.Forms.TabPage();
             this.ipcPanel = new System.Windows.Forms.Panel();
             this.ipcLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -90,7 +91,6 @@
             this.connectionStatusLabel.Name = "connectionStatusLabel";
             this.connectionStatusLabel.Size = new System.Drawing.Size(90, 19);
             this.connectionStatusLabel.Text = "Not connected";
-            this.connectionStatusLabel.DoubleClick += new System.EventHandler(this.connectionStatusLabel_DoubleClick);
             // 
             // matlabStatusLabel
             // 
@@ -371,7 +371,8 @@
             // 
             // adminPage
             // 
-            this.adminPage.Controls.Add(this.logButton);
+            this.adminPage.Controls.Add(this.localLogButton);
+            this.adminPage.Controls.Add(this.tabletLogButton);
             this.adminPage.Location = new System.Drawing.Point(4, 5);
             this.adminPage.Name = "adminPage";
             this.adminPage.Padding = new System.Windows.Forms.Padding(3);
@@ -380,17 +381,29 @@
             this.adminPage.Text = "tabPage1";
             this.adminPage.UseVisualStyleBackColor = true;
             // 
-            // logButton
+            // localLogButton
             // 
-            this.logButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
-            this.logButton.ForeColor = System.Drawing.Color.White;
-            this.logButton.Location = new System.Drawing.Point(6, 29);
-            this.logButton.Name = "logButton";
-            this.logButton.Size = new System.Drawing.Size(90, 36);
-            this.logButton.TabIndex = 2;
-            this.logButton.Text = "Get log";
-            this.logButton.UseVisualStyleBackColor = false;
-            this.logButton.Click += new System.EventHandler(this.logButton_Click);
+            this.localLogButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
+            this.localLogButton.ForeColor = System.Drawing.Color.White;
+            this.localLogButton.Location = new System.Drawing.Point(6, 71);
+            this.localLogButton.Name = "localLogButton";
+            this.localLogButton.Size = new System.Drawing.Size(118, 36);
+            this.localLogButton.TabIndex = 3;
+            this.localLogButton.Text = "Get local log";
+            this.localLogButton.UseVisualStyleBackColor = false;
+            this.localLogButton.Click += new System.EventHandler(this.localLogButton_Click);
+            // 
+            // tabletLogButton
+            // 
+            this.tabletLogButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
+            this.tabletLogButton.ForeColor = System.Drawing.Color.White;
+            this.tabletLogButton.Location = new System.Drawing.Point(6, 29);
+            this.tabletLogButton.Name = "tabletLogButton";
+            this.tabletLogButton.Size = new System.Drawing.Size(118, 36);
+            this.tabletLogButton.TabIndex = 2;
+            this.tabletLogButton.Text = "Get tablet log";
+            this.tabletLogButton.UseVisualStyleBackColor = false;
+            this.tabletLogButton.Click += new System.EventHandler(this.logButton_Click);
             // 
             // pupilPage
             // 
@@ -506,13 +519,14 @@
         private System.Windows.Forms.FlowLayoutPanel ipcLayoutPanel;
         private System.Windows.Forms.CheckBox adminButton;
         private System.Windows.Forms.TabPage adminPage;
-        private System.Windows.Forms.Button logButton;
+        private System.Windows.Forms.Button tabletLogButton;
         private System.Windows.Forms.CheckBox pupilButton;
         private System.Windows.Forms.TabPage pupilPage;
         private System.Windows.Forms.ToolStripStatusLabel matlabStatusLabel;
         private System.Windows.Forms.CheckBox protocolButton;
         private Pages.ProtocolControl protocolControl1;
         private Pages.ProtocolControl protocolControl;
+        private System.Windows.Forms.Button localLogButton;
     }
 }
 
