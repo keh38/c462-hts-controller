@@ -7,6 +7,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -31,6 +32,8 @@ namespace HTSController.Pages
 
         private List<Label> _labels = new List<Label>();
         private int _nextTestIndex = 0;
+
+        DialogResult _dlgResult = DialogResult.None;
 
         public ProtocolControl()
         {
@@ -68,13 +71,13 @@ namespace HTSController.Pages
             System.Diagnostics.Process.Start(protocolPath);
         }
         
-        private void openButton_Click(object sender, EventArgs e)
+        private async void openButton_Click(object sender, EventArgs e)
         {
             if (listBox.SelectedIndex < 0) return;
 
             _network.RemoteMessageHandler += OnRemoteMessage;
 
-            InitializeProtocol(listBox.SelectedItem.ToString());
+            await InitializeProtocol(listBox.SelectedItem.ToString());
 
             _state = ProtocolState.Idle;
             filePanel.Visible = false;
@@ -99,7 +102,7 @@ namespace HTSController.Pages
 
             controlPanel.Visible = true;
 
-            ShowProtocolProgress(0);
+            ShowProtocolProgress(_nextTestIndex);
         }
 
         private void closeButton_Click(object sender, EventArgs e)
@@ -140,12 +143,12 @@ namespace HTSController.Pages
 
             startButton.Visible = false;
 
-            StartRemote();
+            await StartRemote();
 
             OnProtocolStateChange(running: true);
         }
 
-        private async void StartRemote()
+        private async Task StartRemote()
         {
             var success = await ChangeTabletScene("Protocol");
             if (!success)
@@ -170,17 +173,55 @@ namespace HTSController.Pages
             //(sender as Label).BackColor = Color.AliceBlue;
         }
 
-        private void InitializeProtocol(string name)
+        private async Task InitializeProtocol(string name)
         {
             var protocolPath = Path.Combine(FileLocations.ProtocolFolder, $"{name}.xml");
             _protocol = KLib.KFile.XmlDeserialize<Protocol>(protocolPath);
-            _history = new ProtocolHistory(_protocol);
 
-            _historyPath = Path.Combine(
-                FileLocations.SubjectDataFolder,
-                $"{FileLocations.Subject}-{name}-History-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.json");
+            bool restore = false;
+
+            var fileList = Directory.GetFiles(FileLocations.SubjectDataFolder, $"{FileLocations.Subject}-{name}-History-*.json").ToList();
+            if (fileList.Count > 0)
+            {
+                fileList.Sort((x, y) => File.GetCreationTime(y).CompareTo(File.GetCreationTime(x)));
+                for (int k = 0; k < fileList.Count; k++) Debug.WriteLine(fileList[k]);
+
+                _history = KLib.KFile.RestoreFromJson<ProtocolHistory>(fileList[0]);
+                if (_history.Matches(_protocol) && !_history.Finished)
+                {
+                    _historyPath = fileList[0];
+                    _nextTestIndex = _history.NextTextIndex;
+                    var response = await AskQuestion($"Resume previous?\n{File.GetCreationTime(_historyPath)}");
+                    restore = response == DialogResult.Yes;
+                }
+            }
+
+            if (!restore)
+            {
+                _history = new ProtocolHistory(_protocol);
+                _nextTestIndex = 0;
+                _historyPath = Path.Combine(
+                    FileLocations.SubjectDataFolder,
+                    $"{FileLocations.Subject}-{name}-History-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.json");
+            }
+
 
             HTSControllerSettings.SetLastUsed("Protocol", protocolPath);
+        }
+
+        private async Task<DialogResult> AskQuestion(string question)
+        {
+            _dlgResult = DialogResult.None;
+
+            questionLabel.Text = question;
+            questionPanel.Visible = true;
+
+            await Task.Run(() =>
+            {
+                while (_dlgResult == DialogResult.None) { Thread.Sleep(100); }
+            });
+
+            return _dlgResult;
         }
 
         private void ShowProtocolProgress(int index)
@@ -233,7 +274,7 @@ namespace HTSController.Pages
             OnAdvanceProtocol(new ProtocolItem(nextTest.Scene, nextTest.Settings));
         }
 
-        public void TestFinished(bool success, string dataFile)
+        public async void TestFinished(bool success, string dataFile)
         {
             if (success)
             {
@@ -254,7 +295,7 @@ namespace HTSController.Pages
                 }
                 else
                 {
-                    StartRemote();
+                    await StartRemote();
                 }
             }
             else
@@ -342,5 +383,17 @@ namespace HTSController.Pages
         public event EventHandler<ProtocolStateChangeEventArgs> ProtocolStateChange;
         private void OnProtocolStateChange(bool running) { ProtocolStateChange?.Invoke(this, new ProtocolStateChangeEventArgs(running)); }
         #endregion
+
+        private void yesButton_Click(object sender, EventArgs e)
+        {
+            _dlgResult = DialogResult.Yes;
+            questionPanel.Visible = false;
+        }
+
+        private void noButton_Click(object sender, EventArgs e)
+        {
+            _dlgResult = DialogResult.No;
+            questionPanel.Visible = false;
+        }
     }
 }

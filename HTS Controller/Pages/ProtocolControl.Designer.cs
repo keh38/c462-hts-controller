@@ -34,9 +34,9 @@
             this.filePanel = new System.Windows.Forms.Panel();
             this.startButton = new System.Windows.Forms.Button();
             this.questionPanel = new System.Windows.Forms.Panel();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.noButton = new System.Windows.Forms.Button();
+            this.yesButton = new System.Windows.Forms.Button();
+            this.questionLabel = new System.Windows.Forms.Label();
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.titleLabel = new System.Windows.Forms.Label();
             this.statusTextBox = new System.Windows.Forms.TextBox();
@@ -105,40 +105,42 @@
             // questionPanel
             // 
             this.questionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.questionPanel.Controls.Add(this.button3);
-            this.questionPanel.Controls.Add(this.button2);
-            this.questionPanel.Controls.Add(this.label1);
+            this.questionPanel.Controls.Add(this.noButton);
+            this.questionPanel.Controls.Add(this.yesButton);
+            this.questionPanel.Controls.Add(this.questionLabel);
             this.questionPanel.Location = new System.Drawing.Point(3, 265);
             this.questionPanel.Name = "questionPanel";
             this.questionPanel.Size = new System.Drawing.Size(178, 91);
             this.questionPanel.TabIndex = 17;
             // 
-            // button3
+            // noButton
             // 
-            this.button3.Location = new System.Drawing.Point(89, 56);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(80, 29);
-            this.button3.TabIndex = 2;
-            this.button3.Text = "No";
-            this.button3.UseVisualStyleBackColor = true;
+            this.noButton.Location = new System.Drawing.Point(89, 56);
+            this.noButton.Name = "noButton";
+            this.noButton.Size = new System.Drawing.Size(80, 29);
+            this.noButton.TabIndex = 2;
+            this.noButton.Text = "No";
+            this.noButton.UseVisualStyleBackColor = true;
+            this.noButton.Click += new System.EventHandler(this.noButton_Click);
             // 
-            // button2
+            // yesButton
             // 
-            this.button2.Location = new System.Drawing.Point(3, 56);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(80, 29);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Yes";
-            this.button2.UseVisualStyleBackColor = true;
+            this.yesButton.Location = new System.Drawing.Point(3, 56);
+            this.yesButton.Name = "yesButton";
+            this.yesButton.Size = new System.Drawing.Size(80, 29);
+            this.yesButton.TabIndex = 1;
+            this.yesButton.Text = "Yes";
+            this.yesButton.UseVisualStyleBackColor = true;
+            this.yesButton.Click += new System.EventHandler(this.yesButton_Click);
             // 
-            // label1
+            // questionLabel
             // 
-            this.label1.Location = new System.Drawing.Point(3, 3);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(166, 50);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "label1";
+            this.questionLabel.Location = new System.Drawing.Point(3, 3);
+            this.questionLabel.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.questionLabel.Name = "questionLabel";
+            this.questionLabel.Size = new System.Drawing.Size(166, 50);
+            this.questionLabel.TabIndex = 0;
+            this.questionLabel.Text = "label1";
             // 
             // flowLayoutPanel
             // 
@@ -232,9 +234,9 @@
         private System.Windows.Forms.Panel filePanel;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.Panel questionPanel;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button noButton;
+        private System.Windows.Forms.Button yesButton;
+        private System.Windows.Forms.Label questionLabel;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
         private System.Windows.Forms.Label titleLabel;
         private System.Windows.Forms.TextBox statusTextBox;

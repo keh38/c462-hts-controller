@@ -108,6 +108,13 @@ namespace HTSController
             startButton_Click(this, null);
         }
 
+        public void AutoRunGazeCalibration()
+        {
+            _autoRun = true;
+            tabControl.SelectedTab = calibrationPage;
+            gazeStartButton_Click(this, null);
+        }
+
         private async void startButton_Click(object sender, EventArgs e)
         {
             if (!_network.IsConnected)
@@ -125,6 +132,7 @@ namespace HTSController
                 startButton.Enabled = true;
                 logTextBox.Text = "failed to change scene on tablet";
                 Debug.WriteLine("failed to change to pupil dynamic range scene");
+                EndAutoRun(false, null);
                 return;
             }
 
@@ -152,12 +160,14 @@ namespace HTSController
                         logTextBox.AppendText($"- {s}\n");
                     }
                     startButton.Enabled = true;
+                    EndAutoRun(false, null);
                 }
             }
             else
             {
                 logTextBox.AppendText("didn't receive data file name from Dynamic Range scene");
                 startButton.Enabled = true;
+                EndAutoRun(false, null);
             }
         }
 
@@ -207,9 +217,15 @@ namespace HTSController
             await _streamManager.StopRecording();
             _network.SendMessage("SendSyncLog");
 
+            if (!string.IsNullOrEmpty(status))
+            {
+                logTextBox.AppendText($"{Environment.NewLine}{status}{Environment.NewLine}");
+            }
+
             var functionName = matlabDropDown.SelectedItem.ToString();
-            bool analyzeData = !_runAborted && !status.Equals("error") && !string.IsNullOrEmpty(functionName) && MATLAB.IsInitialized;
+            bool analyzeData = !_runAborted && !message.Equals("Error") && !string.IsNullOrEmpty(functionName) && MATLAB.IsInitialized;
             bool haveData = false;
+            bool analysisSuccess = !analyzeData;
             if (analyzeData)
             {
                 Invoke(new Action(() => { logTextBox.AppendText("Waiting for EyeLink data" + Environment.NewLine); }));
@@ -218,10 +234,6 @@ namespace HTSController
 
             startButton.Enabled = true;
             stopButton.Visible = false;
-            if (!string.IsNullOrEmpty(status))
-            {
-                logTextBox.AppendText($"{Environment.NewLine}{status}");
-            }
 
             if (analyzeData)
             {
@@ -231,6 +243,7 @@ namespace HTSController
 
                     var result = MATLAB.RunFunction(functionName, Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
                     logTextBox.AppendText(result);
+                    analysisSuccess = !result.StartsWith("Error");
                 }
                 else
                 {
@@ -241,7 +254,7 @@ namespace HTSController
             progressBar.Value = 0;
             _streamManager.RestartStatusTimer();
 
-            EndAutoRun(success: !_runAborted, dataFile:_dataFile);
+            EndAutoRun(success: !_runAborted && !message.Equals("Error") && analysisSuccess, dataFile:_dataFile);
         }
 
         private void EndAutoRun(bool success, string dataFile)
@@ -318,7 +331,8 @@ namespace HTSController
 
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            Debug.WriteLine("property changed");
+            var configPath = Path.Combine(FileLocations.ConfigFolder, "Gaze.Defaults.xml");
+            KLib.KFile.XmlSerialize(_gazeSettings, configPath);
         }
 
         private async void gazeStartButton_Click(object sender, EventArgs e)
@@ -329,6 +343,7 @@ namespace HTSController
                 return;
             }
 
+            _runAborted = false;
             _stopCal = false;
             gazeStartButton.Enabled = false;
 
@@ -339,12 +354,13 @@ namespace HTSController
                 gazeStartButton.Enabled = true;
                 gazeLogTextBox.AppendText("failed to change scene on tablet" + Environment.NewLine);
                 Log.Error("failed to change to gaze calibration scene");
+                EndAutoRun(false, null);
                 return;
             }
 
             // Stop EyeLink Interface if it's running
             _streamManager.Find("EYELINK")?.SendMessage("Abort");
-
+            
             success = GetTabletScreenSize();
             if (success)
             {
@@ -356,6 +372,7 @@ namespace HTSController
                 gazeLogTextBox.AppendText("- Could not retrieve tablet screen size" + Environment.NewLine);
                 Log.Error("could not retrieve tablet screen size");
                 gazeStartButton.Enabled = true;
+                EndAutoRun(false, null);
                 return;
             }
 
@@ -367,6 +384,7 @@ namespace HTSController
                 gazeLogTextBox.AppendText("- Could not start EyeLink" + Environment.NewLine);
                 Log.Error("could not start EyeLink");
                 gazeStartButton.Enabled = true;
+                EndAutoRun(false, null);
                 return;
             }
 
@@ -413,6 +431,7 @@ namespace HTSController
 
         private void gazeStopButton_Click(object sender, EventArgs e)
         {
+            _runAborted = true;
             _stopCal = true;
             _network.SendMessage("Abort");
         }
@@ -438,7 +457,15 @@ namespace HTSController
             bool success = false;
 
             _eyeLink = new EyeLink();
-            _eyeLink.open("100.1.1.1");
+            try
+            {
+                _eyeLink.open("100.1.1.1");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[Gaze Calibration] error connecting to EyeLink: {ex.Message}");
+                return false;
+            }
 
             int width = _tabletWidth;
             int height = _tabletHeight;
@@ -481,6 +508,8 @@ namespace HTSController
             gazePicture.Refresh();
 
             _streamManager.Find("EYELINK")?.SendMessage("Free Run");
+
+            EndAutoRun(success: !_runAborted, dataFile: null);
         }
 
         private void gazePicture_Paint(object sender, PaintEventArgs e)

@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.6 (unreleased)
+#### Added
+- Protocol control
+
+---
+
 ### v0.5 (2025-04-18)
 #### Added
 - connection to MATLAB engine

@@ -363,6 +363,10 @@ namespace HTSController
                     pupilButton.Checked = true;
                     _pupilForm.AutoRunDynamicRange();
                     break;
+                case "Gaze Calibration":
+                    pupilButton.Checked = true;
+                    _pupilForm.AutoRunGazeCalibration();
+                    break;
                 case "Turandot":
                     turandotButton.Checked = true;
                     turandotPageControl_StartTurandotClick(this, Path.Combine(FileLocations.ConfigFolder, $"Turandot.{e.settingsFile}.xml"));
