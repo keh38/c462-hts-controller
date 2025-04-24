@@ -9,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Serilog;
+
 using KLib;
 using KLib.Net;
 
@@ -199,7 +201,8 @@ namespace HTSController.Data_Streams
 
             foreach (var s in _streams.FindAll(x => x.IsPresent && x.Record && x.Status != DataStream.StreamStatus.Idle))
             {
-                await KTcpClient.SendMessageAsync(s.IPEndPoint, "Stop");
+                var result = await KTcpClient.SendMessageAsync(s.IPEndPoint, "Stop");
+                Log.Information($"stopping {s.MulticastName}: {result}");
             }
         }
 

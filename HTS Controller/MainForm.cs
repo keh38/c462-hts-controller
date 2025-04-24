@@ -377,7 +377,8 @@ namespace HTSController
 
         private void protocolControl_ProtocolStateChange(object sender, Pages.ProtocolControl.ProtocolStateChangeEventArgs e)
         {
-            tableLayoutPanel.ColumnStyles[0].Width = e.running ? 0 : 155;
+            menuPanel.Enabled = !e.running;
+            //tableLayoutPanel.ColumnStyles[0].Width = e.running ? 0 : 155;
         }
 
         private void TestRunEnded(object sender, AutoRunEndEventArgs e)

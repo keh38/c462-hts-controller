@@ -58,7 +58,7 @@ namespace HTSController
                 try
                 {
                     dynamic data = _engine.eval($"{functionName}('{dataFilePath}')");
-                    Log.Information(data.GetType().ToString());
+                    //Log.Information(data.GetType().ToString());
                     if (data is MATLABStruct)
                     {
                         foreach (var n in data.GetFieldNames())

@@ -148,7 +148,7 @@ namespace HTSController.Pages
             OnProtocolStateChange(running: true);
         }
 
-        private async Task StartRemote()
+        private async Task StartRemote(bool finished = false)
         {
             var success = await ChangeTabletScene("Protocol");
             if (!success)
@@ -163,9 +163,16 @@ namespace HTSController.Pages
 
             _network.SendMessage($"SetProtocol:{KLib.KFile.ToXMLString(_protocol)}");
             _network.SendMessage($"SetHistory:{KLib.KFile.ToXMLString(_history)}");
-            _network.SendMessage($"Begin:{_nextTestIndex}");
 
-            _state = ProtocolState.WaitingForUser;
+            if (finished)
+            {
+                _network.SendMessage("Finish:");
+            }
+            else
+            {
+                _network.SendMessage($"Begin:{_nextTestIndex}");
+                _state = ProtocolState.WaitingForUser;
+            }
         }
 
         private void label_Click(object sender, EventArgs e)
@@ -234,7 +241,7 @@ namespace HTSController.Pages
                     _labels[k].Font = new Font(_labels[k].Font, FontStyle.Bold);
 
                 }
-                else if (string.IsNullOrEmpty(_history.Data[k].DataFile))
+                else if (string.IsNullOrEmpty(_history.Data[k].Date))
                 {
                     _labels[k].ForeColor = Color.Black;
                     _labels[k].Font = new Font(_labels[k].Font, FontStyle.Regular);
@@ -292,6 +299,7 @@ namespace HTSController.Pages
                 else if (_nextTestIndex == _protocol.Tests.Count)
                 {
                     StopProtocol(finished: true);
+                    await StartRemote(finished: true);
                 }
                 else
                 {

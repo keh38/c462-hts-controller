@@ -268,6 +268,7 @@ namespace HTSController
         private async Task<bool> WaitForEyeLinkData(string fn)
         {
             bool success = false;
+            long lastLength = -1;
 
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 10)
@@ -275,8 +276,13 @@ namespace HTSController
                 await Task.Delay(200);
                 if (File.Exists(fn))
                 {
-                    success = true;
-                    break;
+                    var length = new FileInfo(fn).Length;
+                    if (length == lastLength)
+                    {
+                        success = true;
+                        break;
+                    }
+                    lastLength = length;
                 }
             }
             return success;
@@ -401,12 +407,12 @@ namespace HTSController
 
             while (true)
             {
-                if (job > 0 && job != 6) Log.Information($" job = {job}");
+                //if (job > 0 && job != 6) Log.Information($" job = {job}");
 
                 if (job == 9)
                 {
                     _busyCal.getCalLocation(out short x, out short y);
-                    Log.Information($"target location = {x}, {y}");
+                    //Log.Information($"target location = {x}, {y}");
                     _targetPoint = new Point(x, y);
                     _network.SendMessage($"Location:{x},{y}");
                     Invoke(new Action(() => gazePicture.Refresh()));

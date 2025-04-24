@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.6 (unreleased)
+### v0.6 (2025-04-24)
 #### Added
 - Protocol control
 
