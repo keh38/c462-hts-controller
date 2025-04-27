@@ -287,7 +287,7 @@ namespace HTSController.Pages
             {
                 _history.Data[_nextTestIndex].Date = DateTime.Now.ToString();
                 _history.Data[_nextTestIndex].DataFile = dataFile;
-                KLib.KFile.SaveToJson(_history, _historyPath);
+                KLib.KFile.JSONSerialize(_history, _historyPath);
 
                 _nextTestIndex++;
                 ShowProtocolProgress(_nextTestIndex);
