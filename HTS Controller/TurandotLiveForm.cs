@@ -84,6 +84,7 @@ namespace HTSController
                 if (started)
                 {
                     startButton.Visible = false;
+                    stopButton.Enabled = true;
                     logTextBox.AppendText("OK" + Environment.NewLine);
                     _network.SendMessage("Begin");
                 }
@@ -216,7 +217,15 @@ namespace HTSController
 
         private void stopButton_Click(object sender, EventArgs e)
         {
-            _network.SendMessage("Abort");
+            stopButton.Enabled = false;
+            if (_network.CheckConnection())
+            {
+                _network.SendMessage("Abort");
+            }
+            else
+            {
+                EndRun("Error", "Lost connection");
+            }
         }
     }
 }

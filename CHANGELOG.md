@@ -1,5 +1,13 @@
 ## Changelog
 
+### unreleased
+#### Added
+- Protocol: ability to select next test
+#### Fixed
+- Protocol: better response to measurements aborted on the tablet side
+
+---
+
 ### v0.6 (2025-04-24)
 #### Added
 - Protocol control

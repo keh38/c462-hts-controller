@@ -177,7 +177,11 @@ namespace HTSController.Pages
 
         private void label_Click(object sender, EventArgs e)
         {
-            //(sender as Label).BackColor = Color.AliceBlue;
+            if (_state == ProtocolState.Idle || _state == ProtocolState.Stopped)
+            {
+                _nextTestIndex = _labels.IndexOf(sender as Label);
+                ShowProtocolProgress(_nextTestIndex);
+            }
         }
 
         private async Task InitializeProtocol(string name)
@@ -337,7 +341,9 @@ namespace HTSController.Pages
                 case "Advance":
                     Invoke(new Action(() => { Advance(); }));
                     break;
-
+                case "Quit":
+                    Invoke(new Action(() => { StopProtocol(false, "User quit"); }));
+                    break;
             }
         }
         

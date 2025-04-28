@@ -320,6 +320,7 @@ namespace HTSController
                     Invoke(new Action(() => { EndRun("Error", info); }));
                     break;
                 case "Finished":
+                    _runAborted = info.Equals("Measurement aborted");
                     Invoke(new Action(() => { EndRun("Finished", info); }));
                     break;
                 case "GazeCalibrationFinished":
