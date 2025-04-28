@@ -151,6 +151,7 @@ namespace HTSController.Pages
 
             transducerDropDown.SelectedIndex = itransducer;
             ShowMetrics();
+            SendMetricsToEditor();
 
             _ignoreEvents = currentIgnore;
 
@@ -215,6 +216,7 @@ namespace HTSController.Pages
         {
             _network.SendMessage($"SetSubjectMetrics:{KLib.KFile.ToXMLString(_subjectMetadata.metrics)}");
             ShowMetrics();
+            SendMetricsToEditor();
             applyButton.Visible = false;
         }
 
@@ -226,6 +228,16 @@ namespace HTSController.Pages
             {
                 metricGridView.Rows.Add(entry.key, entry.value);
             }
+        }
+
+        private void SendMetricsToEditor()
+        {
+            var ip = KLib.Net.Discovery.Discover("TURANDOT.EDITOR");
+            if (ip != null)
+            {
+                KLib.Net.KTcpClient.SendMessage(ip, $"SetMetrics:{KLib.KFile.ToXMLString(_subjectMetadata.metrics)}");
+            }
+
         }
 
         private void metricGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)

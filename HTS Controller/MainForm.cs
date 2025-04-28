@@ -91,7 +91,7 @@ namespace HTSController
         {
             await StartLogging();
 
-            Log.Information($"HTS  v{Assembly.GetExecutingAssembly().GetName().Version.ToString()} started");
+            Log.Information($"HTS v{Assembly.GetExecutingAssembly().GetName().Version.ToString()} started");
 
             Log.Information("Starting TCP listener");
             _network.StartListener();

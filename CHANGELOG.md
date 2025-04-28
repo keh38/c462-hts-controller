@@ -1,8 +1,9 @@
 ## Changelog
 
-### unreleased
+### v0.7 (unreleased)
 #### Added
 - Protocol: ability to select next test
+- transmit metrics to Turandot Editor (if running)
 #### Fixed
 - Protocol: better response to measurements aborted on the tablet side
 
