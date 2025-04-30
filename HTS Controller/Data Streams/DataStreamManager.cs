@@ -122,7 +122,7 @@ namespace HTSController.Data_Streams
             _statusTimer.Start();
         }
 
-        public async Task<bool> StartRecording(string filename)
+        public async Task<bool> StartRecording(string filename, params string[] mandatory)
         {
             _statusTimer.Stop();
             _problemChildren.Clear();
@@ -132,7 +132,7 @@ namespace HTSController.Data_Streams
             var streamsToStart = _streams.FindAll(x => x.Record && x.IsPresent);
             foreach (var s in streamsToStart)
             {
-                Debug.WriteLine($"{s.Name}: writing to {s.IPEndPoint}");
+                Log.Information($"{s.Name}: writing to {s.IPEndPoint}");
                 await KTcpClient.SendMessageAsync(s.IPEndPoint, $"Record:{Path.Combine(FileLocations.SubjectDataFolder, filename)}");
             }
 
@@ -155,6 +155,20 @@ namespace HTSController.Data_Streams
             }
 
             bool success = streamsToStart.Count == 0;
+
+            if (success && mandatory.Length > 0)
+            {
+                foreach (var m in mandatory)
+                {
+                    var s = _streams.Find(x => x.MulticastName == m);
+                    if (s==null || s.Status != DataStream.StreamStatus.Recording)
+                    {
+                        Log.Error($"Mandatory stream '{s.Name}' not started");
+                        _problemChildren.Add(s.Name);
+                        success = false;
+                    }
+                }
+            }
 
             if (success)
             {

@@ -6,6 +6,9 @@
 - transmit metrics to Turandot Editor (if running)
 #### Fixed
 - Protocol: better response to measurements aborted on the tablet side
+- Pupil dynamic range:
+  - better logging
+  - require Eyelink stream (or else what's the point)
 
 ---
 

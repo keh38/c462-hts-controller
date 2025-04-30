@@ -126,12 +126,13 @@ namespace HTSController
             startButton.Enabled = false;
 
             logTextBox.Text = "Starting dynamic range measurement...";
+            Log.Information("Starting dynamic range measurement...");
             var success = await ChangeTabletScene("Pupil Dynamic Range");
             if (!success)
             {
                 startButton.Enabled = true;
                 logTextBox.Text = "failed to change scene on tablet";
-                Debug.WriteLine("failed to change to pupil dynamic range scene");
+                Log.Error("failed to change to pupil dynamic range scene");
                 EndAutoRun(false, null);
                 return;
             }
@@ -144,7 +145,7 @@ namespace HTSController
             dataFileTextBox.Text = _dataFile;
             if (!string.IsNullOrEmpty(_dataFile))
             {
-                var started = await _streamManager.StartRecording(_dataFile);
+                var started = await _streamManager.StartRecording(_dataFile, "EYELINK");
                 if (started)
                 {
                     stopButton.Enabled = true;
@@ -158,6 +159,7 @@ namespace HTSController
                     foreach (var s in _streamManager.ProblemStreams)
                     {
                         logTextBox.AppendText($"- {s}\n");
+                        Log.Error("$failed to start stream: {s}");
                     }
                     startButton.Enabled = true;
                     EndAutoRun(false, null);
@@ -166,6 +168,7 @@ namespace HTSController
             else
             {
                 logTextBox.AppendText("didn't receive data file name from Dynamic Range scene");
+                Log.Error("didn't receive data file name from Dynamic Range scene");
                 startButton.Enabled = true;
                 EndAutoRun(false, null);
             }
