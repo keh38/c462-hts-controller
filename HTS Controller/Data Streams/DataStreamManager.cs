@@ -13,6 +13,7 @@ using Serilog;
 
 using KLib;
 using KLib.Net;
+using static SyncPulseDetector.SyncPulseEvent;
 
 namespace HTSController.Data_Streams
 {
@@ -179,7 +180,8 @@ namespace HTSController.Data_Streams
             {
                 foreach (var s in _streams.FindAll(x => x.Status != DataStream.StreamStatus.Idle))
                 {
-                    await KTcpClient.SendMessageAsync(s.IPEndPoint, "Stop");
+                    var result = await KTcpClient.SendMessageAsync(s.IPEndPoint, "Stop");
+                    Log.Information($"stopping {s.MulticastName}: {result}");
                 }
                 foreach (var s in streamsToStart)
                 {

@@ -145,7 +145,7 @@ namespace HTSController
             dataFileTextBox.Text = _dataFile;
             if (!string.IsNullOrEmpty(_dataFile))
             {
-                var started = await _streamManager.StartRecording(_dataFile, "EYELINK");
+                var started = await _streamManager.StartRecording(_dataFile);//, "EYELINK");
                 if (started)
                 {
                     stopButton.Enabled = true;
@@ -159,9 +159,10 @@ namespace HTSController
                     foreach (var s in _streamManager.ProblemStreams)
                     {
                         logTextBox.AppendText($"- {s}\n");
-                        Log.Error("$failed to start stream: {s}");
+                        Log.Error($"failed to start stream: {s}");
                     }
                     startButton.Enabled = true;
+                    _network.SendMessage($"StopSynchronizing");
                     EndAutoRun(false, null);
                 }
             }
@@ -170,6 +171,7 @@ namespace HTSController
                 logTextBox.AppendText("didn't receive data file name from Dynamic Range scene");
                 Log.Error("didn't receive data file name from Dynamic Range scene");
                 startButton.Enabled = true;
+                _network.SendMessage($"StopSynchronizing");
                 EndAutoRun(false, null);
             }
         }
@@ -225,7 +227,7 @@ namespace HTSController
                 logTextBox.AppendText($"{Environment.NewLine}{status}{Environment.NewLine}");
             }
 
-            var functionName = matlabDropDown.SelectedItem.ToString();
+            var functionName = matlabDropDown.SelectedItem?.ToString();
             bool analyzeData = !_runAborted && !message.Equals("Error") && !string.IsNullOrEmpty(functionName) && MATLAB.IsInitialized;
             bool haveData = false;
             bool analysisSuccess = !analyzeData;
