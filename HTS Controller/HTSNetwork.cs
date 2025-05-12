@@ -30,6 +30,7 @@ namespace HTSController
         private IPEndPoint _ipEndPoint;
         private string _serverAddress;
         private bool _lastPingSucceeded = false;
+        private string _remoteVersionNumber = "";
 
         private CancellationTokenSource _serverCancellationToken;
 
@@ -37,6 +38,7 @@ namespace HTSController
         public string CurrentScene { get; private set; }
         public string TabletAddress { get { return (_ipEndPoint == null) ? "" : _ipEndPoint.ToString(); } }
         public string MyAddress { get { return _serverAddress; } }
+        public string TabletVersion { get { return _remoteVersionNumber; } }
       
         public HTSNetwork()
         {
@@ -125,6 +127,7 @@ namespace HTSController
                     if (result > 0)
                     {
                         CurrentScene = KTcpClient.SendMessageReceiveString(_ipEndPoint, "GetCurrentSceneName");
+                        _remoteVersionNumber = KTcpClient.SendMessageReceiveString(_ipEndPoint, "GetVersionNumber");
                     }
                     success = (result > 0);
                     _lastPingSucceeded = success;

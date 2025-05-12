@@ -36,7 +36,7 @@ namespace HTSController
             }
         }
 
-        public string DataDrive { get; set; } = "C";
+        public string dataDrive { get; set; } = @"C:\";
         public SerializeableDictionary lastUsed = new SerializeableDictionary();
 
         private static HTSControllerSettings _instance = null;
@@ -57,6 +57,12 @@ namespace HTSController
                 }
                 return _instance;
             }
+        }
+
+        public static string DataDrive
+        {
+            get { return instance.dataDrive; }
+            set { instance.dataDrive = value; Save(); }
         }
 
         public static void SetLastUsed(string key, string value)

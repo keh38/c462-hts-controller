@@ -62,11 +62,10 @@ namespace HTSController
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
                 .WriteTo.Console()
-                .WriteTo.File(
-                    path: Path.Combine(_logPath),
-                    retainedFileCountLimit: 30,
-                    flushToDiskInterval: TimeSpan.FromSeconds(5),
-                    buffered: true)
+                .WriteTo.File(path: Path.Combine(_logPath),
+                              retainedFileCountLimit: 30,
+                              flushToDiskInterval: TimeSpan.FromSeconds(5),
+                              buffered: true)
                 .CreateLogger()
                 );
 
@@ -87,6 +86,21 @@ namespace HTSController
             //            tabControl.SelectedTab = subjectPage;
             subjectButton.Checked = true;
 //            SelectTab(null);
+
+            subjectPageControl.Initialize(_network);
+
+            driveDropDown.Items.Clear();
+            foreach (var di in DriveInfo.GetDrives())
+            {
+                if (di.DriveType == DriveType.Fixed)
+                {
+                    driveDropDown.Items.Add(di.Name);
+                }
+            }
+            _ignoreEvents = true;
+            driveDropDown.SelectedItem = HTSControllerSettings.DataDrive;
+            _ignoreEvents = false;
+            FileLocations.SetDataDrive(HTSControllerSettings.DataDrive);
         }
 
         private async void MainForm_Shown(object sender, EventArgs e)
@@ -198,7 +212,7 @@ namespace HTSController
             if (success)
             {
                 connectionStatusLabel.Image = imageList.Images[1];
-                connectionStatusLabel.Text = $"Connected to {_network.TabletAddress}";
+                connectionStatusLabel.Text = $"Connected to {_network.TabletAddress} (V{_network.TabletVersion})";
                 sceneNameLabel.Text = $"Scene: {_network.CurrentScene}";
 
                 subjectPageControl.RetrieveSubjectState();
@@ -386,6 +400,15 @@ namespace HTSController
         private void TestRunEnded(object sender, AutoRunEndEventArgs e)
         {
             protocolControl.TestFinished(e.success, e.dataFile);
+        }
+
+        private void driveDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                HTSControllerSettings.DataDrive = driveDropDown.SelectedItem as string;
+                FileLocations.SetDataDrive(HTSControllerSettings.DataDrive);
+            }
         }
     }
 }

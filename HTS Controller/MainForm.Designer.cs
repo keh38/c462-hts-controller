@@ -51,6 +51,8 @@
             this.messagePage = new System.Windows.Forms.TabPage();
             this.runTurandotPage = new System.Windows.Forms.TabPage();
             this.adminPage = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.driveDropDown = new System.Windows.Forms.ComboBox();
             this.localLogButton = new System.Windows.Forms.Button();
             this.tabletLogButton = new System.Windows.Forms.Button();
             this.pupilPage = new System.Windows.Forms.TabPage();
@@ -59,8 +61,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.protocolControl = new HTSController.Pages.ProtocolControl();
             this.connectionTimer = new System.Windows.Forms.Timer(this.components);
-            this.driveDropDown = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.statusStrip.SuspendLayout();
             this.menuPanel.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
@@ -99,7 +99,7 @@
             this.matlabStatusLabel.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
             this.matlabStatusLabel.Image = global::HTSController.Properties.Resources.Matlab_Logo_32;
             this.matlabStatusLabel.Name = "matlabStatusLabel";
-            this.matlabStatusLabel.Size = new System.Drawing.Size(126, 24);
+            this.matlabStatusLabel.Size = new System.Drawing.Size(125, 24);
             this.matlabStatusLabel.Text = "MATLAB available";
             this.matlabStatusLabel.Visible = false;
             // 
@@ -385,6 +385,25 @@
             this.adminPage.Text = "tabPage1";
             this.adminPage.UseVisualStyleBackColor = true;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(10, 26);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(56, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Data drive";
+            // 
+            // driveDropDown
+            // 
+            this.driveDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.driveDropDown.FormattingEnabled = true;
+            this.driveDropDown.Location = new System.Drawing.Point(72, 23);
+            this.driveDropDown.Name = "driveDropDown";
+            this.driveDropDown.Size = new System.Drawing.Size(52, 21);
+            this.driveDropDown.TabIndex = 4;
+            this.driveDropDown.SelectedIndexChanged += new System.EventHandler(this.driveDropDown_SelectedIndexChanged);
+            // 
             // localLogButton
             // 
             this.localLogButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
@@ -470,23 +489,6 @@
             // 
             this.connectionTimer.Interval = 1000;
             this.connectionTimer.Tick += new System.EventHandler(this.connectionTimer_Tick);
-            // 
-            // driveDropDown
-            // 
-            this.driveDropDown.FormattingEnabled = true;
-            this.driveDropDown.Location = new System.Drawing.Point(72, 23);
-            this.driveDropDown.Name = "driveDropDown";
-            this.driveDropDown.Size = new System.Drawing.Size(52, 21);
-            this.driveDropDown.TabIndex = 4;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 26);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(56, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Data drive";
             // 
             // MainForm
             // 

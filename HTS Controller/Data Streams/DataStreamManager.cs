@@ -133,14 +133,14 @@ namespace HTSController.Data_Streams
             var streamsToStart = _streams.FindAll(x => x.Record && x.IsPresent);
             foreach (var s in streamsToStart)
             {
-                Log.Information($"{s.Name}: writing to {s.IPEndPoint}");
-                await KTcpClient.SendMessageAsync(s.IPEndPoint, $"Record:{Path.Combine(FileLocations.SubjectDataFolder, filename)}");
+                var response = await KTcpClient.SendMessageAsync(s.IPEndPoint, $"Record:{Path.Combine(FileLocations.SubjectDataFolder, filename)}");
+                Log.Information($"{s.Name} ({s.IPEndPoint}) responds {response}");
             }
 
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
             {
-                streamsToStart = streamsToStart.FindAll(x => x.Status == DataStream.StreamStatus.Idle);
+                streamsToStart = streamsToStart.FindAll(x => x.Status == DataStream.StreamStatus.Idle || x.Status == DataStream.StreamStatus.Missed);
                 if (streamsToStart.Count == 0)
                 {
                     break;

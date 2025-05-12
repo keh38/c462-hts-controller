@@ -6,6 +6,7 @@ namespace HTSController
     public static class FileLocations
     {
         public static string Subject { get; private set; }
+        public static string DataDrive { get; private set; } = @"C:\";
         public static readonly string RootFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS");
         public static string ConfigFolder
         {
@@ -35,10 +36,18 @@ namespace HTSController
         }
         public static string StateFile { get { return Path.Combine(RootFolder, "State.xml"); } }
         public static string SubjectDataFolder { get; private set; }
+        public static void SetDataDrive(string drive)
+        {
+            DataDrive = drive;
+            if (!string.IsNullOrEmpty(Subject))
+            {
+                SubjectDataFolder = Path.Combine($"{DataDrive}Data", Subject);
+            }
+        }
         public static void SetSubject(string id)
         {
             Subject = id;
-            SubjectDataFolder = Path.Combine(@"C:\Data", id);
+            SubjectDataFolder = Path.Combine($"{DataDrive}Data", id);
             if (!Directory.Exists(SubjectDataFolder))
             {
                 Directory.CreateDirectory(SubjectDataFolder);
