@@ -59,6 +59,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.protocolControl = new HTSController.Pages.ProtocolControl();
             this.connectionTimer = new System.Windows.Forms.Timer(this.components);
+            this.driveDropDown = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.statusStrip.SuspendLayout();
             this.menuPanel.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
@@ -371,6 +373,8 @@
             // 
             // adminPage
             // 
+            this.adminPage.Controls.Add(this.label2);
+            this.adminPage.Controls.Add(this.driveDropDown);
             this.adminPage.Controls.Add(this.localLogButton);
             this.adminPage.Controls.Add(this.tabletLogButton);
             this.adminPage.Location = new System.Drawing.Point(4, 5);
@@ -385,7 +389,7 @@
             // 
             this.localLogButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
             this.localLogButton.ForeColor = System.Drawing.Color.White;
-            this.localLogButton.Location = new System.Drawing.Point(6, 71);
+            this.localLogButton.Location = new System.Drawing.Point(13, 199);
             this.localLogButton.Name = "localLogButton";
             this.localLogButton.Size = new System.Drawing.Size(118, 36);
             this.localLogButton.TabIndex = 3;
@@ -397,7 +401,7 @@
             // 
             this.tabletLogButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
             this.tabletLogButton.ForeColor = System.Drawing.Color.White;
-            this.tabletLogButton.Location = new System.Drawing.Point(6, 29);
+            this.tabletLogButton.Location = new System.Drawing.Point(13, 157);
             this.tabletLogButton.Name = "tabletLogButton";
             this.tabletLogButton.Size = new System.Drawing.Size(118, 36);
             this.tabletLogButton.TabIndex = 2;
@@ -467,6 +471,23 @@
             this.connectionTimer.Interval = 1000;
             this.connectionTimer.Tick += new System.EventHandler(this.connectionTimer_Tick);
             // 
+            // driveDropDown
+            // 
+            this.driveDropDown.FormattingEnabled = true;
+            this.driveDropDown.Location = new System.Drawing.Point(72, 23);
+            this.driveDropDown.Name = "driveDropDown";
+            this.driveDropDown.Size = new System.Drawing.Size(52, 21);
+            this.driveDropDown.TabIndex = 4;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(10, 26);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(56, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Data drive";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -491,6 +512,7 @@
             this.subjectPage.PerformLayout();
             this.turandotSettingsPage.ResumeLayout(false);
             this.adminPage.ResumeLayout(false);
+            this.adminPage.PerformLayout();
             this.ipcPanel.ResumeLayout(false);
             this.ipcLayoutPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -530,6 +552,8 @@
         private Pages.ProtocolControl protocolControl1;
         private Pages.ProtocolControl protocolControl;
         private System.Windows.Forms.Button localLogButton;
+        private System.Windows.Forms.ComboBox driveDropDown;
+        private System.Windows.Forms.Label label2;
     }
 }
 

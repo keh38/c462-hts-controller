@@ -35,6 +35,8 @@ namespace HTSController
                 }
             }
         }
+
+        public string DataDrive { get; set; } = "C";
         public SerializeableDictionary lastUsed = new SerializeableDictionary();
 
         private static HTSControllerSettings _instance = null;
