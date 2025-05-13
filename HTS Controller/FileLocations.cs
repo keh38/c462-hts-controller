@@ -42,6 +42,10 @@ namespace HTSController
             if (!string.IsNullOrEmpty(Subject))
             {
                 SubjectDataFolder = Path.Combine($"{DataDrive}Data", Subject);
+                if (!Directory.Exists(SubjectDataFolder))
+                {
+                    Directory.CreateDirectory(SubjectDataFolder);
+                }
             }
         }
         public static void SetSubject(string id)

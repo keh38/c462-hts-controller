@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.7 (unreleased)
+### v0.7 (2025-05-13)
 #### Added
 - Protocol: ability to select next test
 - transmit metrics to Turandot Editor (if running)
