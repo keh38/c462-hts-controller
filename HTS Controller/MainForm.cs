@@ -46,8 +46,6 @@ namespace HTSController
             _menu.Add(new Tuple<CheckBox, TabPage>(turandotButton, turandotSettingsPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(pupilButton, pupilPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(adminButton, adminPage));
-
-            //driveDropDown
         }
 
         private async Task StartLogging()

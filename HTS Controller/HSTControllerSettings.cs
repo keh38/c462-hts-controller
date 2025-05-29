@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,6 +38,7 @@ namespace HTSController
         }
 
         public string dataDrive { get; set; } = @"C:\";
+        public string projectFolder { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS", "Projects"); 
         public SerializeableDictionary lastUsed = new SerializeableDictionary();
 
         private static HTSControllerSettings _instance = null;
