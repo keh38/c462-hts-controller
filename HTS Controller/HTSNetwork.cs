@@ -35,6 +35,7 @@ namespace HTSController
         private CancellationTokenSource _serverCancellationToken;
 
         public bool IsConnected { get { return _ipEndPoint != null && _lastPingSucceeded; } }
+        public bool IsLocalHost { get { return _ipEndPoint != null && _ipEndPoint.ToString().StartsWith("127.0.0.1"); } }
         public string CurrentScene { get; private set; }
         public string TabletAddress { get { return (_ipEndPoint == null) ? "" : _ipEndPoint.ToString(); } }
         public string MyAddress { get { return _serverAddress; } }
@@ -123,7 +124,7 @@ namespace HTSController
                 {
                     Debug.WriteLine($"contacting host {_ipEndPoint.ToString()}");
 
-                    var result = KTcpClient.SendMessage(_ipEndPoint, $"Connect:{_serverAddress.Replace(":","/")}");
+                    var result = KTcpClient.SendMessage(_ipEndPoint, $"Connect:{_serverAddress.Replace(":", "/")}");
                     if (result > 0)
                     {
                         CurrentScene = KTcpClient.SendMessageReceiveString(_ipEndPoint, "GetCurrentSceneName");

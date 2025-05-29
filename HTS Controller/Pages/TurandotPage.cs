@@ -42,12 +42,22 @@ namespace HTSController.Pages
         public void Initialize(HTSNetwork network)
         {
             _network = network;
+        }
+
+        public void UpdateConfigFileList()
+        {
             var lastItem = HTSControllerSettings.GetLastUsed("TurandotPage");
             if (string.IsNullOrEmpty(lastItem))
             {
                 lastItem = "Turandot";
             }
+
+            _ignoreEvents = true;
+
             fileTypeDropDown.SelectedItem = lastItem;
+            SetFileType(lastItem);
+
+            _ignoreEvents = false;
         }
 
         public void NetworkStatusChanged()
@@ -74,10 +84,10 @@ namespace HTSController.Pages
 
         private void EnableButtons()
         {
-            string fileType = fileTypeDropDown.SelectedItem.ToString();
+            string fileType = fileTypeDropDown.SelectedItem?.ToString();
             startButton.Enabled = true;// _network.IsConnected || fileType.Equals("Interactive");
             copyButton.Enabled = _network.IsConnected;
-            editButton.Visible = fileType.Equals("Turandot");
+            editButton.Visible = fileType != null && fileType.Equals("Turandot");
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -126,7 +136,10 @@ namespace HTSController.Pages
 
         private void fileTypeDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetFileType(fileTypeDropDown.SelectedItem.ToString());
+            if (!_ignoreEvents)
+            {
+                SetFileType(fileTypeDropDown.SelectedItem.ToString());
+            }
         }
 
         private async void editButton_Click(object sender, EventArgs e)

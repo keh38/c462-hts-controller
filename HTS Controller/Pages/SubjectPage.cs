@@ -14,6 +14,7 @@ using Serilog;
 using KLib.Controls;
 
 using MathWorks.MATLAB.Types;
+//using UnityEngine;
 
 namespace HTSController.Pages
 {
@@ -22,16 +23,20 @@ namespace HTSController.Pages
     {
         private HTSNetwork _network;
 
-        private string Project { get; set; } = "";
+        public string Project { get; private set; } = "";
         public string Subject { get; private set; } = "";
 
         private SubjectMetadata _subjectMetadata;
+
+        public delegate void ProjectChangedDelegate(string projectName);
+        public ProjectChangedDelegate OnProjectChanged { get; set; }
+
 
         public SubjectPage()
         {
             InitializeComponent();
 
-            projectDropDown.Enabled = false;
+            //projectDropDown.Enabled = false;
             subjectDropDown.Enabled = false;
             transducerDropDown.Enabled = false;
         }
@@ -39,6 +44,12 @@ namespace HTSController.Pages
         public void Initialize(HTSNetwork network)
         {
             _network = network;
+
+            projectDropDown.Items.Clear();
+            var projects = FileLocations.EnumerateProjects();
+            projectDropDown.Items.AddRange(projects.ToArray());
+
+            projectDropDown.SelectedIndex = projects.IndexOf(HTSControllerSettings.LastProject);
         }
 
         public void RetrieveSubjectState()
@@ -51,6 +62,7 @@ namespace HTSController.Pages
             var parts = subjectInfo.Split('/');
             Project = parts[0];
             Subject = parts[1];
+            FileLocations.SetProject(Project);
             FileLocations.SetSubject(Subject);
 
             var projects = _network.SendMessageAndReceiveJSON<List<string>>("GetProjectList");
@@ -82,18 +94,6 @@ namespace HTSController.Pages
             }
         }
 
-        private void projectDropDown_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                if (!projectDropDown.Items.Contains(projectDropDown.Text))
-                {
-                    projectDropDown.Text = Project;
-                    projectDropDown.SelectedValue = Project;
-                }
-            }
-        }
-
         private void projectDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (projectDropDown.SelectedIndex < 0)
@@ -106,13 +106,15 @@ namespace HTSController.Pages
             }
             else
             {
+                Project = projectDropDown.Text;
+                HTSControllerSettings.LastProject = Project;
+
+                transducerDropDown.Enabled = false;
+                transducerDropDown.Items.Clear();
+                transducerDropDown.SelectedIndex = -1;
+
                 if (_network.IsConnected)
                 {
-                    var transducers = _network.SendMessageAndReceiveXml<List<string>>("GetTransducers");
-                    transducerDropDown.Enabled = true;
-                    transducerDropDown.Items.Clear();
-                    transducerDropDown.Items.AddRange(transducers.ToArray());
-
                     var subjects = _network.SendMessageAndReceiveJSON<List<string>>($"GetSubjectList:{projectDropDown.Text}");
 
                     subjectDropDown.Enabled = true;
@@ -132,6 +134,7 @@ namespace HTSController.Pages
 
                     _ignoreEvents = false;
                 }
+                OnProjectChanged?.Invoke(Project);
             }
         }
 
@@ -144,11 +147,16 @@ namespace HTSController.Pages
             }
             FileLocations.SetSubject(Subject);
             _subjectMetadata = _network.SendMessageAndReceiveXml<SubjectMetadata>("GetSubjectMetadata");
-            var itransducer = transducerDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList().IndexOf(_subjectMetadata.Transducer);
 
             var currentIgnore = _ignoreEvents;
             _ignoreEvents = true;
 
+            var transducers = _network.SendMessageAndReceiveXml<List<string>>("GetTransducers");
+            transducerDropDown.Enabled = true;
+            transducerDropDown.Items.Clear();
+            transducerDropDown.Items.AddRange(transducers.ToArray());
+
+            var itransducer = transducerDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList().IndexOf(_subjectMetadata.Transducer);
             transducerDropDown.SelectedIndex = itransducer;
             ShowMetrics();
             SendMetricsToEditor();
@@ -158,25 +166,55 @@ namespace HTSController.Pages
             OnValueChanged();
         }
 
+        private void projectDropDown_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (!projectDropDown.Items.Contains(projectDropDown.Text))
+                {
+                    createProjectButton.Visible = true;
+                }
+            }
+        }
+
+        private void projectDropDown_TextChanged(object sender, EventArgs e)
+        {
+            createProjectButton.Visible = false;
+        }
+
         private void subjectDropDown_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
                 if (!subjectDropDown.Items.Contains(subjectDropDown.Text))
                 {
-                    createButton.Visible = true;
+                    createSubjectButton.Visible = true;
                 }
             }
         }
 
         private void subjectDropDown_TextChanged(object sender, EventArgs e)
         {
-            createButton.Visible = false;
+            createSubjectButton.Visible = false;
+        }
+        private void createProjectButton_Click(object sender, EventArgs e)
+        {
+            createProjectButton.Visible = false;
+            Project = projectDropDown.Text;
+            projectDropDown.Items.Add(Project);
+
+            if (_network.IsConnected && !_network.IsLocalHost)
+            {
+                _network.SendMessage($"CreateProject:{Project}");
+            }
+
+            var projects = projectDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList();
+            projectDropDown.SelectedIndex = projects.IndexOf(Project);
         }
 
-        private void createButton_Click(object sender, EventArgs e)
+        private void createSubjectButton_Click(object sender, EventArgs e)
         {
-            createButton.Visible = false;
+            createSubjectButton.Visible = false;
 
             Subject = subjectDropDown.Text;
             _network.SendMessage($"SetSubjectInfo:{Project}/{Subject}");

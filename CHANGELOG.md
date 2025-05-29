@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.8 (unreleased)
+#### Added 
+- features to facilitate developing projects
+
+---
+
 ### v0.7 (2025-05-13)
 #### Added
 - Protocol: ability to select next test

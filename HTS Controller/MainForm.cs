@@ -46,6 +46,8 @@ namespace HTSController
             _menu.Add(new Tuple<CheckBox, TabPage>(turandotButton, turandotSettingsPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(pupilButton, pupilPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(adminButton, adminPage));
+
+            subjectPageControl.OnProjectChanged = subjectPageControl_ProjectChanged;
         }
 
         private async Task StartLogging()
@@ -76,8 +78,8 @@ namespace HTSController
             _network = new HTSNetwork();
             _network.RemoteMessageHandler += OnRemoteMessage;
 
-            subjectPageControl.Initialize(_network);
             turandotPageControl.Initialize(_network);
+            subjectPageControl.Initialize(_network);
             protocolControl.Initialize(_network);
 
             //menuPanel.Enabled = false;
@@ -97,8 +99,10 @@ namespace HTSController
             }
             _ignoreEvents = true;
             driveDropDown.SelectedItem = HTSControllerSettings.DataDrive;
+            projectRootBrowser.Value = HTSControllerSettings.ProjectRootFolder;
             _ignoreEvents = false;
             FileLocations.SetDataDrive(HTSControllerSettings.DataDrive);
+            FileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
         }
 
         private async void MainForm_Shown(object sender, EventArgs e)
@@ -213,14 +217,19 @@ namespace HTSController
                 connectionStatusLabel.Text = $"Connected to {_network.TabletAddress} (V{_network.TabletVersion})";
                 sceneNameLabel.Text = $"Scene: {_network.CurrentScene}";
 
+                if (_network.IsLocalHost)
+                {
+                    _network.SendMessage($"SetDataRoot:{FileLocations.ProjectRootFolder}");
+                    if (!string.IsNullOrEmpty(subjectPageControl.Project))
+                    {
+                        _network.SendMessage($"SetProject:{subjectPageControl.Project}");
+                    }
+                }
+
                 subjectPageControl.RetrieveSubjectState();
+                turandotPageControl.UpdateConfigFileList();
                 menuPanel.Enabled = true;
                 SelectTab(subjectButton);
-            }
-            else
-            {
-                ////connectionStatusLabel.Image = imageList.Images[0];
-                //connectionStatusLabel.Text = "No tablet connection, retrying..."; // (double-click to retry)";
             }
             return success;
         }
@@ -236,6 +245,12 @@ namespace HTSController
         private void subjectPageControl_ValueChanged(object sender, EventArgs e)
         {
             subjectButton.Text = string.IsNullOrEmpty(subjectPageControl.Subject) ? "Subject" : subjectPageControl.Subject;
+        }
+
+        private void subjectPageControl_ProjectChanged(string projectName)
+        {
+            FileLocations.SetProject(projectName);
+            turandotPageControl.UpdateConfigFileList();
         }
 
         private void OnRemoteMessage(object sender, string fullMessage)
@@ -406,6 +421,15 @@ namespace HTSController
             {
                 HTSControllerSettings.DataDrive = driveDropDown.SelectedItem as string;
                 FileLocations.SetDataDrive(HTSControllerSettings.DataDrive);
+            }
+        }
+
+        private void projectRootBrowser_ValueChanged(object sender, EventArgs e)
+        {
+            if (!_ignoreEvents)
+            {
+                HTSControllerSettings.ProjectRootFolder = projectRootBrowser.Value;
+                FileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
             }
         }
     }

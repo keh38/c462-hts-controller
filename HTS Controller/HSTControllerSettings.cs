@@ -38,7 +38,8 @@ namespace HTSController
         }
 
         public string dataDrive { get; set; } = @"C:\";
-        public string projectFolder { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS", "Projects"); 
+        public string projectRootFolder { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS", "Projects"); 
+        public string lastProject { get; set; }
         public SerializeableDictionary lastUsed = new SerializeableDictionary();
 
         private static HTSControllerSettings _instance = null;
@@ -65,6 +66,18 @@ namespace HTSController
         {
             get { return instance.dataDrive; }
             set { instance.dataDrive = value; Save(); }
+        }
+
+        public static string ProjectRootFolder
+        {
+            get { return instance.projectRootFolder; }
+            set { instance.projectRootFolder = value; Save(); }
+        }
+
+        public static string LastProject
+        {
+            get { return instance.lastProject; }
+            set { instance.lastProject = value; Save(); }
         }
 
         public static void SetLastUsed(string key, string value)

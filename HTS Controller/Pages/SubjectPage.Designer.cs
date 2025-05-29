@@ -28,14 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.label1 = new System.Windows.Forms.Label();
             this.projectDropDown = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.subjectDropDown = new System.Windows.Forms.ComboBox();
-            this.createButton = new System.Windows.Forms.Button();
+            this.createSubjectButton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.transducerDropDown = new System.Windows.Forms.ComboBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -43,6 +43,7 @@
             this.MetricName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MetricValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.applyButton = new System.Windows.Forms.Button();
+            this.createProjectButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.metricGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -63,8 +64,10 @@
             this.projectDropDown.Location = new System.Drawing.Point(40, 44);
             this.projectDropDown.Name = "projectDropDown";
             this.projectDropDown.Size = new System.Drawing.Size(121, 21);
+            this.projectDropDown.Sorted = true;
             this.projectDropDown.TabIndex = 2;
             this.projectDropDown.SelectedIndexChanged += new System.EventHandler(this.projectDropDown_SelectedIndexChanged);
+            this.projectDropDown.TextChanged += new System.EventHandler(this.projectDropDown_TextChanged);
             this.projectDropDown.KeyDown += new System.Windows.Forms.KeyEventHandler(this.projectDropDown_KeyDown);
             // 
             // label2
@@ -89,16 +92,16 @@
             this.subjectDropDown.TextChanged += new System.EventHandler(this.subjectDropDown_TextChanged);
             this.subjectDropDown.KeyDown += new System.Windows.Forms.KeyEventHandler(this.subjectDropDown_KeyDown);
             // 
-            // createButton
+            // createSubjectButton
             // 
-            this.createButton.Location = new System.Drawing.Point(167, 96);
-            this.createButton.Name = "createButton";
-            this.createButton.Size = new System.Drawing.Size(73, 23);
-            this.createButton.TabIndex = 7;
-            this.createButton.Text = "Create new";
-            this.createButton.UseVisualStyleBackColor = true;
-            this.createButton.Visible = false;
-            this.createButton.Click += new System.EventHandler(this.createButton_Click);
+            this.createSubjectButton.Location = new System.Drawing.Point(167, 96);
+            this.createSubjectButton.Name = "createSubjectButton";
+            this.createSubjectButton.Size = new System.Drawing.Size(73, 23);
+            this.createSubjectButton.TabIndex = 7;
+            this.createSubjectButton.Text = "Create new";
+            this.createSubjectButton.UseVisualStyleBackColor = true;
+            this.createSubjectButton.Visible = false;
+            this.createSubjectButton.Click += new System.EventHandler(this.createSubjectButton_Click);
             // 
             // label3
             // 
@@ -137,38 +140,38 @@
             this.metricGridView.BackgroundColor = System.Drawing.SystemColors.Control;
             this.metricGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.metricGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ControlLight;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.metricGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.ControlLight;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.metricGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.metricGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.metricGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.MetricName,
             this.MetricValue});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.metricGridView.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.metricGridView.DefaultCellStyle = dataGridViewCellStyle5;
             this.metricGridView.EnableHeadersVisualStyles = false;
             this.metricGridView.Location = new System.Drawing.Point(40, 220);
             this.metricGridView.Margin = new System.Windows.Forms.Padding(4);
             this.metricGridView.Name = "metricGridView";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.metricGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.metricGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.metricGridView.RowHeadersVisible = false;
             this.metricGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.metricGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -203,17 +206,29 @@
             this.applyButton.Visible = false;
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
+            // createProjectButton
+            // 
+            this.createProjectButton.Location = new System.Drawing.Point(167, 42);
+            this.createProjectButton.Name = "createProjectButton";
+            this.createProjectButton.Size = new System.Drawing.Size(73, 23);
+            this.createProjectButton.TabIndex = 16;
+            this.createProjectButton.Text = "Create new";
+            this.createProjectButton.UseVisualStyleBackColor = true;
+            this.createProjectButton.Visible = false;
+            this.createProjectButton.Click += new System.EventHandler(this.createProjectButton_Click);
+            // 
             // SubjectPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.createProjectButton);
             this.Controls.Add(this.applyButton);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.metricGridView);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.transducerDropDown);
-            this.Controls.Add(this.createButton);
+            this.Controls.Add(this.createSubjectButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.subjectDropDown);
             this.Controls.Add(this.label1);
@@ -232,7 +247,7 @@
         private System.Windows.Forms.ComboBox projectDropDown;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox subjectDropDown;
-        private System.Windows.Forms.Button createButton;
+        private System.Windows.Forms.Button createSubjectButton;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox transducerDropDown;
         private System.Windows.Forms.Label label12;
@@ -240,5 +255,6 @@
         private System.Windows.Forms.Button applyButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn MetricName;
         private System.Windows.Forms.DataGridViewTextBoxColumn MetricValue;
+        private System.Windows.Forms.Button createProjectButton;
     }
 }
