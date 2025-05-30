@@ -35,7 +35,7 @@ namespace HTSController
         private CancellationTokenSource _serverCancellationToken;
 
         public bool IsConnected { get { return _ipEndPoint != null && _lastPingSucceeded; } }
-        public bool IsLocalHost { get { return _ipEndPoint != null && _ipEndPoint.ToString().StartsWith("127.0.0.1"); } }
+        public bool IsLocalConnection { get { return _ipEndPoint != null && _serverAddress.StartsWith(_ipEndPoint.Address.ToString()); } }
         public string CurrentScene { get; private set; }
         public string TabletAddress { get { return (_ipEndPoint == null) ? "" : _ipEndPoint.ToString(); } }
         public string MyAddress { get { return _serverAddress; } }

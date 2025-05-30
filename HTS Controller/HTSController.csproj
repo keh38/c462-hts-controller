@@ -176,7 +176,7 @@
       <DependentUpon>ChannelControl.cs</DependentUpon>
     </Compile>
     <Compile Include="FileLocations.cs" />
-    <Compile Include="HSTControllerSettings.cs" />
+    <Compile Include="HTSControllerSettings.cs" />
     <Compile Include="Interactive\InteractiveForm.cs">
       <SubType>Form</SubType>
     </Compile>

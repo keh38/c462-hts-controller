@@ -217,7 +217,7 @@ namespace HTSController
                 connectionStatusLabel.Text = $"Connected to {_network.TabletAddress} (V{_network.TabletVersion})";
                 sceneNameLabel.Text = $"Scene: {_network.CurrentScene}";
 
-                if (_network.IsLocalHost)
+                if (_network.IsLocalConnection)
                 {
                     _network.SendMessage($"SetDataRoot:{FileLocations.ProjectRootFolder}");
                     if (!string.IsNullOrEmpty(subjectPageControl.Project))

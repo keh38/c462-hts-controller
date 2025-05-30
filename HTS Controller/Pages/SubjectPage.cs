@@ -203,7 +203,7 @@ namespace HTSController.Pages
             Project = projectDropDown.Text;
             projectDropDown.Items.Add(Project);
 
-            if (_network.IsConnected && !_network.IsLocalHost)
+            if (_network.IsConnected && !_network.IsLocalConnection)
             {
                 _network.SendMessage($"CreateProject:{Project}");
             }

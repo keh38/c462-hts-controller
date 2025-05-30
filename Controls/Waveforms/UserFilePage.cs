@@ -20,7 +20,16 @@ namespace KLib.Unity.Controls.Signals
     {
         private UserFile _userFile;
 
-        public string DefaultFolder { get; set; }
+        private string _defaultFolder;
+        public string DefaultFolder
+        {
+            get { return _defaultFolder; }
+            set
+            {
+                _defaultFolder = value;
+                fileBrowser.DefaultFolder = value;
+            }
+        }
 
         public UserFilePage()
         {
