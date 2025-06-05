@@ -161,6 +161,11 @@ namespace HTSController.Pages
             ShowMetrics();
             SendMetricsToEditor();
 
+            if (MATLAB.IsInitialized)
+            {
+                MATLAB.AddPath(FileLocations.GetMATLABFolder(""));
+            }
+
             _ignoreEvents = currentIgnore;
 
             OnValueChanged();

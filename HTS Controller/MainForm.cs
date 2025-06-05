@@ -128,6 +128,10 @@ namespace HTSController
             matlabStatusLabel.Visible = haveMATLAB;
             matlabStatusLabel.Text = "Available";
             MATLAB.UpdateMetrics = subjectPageControl.UpdateMetrics;
+            if (haveMATLAB && !string.IsNullOrEmpty(subjectPageControl.Subject))
+            {
+                MATLAB.AddPath(FileLocations.GetMATLABFolder(""));
+            }
         }
 
         private async void connectionTimer_Tick(object sender, EventArgs e)

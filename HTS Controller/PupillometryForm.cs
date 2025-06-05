@@ -21,6 +21,10 @@ using Serilog;
 using SREYELINKLib;
 using MathWorks.MATLAB.Engine;
 using MathWorks.MATLAB.Types;
+using System.Xml.Linq;
+using UnityEngine;
+
+using Color = System.Drawing.Color;
 
 namespace HTSController
 {
@@ -563,8 +567,9 @@ namespace HTSController
                 var functionName = matlabDropDown.SelectedItem.ToString();
                 if (!string.IsNullOrEmpty(functionName))
                 {
-                    //_dataFile = @"C:\Users\hancock\OneDrive\Engineering\Polley\HTS\_Yu-PupilDR-2025-04-14_103307.json";
-                    var result = MATLAB.RunFunction($"{functionName}", Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
+                    //_dataFile = @"C:\Users\hancock\OneDrive\Engineering\Polley\HTS\Sync\Test Data\_Yu-PupilDR-2025-04-14_103307.json";
+                    //var result = MATLAB.RunFunction(functionName, _dataFile);
+                    var result = MATLAB.RunFunction(functionName, Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
                     logTextBox.AppendText(result);
                 }
             }

@@ -49,6 +49,11 @@ namespace HTSController
             }
         }
 
+        public static void AddPath(string path)
+        {
+            _engine.addpath(_engine.genpath(path));
+        }
+
         public static string RunFunction(string functionName, string dataFilePath)
         {
             string result = "";

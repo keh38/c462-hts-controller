@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.9 (unreleased)
+#### Changed
+- add project-specific MATLAB folder to MATLAB engine path
+
+---
+
 ### v0.8 (2025-05-30)
 #### Added 
 - features to facilitate developing projects
