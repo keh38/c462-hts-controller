@@ -20,6 +20,7 @@ using KLib;
 using KLib.Net;
 
 using HTSController.Data_Streams;
+using System.Runtime.CompilerServices;
 
 namespace HTSController
 {
@@ -81,6 +82,8 @@ namespace HTSController
             turandotPageControl.Initialize(_network);
             subjectPageControl.Initialize(_network);
             protocolControl.Initialize(_network);
+
+            lightsButton.Visible = false;
 
             //menuPanel.Enabled = false;
             //            tabControl.SelectedTab = subjectPage;
@@ -144,6 +147,17 @@ namespace HTSController
                     var success = await ConnectToTablet();
                     if (success)
                     {
+                        var colorString = _network.SendMessageAndReceiveString("GetLEDColors");
+                        if (string.IsNullOrEmpty(colorString) || colorString == "none")
+                        {
+                            lightsButton.Visible = false;
+                        }
+                        else
+                        {
+                            lightsButton.Visible = true;
+                            SetLightsButtonBackgroundColor(colorString);
+                        }
+
                         connectionTimer.Interval = 5000;
                         subjectPageControl.Enabled = true;
                         turandotPageControl.NetworkStatusChanged();
@@ -204,6 +218,34 @@ namespace HTSController
             button.BackColor = button.Checked ? MainForm.DefaultBackColor : menuPanel.BackColor;
             button.FlatAppearance.CheckedBackColor = button.Checked ? MainForm.DefaultBackColor : menuPanel.BackColor;
             button.FlatAppearance.MouseOverBackColor = button.Checked ? MainForm.DefaultBackColor : menuPanel.BackColor;
+        }
+
+        private void SetLightsButtonBackgroundColor(string value)
+        {
+            var parts = value.Split(',');
+            if (parts.Length == 4)
+            {
+                var r = (int)(float.Parse(parts[0]) * 255);
+                var g = (int)(float.Parse(parts[1]) * 255);
+                var b = (int)(float.Parse(parts[2]) * 255);
+                var w = (int)(float.Parse(parts[3]) * 255);
+
+                if (r == 0 && g == 0 && b == 0)
+                {
+                    r = w;
+                    g = w;
+                    b = w;
+                }
+
+                if (r == 0 && g == 0 && b == 0)
+                {
+                    lightsButton.BackColor = menuPanel.BackColor;
+                }
+                else
+                {
+                    lightsButton.BackColor = Color.FromArgb(r, g, b);
+                }
+            }
         }
 
         private async Task<bool> ConnectToTablet()
@@ -267,6 +309,9 @@ namespace HTSController
             {
                 case "ChangedScene":
                     sceneNameLabel.Text = $"Scene: {data}";
+                    break;
+                case "ChangedLEDColors":
+                    SetLightsButtonBackgroundColor(data);
                     break;
             }
         }
@@ -370,6 +415,7 @@ namespace HTSController
                 _pupilForm = new PupillometryForm(_network, _streamManager);
                 _pupilForm.TopLevel = false;
                 _pupilForm.AutoRunEnd += TestRunEnded;
+                _pupilForm.RunStateChanged += RunStateChanged;
                 //_pupilForm.ClosePage += OnTurandotRunPageClose;
                 pupilPage.Controls.Add(_pupilForm);
                 _pupilForm.FormBorderStyle = FormBorderStyle.None;
@@ -412,6 +458,20 @@ namespace HTSController
         {
             menuPanel.Enabled = !e.running;
             //tableLayoutPanel.ColumnStyles[0].Width = e.running ? 0 : 155;
+        }
+
+        private void RunStateChanged(object sender, RunStateChangedEventArgs e)
+        {
+            if (e.isRunning)
+            {
+                connectionTimer.Stop();
+                Log.Information("connection timer stopped");
+            }
+            else
+            {
+                connectionTimer.Start();
+                Log.Information("connection timer started");
+            }
         }
 
         private void TestRunEnded(object sender, AutoRunEndEventArgs e)

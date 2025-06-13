@@ -52,6 +52,13 @@ namespace HTSController
         #region EVENTS
         public event EventHandler<AutoRunEndEventArgs> AutoRunEnd;
         private void OnAutoRunEnd(bool success, string dataFile) { AutoRunEnd?.Invoke(this, new AutoRunEndEventArgs(success, dataFile)); }
+
+        public event EventHandler<RunStateChangedEventArgs> RunStateChanged;
+        protected virtual void OnRunStateChanged(string source, bool isRunning)
+        {
+            RunStateChanged?.Invoke(this, new RunStateChangedEventArgs(source, isRunning));
+        }
+
         #endregion
 
         public PupillometryForm(HTSNetwork network, DataStreamManager streamManager)
@@ -149,12 +156,13 @@ namespace HTSController
             dataFileTextBox.Text = _dataFile;
             if (!string.IsNullOrEmpty(_dataFile))
             {
-                var started = await _streamManager.StartRecording(_dataFile, "EYELINK");
+                var started = await _streamManager.StartRecording(_dataFile);//, "EYELINK");
                 if (started)
                 {
                     stopButton.Enabled = true;
                     stopButton.Visible = true;
                     logTextBox.AppendText("OK" + Environment.NewLine);
+                    OnRunStateChanged("PupilDynamicRange", true);
                     _network.SendMessage("Begin");
                 }
                 else
@@ -262,6 +270,7 @@ namespace HTSController
             }
             progressBar.Value = 0;
             _streamManager.RestartStatusTimer();
+            OnRunStateChanged("PupilDynamicRange", false);
 
             EndAutoRun(success: !_runAborted && !message.Equals("Error") && analysisSuccess, dataFile:_dataFile);
         }

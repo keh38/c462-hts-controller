@@ -16,4 +16,16 @@ namespace HTSController
             this.dataFile = dataFile;
         }
     }
+
+    public class RunStateChangedEventArgs : EventArgs
+    {
+        public string source;
+        public bool isRunning;
+        public RunStateChangedEventArgs(string source, bool isRunning)
+        {
+            this.source = source;
+            this.isRunning = isRunning;
+        }
+
+    }
 }
