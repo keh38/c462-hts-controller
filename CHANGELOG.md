@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.10 (unreleased)
+#### Added
+- communication of LED color changes with tablet
+
+---
+
 ### v0.9 (2025-06-12)
 #### Changed
 - add project-specific MATLAB folder to MATLAB engine path
