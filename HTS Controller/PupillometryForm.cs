@@ -332,6 +332,7 @@ namespace HTSController
                     File.WriteAllText(filePath, data);
                     break;
                 case "Response":
+                    Log.Information("Gaze calibration response received");
                     _eyeLink.sendKeybutton(13, (short)0, (short)10);
                     break;
                 case "Error":
@@ -423,10 +424,12 @@ namespace HTSController
         {
             _eyeLink.sendKeybutton(99, 0, 10);
             var job = _busyCal.job;
+            var lastjob = job;
 
             while (true)
             {
-                //if (job > 0 && job != 6) Log.Information($" job = {job}");
+                //if (job > 0 && job != 6 && job != lastjob) Log.Information($" job = {job}");
+                lastjob = job;
 
                 if (job == 9)
                 {
