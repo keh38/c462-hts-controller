@@ -36,6 +36,7 @@
             this.gazeStartButton = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.dynamicRangePage = new System.Windows.Forms.TabPage();
+            this.dynamicRangePropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.label1 = new System.Windows.Forms.Label();
             this.matlabDropDown = new System.Windows.Forms.ComboBox();
             this.runButton = new System.Windows.Forms.Button();
@@ -53,24 +54,27 @@
             // dataFileTextBox
             // 
             this.dataFileTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dataFileTextBox.Location = new System.Drawing.Point(5, 47);
+            this.dataFileTextBox.Location = new System.Drawing.Point(7, 58);
+            this.dataFileTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.dataFileTextBox.Name = "dataFileTextBox";
             this.dataFileTextBox.ReadOnly = true;
-            this.dataFileTextBox.Size = new System.Drawing.Size(268, 20);
+            this.dataFileTextBox.Size = new System.Drawing.Size(291, 22);
             this.dataFileTextBox.TabIndex = 17;
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(5, 73);
+            this.progressBar.Location = new System.Drawing.Point(7, 88);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(4);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(268, 15);
+            this.progressBar.Size = new System.Drawing.Size(291, 20);
             this.progressBar.TabIndex = 14;
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(5, 7);
+            this.startButton.Location = new System.Drawing.Point(7, 9);
+            this.startButton.Margin = new System.Windows.Forms.Padding(4);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(132, 26);
+            this.startButton.Size = new System.Drawing.Size(176, 32);
             this.startButton.TabIndex = 11;
             this.startButton.Text = "Measure dynamic range";
             this.startButton.UseVisualStyleBackColor = true;
@@ -78,9 +82,10 @@
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(194, 7);
+            this.stopButton.Location = new System.Drawing.Point(191, 9);
+            this.stopButton.Margin = new System.Windows.Forms.Padding(4);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(80, 26);
+            this.stopButton.Size = new System.Drawing.Size(107, 32);
             this.stopButton.TabIndex = 16;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
@@ -90,18 +95,21 @@
             // logTextBox
             // 
             this.logTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.logTextBox.Location = new System.Drawing.Point(4, 94);
+            this.logTextBox.Location = new System.Drawing.Point(5, 116);
+            this.logTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
-            this.logTextBox.Size = new System.Drawing.Size(269, 83);
+            this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logTextBox.Size = new System.Drawing.Size(293, 102);
             this.logTextBox.TabIndex = 18;
             // 
             // gazeStartButton
             // 
-            this.gazeStartButton.Location = new System.Drawing.Point(5, 15);
+            this.gazeStartButton.Location = new System.Drawing.Point(7, 18);
+            this.gazeStartButton.Margin = new System.Windows.Forms.Padding(4);
             this.gazeStartButton.Name = "gazeStartButton";
-            this.gazeStartButton.Size = new System.Drawing.Size(115, 26);
+            this.gazeStartButton.Size = new System.Drawing.Size(153, 32);
             this.gazeStartButton.TabIndex = 19;
             this.gazeStartButton.Text = "Calibrate gaze";
             this.gazeStartButton.UseVisualStyleBackColor = true;
@@ -111,15 +119,16 @@
             // 
             this.tabControl.Controls.Add(this.dynamicRangePage);
             this.tabControl.Controls.Add(this.calibrationPage);
-            this.tabControl.Location = new System.Drawing.Point(9, 10);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(2);
+            this.tabControl.Location = new System.Drawing.Point(12, 12);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(468, 376);
+            this.tabControl.Size = new System.Drawing.Size(624, 463);
             this.tabControl.TabIndex = 20;
             // 
             // dynamicRangePage
             // 
+            this.dynamicRangePage.Controls.Add(this.dynamicRangePropertyGrid);
             this.dynamicRangePage.Controls.Add(this.label1);
             this.dynamicRangePage.Controls.Add(this.matlabDropDown);
             this.dynamicRangePage.Controls.Add(this.runButton);
@@ -128,21 +137,32 @@
             this.dynamicRangePage.Controls.Add(this.dataFileTextBox);
             this.dynamicRangePage.Controls.Add(this.stopButton);
             this.dynamicRangePage.Controls.Add(this.startButton);
-            this.dynamicRangePage.Location = new System.Drawing.Point(4, 22);
-            this.dynamicRangePage.Margin = new System.Windows.Forms.Padding(2);
+            this.dynamicRangePage.Location = new System.Drawing.Point(4, 25);
+            this.dynamicRangePage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dynamicRangePage.Name = "dynamicRangePage";
-            this.dynamicRangePage.Padding = new System.Windows.Forms.Padding(2);
-            this.dynamicRangePage.Size = new System.Drawing.Size(460, 350);
+            this.dynamicRangePage.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dynamicRangePage.Size = new System.Drawing.Size(616, 434);
             this.dynamicRangePage.TabIndex = 0;
             this.dynamicRangePage.Text = "Dynamic range";
             this.dynamicRangePage.UseVisualStyleBackColor = true;
             // 
+            // dynamicRangePropertyGrid
+            // 
+            this.dynamicRangePropertyGrid.Location = new System.Drawing.Point(306, 9);
+            this.dynamicRangePropertyGrid.Margin = new System.Windows.Forms.Padding(4);
+            this.dynamicRangePropertyGrid.Name = "dynamicRangePropertyGrid";
+            this.dynamicRangePropertyGrid.Size = new System.Drawing.Size(303, 353);
+            this.dynamicRangePropertyGrid.TabIndex = 22;
+            this.dynamicRangePropertyGrid.ToolbarVisible = false;
+            this.dynamicRangePropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.dynamicRangePropertyGrid_PropertyValueChanged);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(5, 192);
+            this.label1.Location = new System.Drawing.Point(7, 236);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(131, 13);
+            this.label1.Size = new System.Drawing.Size(162, 16);
             this.label1.TabIndex = 21;
             this.label1.Text = "MATLAB analysis function";
             // 
@@ -150,17 +170,19 @@
             // 
             this.matlabDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.matlabDropDown.FormattingEnabled = true;
-            this.matlabDropDown.Location = new System.Drawing.Point(3, 208);
+            this.matlabDropDown.Location = new System.Drawing.Point(4, 256);
+            this.matlabDropDown.Margin = new System.Windows.Forms.Padding(4);
             this.matlabDropDown.Name = "matlabDropDown";
-            this.matlabDropDown.Size = new System.Drawing.Size(175, 21);
+            this.matlabDropDown.Size = new System.Drawing.Size(294, 24);
             this.matlabDropDown.TabIndex = 20;
             this.matlabDropDown.SelectedIndexChanged += new System.EventHandler(this.matlabDropDown_SelectedIndexChanged);
             // 
             // runButton
             // 
-            this.runButton.Location = new System.Drawing.Point(194, 208);
+            this.runButton.Location = new System.Drawing.Point(4, 288);
+            this.runButton.Margin = new System.Windows.Forms.Padding(4);
             this.runButton.Name = "runButton";
-            this.runButton.Size = new System.Drawing.Size(75, 23);
+            this.runButton.Size = new System.Drawing.Size(100, 28);
             this.runButton.TabIndex = 19;
             this.runButton.Text = "Run";
             this.runButton.UseVisualStyleBackColor = true;
@@ -174,19 +196,20 @@
             this.calibrationPage.Controls.Add(this.gazeStopButton);
             this.calibrationPage.Controls.Add(this.propertyGrid);
             this.calibrationPage.Controls.Add(this.gazeStartButton);
-            this.calibrationPage.Location = new System.Drawing.Point(4, 22);
-            this.calibrationPage.Margin = new System.Windows.Forms.Padding(2);
+            this.calibrationPage.Location = new System.Drawing.Point(4, 25);
+            this.calibrationPage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.calibrationPage.Name = "calibrationPage";
-            this.calibrationPage.Padding = new System.Windows.Forms.Padding(2);
-            this.calibrationPage.Size = new System.Drawing.Size(460, 350);
+            this.calibrationPage.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.calibrationPage.Size = new System.Drawing.Size(616, 434);
             this.calibrationPage.TabIndex = 1;
             this.calibrationPage.Text = "Calibration";
             // 
             // gazePicture
             // 
-            this.gazePicture.Location = new System.Drawing.Point(5, 47);
+            this.gazePicture.Location = new System.Drawing.Point(7, 58);
+            this.gazePicture.Margin = new System.Windows.Forms.Padding(4);
             this.gazePicture.Name = "gazePicture";
-            this.gazePicture.Size = new System.Drawing.Size(218, 180);
+            this.gazePicture.Size = new System.Drawing.Size(291, 222);
             this.gazePicture.TabIndex = 23;
             this.gazePicture.TabStop = false;
             this.gazePicture.Paint += new System.Windows.Forms.PaintEventHandler(this.gazePicture_Paint);
@@ -194,18 +217,21 @@
             // gazeLogTextBox
             // 
             this.gazeLogTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.gazeLogTextBox.Location = new System.Drawing.Point(5, 238);
+            this.gazeLogTextBox.Location = new System.Drawing.Point(7, 293);
+            this.gazeLogTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.gazeLogTextBox.Multiline = true;
             this.gazeLogTextBox.Name = "gazeLogTextBox";
             this.gazeLogTextBox.ReadOnly = true;
-            this.gazeLogTextBox.Size = new System.Drawing.Size(218, 91);
+            this.gazeLogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.gazeLogTextBox.Size = new System.Drawing.Size(290, 112);
             this.gazeLogTextBox.TabIndex = 22;
             // 
             // gazeStopButton
             // 
-            this.gazeStopButton.Location = new System.Drawing.Point(143, 15);
+            this.gazeStopButton.Location = new System.Drawing.Point(191, 18);
+            this.gazeStopButton.Margin = new System.Windows.Forms.Padding(4);
             this.gazeStopButton.Name = "gazeStopButton";
-            this.gazeStopButton.Size = new System.Drawing.Size(80, 26);
+            this.gazeStopButton.Size = new System.Drawing.Size(107, 32);
             this.gazeStopButton.TabIndex = 21;
             this.gazeStopButton.Text = "Stop";
             this.gazeStopButton.UseVisualStyleBackColor = true;
@@ -214,19 +240,21 @@
             // 
             // propertyGrid
             // 
-            this.propertyGrid.Location = new System.Drawing.Point(229, 15);
+            this.propertyGrid.Location = new System.Drawing.Point(305, 18);
+            this.propertyGrid.Margin = new System.Windows.Forms.Padding(4);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(226, 314);
+            this.propertyGrid.Size = new System.Drawing.Size(301, 386);
             this.propertyGrid.TabIndex = 20;
             this.propertyGrid.ToolbarVisible = false;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // PupillometryForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(489, 399);
+            this.ClientSize = new System.Drawing.Size(652, 491);
             this.Controls.Add(this.tabControl);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "PupillometryForm";
             this.Text = "PupillometryForm";
             this.tabControl.ResumeLayout(false);
@@ -257,5 +285,6 @@
         private System.Windows.Forms.Button runButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox matlabDropDown;
+        private System.Windows.Forms.PropertyGrid dynamicRangePropertyGrid;
     }
 }

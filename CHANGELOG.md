@@ -3,6 +3,7 @@
 ### v0.10 (unreleased)
 #### Added
 - communication of LED color changes with tablet
+- exposed pupil dynamic range properties
 
 ---
 

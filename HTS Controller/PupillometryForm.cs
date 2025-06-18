@@ -34,6 +34,7 @@ namespace HTSController
         private DataStreamManager _streamManager;
         private string _dataFile;
 
+        private DynamicRangeSettings _dynamicRangeSettings;
         private GazeCalibrationSettings _gazeSettings;
 
         private int _tabletWidth;
@@ -81,7 +82,18 @@ namespace HTSController
             progressBar.Value = 0;
             logTextBox.Text = "";
 
-            var configPath = Path.Combine(FileLocations.ConfigFolder, "Gaze.Defaults.xml");
+            var configPath = Path.Combine(FileLocations.ConfigFolder, "DynamicRange.Defaults.xml");
+            if (File.Exists(configPath))
+            {
+                _dynamicRangeSettings = KFile.XmlDeserialize<DynamicRangeSettings>(configPath);
+            }
+            else
+            {
+                _dynamicRangeSettings = new DynamicRangeSettings();
+            }
+            dynamicRangePropertyGrid.SelectedObject = _dynamicRangeSettings;
+
+            configPath = Path.Combine(FileLocations.ConfigFolder, "Gaze.Defaults.xml");
             if (File.Exists(configPath))
             {
                 _gazeSettings = KFile.XmlDeserialize<GazeCalibrationSettings>(configPath);
@@ -156,7 +168,7 @@ namespace HTSController
             dataFileTextBox.Text = _dataFile;
             if (!string.IsNullOrEmpty(_dataFile))
             {
-                var started = await _streamManager.StartRecording(_dataFile);//, "EYELINK");
+                var started = await _streamManager.StartRecording(_dataFile, "EYELINK");
                 if (started)
                 {
                     stopButton.Enabled = true;
@@ -209,7 +221,7 @@ namespace HTSController
 
         private void InitializeDynamicRangeMeasurement()
         {
-            _network.SendMessage("Initialize:");
+            _network.SendMessage($"Initialize:{KFile.ToXMLString(_dynamicRangeSettings)}");
 
             // wait for file name to get sent back
             var startTime = DateTime.Now;
@@ -353,6 +365,11 @@ namespace HTSController
             _runAborted = true;
             stopButton.Enabled = false;
             _network.SendMessage("Abort");
+        }
+        private void dynamicRangePropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            var configPath = Path.Combine(FileLocations.ConfigFolder, "DynamicRange.Defaults.xml");
+            KLib.KFile.XmlSerialize(_dynamicRangeSettings, configPath);
         }
 
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -594,5 +611,6 @@ namespace HTSController
                 HTSControllerSettings.SetLastUsed("PupilFunction", matlabDropDown.SelectedItem.ToString());
             }
         }
+
     }
 }
