@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.10 (unreleased)
+### v0.10 (2025-06-19)
 #### Added
 - communication of LED color changes with tablet
 - exposed pupil dynamic range properties
