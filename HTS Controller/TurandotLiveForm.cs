@@ -171,8 +171,8 @@ namespace HTSController
             if (!_autoRun) return;
             _autoRun = false;
 
-            OnAutoRunEnd(success, dataFile);
             closeButton_Click(null, null);
+            OnAutoRunEnd(success, dataFile);
         }
 
         private void OnRemoteMessage(object sender, string message)

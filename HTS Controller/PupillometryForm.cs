@@ -168,7 +168,11 @@ namespace HTSController
             dataFileTextBox.Text = _dataFile;
             if (!string.IsNullOrEmpty(_dataFile))
             {
+#if DEBUG
+                var started = await _streamManager.StartRecording(_dataFile);
+#else
                 var started = await _streamManager.StartRecording(_dataFile, "EYELINK");
+#endif
                 if (started)
                 {
                     stopButton.Enabled = true;

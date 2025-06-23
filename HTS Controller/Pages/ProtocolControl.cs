@@ -88,10 +88,20 @@ namespace HTSController.Pages
 
             _labels.Clear();
             int index = flowLayoutPanel.Controls.GetChildIndex(titleLabel);
+            int outlineNum = 1;
+
             for (int k=0; k<_protocol.Tests.Count; k++)
             {
                 var label = new Label();
-                label.Text = $"{k+1}. {_protocol.Tests[k].Title}";
+                if (!_protocol.Tests[k].HideOutline)
+                {
+                    label.Text = $"{outlineNum}. {_protocol.Tests[k].Title}";
+                    outlineNum++;
+                }
+                else
+                {
+                    label.Text = $"- {_protocol.Tests[k].Title}";
+                }
                 label.Click += label_Click;
                 label.AutoSize = true;
                 label.Margin = new Padding(10, 3, 0, 3);
