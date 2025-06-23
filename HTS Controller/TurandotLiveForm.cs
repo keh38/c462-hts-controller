@@ -78,7 +78,7 @@ namespace HTSController
             await Task.Run(() => InitializeTurandot());
 
             dataFileTextBox.Text = _dataFile;
-            if (!string.IsNullOrEmpty(_dataFile))
+            if (!string.IsNullOrEmpty(_dataFile) && !_dataFile.Equals("error"))
             {
                 var started = await _streamManager.StartRecording(_dataFile);
                 if (started)
@@ -101,7 +101,14 @@ namespace HTSController
             }
             else
             {
-                logTextBox.AppendText("didn't receive data file name from Turandot");
+                if (_dataFile.Equals("error"))
+                {
+                    logTextBox.AppendText("Turandot reported an error during initialization");
+                }
+                else
+                {
+                    logTextBox.AppendText("didn't receive data file name from Turandot");
+                }
                 closeButton.Visible = true;
                 startButton.Enabled = true;
             }
@@ -124,7 +131,7 @@ namespace HTSController
                 }
             }
 
-            if (!string.IsNullOrEmpty(_dataFile))
+            if (!string.IsNullOrEmpty(_dataFile) && !_dataFile.Equals("error"))
             {
                 _network.SendMessage($"StartSynchronizing:{_dataFile}");
             }
