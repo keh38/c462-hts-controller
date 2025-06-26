@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.11 (unreleased)
+### v0.11 (2025-06-26)
 #### Added
 - option to hide protocol entry from subject-facing outline
 - optional protocol entry instructions
