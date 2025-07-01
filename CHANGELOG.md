@@ -1,6 +1,10 @@
 ## Changelog
 
-### v0.11 (unreleased)
+### v0.12 (unreleased)
+#### Added
+- Pupil dynamic range: exposed min and max screen intensity
+
+### v0.11 (2025-06-26)
 #### Added
 - option to hide protocol entry from subject-facing outline
 - optional protocol entry instructions
