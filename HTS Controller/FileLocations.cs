@@ -62,6 +62,7 @@ namespace HTSController
                 "Plugins",
                 "Protocols",
                 "Schedules",
+                "Videos",
                 "Wav Files"
             };
 
