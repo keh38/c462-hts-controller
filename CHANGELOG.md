@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.12 (unreleased)
+### v0.12 (2025-07-02)
 #### Added
 - Pupil dynamic range: exposed min and max screen intensity
 
