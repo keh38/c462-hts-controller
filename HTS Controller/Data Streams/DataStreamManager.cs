@@ -49,6 +49,7 @@ namespace HTSController.Data_Streams
         private int _numTrialsPerSync = 4;
 
         private bool _exiting = false;
+        private bool _recording = false;
 
         public List<string> ProblemStreams { get { return _problemChildren; } }
 
@@ -119,12 +120,14 @@ namespace HTSController.Data_Streams
 
         public void RestartStatusTimer()
         {
+            _recording = false;
             _statusTimer.Interval = 100;
             _statusTimer.Start();
         }
 
         public async Task<bool> StartRecording(string filename, params string[] mandatory)
         {
+            _recording = true;
             _statusTimer.Stop();
             _problemChildren.Clear();
 
@@ -187,6 +190,7 @@ namespace HTSController.Data_Streams
                 {
                     _problemChildren.Add(s.Name);
                 }
+                _recording = false;
                 _statusTimer.Start();
             }
 
@@ -215,8 +219,12 @@ namespace HTSController.Data_Streams
         {
             _syncTimer.Stop();
 
-            foreach (var s in _streams.FindAll(x => x.IsPresent && x.Record && x.Status != DataStream.StreamStatus.Idle))
+            foreach (var s in _streams.FindAll(x => x.IsPresent && x.Record))// && x.Status != DataStream.StreamStatus.Idle))
             {
+                if (s.Status == DataStream.StreamStatus.Idle)
+                {
+                    Log.Error($"{s.Name} is idle");
+                }
                 var result = await KTcpClient.SendMessageAsync(s.IPEndPoint, "Stop");
                 Log.Information($"stopping {s.MulticastName}: {result}");
             }
@@ -307,7 +315,7 @@ namespace HTSController.Data_Streams
             _statusTimer.Enabled = false;
             await CheckConnections();
             _statusTimer.Interval = _statusTimerInterval;
-            _statusTimer.Enabled = !_exiting;
+            _statusTimer.Enabled = !_exiting && !_recording;
         }
 
         public async Task CheckConnections()

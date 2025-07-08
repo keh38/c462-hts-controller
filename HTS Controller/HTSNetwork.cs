@@ -197,6 +197,7 @@ namespace HTSController
             if (input.StartsWith("ChangedScene"))
             {
                 CurrentScene = input.Substring(("ChangedScene:").Length);
+                Log.Information($"Tablet reports scene changed to {CurrentScene}");
             }
 
             OnRemoteMessage(input);

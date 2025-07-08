@@ -394,6 +394,7 @@ namespace HTSController
             _stopCal = false;
             gazeStartButton.Enabled = false;
 
+            Log.Information("Starting gaze calibration");
             gazeLogTextBox.Text = "Starting gaze calibration..." + Environment.NewLine;
             var success = await ChangeTabletScene("Gaze Calibration");
             if (!success)

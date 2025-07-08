@@ -66,6 +66,7 @@ namespace HTSController
                     //Log.Information(data.GetType().ToString());
                     if (data is MATLABStruct)
                     {
+                        Log.Information($"number metric fields = {data.GetFieldNames().Count}");
                         foreach (var n in data.GetFieldNames())
                         {
                             string value = "";

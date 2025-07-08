@@ -11,6 +11,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Serilog;
+
 using KLib;
 
 using HTSController.Data_Streams;
@@ -68,6 +70,7 @@ namespace HTSController
 
         private async void startButton_Click(object sender, EventArgs e)
         {
+            Log.Information("Starting Turandot run");
             logTextBox.Text = "Starting run...";
 
             startButton.Enabled = false;
@@ -116,6 +119,7 @@ namespace HTSController
 
         private void InitializeTurandot()
         {
+            Log.Information($"Turandot parameter file: {_parameterFile}");
             var p = KFile.XmlDeserialize<Turandot.Parameters>(_parameterFile);
             _postRunMATLABFile = p.matlabFunction;
             _network.SendMessage($"SetParams:{KFile.ToXMLString(p)}");
