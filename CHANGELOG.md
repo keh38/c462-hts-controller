@@ -1,8 +1,8 @@
 ## Changelog
 
-### v0.14 (unreleased)
+### v0.14 (2025-07-10)
 #### Fixed
-- Turandot: receive audio sync log as response to request to ensure it is received before subsequent scene change
+- Turandot: receive audio sync log as direct response to request, to ensure it is received before subsequent scene change
 
 ---
 
