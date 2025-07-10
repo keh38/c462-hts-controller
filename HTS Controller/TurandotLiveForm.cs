@@ -16,6 +16,7 @@ using Serilog;
 using KLib;
 
 using HTSController.Data_Streams;
+using UnityEngine.WSA;
 
 namespace HTSController
 {
@@ -145,7 +146,15 @@ namespace HTSController
         {
             _network.SendMessage($"StopSynchronizing");
             await _streamManager.StopRecording();
-            _network.SendMessage("SendSyncLog");
+            //_network.SendMessage("SendSyncLog");
+
+            var response = _network.SendMessageAndReceiveString("GetSyncLog");
+            if (!response.Equals("none"))
+            {
+                var parts = response.Split(new char[] { ':' }, 2);
+                var logPath = Path.Combine(FileLocations.SubjectDataFolder, parts[0]);
+                File.WriteAllText(logPath, parts[1]);
+            }
 
             statusTextBox.Text = message;
             if (!string.IsNullOrEmpty(status))

@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.14 (unreleased)
+#### Fixed
+- Turandot: receive audio sync log as response to request to ensure it is received before subsequent scene change
+
+---
+
 ### v0.13 (2025-07-08)
 #### Changed
 - tried to fix race condition where stream status check did not get stopped, causing the streams to periodically register incorrectly register as "idle"
