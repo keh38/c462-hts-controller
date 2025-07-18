@@ -36,6 +36,7 @@
             this.sceneNameLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.menuPanel = new System.Windows.Forms.Panel();
+            this.basicButton = new System.Windows.Forms.CheckBox();
             this.lightsButton = new System.Windows.Forms.CheckBox();
             this.protocolButton = new System.Windows.Forms.CheckBox();
             this.pupilButton = new System.Windows.Forms.CheckBox();
@@ -59,6 +60,7 @@
             this.localLogButton = new System.Windows.Forms.Button();
             this.tabletLogButton = new System.Windows.Forms.Button();
             this.pupilPage = new System.Windows.Forms.TabPage();
+            this.basicPageContainer = new System.Windows.Forms.TabPage();
             this.ipcPanel = new System.Windows.Forms.Panel();
             this.ipcLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
@@ -127,6 +129,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.menuPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.menuPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.menuPanel.Controls.Add(this.basicButton);
             this.menuPanel.Controls.Add(this.lightsButton);
             this.menuPanel.Controls.Add(this.protocolButton);
             this.menuPanel.Controls.Add(this.pupilButton);
@@ -138,6 +141,30 @@
             this.menuPanel.Name = "menuPanel";
             this.menuPanel.Size = new System.Drawing.Size(149, 499);
             this.menuPanel.TabIndex = 5;
+            // 
+            // basicButton
+            // 
+            this.basicButton.Appearance = System.Windows.Forms.Appearance.Button;
+            this.basicButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.basicButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.basicButton.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.basicButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.basicButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.basicButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.basicButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.basicButton.ForeColor = System.Drawing.Color.Black;
+            this.basicButton.Image = global::HTSController.Properties.Resources.eye_24;
+            this.basicButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.basicButton.Location = new System.Drawing.Point(16, 94);
+            this.basicButton.Margin = new System.Windows.Forms.Padding(0);
+            this.basicButton.Name = "basicButton";
+            this.basicButton.Padding = new System.Windows.Forms.Padding(12, 0, 4, 0);
+            this.basicButton.Size = new System.Drawing.Size(133, 43);
+            this.basicButton.TabIndex = 9;
+            this.basicButton.Text = "Basic";
+            this.basicButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.basicButton.UseVisualStyleBackColor = false;
+            this.basicButton.CheckedChanged += new System.EventHandler(this.basicButton_CheckedChanged);
             // 
             // lightsButton
             // 
@@ -175,7 +202,7 @@
             this.protocolButton.ForeColor = System.Drawing.Color.Black;
             this.protocolButton.Image = global::HTSController.Properties.Resources.checklist_32;
             this.protocolButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.protocolButton.Location = new System.Drawing.Point(16, 208);
+            this.protocolButton.Location = new System.Drawing.Point(16, 263);
             this.protocolButton.Margin = new System.Windows.Forms.Padding(0);
             this.protocolButton.Name = "protocolButton";
             this.protocolButton.Padding = new System.Windows.Forms.Padding(12, 0, 4, 0);
@@ -199,7 +226,7 @@
             this.pupilButton.ForeColor = System.Drawing.Color.Black;
             this.pupilButton.Image = global::HTSController.Properties.Resources.eye_24;
             this.pupilButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.pupilButton.Location = new System.Drawing.Point(16, 137);
+            this.pupilButton.Location = new System.Drawing.Point(16, 180);
             this.pupilButton.Margin = new System.Windows.Forms.Padding(0);
             this.pupilButton.Name = "pupilButton";
             this.pupilButton.Padding = new System.Windows.Forms.Padding(12, 0, 4, 0);
@@ -259,7 +286,7 @@
             this.turandotButton.ForeColor = System.Drawing.Color.Black;
             this.turandotButton.Image = global::HTSController.Properties.Resources.Turandot_Black_24;
             this.turandotButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.turandotButton.Location = new System.Drawing.Point(16, 94);
+            this.turandotButton.Location = new System.Drawing.Point(16, 137);
             this.turandotButton.Margin = new System.Windows.Forms.Padding(0);
             this.turandotButton.Name = "turandotButton";
             this.turandotButton.Padding = new System.Windows.Forms.Padding(12, 0, 4, 0);
@@ -325,6 +352,7 @@
             this.tabControl.Controls.Add(this.runTurandotPage);
             this.tabControl.Controls.Add(this.adminPage);
             this.tabControl.Controls.Add(this.pupilPage);
+            this.tabControl.Controls.Add(this.basicPageContainer);
             this.tabControl.ItemSize = new System.Drawing.Size(0, 1);
             this.tabControl.Location = new System.Drawing.Point(346, 3);
             this.tabControl.Name = "tabControl";
@@ -338,7 +366,7 @@
             this.subjectPage.Controls.Add(this.subjectPageControl);
             this.subjectPage.Location = new System.Drawing.Point(4, 5);
             this.subjectPage.Name = "subjectPage";
-            this.subjectPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.subjectPage.Padding = new System.Windows.Forms.Padding(3);
             this.subjectPage.Size = new System.Drawing.Size(360, 490);
             this.subjectPage.TabIndex = 0;
             this.subjectPage.Text = "tabPage1";
@@ -350,7 +378,7 @@
             this.subjectPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.subjectPageControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.subjectPageControl.Location = new System.Drawing.Point(3, 3);
-            this.subjectPageControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.subjectPageControl.Margin = new System.Windows.Forms.Padding(4);
             this.subjectPageControl.Name = "subjectPageControl";
             this.subjectPageControl.OnProjectChanged = null;
             this.subjectPageControl.Size = new System.Drawing.Size(354, 484);
@@ -362,8 +390,8 @@
             this.turandotSettingsPage.Controls.Add(this.turandotPageControl);
             this.turandotSettingsPage.Location = new System.Drawing.Point(4, 5);
             this.turandotSettingsPage.Name = "turandotSettingsPage";
-            this.turandotSettingsPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.turandotSettingsPage.Size = new System.Drawing.Size(360, 489);
+            this.turandotSettingsPage.Padding = new System.Windows.Forms.Padding(3);
+            this.turandotSettingsPage.Size = new System.Drawing.Size(360, 490);
             this.turandotSettingsPage.TabIndex = 1;
             this.turandotSettingsPage.Text = "tabPage2";
             this.turandotSettingsPage.UseVisualStyleBackColor = true;
@@ -372,7 +400,7 @@
             // 
             this.turandotPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.turandotPageControl.Location = new System.Drawing.Point(6, 3);
-            this.turandotPageControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.turandotPageControl.Margin = new System.Windows.Forms.Padding(4);
             this.turandotPageControl.Name = "turandotPageControl";
             this.turandotPageControl.Size = new System.Drawing.Size(357, 331);
             this.turandotPageControl.TabIndex = 0;
@@ -383,8 +411,8 @@
             // 
             this.messagePage.Location = new System.Drawing.Point(4, 5);
             this.messagePage.Name = "messagePage";
-            this.messagePage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.messagePage.Size = new System.Drawing.Size(360, 489);
+            this.messagePage.Padding = new System.Windows.Forms.Padding(3);
+            this.messagePage.Size = new System.Drawing.Size(360, 490);
             this.messagePage.TabIndex = 2;
             this.messagePage.Text = "tabPage1";
             this.messagePage.UseVisualStyleBackColor = true;
@@ -393,8 +421,8 @@
             // 
             this.runTurandotPage.Location = new System.Drawing.Point(4, 5);
             this.runTurandotPage.Name = "runTurandotPage";
-            this.runTurandotPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.runTurandotPage.Size = new System.Drawing.Size(360, 489);
+            this.runTurandotPage.Padding = new System.Windows.Forms.Padding(3);
+            this.runTurandotPage.Size = new System.Drawing.Size(360, 490);
             this.runTurandotPage.TabIndex = 3;
             this.runTurandotPage.Text = "tabPage1";
             this.runTurandotPage.UseVisualStyleBackColor = true;
@@ -409,8 +437,8 @@
             this.adminPage.Controls.Add(this.tabletLogButton);
             this.adminPage.Location = new System.Drawing.Point(4, 5);
             this.adminPage.Name = "adminPage";
-            this.adminPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.adminPage.Size = new System.Drawing.Size(360, 489);
+            this.adminPage.Padding = new System.Windows.Forms.Padding(3);
+            this.adminPage.Size = new System.Drawing.Size(360, 490);
             this.adminPage.TabIndex = 4;
             this.adminPage.Text = "tabPage1";
             this.adminPage.UseVisualStyleBackColor = true;
@@ -434,7 +462,7 @@
             this.projectRootBrowser.FoldersOnly = true;
             this.projectRootBrowser.HideFolder = false;
             this.projectRootBrowser.Location = new System.Drawing.Point(104, 63);
-            this.projectRootBrowser.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.projectRootBrowser.Margin = new System.Windows.Forms.Padding(4);
             this.projectRootBrowser.Name = "projectRootBrowser";
             this.projectRootBrowser.ReadOnly = false;
             this.projectRootBrowser.ShowSaveButton = false;
@@ -491,11 +519,21 @@
             // 
             this.pupilPage.Location = new System.Drawing.Point(4, 5);
             this.pupilPage.Name = "pupilPage";
-            this.pupilPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.pupilPage.Size = new System.Drawing.Size(360, 489);
+            this.pupilPage.Padding = new System.Windows.Forms.Padding(3);
+            this.pupilPage.Size = new System.Drawing.Size(360, 490);
             this.pupilPage.TabIndex = 5;
             this.pupilPage.Text = "tabPage1";
             this.pupilPage.UseVisualStyleBackColor = true;
+            // 
+            // basicPageContainer
+            // 
+            this.basicPageContainer.Location = new System.Drawing.Point(4, 5);
+            this.basicPageContainer.Name = "basicPageContainer";
+            this.basicPageContainer.Padding = new System.Windows.Forms.Padding(3);
+            this.basicPageContainer.Size = new System.Drawing.Size(360, 490);
+            this.basicPageContainer.TabIndex = 6;
+            this.basicPageContainer.Text = "tabPage1";
+            this.basicPageContainer.UseVisualStyleBackColor = true;
             // 
             // ipcPanel
             // 
@@ -516,7 +554,7 @@
             this.ipcLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ipcLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.ipcLayoutPanel.Location = new System.Drawing.Point(0, 0);
-            this.ipcLayoutPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ipcLayoutPanel.Margin = new System.Windows.Forms.Padding(2);
             this.ipcLayoutPanel.Name = "ipcLayoutPanel";
             this.ipcLayoutPanel.Size = new System.Drawing.Size(180, 497);
             this.ipcLayoutPanel.TabIndex = 2;
@@ -537,7 +575,7 @@
             // 
             this.protocolControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.protocolControl.Location = new System.Drawing.Point(159, 4);
-            this.protocolControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.protocolControl.Margin = new System.Windows.Forms.Padding(4);
             this.protocolControl.Name = "protocolControl";
             this.protocolControl.Size = new System.Drawing.Size(180, 497);
             this.protocolControl.TabIndex = 8;
@@ -618,6 +656,8 @@
         private System.Windows.Forms.Label label3;
         private KLib.Controls.FileBrowser projectRootBrowser;
         private System.Windows.Forms.CheckBox lightsButton;
+        private System.Windows.Forms.CheckBox basicButton;
+        private System.Windows.Forms.TabPage basicPageContainer;
     }
 }
 

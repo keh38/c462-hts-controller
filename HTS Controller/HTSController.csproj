@@ -160,6 +160,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicMeasurementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BasicMeasurementForm.Designer.cs">
+      <DependentUpon>BasicMeasurementForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Data Streams\DataStream.cs" />
     <Compile Include="Data Streams\DataStreamManager.cs" />
     <Compile Include="Data Streams\DataStreamIndicator.cs">
@@ -240,6 +246,9 @@
     <Compile Include="TurandotLiveForm.Designer.cs">
       <DependentUpon>TurandotLiveForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="BasicMeasurementForm.resx">
+      <DependentUpon>BasicMeasurementForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Data Streams\DataStreamIndicator.resx">
       <DependentUpon>DataStreamIndicator.cs</DependentUpon>
     </EmbeddedResource>

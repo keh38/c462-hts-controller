@@ -29,6 +29,7 @@ namespace HTSController
         HTSNetwork _network;
         DataStreamManager _streamManager;
         TurandotLiveForm _liveForm = null;
+        BasicMeasurementForm _basicForm = null;
         PupillometryForm _pupilForm = null;
 
         List<Tuple<CheckBox, TabPage>> _menu;
@@ -45,6 +46,7 @@ namespace HTSController
             _menu = new List<Tuple<CheckBox, TabPage>>();
             _menu.Add(new Tuple<CheckBox, TabPage>(subjectButton, subjectPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(turandotButton, turandotSettingsPage));
+            _menu.Add(new Tuple<CheckBox, TabPage>(basicButton, basicPageContainer));
             _menu.Add(new Tuple<CheckBox, TabPage>(pupilButton, pupilPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(adminButton, adminPage));
 
@@ -401,6 +403,29 @@ namespace HTSController
             Process.Start(_logPath);
         }
 
+        private void basicButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_ignoreEvents) return;
+
+            SelectTab(sender as CheckBox);
+
+            if (_basicForm == null)
+            {
+                _basicForm = new BasicMeasurementForm(_network, _streamManager);
+                _basicForm.TopLevel = false;
+                _basicForm.AutoRunEnd += TestRunEnded;
+                _basicForm.RunStateChanged += RunStateChanged;
+                //_pupilForm.ClosePage += OnTurandotRunPageClose;
+                basicPageContainer.Controls.Add(_basicForm);
+                _basicForm.FormBorderStyle = FormBorderStyle.None;
+                _basicForm.Dock = DockStyle.Fill;
+                _basicForm.Show();
+            }
+            _basicForm.Initialize();
+
+            tabControl.SelectedTab = basicPageContainer;
+        }
+
         private void pupilButton_CheckedChanged(object sender, EventArgs e)
         {
             if (_ignoreEvents) return;
@@ -496,5 +521,6 @@ namespace HTSController
                 FileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
             }
         }
+
     }
 }

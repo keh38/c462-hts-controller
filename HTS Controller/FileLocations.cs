@@ -100,5 +100,32 @@ namespace HTSController
         {
             return Path.Combine(MATLABFolder, subFolder);
         }
+
+        public static string GetConfigFile(string measType, string name)
+        {
+            return Path.Combine(ConfigFolder, $"{measType}.{name}.xml");
+        }
+
+        public static List<string> EnumerateConfigFiles(string measType)
+        {
+            List<string> result = new List<string>();
+
+            foreach (var fn in Directory.EnumerateFiles(ConfigFolder, $"{measType}.*.xml").Select(x => Path.GetFileNameWithoutExtension(x)))
+            {
+                var parts = fn.Split('.');
+                if (parts.Length == 2)
+                {
+                    result.Add(parts[1]);
+                }
+            }
+
+            if (result.Count == 0)
+            {
+                result.Add("Defaults");
+            }
+
+            return result;
+        }
+
     }
 }
