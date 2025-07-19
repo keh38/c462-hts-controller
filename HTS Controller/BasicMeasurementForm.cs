@@ -323,7 +323,7 @@ namespace HTSController
                     File.WriteAllText(filePath, data);
                     break;
                 case "Status":
-                    Invoke(new Action(() => logTextBox.AppendText($"- {info}\n")));
+                    Invoke(new Action(() => logTextBox.AppendText($"- {info}{Environment.NewLine}")));
                     break;
                 case "Error":
                     Invoke(new Action(() => { EndRun("Error", info); }));
