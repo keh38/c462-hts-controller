@@ -104,7 +104,6 @@
             this.propertyGrid.Size = new System.Drawing.Size(349, 353);
             this.propertyGrid.TabIndex = 22;
             this.propertyGrid.ToolbarVisible = false;
-            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.dynamicRangePropertyGrid_PropertyValueChanged);
             // 
             // menuStrip
             // 

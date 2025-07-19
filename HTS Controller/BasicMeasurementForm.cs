@@ -62,6 +62,7 @@ namespace HTSController
         {
             startButton.Visible = true;
             startButton.Enabled = false;
+            TransferButton.Enabled = _network.IsConnected;
 
             _dataFile = "";
 
@@ -69,9 +70,14 @@ namespace HTSController
             progressBar.Value = 0;
             logTextBox.Text = "";
 
-            msSelectMeasurement.DropDownItems.Clear();
             msSelectMeasurement.Text = "Select...";
 
+            UpdateFileMenu();
+        }
+
+        private void UpdateFileMenu()
+        {
+            msSelectMeasurement.DropDownItems.Clear();
             foreach (var measType in new List<string>() { "Audiogram", "LDL" })
             {
                 var measItem = new ToolStripMenuItem();
@@ -90,6 +96,7 @@ namespace HTSController
                 }
                 msSelectMeasurement.DropDownItems.Add(measItem);
             }
+
         }
 
         private void msSelectMeasurement_Click(object sender, EventArgs e)
@@ -105,35 +112,24 @@ namespace HTSController
 
         private void LoadConfiguration()
         {
-            var configPath = Path.Combine(FileLocations.ConfigFolder, _measType, _configName);
-            if (!File.Exists(configPath))
+            var configPath = FileLocations.GetConfigFile(_measType, _configName);
+            if (File.Exists(configPath))
             {
-                configPath = null;
-            }
-            
-            switch ( _measType )
-            {
-                case "Audiogram":
-                    if (configPath == null)
-                    {
-                        _config = new AudiogramMeasurementSettings();
-                    }
-                    else
-                    {
-                        _config = KFile.XmlDeserialize<AudiogramMeasurementSettings>(configPath);
-                    }
-                    break;
+                var obj = KFile.XmlDeserialize<BasicMeasurementConfiguration>(configPath);
+                switch (_measType)
+                {
+                    case "Audiogram":
+                        _config = obj as AudiogramMeasurementSettings;
+                        break;
 
-                case "LDL":
-                    if (configPath == null)
-                    {
-                        _config = new LDLMeasurementSettings();
-                    }
-                    else
-                    {
-                        _config = KFile.XmlDeserialize<LDLMeasurementSettings>(configPath);
-                    }
-                    break;
+                    case "LDL":
+                        _config = obj as LDLMeasurementSettings;
+                        break;
+                }
+            }
+            else
+            {
+                _config = AddNewConfiguration(_measType);
             }
 
             propertyGrid.SelectedObject = _config;
@@ -146,6 +142,14 @@ namespace HTSController
             startButton_Click(this, null);
         }
 
+        private void EnableButtons(bool enable)
+        {
+            startButton.Enabled = enable && _config != null;
+            SaveButton.Enabled = enable;
+            AddButton.Enabled = enable;
+            RemoveButton.Enabled = enable;
+            TransferButton.Enabled = enable && _network.IsConnected;
+        }
 
         private async void startButton_Click(object sender, EventArgs e)
         {
@@ -155,7 +159,7 @@ namespace HTSController
                 return;
             }
 
-            startButton.Enabled = false;
+            EnableButtons(false);
 
             logTextBox.Text = $"Starting {_measType} measurement...";
             Log.Information($"Starting  {_measType}.{_configName} measurement...");
@@ -163,7 +167,7 @@ namespace HTSController
             
             if (!success)
             {
-                startButton.Enabled = true;
+                EnableButtons(true);
                 logTextBox.Text = "failed to change scene on tablet";
                 Log.Error($"failed to change to {_measType} scene");
                 EndAutoRun(false, null);
@@ -178,7 +182,11 @@ namespace HTSController
             dataFileTextBox.Text = _dataFile;
             if (!string.IsNullOrEmpty(_dataFile))
             {
-                var started = await _streamManager.StartRecording(_dataFile);
+                bool started = true;
+                if (!_config.BypassDataStreams)
+                {
+                    started = await _streamManager.StartRecording(_dataFile);
+                }
                 if (started)
                 {
                     stopButton.Enabled = true;
@@ -195,7 +203,7 @@ namespace HTSController
                         logTextBox.AppendText($"- {s}\n");
                         Log.Error($"failed to start stream: {s}");
                     }
-                    startButton.Enabled = true;
+                    EnableButtons(true);
                     _network.SendMessage($"StopSynchronizing");
                     EndAutoRun(false, null);
                 }
@@ -204,7 +212,7 @@ namespace HTSController
             {
                 logTextBox.AppendText($"didn't receive data file name from {_measType} scene");
                 Log.Error($"didn't receive data file name from {_measType} scene");
-                startButton.Enabled = true;
+                EnableButtons(true);
                 _network.SendMessage($"StopSynchronizing");
                 EndAutoRun(false, null);
             }
@@ -244,7 +252,7 @@ namespace HTSController
                 }
             }
 
-            if (!string.IsNullOrEmpty(_dataFile))
+            if (!string.IsNullOrEmpty(_dataFile) && !_config.BypassDataStreams)
             {
                 _network.SendMessage($"StartSynchronizing:{_dataFile}");
             }
@@ -252,15 +260,18 @@ namespace HTSController
 
         private async void EndRun(string message, string status)
         {
-            _network.SendMessage($"StopSynchronizing");
-            await _streamManager.StopRecording();
-
-            var response = _network.SendMessageAndReceiveString("GetSyncLog");
-            if (!response.Equals("none"))
+            if (!_config.BypassDataStreams)
             {
-                var parts = response.Split(new char[] { ':' }, 2);
-                var logPath = Path.Combine(FileLocations.SubjectDataFolder, parts[0]);
-                File.WriteAllText(logPath, parts[1]);
+                _network.SendMessage($"StopSynchronizing");
+                await _streamManager.StopRecording();
+
+                var response = _network.SendMessageAndReceiveString("GetSyncLog");
+                if (!response.Equals("none"))
+                {
+                    var parts = response.Split(new char[] { ':' }, 2);
+                    var logPath = Path.Combine(FileLocations.SubjectDataFolder, parts[0]);
+                    File.WriteAllText(logPath, parts[1]);
+                }
             }
 
             if (!string.IsNullOrEmpty(status))
@@ -268,7 +279,7 @@ namespace HTSController
                 logTextBox.AppendText($"{Environment.NewLine}{status}{Environment.NewLine}");
             }
 
-            startButton.Enabled = true;
+            EnableButtons(true);
             stopButton.Visible = false;
 
             progressBar.Value = 0;
@@ -311,6 +322,9 @@ namespace HTSController
                     string filePath = Path.Combine(FileLocations.SubjectDataFolder, info);
                     File.WriteAllText(filePath, data);
                     break;
+                case "Status":
+                    Invoke(new Action(() => logTextBox.AppendText($"- {info}\n")));
+                    break;
                 case "Error":
                     Invoke(new Action(() => { EndRun("Error", info); }));
                     break;
@@ -327,30 +341,63 @@ namespace HTSController
             stopButton.Enabled = false;
             _network.SendMessage("Abort");
         }
-        private void dynamicRangePropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-        {
-            var configPath = Path.Combine(FileLocations.ConfigFolder, "DynamicRange.Defaults.xml");
-//            KLib.KFile.XmlSerialize(_dynamicRangeSettings, configPath);
-        }
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-
+            if (_config != null)
+            {
+                var fn = FileLocations.GetConfigFile(_measType, _config.Name);
+                KLib.KFile.XmlSerialize(_config, fn);
+                msSelectMeasurement.Text = $"{_measType}.{_config.Name}";
+                UpdateFileMenu();
+            }
         }
 
         private void AddButton_Click(object sender, EventArgs e)
         {
-
+            _config = AddNewConfiguration(_measType);
+            _config.Name = "Untitled";
+            propertyGrid.SelectedObject = _config;
+            startButton.Enabled = true;
+            msSelectMeasurement.Text = $"{_measType}.{_config.Name}";
+            UpdateFileMenu();
         }
 
         private void RemoveButton_Click(object sender, EventArgs e)
         {
-
+            if (_config != null)
+            {
+                var fn = FileLocations.GetConfigFile(_measType, _config.Name);
+                File.Delete(fn);
+                _config = null;
+                propertyGrid.SelectedObject = null;
+                msSelectMeasurement.Text = "Select...";
+                UpdateFileMenu();
+            }
         }
 
         private void TransferButton_Click(object sender, EventArgs e)
         {
+            if (_config != null && _network.IsConnected)
+            {
+                var fn = FileLocations.GetConfigFile(_measType, _config.Name);
+                _network.SendMessage($"TransferFile:Config Files:{Path.GetFileName(fn)}:{File.ReadAllText(fn)}");
+            }
+        }
+        private BasicMeasurementConfiguration AddNewConfiguration(string measType)
+        {
+            var config = new BasicMeasurementConfiguration();
+            switch (measType)
+            {
+                case "Audiogram":
+                    config = new AudiogramMeasurementSettings();
+                    break;
 
+                case "LDL":
+                    config = new LDLMeasurementSettings();
+                    break;
+            }
+            return config;
         }
     }
 }
