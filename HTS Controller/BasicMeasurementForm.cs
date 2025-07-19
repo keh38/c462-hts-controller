@@ -333,5 +333,24 @@ namespace HTSController
 //            KLib.KFile.XmlSerialize(_dynamicRangeSettings, configPath);
         }
 
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void AddButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void RemoveButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void TransferButton_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

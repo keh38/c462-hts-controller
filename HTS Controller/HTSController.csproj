@@ -331,6 +331,9 @@
   <ItemGroup>
     <None Include="Images\Light-24.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\graph.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" ("C:\Program Files (x86)\Inno Setup 6\Compil32.exe" /cc "$(SolutionDir)Installer\HTS Controller.iss")</PostBuildEvent>

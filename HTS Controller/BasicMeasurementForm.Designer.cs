@@ -36,30 +36,37 @@
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.msSelectMeasurement = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddButton = new System.Windows.Forms.Button();
+            this.RemoveButton = new System.Windows.Forms.Button();
+            this.TransferButton = new System.Windows.Forms.Button();
+            this.SaveButton = new System.Windows.Forms.Button();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataFileTextBox
             // 
             this.dataFileTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dataFileTextBox.Location = new System.Drawing.Point(8, 78);
+            this.dataFileTextBox.Location = new System.Drawing.Point(11, 96);
+            this.dataFileTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dataFileTextBox.Name = "dataFileTextBox";
             this.dataFileTextBox.ReadOnly = true;
-            this.dataFileTextBox.Size = new System.Drawing.Size(219, 20);
+            this.dataFileTextBox.Size = new System.Drawing.Size(291, 22);
             this.dataFileTextBox.TabIndex = 17;
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(8, 103);
+            this.progressBar.Location = new System.Drawing.Point(11, 127);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(218, 16);
+            this.progressBar.Size = new System.Drawing.Size(291, 20);
             this.progressBar.TabIndex = 14;
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(8, 38);
+            this.startButton.Location = new System.Drawing.Point(11, 47);
+            this.startButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(132, 26);
+            this.startButton.Size = new System.Drawing.Size(176, 32);
             this.startButton.TabIndex = 11;
             this.startButton.Text = "Measure";
             this.startButton.UseVisualStyleBackColor = true;
@@ -67,9 +74,10 @@
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(146, 38);
+            this.stopButton.Location = new System.Drawing.Point(195, 47);
+            this.stopButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(80, 26);
+            this.stopButton.Size = new System.Drawing.Size(107, 32);
             this.stopButton.TabIndex = 16;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
@@ -79,19 +87,21 @@
             // logTextBox
             // 
             this.logTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.logTextBox.Location = new System.Drawing.Point(7, 125);
+            this.logTextBox.Location = new System.Drawing.Point(9, 154);
+            this.logTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
             this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTextBox.Size = new System.Drawing.Size(220, 113);
+            this.logTextBox.Size = new System.Drawing.Size(293, 214);
             this.logTextBox.TabIndex = 18;
             // 
             // propertyGrid
             // 
-            this.propertyGrid.Location = new System.Drawing.Point(233, 12);
+            this.propertyGrid.Location = new System.Drawing.Point(311, 15);
+            this.propertyGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(262, 287);
+            this.propertyGrid.Size = new System.Drawing.Size(349, 353);
             this.propertyGrid.TabIndex = 22;
             this.propertyGrid.ToolbarVisible = false;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.dynamicRangePropertyGrid_PropertyValueChanged);
@@ -100,11 +110,12 @@
             // 
             this.menuStrip.BackColor = System.Drawing.Color.Transparent;
             this.menuStrip.Dock = System.Windows.Forms.DockStyle.Left;
+            this.menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.msSelectMeasurement});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(65, 330);
+            this.menuStrip.Size = new System.Drawing.Size(80, 413);
             this.menuStrip.Stretch = false;
             this.menuStrip.TabIndex = 23;
             this.menuStrip.Text = "menuStrip1";
@@ -114,14 +125,58 @@
             this.msSelectMeasurement.BackColor = System.Drawing.Color.PaleGoldenrod;
             this.msSelectMeasurement.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.msSelectMeasurement.Name = "msSelectMeasurement";
-            this.msSelectMeasurement.Size = new System.Drawing.Size(52, 19);
+            this.msSelectMeasurement.Size = new System.Drawing.Size(63, 24);
             this.msSelectMeasurement.Text = "Select...";
+            // 
+            // AddButton
+            // 
+            this.AddButton.Location = new System.Drawing.Point(402, 375);
+            this.AddButton.Name = "AddButton";
+            this.AddButton.Size = new System.Drawing.Size(75, 26);
+            this.AddButton.TabIndex = 24;
+            this.AddButton.Text = "Add";
+            this.AddButton.UseVisualStyleBackColor = true;
+            this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
+            // 
+            // RemoveButton
+            // 
+            this.RemoveButton.Location = new System.Drawing.Point(493, 375);
+            this.RemoveButton.Name = "RemoveButton";
+            this.RemoveButton.Size = new System.Drawing.Size(75, 26);
+            this.RemoveButton.TabIndex = 25;
+            this.RemoveButton.Text = "Remove";
+            this.RemoveButton.UseVisualStyleBackColor = true;
+            this.RemoveButton.Click += new System.EventHandler(this.RemoveButton_Click);
+            // 
+            // TransferButton
+            // 
+            this.TransferButton.Location = new System.Drawing.Point(584, 375);
+            this.TransferButton.Name = "TransferButton";
+            this.TransferButton.Size = new System.Drawing.Size(75, 26);
+            this.TransferButton.TabIndex = 26;
+            this.TransferButton.Text = "Transfer";
+            this.TransferButton.UseVisualStyleBackColor = true;
+            this.TransferButton.Click += new System.EventHandler(this.TransferButton_Click);
+            // 
+            // SaveButton
+            // 
+            this.SaveButton.Location = new System.Drawing.Point(311, 375);
+            this.SaveButton.Name = "SaveButton";
+            this.SaveButton.Size = new System.Drawing.Size(75, 26);
+            this.SaveButton.TabIndex = 27;
+            this.SaveButton.Text = "Save";
+            this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // BasicMeasurementForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(507, 330);
+            this.ClientSize = new System.Drawing.Size(676, 413);
+            this.Controls.Add(this.SaveButton);
+            this.Controls.Add(this.TransferButton);
+            this.Controls.Add(this.RemoveButton);
+            this.Controls.Add(this.AddButton);
             this.Controls.Add(this.propertyGrid);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.stopButton);
@@ -130,6 +185,7 @@
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "BasicMeasurementForm";
             this.Text = "BasicMeasurementForm";
             this.menuStrip.ResumeLayout(false);
@@ -149,5 +205,9 @@
         private System.Windows.Forms.PropertyGrid propertyGrid;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem msSelectMeasurement;
+        private System.Windows.Forms.Button AddButton;
+        private System.Windows.Forms.Button RemoveButton;
+        private System.Windows.Forms.Button TransferButton;
+        private System.Windows.Forms.Button SaveButton;
     }
 }
