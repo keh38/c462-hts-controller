@@ -78,7 +78,7 @@ namespace HTSController
         private void UpdateFileMenu()
         {
             msSelectMeasurement.DropDownItems.Clear();
-            foreach (var measType in new List<string>() { "Audiogram", "LDL" })
+            foreach (var measType in new List<string>() { "Audiogram", "LDL", "Questionnaire" })
             {
                 var measItem = new ToolStripMenuItem();
                 measItem.Text = measType;
@@ -124,6 +124,10 @@ namespace HTSController
 
                     case "LDL":
                         _config = obj as LDLMeasurementSettings;
+                        break;
+
+                    case "Questionnaire":
+                        _config = obj as Questionnaires.Questionnaire;
                         break;
                 }
             }
@@ -395,6 +399,10 @@ namespace HTSController
 
                 case "LDL":
                     config = new LDLMeasurementSettings();
+                    break;
+
+                case "Questionnaire":
+                    config = new Questionnaires.Questionnaire();
                     break;
             }
             return config;
