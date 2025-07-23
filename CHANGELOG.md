@@ -1,7 +1,6 @@
 ## Changelog
 
-
-### v0.15 (unreleased)
+### v0.15 (2025-07-23)
 #### Added
 - Basic measurement tab
   - Restored Audiogram, LDL, Questionnaires (checklists only)
