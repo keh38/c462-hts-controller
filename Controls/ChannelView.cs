@@ -289,6 +289,7 @@ namespace KLib.Unity.Controls.Signals
                 _ignoreEvents = true;
 
                 _chan.Modality = (Modality)modalityDropDown.Value;
+
                 ShowModalitySpecific();
                 SetContextDependentLevelUnits(_chan.Modality);
 

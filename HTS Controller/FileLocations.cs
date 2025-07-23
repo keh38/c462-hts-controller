@@ -119,11 +119,6 @@ namespace HTSController
                 }
             }
 
-            if (result.Count == 0)
-            {
-                result.Add("Defaults");
-            }
-
             return result;
         }
 

@@ -242,12 +242,14 @@ namespace HTSController
 
         private void channelListBox_ItemAdded(object sender, KUserListBox.ChangedItem e)
         {
+            Debug.WriteLine($"added {e.name}");
             Channel ch = new Channel(e.name, new Waveform());
             ch.Modality = KLib.Signals.Enumerations.Modality.Audio;
             ch.Laterality = Laterality.Diotic;
             channelView.Value = ch;
 
             _settings.SigMan.channels.Insert(e.index, ch);
+
             CurateControls();
         }
 
@@ -283,6 +285,8 @@ namespace HTSController
         private void channelListBox_ItemRenamed(object sender, KUserListBox.ChangedItem e)
         {
             if (_ignoreEvents || _settings.SigMan == null) return;
+            Debug.WriteLine($"rename {e.name}");
+            _settings.SigMan.channels[e.index].Name = e.name;
 
             CurateControls();
         }
@@ -316,16 +320,18 @@ namespace HTSController
 
         private void channelListBox_SelectionChanged(object sender, KUserListBox.ChangedItem e)
         {
-            if (!_ignoreEvents)
+            // this event is triggered when a new channel is added, but runs *after* the channel add event and *before* the name 
+            // has been assigned. KUserListBox needs a tweak
+
+            if (!_ignoreEvents && !string.IsNullOrEmpty(e.name) && _settings.SigMan != null)
             {
-                Channel ch = null;
-                if (_settings.SigMan != null) ch = _settings.SigMan.GetChannel(e.name);
-                if (ch == null)
+                Channel ch = _settings.SigMan.GetChannel(e.name);
+                if (ch != null)
                 {
-                    ch = new Channel(e.name);
-                    ch.Laterality = Laterality.Diotic;
+                    channelView.Value = ch;
+                    //ch = new Channel(e.name);
+                    //ch.Laterality = Laterality.Diotic;
                 }
-                channelView.Value = ch;
             }
         }
 

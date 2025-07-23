@@ -36,10 +36,10 @@
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.msSelectMeasurement = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddButton = new System.Windows.Forms.Button();
             this.RemoveButton = new System.Windows.Forms.Button();
             this.TransferButton = new System.Windows.Forms.Button();
             this.SaveButton = new System.Windows.Forms.Button();
+            this.newDropDown = new System.Windows.Forms.ComboBox();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,7 +47,7 @@
             // 
             this.dataFileTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.dataFileTextBox.Location = new System.Drawing.Point(11, 96);
-            this.dataFileTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dataFileTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.dataFileTextBox.Name = "dataFileTextBox";
             this.dataFileTextBox.ReadOnly = true;
             this.dataFileTextBox.Size = new System.Drawing.Size(291, 22);
@@ -56,7 +56,7 @@
             // progressBar
             // 
             this.progressBar.Location = new System.Drawing.Point(11, 127);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(4);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(291, 20);
             this.progressBar.TabIndex = 14;
@@ -64,7 +64,7 @@
             // startButton
             // 
             this.startButton.Location = new System.Drawing.Point(11, 47);
-            this.startButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.startButton.Margin = new System.Windows.Forms.Padding(4);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(176, 32);
             this.startButton.TabIndex = 11;
@@ -75,7 +75,7 @@
             // stopButton
             // 
             this.stopButton.Location = new System.Drawing.Point(195, 47);
-            this.stopButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.stopButton.Margin = new System.Windows.Forms.Padding(4);
             this.stopButton.Name = "stopButton";
             this.stopButton.Size = new System.Drawing.Size(107, 32);
             this.stopButton.TabIndex = 16;
@@ -88,7 +88,7 @@
             // 
             this.logTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.logTextBox.Location = new System.Drawing.Point(9, 154);
-            this.logTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.logTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
@@ -99,7 +99,7 @@
             // propertyGrid
             // 
             this.propertyGrid.Location = new System.Drawing.Point(311, 15);
-            this.propertyGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.propertyGrid.Margin = new System.Windows.Forms.Padding(4);
             this.propertyGrid.Name = "propertyGrid";
             this.propertyGrid.Size = new System.Drawing.Size(349, 353);
             this.propertyGrid.TabIndex = 22;
@@ -124,22 +124,12 @@
             this.msSelectMeasurement.BackColor = System.Drawing.Color.PaleGoldenrod;
             this.msSelectMeasurement.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.msSelectMeasurement.Name = "msSelectMeasurement";
-            this.msSelectMeasurement.Size = new System.Drawing.Size(63, 24);
+            this.msSelectMeasurement.Size = new System.Drawing.Size(65, 24);
             this.msSelectMeasurement.Text = "Select...";
-            // 
-            // AddButton
-            // 
-            this.AddButton.Location = new System.Drawing.Point(402, 375);
-            this.AddButton.Name = "AddButton";
-            this.AddButton.Size = new System.Drawing.Size(75, 26);
-            this.AddButton.TabIndex = 24;
-            this.AddButton.Text = "Add";
-            this.AddButton.UseVisualStyleBackColor = true;
-            this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
             // 
             // RemoveButton
             // 
-            this.RemoveButton.Location = new System.Drawing.Point(493, 375);
+            this.RemoveButton.Location = new System.Drawing.Point(506, 375);
             this.RemoveButton.Name = "RemoveButton";
             this.RemoveButton.Size = new System.Drawing.Size(75, 26);
             this.RemoveButton.TabIndex = 25;
@@ -159,7 +149,7 @@
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(311, 375);
+            this.SaveButton.Location = new System.Drawing.Point(425, 375);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 26);
             this.SaveButton.TabIndex = 27;
@@ -167,15 +157,29 @@
             this.SaveButton.UseVisualStyleBackColor = true;
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
+            // newDropDown
+            // 
+            this.newDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.newDropDown.FormattingEnabled = true;
+            this.newDropDown.Items.AddRange(new object[] {
+            "Audiogram",
+            "LDL",
+            "Questionnaire"});
+            this.newDropDown.Location = new System.Drawing.Point(311, 375);
+            this.newDropDown.Name = "newDropDown";
+            this.newDropDown.Size = new System.Drawing.Size(108, 24);
+            this.newDropDown.TabIndex = 28;
+            this.newDropDown.SelectedIndexChanged += new System.EventHandler(this.newDropDown_SelectedIndexChanged);
+            // 
             // BasicMeasurementForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(676, 413);
+            this.Controls.Add(this.newDropDown);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.TransferButton);
             this.Controls.Add(this.RemoveButton);
-            this.Controls.Add(this.AddButton);
             this.Controls.Add(this.propertyGrid);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.stopButton);
@@ -184,7 +188,7 @@
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "BasicMeasurementForm";
             this.Text = "BasicMeasurementForm";
             this.menuStrip.ResumeLayout(false);
@@ -204,9 +208,9 @@
         private System.Windows.Forms.PropertyGrid propertyGrid;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem msSelectMeasurement;
-        private System.Windows.Forms.Button AddButton;
         private System.Windows.Forms.Button RemoveButton;
         private System.Windows.Forms.Button TransferButton;
         private System.Windows.Forms.Button SaveButton;
+        private System.Windows.Forms.ComboBox newDropDown;
     }
 }

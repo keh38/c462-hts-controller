@@ -18,6 +18,7 @@ using LDL;
 using HTSController.Data_Streams;
 
 using Serilog;
+using Bekesy;
 
 namespace HTSController
 {
@@ -56,6 +57,9 @@ namespace HTSController
             _streamManager = streamManager;
 
             InitializeComponent();
+
+            KLib.Controls.Utilities.SetCueBanner(newDropDown.Handle, "New...");
+
         }
 
         public void Initialize()
@@ -78,7 +82,7 @@ namespace HTSController
         private void UpdateFileMenu()
         {
             msSelectMeasurement.DropDownItems.Clear();
-            foreach (var measType in new List<string>() { "Audiogram", "LDL", "Questionnaire" })
+            foreach (var measType in new List<string>() { "Audiogram", "Bekesy", "LDL", "Questionnaire" })
             {
                 var measItem = new ToolStripMenuItem();
                 measItem.Text = measType;
@@ -94,7 +98,11 @@ namespace HTSController
 
                     measItem.DropDownItems.Add(configItem);
                 }
-                msSelectMeasurement.DropDownItems.Add(measItem);
+
+                if (measItem.DropDownItems.Count > 0)
+                {
+                    msSelectMeasurement.DropDownItems.Add(measItem);
+                }
             }
 
         }
@@ -120,6 +128,10 @@ namespace HTSController
                 {
                     case "Audiogram":
                         _config = obj as AudiogramMeasurementSettings;
+                        break;
+
+                    case "Bekesy":
+                        _config = obj as BekesyMeasurementSettings;
                         break;
 
                     case "LDL":
@@ -150,7 +162,7 @@ namespace HTSController
         {
             startButton.Enabled = enable && _config != null;
             SaveButton.Enabled = enable;
-            AddButton.Enabled = enable;
+            newDropDown.Enabled = enable;
             RemoveButton.Enabled = enable;
             TransferButton.Enabled = enable && _network.IsConnected;
         }
@@ -357,14 +369,18 @@ namespace HTSController
             }
         }
 
-        private void AddButton_Click(object sender, EventArgs e)
+        private void newDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (newDropDown.SelectedIndex < 0) return;
+
+            _measType = newDropDown.SelectedItem.ToString();
             _config = AddNewConfiguration(_measType);
             _config.Name = "Untitled";
             propertyGrid.SelectedObject = _config;
             startButton.Enabled = true;
             msSelectMeasurement.Text = $"{_measType}.{_config.Name}";
-            UpdateFileMenu();
+
+            newDropDown.SelectedIndex = -1;
         }
 
         private void RemoveButton_Click(object sender, EventArgs e)
@@ -397,6 +413,10 @@ namespace HTSController
                     config = new AudiogramMeasurementSettings();
                     break;
 
+                case "Bekesy":
+                    config = new BekesyMeasurementSettings();
+                    break;
+
                 case "LDL":
                     config = new LDLMeasurementSettings();
                     break;
@@ -407,5 +427,6 @@ namespace HTSController
             }
             return config;
         }
+
     }
 }

@@ -1,5 +1,13 @@
 ## Changelog
 
+
+### v0.15 (unreleased)
+#### Added
+- Basic measurement tab
+  - Restored Audiogram, LDL, Questionnaires (checklists only)
+
+---
+
 ### v0.14 (2025-07-10)
 #### Fixed
 - Turandot: receive audio sync log as direct response to request, to ensure it is received before subsequent scene change
