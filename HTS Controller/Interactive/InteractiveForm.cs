@@ -285,7 +285,7 @@ namespace HTSController
         private void channelListBox_ItemRenamed(object sender, KUserListBox.ChangedItem e)
         {
             if (_ignoreEvents || _settings.SigMan == null) return;
-            Debug.WriteLine($"rename {e.name}");
+
             _settings.SigMan.channels[e.index].Name = e.name;
 
             CurateControls();
@@ -408,7 +408,7 @@ namespace HTSController
             displayTimer.Enabled = false;
 
             LayoutMyControls();
-            InitializeSliders();
+            //InitializeSliders();
             InitializeControlValues();
 
             displayTimer.Enabled = true;
@@ -417,6 +417,7 @@ namespace HTSController
         private void LayoutMyControls()
         {
             _channelControls = new List<ChannelControl>();
+            _sliderActions = new List<Action<float>>();
 
             var chanNames = _settings.SigMan.channels.Select(x => x.Name).ToList();
             for (int k=0; k < chanNames.Count; k++)
@@ -430,6 +431,20 @@ namespace HTSController
                 }
                 _channelControls.Add(flowLayoutPanel.Controls[k] as ChannelControl);
                 _channelControls[k].LayoutControls(chanNames[k], controls, OnPropertyValueChanged);
+
+                foreach (var c in controls)
+                {
+                    var pc = _channelControls[k].GetPropertyControl(c.Property);
+                    if (pc != null)
+                    {
+                        _sliderActions.Add(x => pc.SetValue(x));
+                    }
+                    else
+                    {
+                        _sliderActions.Add(null);
+                    }
+
+                }
             }
 
             int nremove = flowLayoutPanel.Controls.Count - chanNames.Count;
