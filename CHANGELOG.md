@@ -4,6 +4,8 @@
 #### Added
 - Basic measurement tab
   - Restored Audiogram, LDL, Questionnaires (checklists only)
+#### Fixed
+- Race conditions instantiating new signal in Turandot Interactive
 
 ---
 
