@@ -114,7 +114,7 @@
             this.msSelectMeasurement});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(80, 413);
+            this.menuStrip.Size = new System.Drawing.Size(78, 413);
             this.menuStrip.Stretch = false;
             this.menuStrip.TabIndex = 23;
             this.menuStrip.Text = "menuStrip1";
@@ -163,6 +163,7 @@
             this.newDropDown.FormattingEnabled = true;
             this.newDropDown.Items.AddRange(new object[] {
             "Audiogram",
+            "Bekesy",
             "LDL",
             "Questionnaire"});
             this.newDropDown.Location = new System.Drawing.Point(311, 375);
