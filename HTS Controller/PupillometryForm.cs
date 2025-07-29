@@ -25,6 +25,7 @@ using System.Xml.Linq;
 using UnityEngine;
 
 using Color = System.Drawing.Color;
+using System.Windows.Forms.VisualStyles;
 
 namespace HTSController
 {
@@ -49,6 +50,8 @@ namespace HTSController
         bool _runAborted = false;
         bool _ignoreEvents = false;
         bool _autoRun = false;
+
+        bool _dataReceived = false;
 
         #region EVENTS
         public event EventHandler<AutoRunEndEventArgs> AutoRunEnd;
@@ -171,7 +174,7 @@ namespace HTSController
 #if DEBUG
                 var started = await _streamManager.StartRecording(_dataFile);
 #else
-                var started = await _streamManager.StartRecording(_dataFile, "EYELINK");
+                var started = await _streamManager.StartRecording(_dataFile, mandatory:"EYELINK");
 #endif
                 if (started)
                 {
@@ -346,6 +349,7 @@ namespace HTSController
                 case "ReceiveData":
                     string filePath = Path.Combine(FileLocations.SubjectDataFolder, info);
                     File.WriteAllText(filePath, data);
+                    _dataReceived = true;
                     break;
                 case "Response":
                     Log.Information("Gaze calibration response received");
@@ -424,7 +428,30 @@ namespace HTSController
                 return;
             }
 
-            _network.SendMessage($"Initialize:{KFile.ToXMLString(_gazeSettings)}");
+            await Task.Run(() => InitializeGazeCalibrationMeasurement());
+            if (!string.IsNullOrEmpty(_dataFile))
+            {
+                gazeLogTextBox.AppendText("- Timed out waiting for tablet to send data file name" + Environment.NewLine);
+                Log.Error("timed out waiting for tablet to send data file name");
+                gazeStartButton.Enabled = true;
+                EndAutoRun(false, null);
+                return;
+            }
+
+            var started = await _streamManager.StartRecording(_dataFile, exclude: "EYELINK");
+            if (!started)
+            {
+                gazeLogTextBox.AppendText("failed" + Environment.NewLine);
+                foreach (var s in _streamManager.ProblemStreams)
+                {
+                    gazeLogTextBox.AppendText($"- {s}\n");
+                    Log.Error($"failed to start stream: {s}");
+                }
+
+                gazeStartButton.Enabled = true;
+                EndAutoRun(false, null);
+                return;
+            }
 
             success = await StartEyeLink();
             if (!success)
@@ -432,6 +459,7 @@ namespace HTSController
                 gazeLogTextBox.AppendText("- Could not start EyeLink" + Environment.NewLine);
                 Log.Error("could not start EyeLink");
                 gazeStartButton.Enabled = true;
+                await _streamManager.StopRecording();
                 EndAutoRun(false, null);
                 return;
             }
@@ -440,6 +468,22 @@ namespace HTSController
             gazeStopButton.Visible = true;
 
             await Task.Run(() => PollForJobs());
+        }
+
+        private void InitializeGazeCalibrationMeasurement()
+        {
+            _network.SendMessage($"Initialize:{KFile.ToXMLString(_gazeSettings)}");
+
+            // wait for file name to get sent back
+            var startTime = DateTime.Now;
+            while ((DateTime.Now - startTime).TotalSeconds < 5)
+            {
+                Thread.Sleep(200);
+                if (!string.IsNullOrEmpty(_dataFile))
+                {
+                    break;
+                }
+            }
         }
 
         private void PollForJobs()
@@ -544,8 +588,11 @@ namespace HTSController
             return success;
         }
 
-        private void EndGazeCalibration()
+        private async void EndGazeCalibration()
         {
+            await _streamManager.StopRecording();
+            await Task.Run(() => GetGazeDataFile());
+
             _eyeLink.exitCalibration();
             _eyeLink.setOfflineMode();
             _eyeLink.close();
@@ -560,6 +607,30 @@ namespace HTSController
             _streamManager.Find("EYELINK")?.SendMessage("Free Run");
 
             EndAutoRun(success: !_runAborted, dataFile: null);
+        }
+
+        private void GetGazeDataFile()
+        {
+            _dataReceived = false;
+            _network.SendMessage($"SendData");
+
+            // wait for file name to get sent back
+            var startTime = DateTime.Now;
+            while ((DateTime.Now - startTime).TotalSeconds < 5)
+            {
+                Thread.Sleep(200);
+                if (_dataReceived)
+                {
+                    break;
+                }
+            }
+
+            if (!_dataReceived)
+            {
+                gazeLogTextBox.AppendText(" - timed out waiting for data log." + Environment.NewLine);
+                Log.Error("timed out waiting for gaze calibration data log");
+            }
+
         }
 
         private void gazePicture_Paint(object sender, PaintEventArgs e)

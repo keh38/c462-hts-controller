@@ -125,7 +125,7 @@ namespace HTSController.Data_Streams
             _statusTimer.Start();
         }
 
-        public async Task<bool> StartRecording(string filename, params string[] mandatory)
+        public async Task<bool> StartRecording(string filename, string mandatory="", string exclude="")
         {
             _recording = true;
             _statusTimer.Stop();
@@ -133,7 +133,7 @@ namespace HTSController.Data_Streams
 
             InitializeSyncLogFile(filename);
 
-            var streamsToStart = _streams.FindAll(x => x.Record && x.IsPresent);
+            var streamsToStart = _streams.FindAll(x => x.Record && x.IsPresent && x.Name!=exclude);
             foreach (var s in streamsToStart)
             {
                 var response = await KTcpClient.SendMessageAsync(s.IPEndPoint, $"Record:{Path.Combine(FileLocations.SubjectDataFolder, filename)}");
@@ -160,11 +160,11 @@ namespace HTSController.Data_Streams
 
             bool success = streamsToStart.Count == 0;
 
-            if (success && mandatory.Length > 0)
+            if (success && !string.IsNullOrEmpty(mandatory))
             {
-                foreach (var m in mandatory)
+//                foreach (var m in mandatory)
                 {
-                    var s = _streams.Find(x => x.MulticastName == m);
+                    var s = _streams.Find(x => x.MulticastName == mandatory);
                     if (s==null || s.Status != DataStream.StreamStatus.Recording)
                     {
                         Log.Error($"Mandatory stream '{s.Name}' not started");
