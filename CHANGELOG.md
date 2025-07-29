@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.17 (unreleased)
+#### Changed
+- allow data streams during gaze calibration
+
 ### v0.16 (2025-07-24)
 #### Added
 - Bekesy-method audiogram
