@@ -149,7 +149,7 @@ namespace HTSController
             //_network.SendMessage("SendSyncLog");
 
             var response = _network.SendMessageAndReceiveString("GetSyncLog");
-            if (response == null || !response.Equals("none"))
+            if (response != null && !response.Equals("none"))
             {
                 var parts = response.Split(new char[] { ':' }, 2);
                 var logPath = Path.Combine(FileLocations.SubjectDataFolder, parts[0]);
