@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.17 (unreleased)
+### v0.17 (2025-08-01)
 #### Changed
 - allow data streams during gaze calibration
 

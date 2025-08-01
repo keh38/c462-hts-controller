@@ -366,7 +366,7 @@
             this.subjectPage.Controls.Add(this.subjectPageControl);
             this.subjectPage.Location = new System.Drawing.Point(4, 5);
             this.subjectPage.Name = "subjectPage";
-            this.subjectPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.subjectPage.Padding = new System.Windows.Forms.Padding(3);
             this.subjectPage.Size = new System.Drawing.Size(360, 490);
             this.subjectPage.TabIndex = 0;
             this.subjectPage.Text = "tabPage1";
@@ -378,7 +378,7 @@
             this.subjectPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.subjectPageControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.subjectPageControl.Location = new System.Drawing.Point(3, 3);
-            this.subjectPageControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.subjectPageControl.Margin = new System.Windows.Forms.Padding(4);
             this.subjectPageControl.Name = "subjectPageControl";
             this.subjectPageControl.OnProjectChanged = null;
             this.subjectPageControl.Size = new System.Drawing.Size(354, 484);
@@ -390,8 +390,8 @@
             this.turandotSettingsPage.Controls.Add(this.turandotPageControl);
             this.turandotSettingsPage.Location = new System.Drawing.Point(4, 5);
             this.turandotSettingsPage.Name = "turandotSettingsPage";
-            this.turandotSettingsPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.turandotSettingsPage.Size = new System.Drawing.Size(360, 489);
+            this.turandotSettingsPage.Padding = new System.Windows.Forms.Padding(3);
+            this.turandotSettingsPage.Size = new System.Drawing.Size(360, 490);
             this.turandotSettingsPage.TabIndex = 1;
             this.turandotSettingsPage.Text = "tabPage2";
             this.turandotSettingsPage.UseVisualStyleBackColor = true;
@@ -400,7 +400,7 @@
             // 
             this.turandotPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.turandotPageControl.Location = new System.Drawing.Point(6, 3);
-            this.turandotPageControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.turandotPageControl.Margin = new System.Windows.Forms.Padding(4);
             this.turandotPageControl.Name = "turandotPageControl";
             this.turandotPageControl.Size = new System.Drawing.Size(357, 331);
             this.turandotPageControl.TabIndex = 0;
@@ -411,8 +411,8 @@
             // 
             this.messagePage.Location = new System.Drawing.Point(4, 5);
             this.messagePage.Name = "messagePage";
-            this.messagePage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.messagePage.Size = new System.Drawing.Size(360, 489);
+            this.messagePage.Padding = new System.Windows.Forms.Padding(3);
+            this.messagePage.Size = new System.Drawing.Size(360, 490);
             this.messagePage.TabIndex = 2;
             this.messagePage.Text = "tabPage1";
             this.messagePage.UseVisualStyleBackColor = true;
@@ -421,8 +421,8 @@
             // 
             this.runTurandotPage.Location = new System.Drawing.Point(4, 5);
             this.runTurandotPage.Name = "runTurandotPage";
-            this.runTurandotPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.runTurandotPage.Size = new System.Drawing.Size(360, 489);
+            this.runTurandotPage.Padding = new System.Windows.Forms.Padding(3);
+            this.runTurandotPage.Size = new System.Drawing.Size(360, 490);
             this.runTurandotPage.TabIndex = 3;
             this.runTurandotPage.Text = "tabPage1";
             this.runTurandotPage.UseVisualStyleBackColor = true;
@@ -437,8 +437,8 @@
             this.adminPage.Controls.Add(this.tabletLogButton);
             this.adminPage.Location = new System.Drawing.Point(4, 5);
             this.adminPage.Name = "adminPage";
-            this.adminPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.adminPage.Size = new System.Drawing.Size(360, 489);
+            this.adminPage.Padding = new System.Windows.Forms.Padding(3);
+            this.adminPage.Size = new System.Drawing.Size(360, 490);
             this.adminPage.TabIndex = 4;
             this.adminPage.Text = "tabPage1";
             this.adminPage.UseVisualStyleBackColor = true;
@@ -462,7 +462,7 @@
             this.projectRootBrowser.FoldersOnly = true;
             this.projectRootBrowser.HideFolder = false;
             this.projectRootBrowser.Location = new System.Drawing.Point(104, 63);
-            this.projectRootBrowser.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.projectRootBrowser.Margin = new System.Windows.Forms.Padding(4);
             this.projectRootBrowser.Name = "projectRootBrowser";
             this.projectRootBrowser.ReadOnly = false;
             this.projectRootBrowser.ShowSaveButton = false;
@@ -519,8 +519,8 @@
             // 
             this.pupilPage.Location = new System.Drawing.Point(4, 5);
             this.pupilPage.Name = "pupilPage";
-            this.pupilPage.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.pupilPage.Size = new System.Drawing.Size(360, 489);
+            this.pupilPage.Padding = new System.Windows.Forms.Padding(3);
+            this.pupilPage.Size = new System.Drawing.Size(360, 490);
             this.pupilPage.TabIndex = 5;
             this.pupilPage.Text = "tabPage1";
             this.pupilPage.UseVisualStyleBackColor = true;
@@ -529,8 +529,8 @@
             // 
             this.basicPageContainer.Location = new System.Drawing.Point(4, 5);
             this.basicPageContainer.Name = "basicPageContainer";
-            this.basicPageContainer.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.basicPageContainer.Size = new System.Drawing.Size(360, 489);
+            this.basicPageContainer.Padding = new System.Windows.Forms.Padding(3);
+            this.basicPageContainer.Size = new System.Drawing.Size(360, 490);
             this.basicPageContainer.TabIndex = 6;
             this.basicPageContainer.Text = "tabPage1";
             this.basicPageContainer.UseVisualStyleBackColor = true;
@@ -554,7 +554,7 @@
             this.ipcLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ipcLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.ipcLayoutPanel.Location = new System.Drawing.Point(0, 0);
-            this.ipcLayoutPanel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ipcLayoutPanel.Margin = new System.Windows.Forms.Padding(2);
             this.ipcLayoutPanel.Name = "ipcLayoutPanel";
             this.ipcLayoutPanel.Size = new System.Drawing.Size(180, 497);
             this.ipcLayoutPanel.TabIndex = 2;
@@ -575,7 +575,7 @@
             // 
             this.protocolControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.protocolControl.Location = new System.Drawing.Point(159, 4);
-            this.protocolControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.protocolControl.Margin = new System.Windows.Forms.Padding(4);
             this.protocolControl.Name = "protocolControl";
             this.protocolControl.Size = new System.Drawing.Size(180, 497);
             this.protocolControl.TabIndex = 8;

@@ -429,7 +429,7 @@ namespace HTSController
             }
 
             await Task.Run(() => InitializeGazeCalibrationMeasurement());
-            if (!string.IsNullOrEmpty(_dataFile))
+            if (string.IsNullOrEmpty(_dataFile))
             {
                 gazeLogTextBox.AppendText("- Timed out waiting for tablet to send data file name" + Environment.NewLine);
                 Log.Error("timed out waiting for tablet to send data file name");
@@ -438,13 +438,17 @@ namespace HTSController
                 return;
             }
 
-            var started = await _streamManager.StartRecording(_dataFile, exclude: "EYELINK");
-            if (!started)
+            var started = await _streamManager.StartRecording(_dataFile, exclude: new List<string> { "EYELINK", "HEARING.TEST.SUITE.SYNC" });
+            if (started)
+            {
+                OnRunStateChanged("GazeCalibration", true);
+            }
+            else
             {
                 gazeLogTextBox.AppendText("failed" + Environment.NewLine);
                 foreach (var s in _streamManager.ProblemStreams)
                 {
-                    gazeLogTextBox.AppendText($"- {s}\n");
+                    gazeLogTextBox.AppendText($"- {s}{Environment.NewLine}");
                     Log.Error($"failed to start stream: {s}");
                 }
 
@@ -597,6 +601,15 @@ namespace HTSController
             _eyeLink.setOfflineMode();
             _eyeLink.close();
 
+            var startTime = DateTime.Now;
+            while (_eyeLink.isConnected() && (DateTime.Now - startTime).TotalSeconds < 5)
+            {
+                Thread.Sleep(100);
+            }
+
+            // race condition restarting EyeLink in free run mode below?
+            Thread.Sleep(1000);
+
             gazeStopButton.Visible = false;
             gazeStartButton.Enabled = true;
 
@@ -604,7 +617,11 @@ namespace HTSController
             _targetPoint = new Point(-1, -1);
             gazePicture.Refresh();
 
+            Log.Information("Restarting EyeLink");
             _streamManager.Find("EYELINK")?.SendMessage("Free Run");
+
+            _streamManager.RestartStatusTimer();
+            OnRunStateChanged("GazeCalibration", false);
 
             EndAutoRun(success: !_runAborted, dataFile: null);
         }

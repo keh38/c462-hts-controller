@@ -231,7 +231,7 @@ namespace HTSController
         private void closeButton_Click(object sender, EventArgs e)
         {
             _network.RemoteMessageHandler -= OnRemoteMessage;
-            _streamManager.Cleanup();
+            //_streamManager.Cleanup();
             OnClosePage();
         }
 

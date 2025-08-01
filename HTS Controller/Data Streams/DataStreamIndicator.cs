@@ -44,12 +44,18 @@ namespace HTSController.Data_Streams
 
         public void ConnectionStatusUpdated()
         {
-            BackColor = _stream.IsPresent ? StatusToColor(_stream.Status) : Color.LightGray;
+            var newcolor = _stream.IsPresent ? StatusToColor(_stream.Status) : Color.LightGray;
+            if (newcolor != BackColor)
+            {
+                Serilog.Log.Information($"{_stream.Name} changed to {_stream.Status}");
+            }
+            BackColor = newcolor;
+            //BackColor = _stream.IsPresent ? StatusToColor(_stream.Status) : Color.LightGray;
             statusLabel.Text = _stream.LastActivity.ToLongTimeString();
             addressLabel.Text = _stream.IsPresent ? _stream.IPEndPoint.ToString() : "";
             statusLabel.Text = (_stream.IsPresent && _stream.Status != DataStream.StreamStatus.Idle) ? _stream.LastActivity.ToLongTimeString() : "";
 
-            //checkBox.Enabled = _stream.Status == DataStream.StreamStatus.Idle;
+            Refresh();
         }
 
         private Color StatusToColor(DataStream.StreamStatus status)

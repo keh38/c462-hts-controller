@@ -14,6 +14,8 @@ using Serilog;
 using KLib;
 using KLib.Net;
 using static SyncPulseDetector.SyncPulseEvent;
+using System.Runtime.CompilerServices;
+using System.Data;
 
 namespace HTSController.Data_Streams
 {
@@ -101,6 +103,7 @@ namespace HTSController.Data_Streams
         public void Cleanup()
         {
             _statusTimer.Stop();
+            Log.Information("Clean up: status timer stopped");
             _syncTimer.Stop();
 
             KFile.XmlSerialize(_streams, ConfigFile);
@@ -120,20 +123,31 @@ namespace HTSController.Data_Streams
 
         public void RestartStatusTimer()
         {
+            //Log.Information($"restarting status timer");
+
             _recording = false;
             _statusTimer.Interval = 100;
+            statusTimer_Tick(null, null);
             _statusTimer.Start();
+//            _statusTimer.Tick += statusTimer_Tick;
         }
 
-        public async Task<bool> StartRecording(string filename, string mandatory="", string exclude="")
+        public async Task<bool> StartRecording(string filename, string mandatory = "", List<string> exclude=null)
         {
+            if (exclude == null)
+            {
+                exclude = new List<string>();
+            }
+
             _recording = true;
             _statusTimer.Stop();
+            //_statusTimer.Tick -= statusTimer_Tick;
+
             _problemChildren.Clear();
 
             InitializeSyncLogFile(filename);
 
-            var streamsToStart = _streams.FindAll(x => x.Record && x.IsPresent && x.Name!=exclude);
+            var streamsToStart = _streams.FindAll(x => x.Record && x.IsPresent && !exclude.Contains(x.MulticastName));
             foreach (var s in streamsToStart)
             {
                 var response = await KTcpClient.SendMessageAsync(s.IPEndPoint, $"Record:{Path.Combine(FileLocations.SubjectDataFolder, filename)}");
@@ -225,8 +239,11 @@ namespace HTSController.Data_Streams
                 {
                     Log.Error($"{s.Name} is idle");
                 }
-                var result = await KTcpClient.SendMessageAsync(s.IPEndPoint, "Stop");
-                Log.Information($"stopping {s.MulticastName}: {result}");
+                else
+                {
+                    var result = await KTcpClient.SendMessageAsync(s.IPEndPoint, "Stop");
+                    Log.Information($"stopping {s.MulticastName}: {result}");
+                }
             }
         }
 
@@ -312,10 +329,17 @@ namespace HTSController.Data_Streams
 
         private async void statusTimer_Tick(object sender, EventArgs e)
         {
+            //Log.Information("status tick");
             _statusTimer.Enabled = false;
+            //_statusTimer.Tick -= statusTimer_Tick;
             await CheckConnections();
             _statusTimer.Interval = _statusTimerInterval;
             _statusTimer.Enabled = !_exiting && !_recording;
+            //if (!_exiting && !_recording)
+            //{
+            //    _statusTimer.Tick += statusTimer_Tick;
+            //    Log.Information($"status tick finished");
+            //}
         }
 
         public async Task CheckConnections()
