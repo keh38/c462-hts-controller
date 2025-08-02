@@ -103,7 +103,6 @@ namespace HTSController.Data_Streams
         public void Cleanup()
         {
             _statusTimer.Stop();
-            Log.Information("Clean up: status timer stopped");
             _syncTimer.Stop();
 
             KFile.XmlSerialize(_streams, ConfigFile);
@@ -123,13 +122,12 @@ namespace HTSController.Data_Streams
 
         public void RestartStatusTimer()
         {
-            //Log.Information($"restarting status timer");
+            Log.Information($"restarting status timer");
 
             _recording = false;
-            _statusTimer.Interval = 100;
+            //_statusTimer.Interval = 100;
             statusTimer_Tick(null, null);
-            _statusTimer.Start();
-//            _statusTimer.Tick += statusTimer_Tick;
+            //_statusTimer.Start();
         }
 
         public async Task<bool> StartRecording(string filename, string mandatory = "", List<string> exclude=null)
@@ -141,7 +139,6 @@ namespace HTSController.Data_Streams
 
             _recording = true;
             _statusTimer.Stop();
-            //_statusTimer.Tick -= statusTimer_Tick;
 
             _problemChildren.Clear();
 
@@ -232,6 +229,7 @@ namespace HTSController.Data_Streams
         public async Task StopRecording()
         {
             _syncTimer.Stop();
+            Log.Information("Sync timer stopped");
 
             foreach (var s in _streams.FindAll(x => x.IsPresent && x.Record))// && x.Status != DataStream.StreamStatus.Idle))
             {
@@ -249,10 +247,11 @@ namespace HTSController.Data_Streams
 
         private async void syncTimer_Tick(object sender, EventArgs e)
         {
+            //Log.Information("sync timer tick");
             _syncTimer.Enabled = false;
             await SyncConnections();
             _syncTimer.Interval = _syncInterval;
-            _syncTimer.Enabled = !_exiting;
+            _syncTimer.Enabled = _recording && !_exiting;
         }
 
         public async Task SyncConnections()
@@ -329,17 +328,11 @@ namespace HTSController.Data_Streams
 
         private async void statusTimer_Tick(object sender, EventArgs e)
         {
-            //Log.Information("status tick");
+            Log.Information("status tick");
             _statusTimer.Enabled = false;
-            //_statusTimer.Tick -= statusTimer_Tick;
             await CheckConnections();
             _statusTimer.Interval = _statusTimerInterval;
             _statusTimer.Enabled = !_exiting && !_recording;
-            //if (!_exiting && !_recording)
-            //{
-            //    _statusTimer.Tick += statusTimer_Tick;
-            //    Log.Information($"status tick finished");
-            //}
         }
 
         public async Task CheckConnections()

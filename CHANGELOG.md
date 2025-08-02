@@ -1,5 +1,11 @@
 ## Changelog
 
+### v0.18 (unreleased)
+#### Changed
+- Gaze calibration creates audio sync log (e.g.: to allow syncing of log to video)
+#### Fixed
+- cross-threading error preventing restart of data stream status timer
+
 ### v0.17 (2025-08-01)
 #### Changed
 - allow data streams during gaze calibration

@@ -1,6 +1,9 @@
-﻿using System;
+﻿#if DEBUG
+#define NO_EYELINK
+#endif
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.ComponentModel; 
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -26,6 +29,7 @@ using UnityEngine;
 
 using Color = System.Drawing.Color;
 using System.Windows.Forms.VisualStyles;
+using Unity.Jobs;
 
 namespace HTSController
 {
@@ -411,7 +415,9 @@ namespace HTSController
             }
 
             // Stop EyeLink Interface if it's running
+#if !NO_EYELINK
             _streamManager.Find("EYELINK")?.SendMessage("Abort");
+#endif
             
             success = GetTabletScreenSize();
             if (success)
@@ -438,7 +444,7 @@ namespace HTSController
                 return;
             }
 
-            var started = await _streamManager.StartRecording(_dataFile, exclude: new List<string> { "EYELINK", "HEARING.TEST.SUITE.SYNC" });
+            var started = await _streamManager.StartRecording(_dataFile, exclude: new List<string> { "EYELINK" });
             if (started)
             {
                 OnRunStateChanged("GazeCalibration", true);
@@ -464,6 +470,10 @@ namespace HTSController
                 Log.Error("could not start EyeLink");
                 gazeStartButton.Enabled = true;
                 await _streamManager.StopRecording();
+
+                _streamManager.RestartStatusTimer();
+                OnRunStateChanged("GazeCalibration", false);
+
                 EndAutoRun(false, null);
                 return;
             }
@@ -472,6 +482,8 @@ namespace HTSController
             gazeStopButton.Visible = true;
 
             await Task.Run(() => PollForJobs());
+
+            EndGazeCalibration();
         }
 
         private void InitializeGazeCalibrationMeasurement()
@@ -488,10 +500,26 @@ namespace HTSController
                     break;
                 }
             }
+
+            if (!string.IsNullOrEmpty(_dataFile))
+            {
+                _network.SendMessage($"StartSynchronizing:{_dataFile}");
+            }
         }
 
         private void PollForJobs()
         {
+#if NO_EYELINK
+            while (true)
+            {
+                if (_stopCal)
+                {
+                    Thread.Sleep(200);
+                    break;
+                }
+                Thread.Sleep(1);
+            }
+#else
             _eyeLink.sendKeybutton(99, 0, 10);
             var job = _busyCal.job;
             var lastjob = job;
@@ -523,8 +551,8 @@ namespace HTSController
                 Thread.Sleep(1);
                 job = _busyCal.job;
             }
-
-            EndGazeCalibration();
+#endif
+            //EndGazeCalibration();
         }
 
         private void gazeStopButton_Click(object sender, EventArgs e)
@@ -552,6 +580,9 @@ namespace HTSController
 
         private async Task<bool> StartEyeLink()
         {
+#if NO_EYELINK
+            return true;
+#else
             bool success = false;
 
             _eyeLink = new EyeLink();
@@ -590,13 +621,19 @@ namespace HTSController
                 }
             }
             return success;
+#endif
         }
 
         private async void EndGazeCalibration()
         {
+            _network.SendMessage($"StopSynchronizing");
             await _streamManager.StopRecording();
-            await Task.Run(() => GetGazeDataFile());
 
+            await Task.Run(() => GetDataFile("SendData", "gaze calibration log"));
+            await Task.Run(() => GetDataFile("SendSyncLog", "sync log"));
+
+#if NO_EYELINK
+#else
             _eyeLink.exitCalibration();
             _eyeLink.setOfflineMode();
             _eyeLink.close();
@@ -606,7 +643,7 @@ namespace HTSController
             {
                 Thread.Sleep(100);
             }
-
+#endif
             // race condition restarting EyeLink in free run mode below?
             Thread.Sleep(1000);
 
@@ -617,8 +654,10 @@ namespace HTSController
             _targetPoint = new Point(-1, -1);
             gazePicture.Refresh();
 
+#if !NO_EYELINK
             Log.Information("Restarting EyeLink");
             _streamManager.Find("EYELINK")?.SendMessage("Free Run");
+#endif
 
             _streamManager.RestartStatusTimer();
             OnRunStateChanged("GazeCalibration", false);
@@ -626,10 +665,10 @@ namespace HTSController
             EndAutoRun(success: !_runAborted, dataFile: null);
         }
 
-        private void GetGazeDataFile()
+        private void GetDataFile(string message, string fileType)
         {
             _dataReceived = false;
-            _network.SendMessage($"SendData");
+            _network.SendMessage($"{message}");
 
             // wait for file name to get sent back
             var startTime = DateTime.Now;
@@ -644,8 +683,11 @@ namespace HTSController
 
             if (!_dataReceived)
             {
-                gazeLogTextBox.AppendText(" - timed out waiting for data log." + Environment.NewLine);
-                Log.Error("timed out waiting for gaze calibration data log");
+                Invoke(new Action(() =>
+                {
+                    gazeLogTextBox.AppendText($" - timed out waiting for {fileType}." + Environment.NewLine);
+                }));
+                Log.Error($"timed out waiting for {fileType}");
             }
 
         }
