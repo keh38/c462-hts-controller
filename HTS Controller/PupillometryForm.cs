@@ -77,6 +77,8 @@ namespace HTSController
             _streamManager = streamManager;
 
             InitializeComponent();
+
+            KLib.Controls.Utilities.SetCueBanner(openDropDown.Handle, "Open settings...");
         }
 
         public void Initialize()
@@ -89,18 +91,18 @@ namespace HTSController
             progressBar.Value = 0;
             logTextBox.Text = "";
 
-            var configPath = Path.Combine(FileLocations.ConfigFolder, "DynamicRange.Defaults.xml");
-            if (File.Exists(configPath))
+            EnumerateDynamicRangeSettings();
+            if (openDropDown.Items.Count > 0)
             {
-                _dynamicRangeSettings = KFile.XmlDeserialize<DynamicRangeSettings>(configPath);
+                openDropDown.SelectedIndex = 0;
             }
             else
             {
                 _dynamicRangeSettings = new DynamicRangeSettings();
+                dynamicRangePropertyGrid.SelectedObject = _dynamicRangeSettings;
             }
-            dynamicRangePropertyGrid.SelectedObject = _dynamicRangeSettings;
 
-            configPath = Path.Combine(FileLocations.ConfigFolder, "Gaze.Defaults.xml");
+            var configPath = Path.Combine(FileLocations.ConfigFolder, "Gaze.Defaults.xml");
             if (File.Exists(configPath))
             {
                 _gazeSettings = KFile.XmlDeserialize<GazeCalibrationSettings>(configPath);
@@ -131,10 +133,24 @@ namespace HTSController
             }
         }
 
-        public void AutoRunDynamicRange()
+        private void EnumerateDynamicRangeSettings()
+        {
+            var files = Directory.EnumerateFiles(FileLocations.ConfigFolder, "DynamicRange.*.xml")
+                .ToList()
+                .Select(x => Path.GetFileNameWithoutExtension(x).Replace("DynamicRange.", ""));
+
+            openDropDown.Items.Clear();
+            foreach ( var file in files)
+            {
+                openDropDown.Items.Add(file);
+            }                
+        }
+
+        public void AutoRunDynamicRange(string settingsFile)
         {
             _autoRun = true;
             tabControl.SelectedTab = dynamicRangePage;
+            ReadDynamicRangeSettings(settingsFile);
             startButton_Click(this, null);
         }
 
@@ -143,6 +159,36 @@ namespace HTSController
             _autoRun = true;
             tabControl.SelectedTab = calibrationPage;
             gazeStartButton_Click(this, null);
+        }
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            var configPath = Path.Combine(FileLocations.ConfigFolder, $"DynamicRange.{_dynamicRangeSettings.Name}.xml");
+            KLib.KFile.XmlSerialize(_dynamicRangeSettings, configPath);
+
+            EnumerateDynamicRangeSettings();
+            openDropDown.SelectedItem = _dynamicRangeSettings.Name;
+
+        }
+
+        private void openDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (openDropDown.SelectedIndex >= 0)
+            {
+                var name = openDropDown.SelectedItem.ToString();
+                if (_dynamicRangeSettings == null || name != _dynamicRangeSettings.Name)
+                {
+                    ReadDynamicRangeSettings(name);
+                }
+            }
+        }
+
+        private void ReadDynamicRangeSettings(string name)
+        {
+            var settingsPath = Path.Combine(FileLocations.ConfigFolder, $"DynamicRange.{name}.xml");
+            _dynamicRangeSettings = KFile.XmlDeserialize<DynamicRangeSettings>(settingsPath);
+            _dynamicRangeSettings.Name = name;
+            dynamicRangePropertyGrid.SelectedObject = _dynamicRangeSettings;
         }
 
         private async void startButton_Click(object sender, EventArgs e)
@@ -380,8 +426,8 @@ namespace HTSController
         }
         private void dynamicRangePropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            var configPath = Path.Combine(FileLocations.ConfigFolder, "DynamicRange.Defaults.xml");
-            KLib.KFile.XmlSerialize(_dynamicRangeSettings, configPath);
+            //var configPath = Path.Combine(FileLocations.ConfigFolder, "DynamicRange.Defaults.xml");
+            //KLib.KFile.XmlSerialize(_dynamicRangeSettings, configPath);
         }
 
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
