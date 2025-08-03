@@ -1,6 +1,8 @@
 ## Changelog
 
 ### v0.18 (unreleased)
+#### Added
+- use of multiple pupil dynamic range config files
 #### Changed
 - Gaze calibration creates audio sync log (e.g.: to allow syncing of log to video)
 #### Fixed

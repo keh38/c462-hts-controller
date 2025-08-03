@@ -465,7 +465,7 @@ namespace HTSController
             {
                 case "Pupil Dynamic Range":
                     pupilButton.Checked = true;
-                    _pupilForm.AutoRunDynamicRange(Path.Combine(FileLocations.ConfigFolder, $"DynamicRange.{e.settingsFile}.xml"));
+                    _pupilForm.AutoRunDynamicRange(e.settingsFile);
                     break;
                 case "Gaze Calibration":
                     pupilButton.Checked = true;

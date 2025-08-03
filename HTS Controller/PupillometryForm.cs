@@ -151,6 +151,7 @@ namespace HTSController
             _autoRun = true;
             tabControl.SelectedTab = dynamicRangePage;
             ReadDynamicRangeSettings(settingsFile);
+            openDropDown.SelectedItem = settingsFile;
             startButton_Click(this, null);
         }
 
