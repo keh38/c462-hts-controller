@@ -1,6 +1,6 @@
 ## Changelog
 
-### v0.18 (unreleased)
+### v0.18 (2025-08-04)
 #### Added
 - use of multiple pupil dynamic range config files
 #### Changed
