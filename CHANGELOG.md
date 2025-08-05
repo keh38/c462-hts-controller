@@ -1,5 +1,19 @@
 ## Changelog
 
+### v0.20 (2025-08-05)
+#### Fixed
+- Basic measurements can be run from protocol
+- Apply auto-advance property in protocol
+
+---
+
+### v0.19 (2025-08-05)
+#### Added
+- Manikin button appearance
+- Checklist prompt spacing
+
+---
+
 ### v0.18 (2025-08-04)
 #### Added
 - use of multiple pupil dynamic range config files

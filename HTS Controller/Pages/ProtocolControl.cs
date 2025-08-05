@@ -316,7 +316,7 @@ namespace HTSController.Pages
                     StopProtocol(finished: true);
                     await StartRemote(finished: true);
                 }
-                else if (_protocol.Tests[_nextTestIndex].HideOutline)
+                else if (_protocol.Tests[_nextTestIndex].HideOutline || _protocol.Tests[_nextTestIndex].AutoAdvance)
                 {
                     Advance();
                 }

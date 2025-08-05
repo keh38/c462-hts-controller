@@ -152,9 +152,15 @@ namespace HTSController
             startButton.Enabled = true;
         }
 
-        public void AutoRunDynamicRange()
+        public void AutoRunBasicMeasurement(string measType, string configName)
         {
             _autoRun = true;
+
+            msSelectMeasurement.Text = $"{measType}.{configName}";
+            _measType = measType;
+            _configName = configName;
+
+            LoadConfiguration();
             startButton_Click(this, null);
         }
 
@@ -282,7 +288,7 @@ namespace HTSController
                 await _streamManager.StopRecording();
 
                 var response = _network.SendMessageAndReceiveString("GetSyncLog");
-                if (!response.Equals("none"))
+                if (!string.IsNullOrEmpty(response) && !response.Equals("none"))
                 {
                     var parts = response.Split(new char[] { ':' }, 2);
                     var logPath = Path.Combine(FileLocations.SubjectDataFolder, parts[0]);

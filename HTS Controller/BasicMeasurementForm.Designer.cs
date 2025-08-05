@@ -46,27 +46,24 @@
             // dataFileTextBox
             // 
             this.dataFileTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dataFileTextBox.Location = new System.Drawing.Point(11, 96);
-            this.dataFileTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.dataFileTextBox.Location = new System.Drawing.Point(8, 78);
             this.dataFileTextBox.Name = "dataFileTextBox";
             this.dataFileTextBox.ReadOnly = true;
-            this.dataFileTextBox.Size = new System.Drawing.Size(291, 22);
+            this.dataFileTextBox.Size = new System.Drawing.Size(219, 20);
             this.dataFileTextBox.TabIndex = 17;
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(11, 127);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBar.Location = new System.Drawing.Point(8, 103);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(291, 20);
+            this.progressBar.Size = new System.Drawing.Size(218, 16);
             this.progressBar.TabIndex = 14;
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(11, 47);
-            this.startButton.Margin = new System.Windows.Forms.Padding(4);
+            this.startButton.Location = new System.Drawing.Point(8, 38);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(176, 32);
+            this.startButton.Size = new System.Drawing.Size(132, 26);
             this.startButton.TabIndex = 11;
             this.startButton.Text = "Measure";
             this.startButton.UseVisualStyleBackColor = true;
@@ -74,10 +71,9 @@
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(195, 47);
-            this.stopButton.Margin = new System.Windows.Forms.Padding(4);
+            this.stopButton.Location = new System.Drawing.Point(146, 38);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(107, 32);
+            this.stopButton.Size = new System.Drawing.Size(80, 26);
             this.stopButton.TabIndex = 16;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
@@ -87,21 +83,19 @@
             // logTextBox
             // 
             this.logTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.logTextBox.Location = new System.Drawing.Point(9, 154);
-            this.logTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.logTextBox.Location = new System.Drawing.Point(7, 125);
             this.logTextBox.Multiline = true;
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
             this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTextBox.Size = new System.Drawing.Size(293, 214);
+            this.logTextBox.Size = new System.Drawing.Size(220, 174);
             this.logTextBox.TabIndex = 18;
             // 
             // propertyGrid
             // 
-            this.propertyGrid.Location = new System.Drawing.Point(311, 15);
-            this.propertyGrid.Margin = new System.Windows.Forms.Padding(4);
+            this.propertyGrid.Location = new System.Drawing.Point(233, 12);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(349, 353);
+            this.propertyGrid.Size = new System.Drawing.Size(262, 287);
             this.propertyGrid.TabIndex = 22;
             this.propertyGrid.ToolbarVisible = false;
             // 
@@ -114,7 +108,8 @@
             this.msSelectMeasurement});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(78, 413);
+            this.menuStrip.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
+            this.menuStrip.Size = new System.Drawing.Size(124, 336);
             this.menuStrip.Stretch = false;
             this.menuStrip.TabIndex = 23;
             this.menuStrip.Text = "menuStrip1";
@@ -124,14 +119,15 @@
             this.msSelectMeasurement.BackColor = System.Drawing.Color.PaleGoldenrod;
             this.msSelectMeasurement.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.msSelectMeasurement.Name = "msSelectMeasurement";
-            this.msSelectMeasurement.Size = new System.Drawing.Size(65, 24);
+            this.msSelectMeasurement.Size = new System.Drawing.Size(115, 19);
             this.msSelectMeasurement.Text = "Select...";
             // 
             // RemoveButton
             // 
-            this.RemoveButton.Location = new System.Drawing.Point(506, 375);
+            this.RemoveButton.Location = new System.Drawing.Point(380, 305);
+            this.RemoveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.RemoveButton.Name = "RemoveButton";
-            this.RemoveButton.Size = new System.Drawing.Size(75, 26);
+            this.RemoveButton.Size = new System.Drawing.Size(56, 21);
             this.RemoveButton.TabIndex = 25;
             this.RemoveButton.Text = "Remove";
             this.RemoveButton.UseVisualStyleBackColor = true;
@@ -139,9 +135,10 @@
             // 
             // TransferButton
             // 
-            this.TransferButton.Location = new System.Drawing.Point(584, 375);
+            this.TransferButton.Location = new System.Drawing.Point(438, 305);
+            this.TransferButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.TransferButton.Name = "TransferButton";
-            this.TransferButton.Size = new System.Drawing.Size(75, 26);
+            this.TransferButton.Size = new System.Drawing.Size(56, 21);
             this.TransferButton.TabIndex = 26;
             this.TransferButton.Text = "Transfer";
             this.TransferButton.UseVisualStyleBackColor = true;
@@ -149,9 +146,10 @@
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(425, 375);
+            this.SaveButton.Location = new System.Drawing.Point(319, 305);
+            this.SaveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(75, 26);
+            this.SaveButton.Size = new System.Drawing.Size(56, 21);
             this.SaveButton.TabIndex = 27;
             this.SaveButton.Text = "Save";
             this.SaveButton.UseVisualStyleBackColor = true;
@@ -166,17 +164,18 @@
             "Bekesy",
             "LDL",
             "Questionnaire"});
-            this.newDropDown.Location = new System.Drawing.Point(311, 375);
+            this.newDropDown.Location = new System.Drawing.Point(233, 305);
+            this.newDropDown.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.newDropDown.Name = "newDropDown";
-            this.newDropDown.Size = new System.Drawing.Size(108, 24);
+            this.newDropDown.Size = new System.Drawing.Size(82, 21);
             this.newDropDown.TabIndex = 28;
             this.newDropDown.SelectedIndexChanged += new System.EventHandler(this.newDropDown_SelectedIndexChanged);
             // 
             // BasicMeasurementForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(676, 413);
+            this.ClientSize = new System.Drawing.Size(507, 336);
             this.Controls.Add(this.newDropDown);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.TransferButton);
@@ -189,7 +188,6 @@
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "BasicMeasurementForm";
             this.Text = "BasicMeasurementForm";
             this.menuStrip.ResumeLayout(false);

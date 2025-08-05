@@ -463,6 +463,11 @@ namespace HTSController
         {
             switch (e.sceneName)
             {
+                case "Audiogram":
+                case "LDL":
+                    basicButton.Checked = true;
+                    _basicForm.AutoRunBasicMeasurement(e.sceneName, e.settingsFile);
+                    break;
                 case "Pupil Dynamic Range":
                     pupilButton.Checked = true;
                     _pupilForm.AutoRunDynamicRange(e.settingsFile);
