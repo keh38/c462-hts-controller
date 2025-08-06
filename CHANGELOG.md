@@ -1,8 +1,9 @@
 ## Changelog
 
-### v0.21 (unreleased)
+### v0.21 (2025-08-05)
 #### Added
 - exposed audiogram button properties
+- made "other ear" and "new frequency" messages in Audiogram optional
 
 --
 
