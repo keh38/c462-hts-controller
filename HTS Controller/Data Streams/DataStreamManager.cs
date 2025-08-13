@@ -328,7 +328,6 @@ namespace HTSController.Data_Streams
 
         private async void statusTimer_Tick(object sender, EventArgs e)
         {
-            Log.Information("status tick");
             _statusTimer.Enabled = false;
             await CheckConnections();
             _statusTimer.Interval = _statusTimerInterval;

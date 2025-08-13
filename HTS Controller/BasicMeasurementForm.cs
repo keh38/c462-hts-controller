@@ -276,12 +276,14 @@ namespace HTSController
 
             if (!string.IsNullOrEmpty(_dataFile) && !_config.BypassDataStreams)
             {
+                Log.Information($"Remote data file = {_dataFile}");
                 _network.SendMessage($"StartSynchronizing:{_dataFile}");
             }
         }
 
         private async void EndRun(string message, string status)
         {
+            Log.Information("Run ending");
             if (!_config.BypassDataStreams)
             {
                 _network.SendMessage($"StopSynchronizing");
@@ -345,6 +347,7 @@ namespace HTSController
                     File.WriteAllText(filePath, data);
                     break;
                 case "Status":
+                    Log.Information($"Status update: {info}");
                     Invoke(new Action(() => logTextBox.AppendText($"- {info}{Environment.NewLine}")));
                     break;
                 case "Error":
@@ -359,6 +362,8 @@ namespace HTSController
 
         private void stopButton_Click(object sender, EventArgs e)
         {
+            Log.Information("User stopping measurement");
+
             _runAborted = true;
             stopButton.Enabled = false;
             _network.SendMessage("Abort");

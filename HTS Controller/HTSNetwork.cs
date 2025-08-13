@@ -40,10 +40,8 @@ namespace HTSController
         public string TabletAddress { get { return (_ipEndPoint == null) ? "" : _ipEndPoint.ToString(); } }
         public string MyAddress { get { return _serverAddress; } }
         public string TabletVersion { get { return _remoteVersionNumber; } }
-      
-        public HTSNetwork()
-        {
-        }
+
+        public HTSNetwork() { }
 
         public async Task<bool> Connect()
         {
@@ -122,13 +120,18 @@ namespace HTSController
                 _ipEndPoint = Discovery.Discover("HEARING.TEST.SUITE");
                 if (_ipEndPoint != null)
                 {
-                    Debug.WriteLine($"contacting host {_ipEndPoint.ToString()}");
+                    Log.Information($"contacting host {_ipEndPoint.ToString()}");
 
                     var result = KTcpClient.SendMessage(_ipEndPoint, $"Connect:{_serverAddress.Replace(":", "/")}");
                     if (result > 0)
                     {
+                        Log.Information("connected!");
                         CurrentScene = KTcpClient.SendMessageReceiveString(_ipEndPoint, "GetCurrentSceneName");
                         _remoteVersionNumber = KTcpClient.SendMessageReceiveString(_ipEndPoint, "GetVersionNumber");
+                    }
+                    else
+                    {
+                        Log.Information("remote host busy");
                     }
                     success = (result > 0);
                     _lastPingSucceeded = success;
@@ -136,7 +139,7 @@ namespace HTSController
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Log.Error(ex.Message);
                 success = false;
                 _ipEndPoint = null;
             }
@@ -165,7 +168,7 @@ namespace HTSController
             {
                 _serverAddress = _serverAddress.Replace("localhost", "127.0.0.1");
             }
-            Debug.WriteLine($"TCP server started on {server.ListeningOn}");
+            Log.Information($"TCP server started on {server.ListeningOn}");
 
             while (!ct.IsCancellationRequested)
             {
@@ -178,12 +181,12 @@ namespace HTSController
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Log.Information(ex.Message);
                 }
             }
 
             server.CloseListener();
-            Debug.WriteLine("TCP server stopped");
+            Log.Information("TCP server stopped");
         }
 
         private void ProcessTCPMessage(KTcpListener server)
