@@ -47,7 +47,7 @@ namespace HTSController
         {
             _network = network;
             _streamManager = streamManager;
-            _watchdog = new Watchdog(10, OnWatchdogTimeout);
+            _watchdog = new Watchdog(OnWatchdogTimeout);
 
             InitializeComponent();
         }
@@ -253,7 +253,7 @@ namespace HTSController
             }
         }
 
-        private void OnWatchdogTimeout(object sender, ElapsedEventArgs e)
+        private void OnWatchdogTimeout(object sender, EventArgs e)
         {
             Log.Error("Watchdog timed out");
             EndRun("Error", "Timed out waiting for tablet.");

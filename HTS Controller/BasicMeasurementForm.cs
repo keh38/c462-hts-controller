@@ -57,7 +57,7 @@ namespace HTSController
             _network.RemoteMessageHandler += OnRemoteMessage;
 
             _streamManager = streamManager;
-            _watchdog = new Watchdog(10, OnWatchdogTimeout);
+            _watchdog = new Watchdog(OnWatchdogTimeout);
 
             InitializeComponent();
 
@@ -374,7 +374,7 @@ namespace HTSController
             _watchdog.Start();
         }
 
-        private void OnWatchdogTimeout(object sender, ElapsedEventArgs e)
+        private void OnWatchdogTimeout(object sender, EventArgs e)
         {
             Log.Error("Watchdog timed out");
             EndRun("Error", "Timed out waiting for tablet.");

@@ -77,7 +77,7 @@ namespace HTSController
             _network.RemoteMessageHandler += OnRemoteMessage;
 
             _streamManager = streamManager;
-            _watchdog = new Watchdog(10, OnWatchdogTimeout);
+            _watchdog = new Watchdog(OnWatchdogTimeout);
 
             InitializeComponent();
 
@@ -304,6 +304,8 @@ namespace HTSController
         private async void EndRun(string message, string status)
         {
             _watchdog.Stop();
+            Log.Information("Dynamic range test ended");
+
             _network.SendMessage($"StopSynchronizing");
             await _streamManager.StopRecording();
             _network.SendMessage("SendSyncLog");
@@ -425,13 +427,14 @@ namespace HTSController
 
         private void stopButton_Click(object sender, EventArgs e)
         {
+            Log.Information("User stopping dynamice range test");
             _runAborted = true;
             stopButton.Enabled = false;
             _network.SendMessage("Abort");
             _watchdog.Start();
         }
 
-        private void OnWatchdogTimeout(object sender, ElapsedEventArgs e)
+        private void OnWatchdogTimeout(object sender, EventArgs e)
         {
             Log.Error("Watchdog timed out");
             EndRun("Error", "Timed out waiting for tablet.");
@@ -700,7 +703,7 @@ namespace HTSController
             }
             if (_eyeLink.isConnected())
             {
-                Log.Information("EyeLink is still connected;
+                Log.Information("EyeLink is still connected");
             }
 #endif
             // race condition restarting EyeLink in free run mode below?

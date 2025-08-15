@@ -1,6 +1,6 @@
 ## Changelog
 
-### v1.2 (unreleased)
+### v1.2 (2025-08-15)
 #### Added
 - additional logging
 - watchdogs to prevent measurements from hanging if tablet does not respond to abort request
