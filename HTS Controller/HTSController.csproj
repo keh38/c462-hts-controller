@@ -249,6 +249,7 @@
     <Compile Include="TurandotLiveForm.Designer.cs">
       <DependentUpon>TurandotLiveForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Watchdog.cs" />
     <EmbeddedResource Include="BasicMeasurementForm.resx">
       <DependentUpon>BasicMeasurementForm.cs</DependentUpon>
     </EmbeddedResource>

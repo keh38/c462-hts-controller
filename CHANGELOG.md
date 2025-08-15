@@ -1,5 +1,13 @@
 ## Changelog
 
+### v1.2 (unreleased)
+#### Added
+- additional logging
+- watchdogs to prevent measurements from hanging if tablet does not respond to abort request
+
+---
+
+### v1.0
 ### v0.21 (2025-08-05)
 #### Added
 - exposed audiogram button properties

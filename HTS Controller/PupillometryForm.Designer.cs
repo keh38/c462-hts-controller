@@ -36,6 +36,8 @@
             this.gazeStartButton = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.dynamicRangePage = new System.Windows.Forms.TabPage();
+            this.openDropDown = new System.Windows.Forms.ComboBox();
+            this.saveButton = new System.Windows.Forms.Button();
             this.dynamicRangePropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.label1 = new System.Windows.Forms.Label();
             this.matlabDropDown = new System.Windows.Forms.ComboBox();
@@ -45,8 +47,6 @@
             this.gazeLogTextBox = new System.Windows.Forms.TextBox();
             this.gazeStopButton = new System.Windows.Forms.Button();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
-            this.saveButton = new System.Windows.Forms.Button();
-            this.openDropDown = new System.Windows.Forms.ComboBox();
             this.tabControl.SuspendLayout();
             this.dynamicRangePage.SuspendLayout();
             this.calibrationPage.SuspendLayout();
@@ -150,6 +150,27 @@
             this.dynamicRangePage.Text = "Dynamic range";
             this.dynamicRangePage.UseVisualStyleBackColor = true;
             // 
+            // openDropDown
+            // 
+            this.openDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.openDropDown.FormattingEnabled = true;
+            this.openDropDown.Location = new System.Drawing.Point(306, 374);
+            this.openDropDown.Name = "openDropDown";
+            this.openDropDown.Size = new System.Drawing.Size(155, 24);
+            this.openDropDown.TabIndex = 24;
+            this.openDropDown.SelectedIndexChanged += new System.EventHandler(this.openDropDown_SelectedIndexChanged);
+            // 
+            // saveButton
+            // 
+            this.saveButton.Location = new System.Drawing.Point(509, 370);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(4);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(100, 28);
+            this.saveButton.TabIndex = 23;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
+            // 
             // dynamicRangePropertyGrid
             // 
             this.dynamicRangePropertyGrid.Location = new System.Drawing.Point(306, 9);
@@ -158,7 +179,6 @@
             this.dynamicRangePropertyGrid.Size = new System.Drawing.Size(303, 353);
             this.dynamicRangePropertyGrid.TabIndex = 22;
             this.dynamicRangePropertyGrid.ToolbarVisible = false;
-            this.dynamicRangePropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.dynamicRangePropertyGrid_PropertyValueChanged);
             // 
             // label1
             // 
@@ -251,27 +271,6 @@
             this.propertyGrid.TabIndex = 20;
             this.propertyGrid.ToolbarVisible = false;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
-            // 
-            // saveButton
-            // 
-            this.saveButton.Location = new System.Drawing.Point(509, 370);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(4);
-            this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(100, 28);
-            this.saveButton.TabIndex = 23;
-            this.saveButton.Text = "Save";
-            this.saveButton.UseVisualStyleBackColor = true;
-            this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
-            // 
-            // openDropDown
-            // 
-            this.openDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.openDropDown.FormattingEnabled = true;
-            this.openDropDown.Location = new System.Drawing.Point(306, 374);
-            this.openDropDown.Name = "openDropDown";
-            this.openDropDown.Size = new System.Drawing.Size(155, 24);
-            this.openDropDown.TabIndex = 24;
-            this.openDropDown.SelectedIndexChanged += new System.EventHandler(this.openDropDown_SelectedIndexChanged);
             // 
             // PupillometryForm
             // 

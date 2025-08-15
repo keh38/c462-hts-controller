@@ -19,6 +19,7 @@ using HTSController.Data_Streams;
 
 using Serilog;
 using Bekesy;
+using System.Timers;
 
 namespace HTSController
 {
@@ -34,6 +35,7 @@ namespace HTSController
         bool _runAborted = false;
         bool _ignoreEvents = false;
         bool _autoRun = false;
+        Watchdog _watchdog;
 
         BasicMeasurementConfiguration _config;
 
@@ -55,6 +57,7 @@ namespace HTSController
             _network.RemoteMessageHandler += OnRemoteMessage;
 
             _streamManager = streamManager;
+            _watchdog = new Watchdog(10, OnWatchdogTimeout);
 
             InitializeComponent();
 
@@ -283,6 +286,7 @@ namespace HTSController
 
         private async void EndRun(string message, string status)
         {
+            _watchdog.Stop();
             Log.Information("Run ending");
             if (!_config.BypassDataStreams)
             {
@@ -367,6 +371,13 @@ namespace HTSController
             _runAborted = true;
             stopButton.Enabled = false;
             _network.SendMessage("Abort");
+            _watchdog.Start();
+        }
+
+        private void OnWatchdogTimeout(object sender, ElapsedEventArgs e)
+        {
+            Log.Error("Watchdog timed out");
+            EndRun("Error", "Timed out waiting for tablet.");
         }
 
         private void SaveButton_Click(object sender, EventArgs e)

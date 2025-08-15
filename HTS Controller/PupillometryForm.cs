@@ -1,5 +1,5 @@
 ﻿#if DEBUG
-#define NO_EYELINK
+//#define NO_EYELINK
 #endif
 using System;
 using System.Collections.Generic;
@@ -30,6 +30,7 @@ using UnityEngine;
 using Color = System.Drawing.Color;
 using System.Windows.Forms.VisualStyles;
 using Unity.Jobs;
+using System.Timers;
 
 namespace HTSController
 {
@@ -54,6 +55,7 @@ namespace HTSController
         bool _runAborted = false;
         bool _ignoreEvents = false;
         bool _autoRun = false;
+        Watchdog _watchdog;
 
         bool _dataReceived = false;
 
@@ -75,6 +77,7 @@ namespace HTSController
             _network.RemoteMessageHandler += OnRemoteMessage;
 
             _streamManager = streamManager;
+            _watchdog = new Watchdog(10, OnWatchdogTimeout);
 
             InitializeComponent();
 
@@ -300,6 +303,7 @@ namespace HTSController
 
         private async void EndRun(string message, string status)
         {
+            _watchdog.Stop();
             _network.SendMessage($"StopSynchronizing");
             await _streamManager.StopRecording();
             _network.SendMessage("SendSyncLog");
@@ -424,11 +428,13 @@ namespace HTSController
             _runAborted = true;
             stopButton.Enabled = false;
             _network.SendMessage("Abort");
+            _watchdog.Start();
         }
-        private void dynamicRangePropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+
+        private void OnWatchdogTimeout(object sender, ElapsedEventArgs e)
         {
-            //var configPath = Path.Combine(FileLocations.ConfigFolder, "DynamicRange.Defaults.xml");
-            //KLib.KFile.XmlSerialize(_dynamicRangeSettings, configPath);
+            Log.Error("Watchdog timed out");
+            EndRun("Error", "Timed out waiting for tablet.");
         }
 
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
@@ -604,6 +610,7 @@ namespace HTSController
 
         private void gazeStopButton_Click(object sender, EventArgs e)
         {
+            Log.Information("User stopping gaze calibration");
             _runAborted = true;
             _stopCal = true;
             _network.SendMessage("Abort");
@@ -673,6 +680,7 @@ namespace HTSController
 
         private async void EndGazeCalibration()
         {
+            Log.Information("End gaze calibration");
             _network.SendMessage($"StopSynchronizing");
             await _streamManager.StopRecording();
 
@@ -689,6 +697,10 @@ namespace HTSController
             while (_eyeLink.isConnected() && (DateTime.Now - startTime).TotalSeconds < 5)
             {
                 Thread.Sleep(100);
+            }
+            if (_eyeLink.isConnected())
+            {
+                Log.Information("EyeLink is still connected;
             }
 #endif
             // race condition restarting EyeLink in free run mode below?

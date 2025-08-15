@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 
 using Serilog;
@@ -29,6 +30,7 @@ namespace HTSController
         private string _postRunMATLABFile = "";
 
         private bool _autoRun;
+        Watchdog _watchdog;
 
         #region EVENTS
         public event EventHandler<AutoRunEndEventArgs> AutoRunEnd;
@@ -45,6 +47,7 @@ namespace HTSController
         {
             _network = network;
             _streamManager = streamManager;
+            _watchdog = new Watchdog(10, OnWatchdogTimeout);
 
             InitializeComponent();
         }
@@ -144,6 +147,7 @@ namespace HTSController
 
         private async void EndRun(string message, string status)
         {
+            _watchdog.Stop();
             _network.SendMessage($"StopSynchronizing");
             await _streamManager.StopRecording();
             //_network.SendMessage("SendSyncLog");
@@ -241,11 +245,18 @@ namespace HTSController
             if (_network.CheckConnection())
             {
                 _network.SendMessage("Abort");
+                _watchdog.Start();
             }
             else
             {
                 EndRun("Error", "Lost connection");
             }
+        }
+
+        private void OnWatchdogTimeout(object sender, ElapsedEventArgs e)
+        {
+            Log.Error("Watchdog timed out");
+            EndRun("Error", "Timed out waiting for tablet.");
         }
     }
 }
