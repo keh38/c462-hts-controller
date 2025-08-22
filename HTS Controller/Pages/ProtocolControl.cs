@@ -154,9 +154,17 @@ namespace HTSController.Pages
 
             startButton.Visible = false;
 
-            await StartRemote();
+            if (!_protocol.FullAuto)
+            {
+                await StartRemote();
+            }
 
             OnProtocolStateChange(running: true);
+
+            if (_protocol.FullAuto)
+            {
+                Advance();
+            }
         }
 
         private async Task StartRemote(bool finished = false)
@@ -314,9 +322,12 @@ namespace HTSController.Pages
                 else if (_nextTestIndex == _protocol.Tests.Count)
                 {
                     StopProtocol(finished: true);
-                    await StartRemote(finished: true);
+                    if (!_protocol.FullAuto)
+                    {
+                        await StartRemote(finished: true);
+                    }
                 }
-                else if (_protocol.Tests[_nextTestIndex].HideOutline || _protocol.Tests[_nextTestIndex].AutoAdvance)
+                else if (_protocol.FullAuto || _protocol.Tests[_nextTestIndex].HideOutline || _protocol.Tests[_nextTestIndex].AutoAdvance)
                 {
                     Advance();
                 }

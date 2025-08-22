@@ -1,5 +1,11 @@
 ## Changelog
 
+### v1.3 (unreleased)
+#### Added
+- implemented "full auto" protocol option to bypass outline screen altogether
+
+---
+
 ### v1.2 (2025-08-15)
 #### Added
 - additional logging
