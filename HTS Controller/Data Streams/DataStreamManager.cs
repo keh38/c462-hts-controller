@@ -83,9 +83,14 @@ namespace HTSController.Data_Streams
             _network = network;
             _indicators = new List<DataStreamIndicator>();
 
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem menuItem = new MenuItem("Get log", new System.EventHandler(this.OnGetLogMenuItem_Click));
+            contextMenu.MenuItems.Add(menuItem);
+
             foreach (var s in _streams)
             {
                 var indicator = CreateIndicator(s);
+                indicator.ContextMenu = contextMenu;
                 flowLayout.Controls.Add(indicator);
                 _indicators.Add(indicator);
             }
@@ -113,6 +118,40 @@ namespace HTSController.Data_Streams
             var indicator = new DataStreamIndicator(stream);
             indicator.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             return indicator;
+        }
+
+        private void OnGetLogMenuItem_Click(object sender, EventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            ContextMenu contextMenu = menuItem.Parent as ContextMenu;
+            DataStreamIndicator streamIndicator = contextMenu.SourceControl as DataStreamIndicator;
+            DataStream dataStream = streamIndicator.Stream;
+
+            if (dataStream.IsPresent)
+            {
+                GetStreamLog(dataStream);
+            }
+        }
+
+        private void GetStreamLog(DataStream dataStream)
+        {
+            var folder = Path.Combine(FileLocations.RootFolder, "Remote Logs");
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+            var response = KTcpClient.SendMessageReceiveString(dataStream.IPEndPoint, "GetLog");
+            if (response != null)
+            {
+                var parts = response.Split(new char[] { ':' }, 2);
+                if (parts.Length > 1)
+                {
+                    var logPath = Path.Combine(folder, parts[0]);
+                    File.WriteAllText(logPath, parts[1]);
+                    System.Diagnostics.Process.Start(logPath);
+                }
+            }
         }
 
         private void OnRecordSelectionChanged(object sender, EventArgs e)

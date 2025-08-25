@@ -3,6 +3,9 @@
 ### v1.3 (unreleased)
 #### Added
 - implemented "full auto" protocol option to bypass outline screen altogether
+- context menu to retrieve log from data stream
+#### Fixed
+- Turandot: end auto run on data stream start error (to avoid hanging)
 
 ---
 

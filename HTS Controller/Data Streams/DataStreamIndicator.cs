@@ -15,7 +15,7 @@ namespace HTSController.Data_Streams
 {
     public partial class DataStreamIndicator : KUserControl
     {
-        private DataStream _stream;
+        public DataStream Stream { get; private set; }
 
         public event EventHandler RecordSelectionChanged;
         private void OnRecordSelectionChanged() { RecordSelectionChanged?.Invoke(this, null); }
@@ -27,13 +27,13 @@ namespace HTSController.Data_Streams
 
         public DataStreamIndicator(DataStream stream)
         {
-            _stream = stream;
+            Stream = stream;
             InitializeComponent();
 
             _ignoreEvents = true;
 
-            checkBox.Text = _stream.Name;
-            checkBox.Checked = _stream.Record;
+            checkBox.Text = Stream.Name;
+            checkBox.Checked = Stream.Record;
             statusLabel.Text = "";
             addressLabel.Text = "";
 
@@ -44,16 +44,16 @@ namespace HTSController.Data_Streams
 
         public void ConnectionStatusUpdated()
         {
-            var newcolor = _stream.IsPresent ? StatusToColor(_stream.Status) : Color.LightGray;
+            var newcolor = Stream.IsPresent ? StatusToColor(Stream.Status) : Color.LightGray;
             if (newcolor != BackColor)
             {
-                Serilog.Log.Information($"{_stream.Name} changed to {_stream.Status}");
+                Serilog.Log.Information($"{Stream.Name} changed to {Stream.Status}");
             }
             BackColor = newcolor;
             //BackColor = _stream.IsPresent ? StatusToColor(_stream.Status) : Color.LightGray;
-            statusLabel.Text = _stream.LastActivity.ToLongTimeString();
-            addressLabel.Text = _stream.IsPresent ? _stream.IPEndPoint.ToString() : "";
-            statusLabel.Text = (_stream.IsPresent && _stream.Status != DataStream.StreamStatus.Idle) ? _stream.LastActivity.ToLongTimeString() : "";
+            statusLabel.Text = Stream.LastActivity.ToLongTimeString();
+            addressLabel.Text = Stream.IsPresent ? Stream.IPEndPoint.ToString() : "";
+            statusLabel.Text = (Stream.IsPresent && Stream.Status != DataStream.StreamStatus.Idle) ? Stream.LastActivity.ToLongTimeString() : "";
 
             Refresh();
         }
@@ -78,7 +78,7 @@ namespace HTSController.Data_Streams
         {
             if (_ignoreEvents) return;
 
-            _stream.Record = checkBox.Checked;
+            Stream.Record = checkBox.Checked;
             OnRecordSelectionChanged();
         }
     }

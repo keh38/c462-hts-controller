@@ -104,6 +104,7 @@ namespace HTSController
                     }
                     startButton.Enabled = true;
                     closeButton.Visible = true;
+                    EndAutoRun(success: false, dataFile: _dataFile);
                 }
             }
             else
