@@ -1,5 +1,11 @@
 ## Changelog
 
+### v1.4 (unreleased)
+#### Removed
+- advanced channel options (intramural variables)
+
+---
+
 ### v1.3 (2025-09-02)
 #### Added
 - implemented "full auto" protocol option to bypass outline screen altogether

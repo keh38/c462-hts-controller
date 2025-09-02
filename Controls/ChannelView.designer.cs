@@ -39,14 +39,12 @@
             this.label3 = new System.Windows.Forms.Label();
             this.locationDropDown = new System.Windows.Forms.ComboBox();
             this.waveformView = new KLib.Unity.Controls.Signals.WaveformView();
+            this.levelSep = new System.Windows.Forms.Label();
+            this.levelView = new KLib.Unity.Controls.Signals.LevelView();
             this.modSep = new System.Windows.Forms.Label();
             this.modulationView = new KLib.Unity.Controls.Signals.ModulationView();
             this.gateSep = new System.Windows.Forms.Label();
             this.gateView = new KLib.Unity.Controls.Signals.GateView();
-            this.levelSep = new System.Windows.Forms.Label();
-            this.levelView = new KLib.Unity.Controls.Signals.LevelView();
-            this.expertSep = new System.Windows.Forms.Label();
-            this.expertControl = new KLib.Unity.Controls.Signals.ChannelAdvancedControl();
             this.flowLayoutPanel1.SuspendLayout();
             this.modalityPanel.SuspendLayout();
             this.destPanel.SuspendLayout();
@@ -76,12 +74,10 @@
             this.flowLayoutPanel1.Controls.Add(this.modulationView);
             this.flowLayoutPanel1.Controls.Add(this.gateSep);
             this.flowLayoutPanel1.Controls.Add(this.gateView);
-            this.flowLayoutPanel1.Controls.Add(this.expertSep);
-            this.flowLayoutPanel1.Controls.Add(this.expertControl);
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(204, 669);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(204, 562);
             this.flowLayoutPanel1.TabIndex = 6;
             // 
             // modalityPanel
@@ -197,6 +193,34 @@
             this.waveformView.IPDChanged += new System.EventHandler(this.waveformView_IPDChanged);
             this.waveformView.ValueChanged += new System.EventHandler(this.waveformView_ValueChanged);
             // 
+            // levelSep
+            // 
+            this.levelSep.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.levelSep.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.levelSep.Location = new System.Drawing.Point(3, 130);
+            this.levelSep.Name = "levelSep";
+            this.levelSep.Size = new System.Drawing.Size(198, 2);
+            this.levelSep.TabIndex = 13;
+            this.levelSep.Text = "label4";
+            // 
+            // levelView
+            // 
+            this.levelView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.levelView.AutoSize = true;
+            this.levelView.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.levelView.ILD = 0F;
+            this.levelView.IsDichotic = false;
+            this.levelView.Location = new System.Drawing.Point(74, 135);
+            this.levelView.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.levelView.MBL = 0F;
+            this.levelView.Name = "levelView";
+            this.levelView.Size = new System.Drawing.Size(130, 103);
+            this.levelView.TabIndex = 5;
+            this.levelView.Value = null;
+            this.levelView.BinauralChanged += new System.EventHandler(this.levelView_BinauralChanged);
+            this.levelView.ValueChanged += new System.EventHandler(this.levelView_ValueChanged);
+            // 
             // modSep
             // 
             this.modSep.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -243,56 +267,6 @@
             this.gateView.Value = null;
             this.gateView.ValueChanged += new System.EventHandler(this.gateView_ValueChanged);
             // 
-            // levelSep
-            // 
-            this.levelSep.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.levelSep.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.levelSep.Location = new System.Drawing.Point(3, 130);
-            this.levelSep.Name = "levelSep";
-            this.levelSep.Size = new System.Drawing.Size(198, 2);
-            this.levelSep.TabIndex = 13;
-            this.levelSep.Text = "label4";
-            // 
-            // levelView
-            // 
-            this.levelView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.levelView.AutoSize = true;
-            this.levelView.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.levelView.ILD = 0F;
-            this.levelView.IsDichotic = false;
-            this.levelView.Location = new System.Drawing.Point(74, 135);
-            this.levelView.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
-            this.levelView.MBL = 0F;
-            this.levelView.Name = "levelView";
-            this.levelView.Size = new System.Drawing.Size(130, 103);
-            this.levelView.TabIndex = 5;
-            this.levelView.Value = null;
-            this.levelView.BinauralChanged += new System.EventHandler(this.levelView_BinauralChanged);
-            this.levelView.ValueChanged += new System.EventHandler(this.levelView_ValueChanged);
-            // 
-            // expertSep
-            // 
-            this.expertSep.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.expertSep.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.expertSep.Location = new System.Drawing.Point(3, 560);
-            this.expertSep.Name = "expertSep";
-            this.expertSep.Size = new System.Drawing.Size(198, 2);
-            this.expertSep.TabIndex = 16;
-            this.expertSep.Text = "label4";
-            // 
-            // expertControl
-            // 
-            this.expertControl.AutoSize = true;
-            this.expertControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.expertControl.Location = new System.Drawing.Point(3, 565);
-            this.expertControl.Name = "expertControl";
-            this.expertControl.Size = new System.Drawing.Size(194, 101);
-            this.expertControl.TabIndex = 17;
-            this.expertControl.Value = null;
-            this.expertControl.ValueChanged += new System.EventHandler(this.expertControl_ValueChanged);
-            // 
             // ChannelView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -327,8 +301,6 @@
         private Signals.GateView gateView;
         private System.Windows.Forms.Label levelSep;
         private KLib.Controls.EnumDropDown destinationDropDown;
-        private System.Windows.Forms.Label expertSep;
-        private Signals.ChannelAdvancedControl expertControl;
         private System.Windows.Forms.Panel modalityPanel;
         private KLib.Controls.EnumDropDown modalityDropDown;
         private System.Windows.Forms.Label label1;

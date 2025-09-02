@@ -52,18 +52,6 @@ namespace KLib.Unity.Controls.Signals
             if (_chan != null) levelView.SetMaxLevel(_chan.GetMaxLevel());
         }
 
-        public bool AllowExpertOptions
-        {
-            get { return _allowExpert; }
-            set
-            {
-                _allowExpert = value;
-                expertSep.Visible = value;
-                expertControl.Visible = value;
-                SetContextDependentLevelReferences(Waveshape.None);
-            }
-        }
-
         public void UpdateParameters()
         {
             ShowChannel(Value);
@@ -110,8 +98,6 @@ namespace KLib.Unity.Controls.Signals
                 SetContextDependentLevelUnits(ch.Modality);
                 levelView.Value = ch.level;
                 //levelView.SetMaxLevel(ch.GetMaxLevel());
-
-                expertControl.Value = ch;
 
                 ShowModGateLevel(true);
                 EnableBinauralProperties();
@@ -165,9 +151,6 @@ namespace KLib.Unity.Controls.Signals
 
             levelSep.Visible = show;
             levelView.Visible = show;
-
-            expertSep.Visible = show && _allowExpert;
-            expertControl.Visible = show && _allowExpert;
         }
 
         private void SetContextDependentLevelUnits(Modality modality)

@@ -99,12 +99,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChannelAdvancedControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ChannelAdvancedControl.designer.cs">
-      <DependentUpon>ChannelAdvancedControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="ChannelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -180,9 +174,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ChannelAdvancedControl.resx">
-      <DependentUpon>ChannelAdvancedControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ChannelView.resx">
       <DependentUpon>ChannelView.cs</DependentUpon>
     </EmbeddedResource>

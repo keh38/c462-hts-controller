@@ -193,7 +193,6 @@
             // channelView
             // 
             this.channelView.AdapterMap = null;
-            this.channelView.AllowExpertOptions = false;
             this.channelView.AutoScroll = true;
             this.channelView.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.channelView.Location = new System.Drawing.Point(176, 9);
