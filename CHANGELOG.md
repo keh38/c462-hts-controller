@@ -1,6 +1,6 @@
 ## Changelog
 
-### v1.4 (unreleased)
+### v1.4 (2025-09-15)
 #### Removed
 - advanced channel options (intramural variables)
 
