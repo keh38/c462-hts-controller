@@ -12,13 +12,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using KLib;
-using Audiograms;
-using LDL;
+//using Audiograms;
+//using Bekesy;
+//using LDL;
 
+using HTS.Serialization;
 using HTSController.Data_Streams;
 
 using Serilog;
-using Bekesy;
 using System.Timers;
 
 namespace HTSController
@@ -37,7 +38,7 @@ namespace HTSController
         bool _autoRun = false;
         Watchdog _watchdog;
 
-        BasicMeasurementConfiguration _config;
+        HTS.Serialization.BasicMeasurementConfiguration _config;
 
         #region EVENTS
         public event EventHandler<AutoRunEndEventArgs> AutoRunEnd;
@@ -126,7 +127,7 @@ namespace HTSController
             var configPath = FileLocations.GetConfigFile(_measType, _configName);
             if (File.Exists(configPath))
             {
-                var obj = KFile.XmlDeserialize<BasicMeasurementConfiguration>(configPath);
+                var obj = KFile.XmlDeserialize<HTS.Serialization.BasicMeasurementConfiguration>(configPath);
                 switch (_measType)
                 {
                     case "Audiogram":
@@ -142,7 +143,7 @@ namespace HTSController
                         break;
 
                     case "Questionnaire":
-                        _config = obj as Questionnaires.Questionnaire;
+                        _config = obj as HTS.Serialization.Questionnaires.Questionnaire;
                         break;
                 }
             }
@@ -426,9 +427,9 @@ namespace HTSController
                 _network.SendMessage($"TransferFile:Config Files:{Path.GetFileName(fn)}:{File.ReadAllText(fn)}");
             }
         }
-        private BasicMeasurementConfiguration AddNewConfiguration(string measType)
+        private HTS.Serialization.BasicMeasurementConfiguration AddNewConfiguration(string measType)
         {
-            var config = new BasicMeasurementConfiguration();
+            var config = new HTS.Serialization.BasicMeasurementConfiguration();
             switch (measType)
             {
                 case "Audiogram":
@@ -444,7 +445,7 @@ namespace HTSController
                     break;
 
                 case "Questionnaire":
-                    config = new Questionnaires.Questionnaire();
+                    config = new HTS.Serialization.Questionnaires.Questionnaire();
                     break;
             }
             return config;
