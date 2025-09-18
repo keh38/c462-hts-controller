@@ -180,32 +180,6 @@
       <DependentUpon>DataStreamIndicator.cs</DependentUpon>
     </Compile>
     <Compile Include="Events.cs" />
-    <Compile Include="HTS\Serialization\Basic\Audiograms\AudiogramMeasurementSettings.cs" />
-    <Compile Include="HTS\Serialization\Basic\BasicMeasurementConfiguration.cs" />
-    <Compile Include="HTS\Serialization\Basic\Bekesy\BekesyMeasurementSettings.cs" />
-    <Compile Include="HTS\Serialization\Basic\LDL\LDL.HapticStimulus.cs" />
-    <Compile Include="HTS\Serialization\Basic\LDL\LDLMeasurementSettings.cs" />
-    <Compile Include="HTS\Serialization\Basic\Questionnaires\Questionnaires.Question.cs" />
-    <Compile Include="HTS\Serialization\Basic\Questionnaires\Questionnaires.Questionnaire.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\Channel.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\Enumerations.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\Gate.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\Level.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\Modulations\AM.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\Modulations\AMFactory.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\Modulations\SinusoidalAM.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\SignalManager.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\TypeConverters\AMConverter.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\TypeConverters\ChannelConverter.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\TypeConverters\GateConverter.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\TypeConverters\LevelUnitsConverters.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\TypeConverters\SortableExpandableObjectConverter.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\TypeConverters\SortableTypeConverter.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\TypeConverters\WaveformConverter.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\Waveforms\Noise.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\Waveforms\Sinusoid.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\Waveforms\Waveform.cs" />
-    <Compile Include="HTS\Serialization\KLib\Signals\Waveforms\WaveformFactory.cs" />
     <Compile Include="Interactive\ChannelControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -265,6 +239,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="PropertySorter.cs" />
     <Compile Include="PupillometryForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -369,9 +344,7 @@
   <ItemGroup>
     <Content Include="Revision_History.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="HTS\Serialization\KLib\TypeConverters\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" ("C:\Program Files (x86)\Inno Setup 6\Compil32.exe" /cc "$(SolutionDir)Installer\HTS Controller.iss")</PostBuildEvent>
