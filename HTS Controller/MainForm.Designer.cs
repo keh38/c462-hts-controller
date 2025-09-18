@@ -47,7 +47,9 @@
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.subjectPage = new System.Windows.Forms.TabPage();
+            this.subjectPageControl = new HTSController.Pages.SubjectPage();
             this.turandotSettingsPage = new System.Windows.Forms.TabPage();
+            this.turandotPageControl = new HTSController.Pages.TurandotPage();
             this.messagePage = new System.Windows.Forms.TabPage();
             this.runTurandotPage = new System.Windows.Forms.TabPage();
             this.adminPage = new System.Windows.Forms.TabPage();
@@ -62,10 +64,8 @@
             this.ipcPanel = new System.Windows.Forms.Panel();
             this.ipcLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.connectionTimer = new System.Windows.Forms.Timer(this.components);
-            this.subjectPageControl = new HTSController.Pages.SubjectPage();
-            this.turandotPageControl = new HTSController.Pages.TurandotPage();
             this.protocolControl = new HTSController.Pages.ProtocolControl();
+            this.connectionTimer = new System.Windows.Forms.Timer(this.components);
             this.statusStrip.SuspendLayout();
             this.menuPanel.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
@@ -372,6 +372,19 @@
             this.subjectPage.Text = "tabPage1";
             this.subjectPage.UseVisualStyleBackColor = true;
             // 
+            // subjectPageControl
+            // 
+            this.subjectPageControl.AutoSize = true;
+            this.subjectPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.subjectPageControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.subjectPageControl.Location = new System.Drawing.Point(3, 3);
+            this.subjectPageControl.Margin = new System.Windows.Forms.Padding(4);
+            this.subjectPageControl.Name = "subjectPageControl";
+            this.subjectPageControl.OnProjectChanged = null;
+            this.subjectPageControl.Size = new System.Drawing.Size(354, 484);
+            this.subjectPageControl.TabIndex = 0;
+            this.subjectPageControl.ValueChanged += new System.EventHandler(this.subjectPageControl_ValueChanged);
+            // 
             // turandotSettingsPage
             // 
             this.turandotSettingsPage.Controls.Add(this.turandotPageControl);
@@ -382,6 +395,17 @@
             this.turandotSettingsPage.TabIndex = 1;
             this.turandotSettingsPage.Text = "tabPage2";
             this.turandotSettingsPage.UseVisualStyleBackColor = true;
+            // 
+            // turandotPageControl
+            // 
+            this.turandotPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.turandotPageControl.Location = new System.Drawing.Point(6, 3);
+            this.turandotPageControl.Margin = new System.Windows.Forms.Padding(4);
+            this.turandotPageControl.Name = "turandotPageControl";
+            this.turandotPageControl.Size = new System.Drawing.Size(357, 331);
+            this.turandotPageControl.TabIndex = 0;
+            this.turandotPageControl.StartInteractiveClick += new System.EventHandler<string>(this.turandotPageControl_InteractiveClick);
+            this.turandotPageControl.StartTurandotClick += new System.EventHandler<string>(this.turandotPageControl_StartTurandotClick);
             // 
             // messagePage
             // 
@@ -547,35 +571,6 @@
             this.label1.Text = "Data streams";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // connectionTimer
-            // 
-            this.connectionTimer.Interval = 1000;
-            this.connectionTimer.Tick += new System.EventHandler(this.connectionTimer_Tick);
-            // 
-            // subjectPageControl
-            // 
-            this.subjectPageControl.AutoSize = true;
-            this.subjectPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.subjectPageControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subjectPageControl.Location = new System.Drawing.Point(3, 3);
-            this.subjectPageControl.Margin = new System.Windows.Forms.Padding(4);
-            this.subjectPageControl.Name = "subjectPageControl";
-            this.subjectPageControl.OnProjectChanged = null;
-            this.subjectPageControl.Size = new System.Drawing.Size(354, 484);
-            this.subjectPageControl.TabIndex = 0;
-            this.subjectPageControl.ValueChanged += new System.EventHandler(this.subjectPageControl_ValueChanged);
-            // 
-            // turandotPageControl
-            // 
-            this.turandotPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.turandotPageControl.Location = new System.Drawing.Point(6, 3);
-            this.turandotPageControl.Margin = new System.Windows.Forms.Padding(4);
-            this.turandotPageControl.Name = "turandotPageControl";
-            this.turandotPageControl.Size = new System.Drawing.Size(357, 331);
-            this.turandotPageControl.TabIndex = 0;
-            this.turandotPageControl.StartInteractiveClick += new System.EventHandler<string>(this.turandotPageControl_InteractiveClick);
-            this.turandotPageControl.StartTurandotClick += new System.EventHandler<string>(this.turandotPageControl_StartTurandotClick);
-            // 
             // protocolControl
             // 
             this.protocolControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -586,6 +581,11 @@
             this.protocolControl.TabIndex = 8;
             this.protocolControl.AdvanceProtocol += new System.EventHandler<HTSController.Pages.ProtocolControl.ProtocolItem>(this.protocolControl_AdvanceProtocol);
             this.protocolControl.ProtocolStateChange += new System.EventHandler<HTSController.Pages.ProtocolControl.ProtocolStateChangeEventArgs>(this.protocolControl_ProtocolStateChange);
+            // 
+            // connectionTimer
+            // 
+            this.connectionTimer.Interval = 1000;
+            this.connectionTimer.Tick += new System.EventHandler(this.connectionTimer_Tick);
             // 
             // MainForm
             // 
