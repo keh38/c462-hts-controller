@@ -63,8 +63,6 @@ namespace HTSController
             InitializeComponent();
 
             KLib.Controls.Utilities.SetCueBanner(newDropDown.Handle, "New...");
-
-
         }
 
         public void Initialize()
@@ -451,5 +449,9 @@ namespace HTSController
             return config;
         }
 
+        private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            propertyGrid.Refresh();
+        }
     }
 }
