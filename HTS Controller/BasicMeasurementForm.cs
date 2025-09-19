@@ -64,6 +64,7 @@ namespace HTSController
 
             KLib.Controls.Utilities.SetCueBanner(newDropDown.Handle, "New...");
 
+
         }
 
         public void Initialize()
