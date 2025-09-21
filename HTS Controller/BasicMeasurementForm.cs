@@ -32,6 +32,7 @@ namespace HTSController
 
         private string _measType;
         private string _configName;
+        private string _sceneName;
 
         bool _runAborted = false;
         bool _ignoreEvents = false;
@@ -187,7 +188,8 @@ namespace HTSController
 
             logTextBox.Text = $"Starting {_measType} measurement...";
             Log.Information($"Starting  {_measType}.{_configName} measurement...");
-            var success = await ChangeTabletScene(_measType);
+            _sceneName = GetSceneName(_measType, _config);
+            var success = await ChangeTabletScene(_sceneName);
             
             if (!success)
             {
@@ -234,12 +236,23 @@ namespace HTSController
             }
             else
             {
-                logTextBox.AppendText($"didn't receive data file name from {_measType} scene");
-                Log.Error($"didn't receive data file name from {_measType} scene");
+                logTextBox.AppendText($"didn't receive data file name from {_sceneName} scene");
+                Log.Error($"didn't receive data file name from {_sceneName} scene");
                 EnableButtons(true);
                 _network.SendMessage($"StopSynchronizing");
                 EndAutoRun(false, null);
             }
+        }
+
+        private string GetSceneName(string measType, BasicMeasurementConfiguration config)
+        {
+            string sceneName = measType;
+            if (measType == "LDL" && (config as LDLMeasurementSettings).HapticStimulus.Source != HapticSource.NONE)
+            {
+                sceneName = "LDL_Haptics";
+            }
+
+            return sceneName;
         }
 
         private async Task<bool> ChangeTabletScene(string sceneName)
@@ -330,7 +343,7 @@ namespace HTSController
             if (parts.Length < 2) return;
 
             string target = parts[0];
-            if (!target.Equals(_measType)) return;
+            if (!target.Equals(_sceneName)) return;
 
             string command = parts[1];
             string info = (parts.Length > 2) ? parts[2] : "";
