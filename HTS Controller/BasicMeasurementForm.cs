@@ -15,7 +15,9 @@ using KLib;
 using BasicMeasurements;
 using Audiograms;
 using Bekesy;
+
 using LDL;
+using LDL.Haptics;
 
 using HTSController.Data_Streams;
 
@@ -187,7 +189,7 @@ namespace HTSController
             EnableButtons(false);
 
             logTextBox.Text = $"Starting {_measType} measurement...";
-            Log.Information($"Starting  {_measType}.{_configName} measurement...");
+            Log.Information($"Starting {_measType}.{_configName} measurement...");
             _sceneName = GetSceneName(_measType, _config);
             var success = await ChangeTabletScene(_sceneName);
             
@@ -276,7 +278,8 @@ namespace HTSController
 
         private void InitializeRemoteMeasurement()
         {
-            _network.SendMessage($"Initialize:{KFile.ToXMLString(_config)}");
+            //Log.Information("initializing remote measurement");
+            var result = _network.SendMessage($"Initialize:{KFile.ToXMLString(_config)}");
 
             // wait for file name to get sent back
             var startTime = DateTime.Now;
