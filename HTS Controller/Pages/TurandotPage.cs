@@ -163,7 +163,7 @@ namespace HTSController.Pages
             }
 
 #if DEBUG
-            string editorFolder = @"D:\Development\C462\c462-turandot-editor\Turandot Editor\bin\Debug";
+            string editorFolder = @"D:\Development\C462\c462-turandot-editor\Turandot Editor\bin\x64\Debug";
             if (!Directory.Exists(editorFolder))
             {
                 editorFolder = "C" + editorFolder.Substring(1);

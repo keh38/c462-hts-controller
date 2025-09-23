@@ -81,6 +81,9 @@ namespace HTSController
             _network = new HTSNetwork();
             _network.RemoteMessageHandler += OnRemoteMessage;
 
+            FileLocations.SetDataDrive(HTSControllerSettings.DataDrive);
+            FileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
+
             turandotPageControl.Initialize(_network);
             subjectPageControl.Initialize(_network);
             protocolControl.Initialize(_network);
@@ -106,8 +109,6 @@ namespace HTSController
             driveDropDown.SelectedItem = HTSControllerSettings.DataDrive;
             projectRootBrowser.Value = HTSControllerSettings.ProjectRootFolder;
             _ignoreEvents = false;
-            FileLocations.SetDataDrive(HTSControllerSettings.DataDrive);
-            FileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
         }
 
         private async void MainForm_Shown(object sender, EventArgs e)
