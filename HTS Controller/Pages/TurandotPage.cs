@@ -14,6 +14,7 @@ using Microsoft.Win32;
 using Serilog;
 
 using KLib.Controls;
+using KLib;
 
 namespace HTSController.Pages
 {
@@ -62,7 +63,7 @@ namespace HTSController.Pages
 
         public void NetworkStatusChanged()
         {
-            EnableButtons();
+            EnableControls();
         }
 
         public void SetFileType(string fileType)
@@ -79,15 +80,20 @@ namespace HTSController.Pages
             var index = _settings.IndexOf(last);
             listBox.SelectedIndex = index;
 
-            EnableButtons();
+            EnableControls();
         }
 
-        private void EnableButtons()
+        private void EnableControls()
         {
             string fileType = fileTypeDropDown.SelectedItem?.ToString();
             startButton.Enabled = true;// _network.IsConnected || fileType.Equals("Interactive");
             copyButton.Enabled = _network.IsConnected;
             editButton.Visible = fileType != null && fileType.Equals("Turandot");
+
+            bool isScript = fileType != null && fileType.Equals("TScript");
+            propertyGrid.Visible = isScript;
+            newButton.Visible = isScript;
+            saveButton.Visible = isScript;
         }
 
         private void startButton_Click(object sender, EventArgs e)
@@ -103,6 +109,10 @@ namespace HTSController.Pages
             else if (fileType.Equals("Turandot"))
             {
                 OnStartTurandotClick(settingsPath);
+            }
+            else if (fileType.Equals("TScript"))
+            {
+                ApplyScript();
             }
         }
 
@@ -203,6 +213,38 @@ namespace HTSController.Pages
         {
             messageTimer.Stop();
             messageLabel.Visible = false;
+        }
+
+        private void listBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (fileTypeDropDown.SelectedItem.ToString().Equals("TScript"))
+            {
+                var script = KFile.XmlDeserialize<Turandot.Schedules.Script>(_settings[listBox.SelectedIndex]);
+                propertyGrid.SelectedObject = script;
+            }
+        }
+
+        private void newButton_Click(object sender, EventArgs e)
+        {
+            var script = new Turandot.Schedules.Script();
+            propertyGrid.SelectedObject = script;
+        }
+
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            Turandot.Schedules.Script script = propertyGrid.SelectedObject as Turandot.Schedules.Script;
+            string filepath = Path.Combine(FileLocations.ConfigFolder, $"TScript.{script.Name}.xml");
+            KFile.XmlSerialize(script, filepath);
+
+            HTSControllerSettings.SetLastUsed("TScript", filepath);
+            SetFileType("TScript");
+        }
+
+        private void ApplyScript()
+        {
+            Turandot.Schedules.Script script = propertyGrid.SelectedObject as Turandot.Schedules.Script;
+            script.Apply(FileLocations.ProtocolFolder);
+            ShowMessage("Created protocol files");
         }
     }
 }

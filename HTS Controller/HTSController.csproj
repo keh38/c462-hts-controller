@@ -64,7 +64,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="KLib, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\KLib.1.0.1\lib\net48\KLib.dll</HintPath>
+      <HintPath>..\packages\KLib.1.2.0\lib\net48\KLib.dll</HintPath>
     </Reference>
     <Reference Include="KLib.Controls">
       <HintPath>..\..\..\klib\Framework\KLib.Controls.dll</HintPath>
