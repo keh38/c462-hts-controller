@@ -96,6 +96,7 @@ namespace HTSController
 //            SelectTab(null);
 
             subjectPageControl.Initialize(_network);
+            fileSyncControl.Initialize(_network);
 
             driveDropDown.Items.Clear();
             foreach (var di in DriveInfo.GetDrives())
@@ -380,6 +381,7 @@ namespace HTSController
         {
             if (!_ignoreEvents)
             {
+                //fileSyncControl.Enabled = _network.IsConnected;
                 SelectTab(sender as CheckBox);
             }
         }

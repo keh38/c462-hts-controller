@@ -1,5 +1,15 @@
 ## Changelog
 
+### v1.5 (unreleased)
+#### Added
+- Turandot:
+  - restored modified script functionality
+- Admin:
+  - sync resources
+  - update app
+  
+---
+
 ### v1.4 (2025-09-15)
 #### Removed
 - advanced channel options (intramural variables)

@@ -31,7 +31,6 @@ namespace HTSController.Pages
         public delegate void ProjectChangedDelegate(string projectName);
         public ProjectChangedDelegate OnProjectChanged { get; set; }
 
-
         public SubjectPage()
         {
             InitializeComponent();

@@ -18,6 +18,7 @@ using SerilogTraceListener;
 
 using KLib;
 using KLib.Net;
+using UnityEngine;
 
 namespace HTSController
 {
@@ -109,6 +110,40 @@ namespace HTSController
             }
 
             return data;
+        }
+
+        public async Task<bool> SendBufferedFile(string localPath, string remotePath)
+        {
+            int bufferSize = 16384;
+
+            var fileInfo = new FileInfo(localPath);
+
+            long numBuffers = (long)Math.Ceiling((double)fileInfo.Length / bufferSize);
+
+            KTcpClient client = new KTcpClient();
+            client.Connect(_ipEndPoint);
+
+            client.StartBufferedSend();
+            var result = client.SendBuffer($"ReceiveBufferedFile:{remotePath}:{bufferSize}:{numBuffers}");
+            if (result <= 0)
+            {
+                return false;
+            }
+
+            using (FileStream fs = new FileStream(localPath, FileMode.Open, FileAccess.Read))
+            using (BinaryReader reader = new BinaryReader(fs))
+            {
+                for (int k = 0; k < numBuffers; k++)
+                {
+                    var bytes = reader.ReadBytes(bufferSize);
+                    result = client.SendBuffer(bytes);
+                }
+            }
+
+            client.EndBufferedSend();
+            client.Close();
+
+            return true;
         }
 
         private bool Discover()

@@ -12,7 +12,8 @@ namespace HTSController
         public static string DataDrive { get; private set; } = @"C:\";
         public static readonly string RootFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS");
         public static string ProjectRootFolder { get; private set; } = Path.Combine(RootFolder, "Projects");
-        public static string ConfigFolder { get { return Path.Combine(ProjectRootFolder, Project, "Resources", "Config Files"); } }
+        public static string ResourcesFolder { get { return Path.Combine(ProjectRootFolder, Project, "Resources"); } }
+        public static string ConfigFolder { get { return Path.Combine(ResourcesFolder, "Config Files"); } }
         public static string ProtocolFolder { get { return Path.Combine(ProjectRootFolder, Project, "Resources", "Protocols"); } }
         private static string MATLABFolder { get { return Path.Combine(ProjectRootFolder, Project, "Resources", "MATLAB"); } }
 
