@@ -14,6 +14,7 @@ using Serilog;
 using KLib.Controls;
 
 using MathWorks.MATLAB.Types;
+using System.IO;
 //using UnityEngine;
 
 namespace HTSController.Pages
@@ -159,6 +160,7 @@ namespace HTSController.Pages
             transducerDropDown.SelectedIndex = itransducer;
             ShowMetrics();
             SendMetricsToEditor();
+            SendSubjectFolderToEditor();
 
             if (MATLAB.IsInitialized)
             {
@@ -272,6 +274,15 @@ namespace HTSController.Pages
             }
         }
 
+        private void SendSubjectFolderToEditor()
+        {
+            var ip = KLib.Net.Discovery.Discover("TURANDOT.EDITOR");
+            if (ip != null)
+            {
+                KLib.Net.KTcpClient.SendMessage(ip, $"SetSubjectFolder:{FileLocations.SubjectDataFolder}");
+            }
+        }
+
         private void SendMetricsToEditor()
         {
             var ip = KLib.Net.Discovery.Discover("TURANDOT.EDITOR");
@@ -279,7 +290,6 @@ namespace HTSController.Pages
             {
                 KLib.Net.KTcpClient.SendMessage(ip, $"SetMetrics:{KLib.KFile.ToXMLString(_subjectMetadata.metrics)}");
             }
-
         }
 
         private void metricGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
