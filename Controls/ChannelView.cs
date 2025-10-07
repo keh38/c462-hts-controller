@@ -157,7 +157,7 @@ namespace KLib.Unity.Controls.Signals
         {
             if (modality == Modality.Audio)
             {
-                levelView.SetAllowableUnits(LevelUnits.dB_attenuation, LevelUnits.dB_SPL, LevelUnits.dB_Vrms, LevelUnits.dB_SL, LevelUnits.PercentDR);
+                levelView.SetAllowableUnits(LevelUnits.dB_attenuation, LevelUnits.dB_SPL, LevelUnits.dB_Vrms, LevelUnits.dB_SL);
             }
             else if (modality == Modality.Haptic)
             {
