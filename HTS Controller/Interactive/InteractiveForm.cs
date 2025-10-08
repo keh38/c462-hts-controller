@@ -20,6 +20,7 @@ using KLib.Signals.Waveforms;
 using KLib;
 
 using Turandot.Interactive;
+using Bekesy;
 
 namespace HTSController
 {
@@ -353,6 +354,8 @@ namespace HTSController
 
                 npts = (int)(_plotSampleRate * T);
 
+//                KLib.Signals.Calibration.CalibrationFactory.AudiogramFolder = Path.Combine(FileLocations.SubjectDataFolder, "meta");
+                KLib.Signals.Calibration.CalibrationFactory.AudiogramFolder = @"D:\Data\_Test\meta";
                 sigman.Initialize(_plotSampleRate, npts);
                 channelView.UpdateMaxLevel();
 
