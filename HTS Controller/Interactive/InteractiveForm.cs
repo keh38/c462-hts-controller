@@ -354,8 +354,14 @@ namespace HTSController
 
                 npts = (int)(_plotSampleRate * T);
 
-//                KLib.Signals.Calibration.CalibrationFactory.AudiogramFolder = Path.Combine(FileLocations.SubjectDataFolder, "meta");
-                KLib.Signals.Calibration.CalibrationFactory.AudiogramFolder = @"D:\Data\_Test\meta";
+                if (!string.IsNullOrEmpty(FileLocations.SubjectDataFolder))
+                {
+                    KLib.Signals.Calibration.CalibrationFactory.AudiogramFolder = Path.Combine(FileLocations.SubjectDataFolder, "meta");
+                }
+                else
+                {
+                    KLib.Signals.Calibration.CalibrationFactory.AudiogramFolder = Path.Combine(FileLocations.RootFolder, "Calibrations");
+                }
                 sigman.Initialize(_plotSampleRate, npts);
                 channelView.UpdateMaxLevel();
 
