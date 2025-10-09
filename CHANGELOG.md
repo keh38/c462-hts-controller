@@ -4,6 +4,8 @@
 #### Added
 - Turandot:
   - restored modified script functionality
+- Basic measurements
+  - Added LDL with haptics
 - Admin:
   - sync resources
   - update app
