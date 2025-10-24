@@ -1,5 +1,11 @@
 ## Changelog
 
+### v1.5.1 (2025-10-24)
+#### Fixed
+- Protocol: fixed error reading history
+
+---
+
 ### v1.5 (2025-10-14)
 #### Added
 - Turandot:
