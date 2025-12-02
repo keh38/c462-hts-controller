@@ -31,6 +31,7 @@ namespace HTSController
 
         private bool _autoRun;
         Watchdog _watchdog;
+        private bool _runAborted;
 
         #region EVENTS
         public event EventHandler<AutoRunEndEventArgs> AutoRunEnd;
@@ -80,6 +81,7 @@ namespace HTSController
             startButton.Enabled = false;
             closeButton.Visible = false;
 
+            _runAborted = false;
             dataFileTextBox.Text = "";
             progressBar.Value = 0;
             await Task.Run(() => InitializeTurandot());
@@ -185,7 +187,7 @@ namespace HTSController
             progressBar.Value = 0;
             _streamManager.RestartStatusTimer();
 
-            EndAutoRun(success: !message.Equals("Error"), dataFile: _dataFile);
+            EndAutoRun(success: !_runAborted && !message.Equals("Error"), dataFile: _dataFile);
         }
 
         private void EndAutoRun(bool success, string dataFile)
@@ -247,6 +249,7 @@ namespace HTSController
         private void stopButton_Click(object sender, EventArgs e)
         {
             stopButton.Enabled = false;
+            _runAborted = true;
             if (_network.CheckConnection())
             {
                 _network.SendMessage("Abort");

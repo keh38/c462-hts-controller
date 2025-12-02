@@ -233,6 +233,7 @@ namespace HTSController.Pages
                 _historyPath = Path.Combine(
                     FileLocations.SubjectDataFolder,
                     $"{FileLocations.Subject}-{name}-History-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.json");
+                KLib.KFile.JSONSerialize(_history, _historyPath);
             }
 
 
@@ -390,6 +391,10 @@ namespace HTSController.Pages
             }
             else
             {
+                if (_state == ProtocolState.WaitingForUser)
+                {
+                    _network.SendMessage("Abort:");
+                }
                 _state = ProtocolState.Stopped;
                 statusTextBox.Text = string.IsNullOrEmpty(message) ? "Stopped" : message;
             }
