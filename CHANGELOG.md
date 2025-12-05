@@ -6,6 +6,8 @@
 #### Added
 - ability to resume Turandot measurements
 
+---
+
 ### v1.5.1 (2025-10-24)
 #### Fixed
 - Protocol: fixed error reading history
