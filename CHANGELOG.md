@@ -1,10 +1,11 @@
 ## Changelog
 
-### v1.6 (unreleased)
+### v1.6 (2025-12-15)
 #### Fixed
 - cleaned up logic with aborted protocol
 #### Added
 - ability to resume Turandot measurements
+- interactive Digitimer pulse width control
 
 ---
 
