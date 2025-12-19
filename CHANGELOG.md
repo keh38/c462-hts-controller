@@ -1,5 +1,11 @@
 ## Changelog
 
+### v1.6.1 (unreleased)
+#### Fixed
+- pupillometry: wait for .edf file to be readable
+
+---
+
 ### v1.6 (2025-12-15)
 #### Fixed
 - cleaned up logic with aborted protocol

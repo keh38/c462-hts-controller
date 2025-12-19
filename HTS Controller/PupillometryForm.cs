@@ -362,7 +362,6 @@ namespace HTSController
         private async Task<bool> WaitForEyeLinkData(string fn)
         {
             bool success = false;
-            long lastLength = -1;
 
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 10)
@@ -370,16 +369,36 @@ namespace HTSController
                 await Task.Delay(200);
                 if (File.Exists(fn))
                 {
-                    var length = new FileInfo(fn).Length;
-                    if (length == lastLength)
+                    if (!IsFileLocked(new FileInfo(fn)))
                     {
-                        success = true;
                         break;
                     }
-                    lastLength = length;
                 }
             }
             return success;
+        }
+
+        public static bool IsFileLocked(FileInfo file)
+        {
+            FileStream stream = null;
+            try
+            {
+                // Try to open the file for exclusive access
+                stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            }
+            catch (IOException)
+            {
+                // If an IOException occurs, the file is locked
+                return true;
+            }
+            finally
+            {
+                // Close the stream if it was successfully opened
+                if (stream != null)
+                    stream.Close();
+            }
+            // File is not locked
+            return false;
         }
 
         private void OnRemoteMessage(object sender, string message)
