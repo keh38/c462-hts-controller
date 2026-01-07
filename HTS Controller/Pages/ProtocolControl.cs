@@ -302,7 +302,7 @@ namespace HTSController.Pages
             _state = ProtocolState.TestInProgress;
             statusTextBox.Text = "Running...";
             var nextTest = _history.Data[_nextTestIndex];
-            OnAdvanceProtocol(new ProtocolItem(nextTest.Scene, nextTest.Settings));
+            OnAdvanceProtocol(new ProtocolItem(nextTest.Scene, nextTest.Settings, _protocol.Tests[_nextTestIndex].Instructions));
         }
 
         public async void TestFinished(bool success, string dataFile)
@@ -410,10 +410,12 @@ namespace HTSController.Pages
         {
             public string sceneName;
             public string settingsFile;
-            public ProtocolItem(string sceneName, string settingsFile)
+            public string instructions;
+            public ProtocolItem(string sceneName, string settingsFile, string instructions="")
             {
                 this.sceneName = sceneName;
                 this.settingsFile = settingsFile;
+                this.instructions = instructions;
             }
         }
 

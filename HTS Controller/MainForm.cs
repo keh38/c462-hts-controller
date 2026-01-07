@@ -21,6 +21,7 @@ using KLib.Net;
 
 using HTSController.Data_Streams;
 using System.Runtime.CompilerServices;
+using Markdig;
 
 namespace HTSController
 {
@@ -479,6 +480,10 @@ namespace HTSController
                     pupilButton.Checked = true;
                     _pupilForm.AutoRunGazeCalibration();
                     break;
+                case "Investigator":
+                    MarkdownDialog.ShowMarkdownDialog(e.instructions);
+                    protocolControl.TestFinished(success: true, dataFile:null);
+                    break;
                 case "Turandot":
                     turandotButton.Checked = true;
                     turandotPageControl_StartTurandotClick(this, Path.Combine(FileLocations.ConfigFolder, $"Turandot.{e.settingsFile}.xml"));
@@ -530,5 +535,5 @@ namespace HTSController
             }
         }
 
-    }
+}
 }

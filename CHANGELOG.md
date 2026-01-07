@@ -1,6 +1,8 @@
 ## Changelog
 
-### v1.6.1 (unreleased)
+### v1.7 (unreleased)
+#### Added
+- Protocol: "Investigator" scene option to display prompt/instructions to investigator before proceeding
 #### Fixed
 - pupillometry: wait for .edf file to be readable
 
