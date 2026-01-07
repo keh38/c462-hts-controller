@@ -126,7 +126,7 @@
             // RemoveButton
             // 
             this.RemoveButton.Location = new System.Drawing.Point(380, 411);
-            this.RemoveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.RemoveButton.Margin = new System.Windows.Forms.Padding(2);
             this.RemoveButton.Name = "RemoveButton";
             this.RemoveButton.Size = new System.Drawing.Size(56, 21);
             this.RemoveButton.TabIndex = 25;
@@ -137,7 +137,7 @@
             // TransferButton
             // 
             this.TransferButton.Location = new System.Drawing.Point(438, 411);
-            this.TransferButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TransferButton.Margin = new System.Windows.Forms.Padding(2);
             this.TransferButton.Name = "TransferButton";
             this.TransferButton.Size = new System.Drawing.Size(56, 21);
             this.TransferButton.TabIndex = 26;
@@ -148,7 +148,7 @@
             // SaveButton
             // 
             this.SaveButton.Location = new System.Drawing.Point(319, 411);
-            this.SaveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.SaveButton.Margin = new System.Windows.Forms.Padding(2);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(56, 21);
             this.SaveButton.TabIndex = 27;
@@ -163,10 +163,11 @@
             this.newDropDown.Items.AddRange(new object[] {
             "Audiogram",
             "Bekesy",
+            "Digits",
             "LDL",
             "Questionnaire"});
             this.newDropDown.Location = new System.Drawing.Point(233, 411);
-            this.newDropDown.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.newDropDown.Margin = new System.Windows.Forms.Padding(2);
             this.newDropDown.Name = "newDropDown";
             this.newDropDown.Size = new System.Drawing.Size(82, 21);
             this.newDropDown.TabIndex = 28;

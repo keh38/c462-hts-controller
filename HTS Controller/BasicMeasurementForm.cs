@@ -15,6 +15,7 @@ using KLib;
 using BasicMeasurements;
 using Audiograms;
 using Bekesy;
+using DigitsTest;
 
 using LDL;
 using LDL.Haptics;
@@ -88,7 +89,7 @@ namespace HTSController
         private void UpdateFileMenu()
         {
             msSelectMeasurement.DropDownItems.Clear();
-            foreach (var measType in new List<string>() { "Audiogram", "Bekesy", "LDL", "Questionnaire" })
+            foreach (var measType in new List<string>() { "Audiogram", "Bekesy", "Digits", "LDL", "Questionnaire" })
             {
                 var measItem = new ToolStripMenuItem();
                 measItem.Text = measType;
@@ -137,6 +138,10 @@ namespace HTSController
 
                     case "Bekesy":
                         _config = obj as BekesyMeasurementSettings;
+                        break;
+
+                    case "Digits":
+                        _config = obj as DigitsTestSettings;
                         break;
 
                     case "LDL":
@@ -452,6 +457,10 @@ namespace HTSController
 
                 case "Bekesy":
                     config = new BekesyMeasurementSettings();
+                    break;
+
+                case "Digits":
+                    config = new DigitsTestSettings();
                     break;
 
                 case "LDL":

@@ -47,13 +47,10 @@
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.subjectPage = new System.Windows.Forms.TabPage();
-            this.subjectPageControl = new HTSController.Pages.SubjectPage();
             this.turandotSettingsPage = new System.Windows.Forms.TabPage();
-            this.turandotPageControl = new HTSController.Pages.TurandotPage();
             this.messagePage = new System.Windows.Forms.TabPage();
             this.runTurandotPage = new System.Windows.Forms.TabPage();
             this.adminPage = new System.Windows.Forms.TabPage();
-            this.fileSyncControl = new HTSController.Pages.FileSyncControl();
             this.label3 = new System.Windows.Forms.Label();
             this.projectRootBrowser = new KLib.Controls.FileBrowser();
             this.label2 = new System.Windows.Forms.Label();
@@ -65,8 +62,12 @@
             this.ipcPanel = new System.Windows.Forms.Panel();
             this.ipcLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.protocolControl = new HTSController.Pages.ProtocolControl();
             this.connectionTimer = new System.Windows.Forms.Timer(this.components);
+            this.speechButton = new System.Windows.Forms.CheckBox();
+            this.subjectPageControl = new HTSController.Pages.SubjectPage();
+            this.turandotPageControl = new HTSController.Pages.TurandotPage();
+            this.fileSyncControl = new HTSController.Pages.FileSyncControl();
+            this.protocolControl = new HTSController.Pages.ProtocolControl();
             this.statusStrip.SuspendLayout();
             this.menuPanel.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
@@ -130,6 +131,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.menuPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.menuPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.menuPanel.Controls.Add(this.speechButton);
             this.menuPanel.Controls.Add(this.basicButton);
             this.menuPanel.Controls.Add(this.lightsButton);
             this.menuPanel.Controls.Add(this.protocolButton);
@@ -156,7 +158,7 @@
             this.basicButton.ForeColor = System.Drawing.Color.Black;
             this.basicButton.Image = global::HTSController.Properties.Resources.graph;
             this.basicButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.basicButton.Location = new System.Drawing.Point(16, 94);
+            this.basicButton.Location = new System.Drawing.Point(14, 68);
             this.basicButton.Margin = new System.Windows.Forms.Padding(0);
             this.basicButton.Name = "basicButton";
             this.basicButton.Padding = new System.Windows.Forms.Padding(12, 0, 4, 0);
@@ -180,7 +182,7 @@
             this.lightsButton.ForeColor = System.Drawing.Color.Black;
             this.lightsButton.Image = global::HTSController.Properties.Resources.Light_24;
             this.lightsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lightsButton.Location = new System.Drawing.Point(16, 332);
+            this.lightsButton.Location = new System.Drawing.Point(14, 344);
             this.lightsButton.Margin = new System.Windows.Forms.Padding(0);
             this.lightsButton.Name = "lightsButton";
             this.lightsButton.Padding = new System.Windows.Forms.Padding(6, 0, 8, 0);
@@ -203,7 +205,7 @@
             this.protocolButton.ForeColor = System.Drawing.Color.Black;
             this.protocolButton.Image = global::HTSController.Properties.Resources.checklist_32;
             this.protocolButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.protocolButton.Location = new System.Drawing.Point(16, 263);
+            this.protocolButton.Location = new System.Drawing.Point(14, 270);
             this.protocolButton.Margin = new System.Windows.Forms.Padding(0);
             this.protocolButton.Name = "protocolButton";
             this.protocolButton.Padding = new System.Windows.Forms.Padding(12, 0, 4, 0);
@@ -227,7 +229,7 @@
             this.pupilButton.ForeColor = System.Drawing.Color.Black;
             this.pupilButton.Image = global::HTSController.Properties.Resources.eye_24;
             this.pupilButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.pupilButton.Location = new System.Drawing.Point(16, 180);
+            this.pupilButton.Location = new System.Drawing.Point(14, 197);
             this.pupilButton.Margin = new System.Windows.Forms.Padding(0);
             this.pupilButton.Name = "pupilButton";
             this.pupilButton.Padding = new System.Windows.Forms.Padding(12, 0, 4, 0);
@@ -251,7 +253,7 @@
             this.adminButton.ForeColor = System.Drawing.Color.Black;
             this.adminButton.Image = global::HTSController.Properties.Resources.Tools_24;
             this.adminButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.adminButton.Location = new System.Drawing.Point(12, 375);
+            this.adminButton.Location = new System.Drawing.Point(11, 387);
             this.adminButton.Margin = new System.Windows.Forms.Padding(0);
             this.adminButton.Name = "adminButton";
             this.adminButton.Padding = new System.Windows.Forms.Padding(12, 0, 8, 0);
@@ -266,7 +268,7 @@
             // 
             this.homeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
             this.homeButton.ForeColor = System.Drawing.Color.White;
-            this.homeButton.Location = new System.Drawing.Point(31, 433);
+            this.homeButton.Location = new System.Drawing.Point(31, 446);
             this.homeButton.Name = "homeButton";
             this.homeButton.Size = new System.Drawing.Size(90, 36);
             this.homeButton.TabIndex = 1;
@@ -287,7 +289,7 @@
             this.turandotButton.ForeColor = System.Drawing.Color.Black;
             this.turandotButton.Image = global::HTSController.Properties.Resources.Turandot_Black_24;
             this.turandotButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.turandotButton.Location = new System.Drawing.Point(16, 137);
+            this.turandotButton.Location = new System.Drawing.Point(14, 154);
             this.turandotButton.Margin = new System.Windows.Forms.Padding(0);
             this.turandotButton.Name = "turandotButton";
             this.turandotButton.Padding = new System.Windows.Forms.Padding(12, 0, 4, 0);
@@ -311,7 +313,7 @@
             this.subjectButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
             this.subjectButton.Image = global::HTSController.Properties.Resources.subject_24;
             this.subjectButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.subjectButton.Location = new System.Drawing.Point(16, 51);
+            this.subjectButton.Location = new System.Drawing.Point(14, 25);
             this.subjectButton.Margin = new System.Windows.Forms.Padding(3, 3, 0, 0);
             this.subjectButton.Name = "subjectButton";
             this.subjectButton.Padding = new System.Windows.Forms.Padding(12, 0, 4, 0);
@@ -373,19 +375,6 @@
             this.subjectPage.Text = "tabPage1";
             this.subjectPage.UseVisualStyleBackColor = true;
             // 
-            // subjectPageControl
-            // 
-            this.subjectPageControl.AutoSize = true;
-            this.subjectPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.subjectPageControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.subjectPageControl.Location = new System.Drawing.Point(3, 3);
-            this.subjectPageControl.Margin = new System.Windows.Forms.Padding(4);
-            this.subjectPageControl.Name = "subjectPageControl";
-            this.subjectPageControl.OnProjectChanged = null;
-            this.subjectPageControl.Size = new System.Drawing.Size(354, 484);
-            this.subjectPageControl.TabIndex = 0;
-            this.subjectPageControl.ValueChanged += new System.EventHandler(this.subjectPageControl_ValueChanged);
-            // 
             // turandotSettingsPage
             // 
             this.turandotSettingsPage.Controls.Add(this.turandotPageControl);
@@ -396,17 +385,6 @@
             this.turandotSettingsPage.TabIndex = 1;
             this.turandotSettingsPage.Text = "tabPage2";
             this.turandotSettingsPage.UseVisualStyleBackColor = true;
-            // 
-            // turandotPageControl
-            // 
-            this.turandotPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.turandotPageControl.Location = new System.Drawing.Point(6, 3);
-            this.turandotPageControl.Margin = new System.Windows.Forms.Padding(4);
-            this.turandotPageControl.Name = "turandotPageControl";
-            this.turandotPageControl.Size = new System.Drawing.Size(357, 331);
-            this.turandotPageControl.TabIndex = 0;
-            this.turandotPageControl.StartInteractiveClick += new System.EventHandler<string>(this.turandotPageControl_InteractiveClick);
-            this.turandotPageControl.StartTurandotClick += new System.EventHandler<string>(this.turandotPageControl_StartTurandotClick);
             // 
             // messagePage
             // 
@@ -444,14 +422,6 @@
             this.adminPage.TabIndex = 4;
             this.adminPage.Text = "tabPage1";
             this.adminPage.UseVisualStyleBackColor = true;
-            // 
-            // fileSyncControl
-            // 
-            this.fileSyncControl.Location = new System.Drawing.Point(0, 91);
-            this.fileSyncControl.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.fileSyncControl.Name = "fileSyncControl";
-            this.fileSyncControl.Size = new System.Drawing.Size(362, 314);
-            this.fileSyncControl.TabIndex = 8;
             // 
             // label3
             // 
@@ -581,6 +551,67 @@
             this.label1.Text = "Data streams";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // connectionTimer
+            // 
+            this.connectionTimer.Interval = 1000;
+            this.connectionTimer.Tick += new System.EventHandler(this.connectionTimer_Tick);
+            // 
+            // speechButton
+            // 
+            this.speechButton.Appearance = System.Windows.Forms.Appearance.Button;
+            this.speechButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.speechButton.Enabled = false;
+            this.speechButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.speechButton.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.speechButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.speechButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(215)))), ((int)(((byte)(205)))));
+            this.speechButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.speechButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.speechButton.ForeColor = System.Drawing.Color.Black;
+            this.speechButton.Image = global::HTSController.Properties.Resources.Turandot_Black_24;
+            this.speechButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.speechButton.Location = new System.Drawing.Point(14, 111);
+            this.speechButton.Margin = new System.Windows.Forms.Padding(0);
+            this.speechButton.Name = "speechButton";
+            this.speechButton.Padding = new System.Windows.Forms.Padding(12, 0, 4, 0);
+            this.speechButton.Size = new System.Drawing.Size(133, 43);
+            this.speechButton.TabIndex = 10;
+            this.speechButton.Text = "Speech";
+            this.speechButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.speechButton.UseVisualStyleBackColor = false;
+            // 
+            // subjectPageControl
+            // 
+            this.subjectPageControl.AutoSize = true;
+            this.subjectPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.subjectPageControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.subjectPageControl.Location = new System.Drawing.Point(3, 3);
+            this.subjectPageControl.Margin = new System.Windows.Forms.Padding(4);
+            this.subjectPageControl.Name = "subjectPageControl";
+            this.subjectPageControl.OnProjectChanged = null;
+            this.subjectPageControl.Size = new System.Drawing.Size(354, 484);
+            this.subjectPageControl.TabIndex = 0;
+            this.subjectPageControl.ValueChanged += new System.EventHandler(this.subjectPageControl_ValueChanged);
+            // 
+            // turandotPageControl
+            // 
+            this.turandotPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.turandotPageControl.Location = new System.Drawing.Point(6, 3);
+            this.turandotPageControl.Margin = new System.Windows.Forms.Padding(4);
+            this.turandotPageControl.Name = "turandotPageControl";
+            this.turandotPageControl.Size = new System.Drawing.Size(357, 331);
+            this.turandotPageControl.TabIndex = 0;
+            this.turandotPageControl.StartInteractiveClick += new System.EventHandler<string>(this.turandotPageControl_InteractiveClick);
+            this.turandotPageControl.StartTurandotClick += new System.EventHandler<string>(this.turandotPageControl_StartTurandotClick);
+            // 
+            // fileSyncControl
+            // 
+            this.fileSyncControl.Location = new System.Drawing.Point(0, 91);
+            this.fileSyncControl.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.fileSyncControl.Name = "fileSyncControl";
+            this.fileSyncControl.Size = new System.Drawing.Size(362, 314);
+            this.fileSyncControl.TabIndex = 8;
+            // 
             // protocolControl
             // 
             this.protocolControl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -591,11 +622,6 @@
             this.protocolControl.TabIndex = 8;
             this.protocolControl.AdvanceProtocol += new System.EventHandler<HTSController.Pages.ProtocolControl.ProtocolItem>(this.protocolControl_AdvanceProtocol);
             this.protocolControl.ProtocolStateChange += new System.EventHandler<HTSController.Pages.ProtocolControl.ProtocolStateChangeEventArgs>(this.protocolControl_ProtocolStateChange);
-            // 
-            // connectionTimer
-            // 
-            this.connectionTimer.Interval = 1000;
-            this.connectionTimer.Tick += new System.EventHandler(this.connectionTimer_Tick);
             // 
             // MainForm
             // 
@@ -669,6 +695,7 @@
         private System.Windows.Forms.CheckBox basicButton;
         private System.Windows.Forms.TabPage basicPageContainer;
         private Pages.FileSyncControl fileSyncControl;
+        private System.Windows.Forms.CheckBox speechButton;
     }
 }
 
