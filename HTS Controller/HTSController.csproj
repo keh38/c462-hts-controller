@@ -374,6 +374,7 @@
     <None Include="Images\graph.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Images\speech.png" />
     <Content Include="Revision_History.txt" />
   </ItemGroup>
   <ItemGroup />

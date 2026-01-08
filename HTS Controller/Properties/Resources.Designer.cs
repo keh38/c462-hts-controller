@@ -113,6 +113,16 @@ namespace HTSController.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap speech {
+            get {
+                object obj = ResourceManager.GetObject("speech", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap subject {
             get {
                 object obj = ResourceManager.GetObject("subject", resourceCulture);
