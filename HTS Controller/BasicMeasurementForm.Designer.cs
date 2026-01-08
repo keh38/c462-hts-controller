@@ -163,7 +163,6 @@
             this.newDropDown.Items.AddRange(new object[] {
             "Audiogram",
             "Bekesy",
-            "Digits",
             "LDL",
             "Questionnaire"});
             this.newDropDown.Location = new System.Drawing.Point(233, 411);
