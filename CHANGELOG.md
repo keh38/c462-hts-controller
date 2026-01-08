@@ -1,5 +1,11 @@
 ## Changelog
 
+### v1.7.1
+#### Added
+- Pupil Dynamic Range: control of fixation point size
+
+---
+
 ### v1.7 (2026-01-08)
 #### Added
 - Protocol: "Investigator" scene option to display prompt/instructions to investigator before proceeding
