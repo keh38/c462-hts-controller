@@ -1,5 +1,11 @@
 ## Changelog
 
+### v1.7.2 (2026-01-12)
+#### Fixed
+- Pupil Dynamic Range: wait for .edf was never returning true
+
+---
+
 ### v1.7.1 (2026-01-09)
 #### Added
 - Pupil Dynamic Range: control of fixation point size

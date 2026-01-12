@@ -371,6 +371,7 @@ namespace HTSController
                 {
                     if (!IsFileLocked(new FileInfo(fn)))
                     {
+                        success = true;
                         break;
                     }
                 }
@@ -384,9 +385,9 @@ namespace HTSController
             try
             {
                 // Try to open the file for exclusive access
-                stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+                stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
             }
-            catch (IOException)
+            catch (IOException ex)
             {
                 // If an IOException occurs, the file is locked
                 return true;
