@@ -1,6 +1,6 @@
 ## Changelog
 
-### v1.7.1
+### v1.7.1 (2026-01-09)
 #### Added
 - Pupil Dynamic Range: control of fixation point size
 
