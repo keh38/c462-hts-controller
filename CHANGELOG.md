@@ -1,5 +1,12 @@
 ## Changelog
 
+### v1.8 (2026-01-13)
+#### Added
+- LDL: added bandwidth option to allow stimulation with bandpass noise
+- Turandot: added checklist button properties
+
+---
+
 ### v1.7.2 (2026-01-12)
 #### Fixed
 - Pupil Dynamic Range: wait for .edf was never returning true
