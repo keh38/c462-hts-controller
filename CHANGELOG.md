@@ -1,5 +1,13 @@
 ## Changelog
 
+### v1.9 (2026-01-20)
+#### Changed
+- LDL Haptics:
+  - expanded haptic parameter sequencing
+  - option to save LDL gram in metadata
+
+---
+
 ### v1.8 (2026-01-13)
 #### Added
 - LDL: added bandwidth option to allow stimulation with bandpass noise
