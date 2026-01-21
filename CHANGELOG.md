@@ -1,5 +1,11 @@
 ## Changelog
 
+### unreleased
+#### Changed
+- Pupillometry: generalized eye tracker to support use of Tobii device
+
+---
+
 ### v1.9 (2026-01-20)
 #### Changed
 - LDL Haptics:

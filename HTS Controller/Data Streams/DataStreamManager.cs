@@ -60,6 +60,11 @@ namespace HTSController.Data_Streams
             return _streams.Find(x => x.MulticastName == name);
         }
 
+        public DataStream FindEyeTracker()
+        {
+            return _streams.Find(x => x.IsEyeTracker);
+        }
+
         public DataStreamManager()
         {
             if (File.Exists(ConfigFile))
@@ -298,6 +303,7 @@ namespace HTSController.Data_Streams
             foreach (var s in _streams.FindAll(x => x.IsPresent && x.Record))
             {
                 var status = await KTcpClient.SendMessageReceiveIntAsync(s.IPEndPoint, "Status");
+                Debug.WriteLine($"status for {s.MulticastName} = {status}");    
                 s.Status = (DataStream.StreamStatus)status;
 
                 if (s.Status != DataStream.StreamStatus.Idle)
@@ -343,6 +349,7 @@ namespace HTSController.Data_Streams
                 {
                     var t0 = HighPrecisionClock.UtcNowIn100nsTicks;
                     var byteArray = await KTcpClient.SendMessageReceiveByteArrayAsync(stream.IPEndPoint, "Sync");
+                    
                     var t1 = BitConverter.ToInt64(byteArray, 0);
                     var t2 = BitConverter.ToInt64(byteArray, 8);
                     var t3 = HighPrecisionClock.UtcNowIn100nsTicks;
@@ -360,6 +367,7 @@ namespace HTSController.Data_Streams
                 }
                 catch (Exception ex)
                 {
+                    Debug.WriteLine($"sync error = {ex.Message}");
                 }
             }
             return syncData;

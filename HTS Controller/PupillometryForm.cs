@@ -59,6 +59,9 @@ namespace HTSController
 
         bool _dataReceived = false;
 
+        string _eyeTrackerName;
+        string _eyeTrackerExtension;
+
         #region EVENTS
         public event EventHandler<AutoRunEndEventArgs> AutoRunEnd;
         private void OnAutoRunEnd(bool success, string dataFile) { AutoRunEnd?.Invoke(this, new AutoRunEndEventArgs(success, dataFile)); }
@@ -203,6 +206,16 @@ namespace HTSController
                 return;
             }
 
+            var eyeTrackerStream = _streamManager.FindEyeTracker();
+
+            if (eyeTrackerStream == null)
+            {
+                logTextBox.Text = "No eye tracker found in data streams";
+                return;
+            }
+            _eyeTrackerName = eyeTrackerStream.MulticastName;
+            _eyeTrackerExtension = eyeTrackerStream.Extension;
+
             startButton.Enabled = false;
 
             logTextBox.Text = "Starting dynamic range measurement...";
@@ -225,10 +238,10 @@ namespace HTSController
             dataFileTextBox.Text = _dataFile;
             if (!string.IsNullOrEmpty(_dataFile))
             {
-#if DEBUG
+#if false && DEBUG
                 var started = await _streamManager.StartRecording(_dataFile);
 #else
-                var started = await _streamManager.StartRecording(_dataFile, mandatory:"EYELINK");
+                var started = await _streamManager.StartRecording(_dataFile, mandatory:_eyeTrackerName);
 #endif
                 if (started)
                 {
@@ -321,8 +334,8 @@ namespace HTSController
             bool analysisSuccess = !analyzeData;
             if (analyzeData)
             {
-                Invoke(new Action(() => { logTextBox.AppendText("Waiting for EyeLink data" + Environment.NewLine); }));
-                haveData = await WaitForEyeLinkData(Path.Combine(FileLocations.SubjectDataFolder, _dataFile.Replace(".json", ".edf")));
+                Invoke(new Action(() => { logTextBox.AppendText("Waiting for eye tracker data" + Environment.NewLine); }));
+                haveData = await WaitForEyeTrackerData(Path.Combine(FileLocations.SubjectDataFolder, _dataFile.Replace(".json", _eyeTrackerExtension)));
             }
 
             startButton.Enabled = true;
@@ -340,8 +353,8 @@ namespace HTSController
                 }
                 else
                 {
-                    logTextBox.AppendText("Timed out waiting for EyeLink data");
-                    Log.Information("Timed out waiting for EyeLink data");
+                    logTextBox.AppendText("Timed out waiting for eye tracker data");
+                    Log.Information("Timed out waiting for eye tracker data");
                 }
             }
             progressBar.Value = 0;
@@ -359,7 +372,7 @@ namespace HTSController
             OnAutoRunEnd(success, dataFile);
         }
 
-        private async Task<bool> WaitForEyeLinkData(string fn)
+        private async Task<bool> WaitForEyeTrackerData(string fn)
         {
             bool success = false;
 
@@ -810,7 +823,7 @@ namespace HTSController
         {
             if (MATLAB.IsInitialized)
             {
-                var functionName = matlabDropDown.SelectedItem.ToString();
+                var functionName = matlabDropDown.SelectedItem?.ToString();
                 if (!string.IsNullOrEmpty(functionName))
                 {
                     //_dataFile = @"C:\Users\hancock\OneDrive\Engineering\Polley\HTS\Sync\Test Data\_Yu-PupilDR-2025-04-14_103307.json";

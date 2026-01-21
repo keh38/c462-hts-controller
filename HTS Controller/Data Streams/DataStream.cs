@@ -24,6 +24,8 @@ namespace HTSController.Data_Streams
         public string MulticastName { get; set; }
         public string Icon { get; set; }
         public bool Record { get; set; }
+        public bool IsEyeTracker { get; set; } = false;
+        public string Extension { get; set; } = "";
 
         [XmlIgnore]
         public IPEndPoint IPEndPoint { get; set; } = null;
