@@ -1,8 +1,11 @@
 ## Changelog
 
-### unreleased
+### v1.10 (2026-01-22)
 #### Changed
 - Pupillometry: generalized eye tracker to support use of Tobii device
+- LDL Haptics:
+  - allow sequence variable expressions to use metrics
+  - added Level as a sequenceable variable
 
 ---
 

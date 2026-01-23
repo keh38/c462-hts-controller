@@ -212,9 +212,10 @@ namespace HTSController
             progressBar.Value = 0;
             await Task.Run(() => InitializeRemoteMeasurement());
 
-            dataFileTextBox.Text = _dataFile;
-            if (!string.IsNullOrEmpty(_dataFile))
+            if (!string.IsNullOrEmpty(_dataFile) && !_dataFile.StartsWith("error"))
             {
+                dataFileTextBox.Text = _dataFile;
+
                 bool started = true;
                 if (!_config.BypassDataStreams)
                 {
@@ -243,10 +244,17 @@ namespace HTSController
             }
             else
             {
-                logTextBox.AppendText($"didn't receive data file name from {_sceneName} scene");
-                Log.Error($"didn't receive data file name from {_sceneName} scene");
+                if (!string.IsNullOrEmpty(_dataFile) && _dataFile.StartsWith("error"))
+                {
+                    logTextBox.AppendText($"{_dataFile}{Environment.NewLine}");
+                    Log.Error(_dataFile);
+                }
+                else
+                {
+                    logTextBox.AppendText($"didn't receive data file name from {_sceneName} scene");
+                }
                 EnableButtons(true);
-                _network.SendMessage($"StopSynchronizing");
+//                _network.SendMessage($"StopSynchronizing");
                 EndAutoRun(false, null);
             }
         }
@@ -297,10 +305,14 @@ namespace HTSController
                 }
             }
 
-            if (!string.IsNullOrEmpty(_dataFile) && !_config.BypassDataStreams)
+            if (!string.IsNullOrEmpty(_dataFile))
             {
                 Log.Information($"Remote data file = {_dataFile}");
-                _network.SendMessage($"StartSynchronizing:{_dataFile}");
+
+                if (!_config.BypassDataStreams)
+                {
+                    _network.SendMessage($"StartSynchronizing:{_dataFile}");
+                }
             }
         }
 
