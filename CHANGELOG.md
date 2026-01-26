@@ -1,5 +1,11 @@
 ## Changelog
 
+### v1.11 (unreleased)
+#### added
+- restored Digits test
+
+---
+
 ### v1.10 (2026-01-22)
 #### Changed
 - Pupillometry: generalized eye tracker to support use of Tobii device
