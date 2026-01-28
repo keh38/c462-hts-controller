@@ -179,6 +179,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SpeechForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpeechForm.Designer.cs">
+      <DependentUpon>SpeechForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="BasicMeasurementForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -279,6 +285,9 @@
       <DependentUpon>TurandotLiveForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Watchdog.cs" />
+    <EmbeddedResource Include="SpeechForm.resx">
+      <DependentUpon>SpeechForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="BasicMeasurementForm.resx">
       <DependentUpon>BasicMeasurementForm.cs</DependentUpon>
     </EmbeddedResource>

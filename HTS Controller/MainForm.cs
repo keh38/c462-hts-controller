@@ -31,6 +31,7 @@ namespace HTSController
         DataStreamManager _streamManager;
         TurandotLiveForm _liveForm = null;
         BasicMeasurementForm _basicForm = null;
+        SpeechForm _speechForm = null;
         PupillometryForm _pupilForm = null;
 
         List<Tuple<CheckBox, TabPage>> _menu;
@@ -48,6 +49,7 @@ namespace HTSController
             _menu.Add(new Tuple<CheckBox, TabPage>(subjectButton, subjectPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(turandotButton, turandotSettingsPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(basicButton, basicPageContainer));
+            _menu.Add(new Tuple<CheckBox, TabPage>(speechButton, speechPageContainer));
             _menu.Add(new Tuple<CheckBox, TabPage>(pupilButton, pupilPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(adminButton, adminPage));
 
@@ -430,6 +432,28 @@ namespace HTSController
             tabControl.SelectedTab = basicPageContainer;
         }
 
+        private void speechButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_ignoreEvents) return;
+
+            SelectTab(sender as CheckBox);
+
+            if (_speechForm == null)
+            {
+                _speechForm = new SpeechForm(_network, _streamManager);
+                _speechForm.TopLevel = false;
+                _speechForm.AutoRunEnd += TestRunEnded;
+                _speechForm.RunStateChanged += RunStateChanged;
+                speechPageContainer.Controls.Add(_speechForm);
+                _speechForm.FormBorderStyle = FormBorderStyle.None;
+                _speechForm.Dock = DockStyle.Fill;
+                _speechForm.Show();
+            }
+            _speechForm.Initialize();
+
+            tabControl.SelectedTab = speechPageContainer;
+        }
+
         private void pupilButton_CheckedChanged(object sender, EventArgs e)
         {
             if (_ignoreEvents) return;
@@ -468,6 +492,7 @@ namespace HTSController
             switch (e.sceneName)
             {
                 case "Audiogram":
+                case "Digits":
                 case "LDL":
                     basicButton.Checked = true;
                     _basicForm.AutoRunBasicMeasurement(e.sceneName, e.settingsFile);
@@ -483,6 +508,10 @@ namespace HTSController
                 case "Investigator":
                     MarkdownDialog.ShowMarkdownDialog(e.instructions);
                     protocolControl.TestFinished(success: true, dataFile:null);
+                    break;
+                case "SpeechReception":
+                    speechButton.Checked = true;
+                    _speechForm.AutoRunSpeechTest(e.settingsFile);
                     break;
                 case "Turandot":
                     turandotButton.Checked = true;
@@ -535,5 +564,5 @@ namespace HTSController
             }
         }
 
-}
+    }
 }
