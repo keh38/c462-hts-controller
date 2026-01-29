@@ -127,7 +127,7 @@ namespace HTSController
                 _config = new SpeechTest();
             }
 
-            ListPropertiesConverter.TestType = _config.TestType;
+            ListProperties.SerializationTestType = _config.TestType;
             propertyGrid.SelectedObject = _config;
             startButton.Enabled = true;
         }
@@ -376,7 +376,7 @@ namespace HTSController
             propertyGrid.SelectedObject = _config;
             startButton.Enabled = true;
             msSelectMeasurement.Text = $"SpeechTest.{_config.TestName}";
-            ListPropertiesConverter.TestType = _config.TestType;
+            ListProperties.SerializationTestType = _config.TestType;
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
