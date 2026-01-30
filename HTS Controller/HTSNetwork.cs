@@ -230,6 +230,14 @@ namespace HTSController
 
             string input = server.ReadString();
             server.SendAcknowledgement();
+
+            if (input.StartsWith("ReceiveBufferedFile"))
+            {
+                ReceiveBufferedFile(server, input);
+                server.CloseTcpClient();
+                return;
+            }
+
             server.CloseTcpClient();
 
             if (input.StartsWith("ChangedScene"))
@@ -239,6 +247,38 @@ namespace HTSController
             }
 
             OnRemoteMessage(input);
+        }
+
+        private void ReceiveBufferedFile(KTcpListener server, string data)
+        {
+            var parts = data.Split(new char[] { ':' }, 4);
+            if (parts.Length != 4)
+            {
+                return;
+            }
+
+            int bufferSize = int.Parse(parts[2]);
+            int numBuffers = int.Parse(parts[3]);
+
+            var filePath = Path.Combine(FileLocations.SubjectDataFolder, parts[1]);
+
+            System.Diagnostics.Debug.WriteLine($"path = {filePath}, bufferSize={bufferSize}, numBuffers={numBuffers}");
+
+            using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            using (BinaryWriter bw = new BinaryWriter(fs))
+            {
+                for (int k = 0; k < numBuffers; k++)
+                {
+                    System.Diagnostics.Debug.WriteLine($"writing {k}");
+                    var bytes = server.ReadByteArrayFromInputStream();
+                    bw.Write(bytes);
+
+                    server.SendAcknowledgement();
+                }
+
+                bw.Close();
+                fs.Close();
+            }
         }
 
     }

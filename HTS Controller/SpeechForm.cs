@@ -330,6 +330,7 @@ namespace HTSController
             {
                 case "File":
                     _dataFile = info;
+                    Invoke(new Action(() => dataFileTextBox.Text = _dataFile));
                     break;
                 case "Progress":
                     int.TryParse(info, out int progress);
