@@ -509,7 +509,7 @@ namespace HTSController
                     MarkdownDialog.ShowMarkdownDialog(e.instructions);
                     protocolControl.TestFinished(success: true, dataFile:null);
                     break;
-                case "SpeechReception":
+                case "Speech Reception":
                     speechButton.Checked = true;
                     _speechForm.AutoRunSpeechTest(e.settingsFile);
                     break;
