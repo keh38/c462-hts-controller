@@ -3,6 +3,7 @@
 ### v1.11 (unreleased)
 #### added
 - restored Digits test
+- LDL: option to log slider tracks
 
 ---
 
