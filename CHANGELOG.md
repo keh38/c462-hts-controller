@@ -1,8 +1,9 @@
 ## Changelog
 
-### v1.11 (unreleased)
-#### added
+### v1.11 (2026-02-04)
+#### Added
 - restored Digits test
+- restored open set speech
 - LDL: option to log slider tracks
 
 ---
