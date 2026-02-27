@@ -1,6 +1,6 @@
 ## Changelog
 
-### v1.12 (unreleased)
+### v1.12 (2026-02-27)
 #### Changed
 - Turandot scaler: added options for min/max value, whole numbers and showing tick marks
 
