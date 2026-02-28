@@ -246,7 +246,7 @@ namespace HTSController
             {
                 if (!string.IsNullOrEmpty(_dataFile) && _dataFile.StartsWith("error"))
                 {
-                    logTextBox.AppendText($"{_dataFile}{Environment.NewLine}");
+                    logTextBox.AppendText($"{Path.GetFileNameWithoutExtension(_dataFile)}{Environment.NewLine}");
                     Log.Error(_dataFile);
                 }
                 else
@@ -380,6 +380,13 @@ namespace HTSController
                     break;
                 case "ReceiveData":
                     string filePath = Path.Combine(FileLocations.SubjectDataFolder, info);
+                    if (File.Exists(filePath))
+                    {
+                        // this shouldn't happen, but it did when the Digits test sent back a file name
+                        // with no .json extension. 
+                        Log.Warning($"File {filePath} already exists, backing up. This shouldn't happen.");
+                        File.Move(filePath, filePath + ".bak");
+                    }
                     File.WriteAllText(filePath, data);
                     break;
                 case "Status":

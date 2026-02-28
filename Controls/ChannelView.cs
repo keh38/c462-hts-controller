@@ -23,6 +23,8 @@ namespace KLib.Unity.Controls.Signals
 
         public AdapterMap AdapterMap { set; get; }
 
+        private List<LevelUnits> _allowableAudioLevelUnits = new List<LevelUnits>() { LevelUnits.dB_attenuation, LevelUnits.dB_SPL, LevelUnits.dB_Vrms, LevelUnits.dB_SL };
+
         public ChannelView()
         {
             InitializeComponent();
@@ -55,6 +57,15 @@ namespace KLib.Unity.Controls.Signals
         public void UpdateParameters()
         {
             ShowChannel(Value);
+        }
+
+        public void SetAllowableAudioLevelUnits(params LevelUnits[] units)
+        {
+            _allowableAudioLevelUnits = new List<LevelUnits>(units);
+            if (_chan != null && _chan.Modality == Modality.Audio)
+            {
+                SetContextDependentLevelUnits(Modality.Audio);
+            }
         }
 
         private void ShowChannel(Channel ch)
@@ -157,7 +168,7 @@ namespace KLib.Unity.Controls.Signals
         {
             if (modality == Modality.Audio)
             {
-                levelView.SetAllowableUnits(LevelUnits.dB_attenuation, LevelUnits.dB_SPL, LevelUnits.dB_Vrms, LevelUnits.dB_SL);
+                levelView.SetAllowableUnits(_allowableAudioLevelUnits.ToArray());
             }
             else if (modality == Modality.Haptic)
             {
