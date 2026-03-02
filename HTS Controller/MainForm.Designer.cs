@@ -434,7 +434,7 @@
             this.turandotPageControl.Size = new System.Drawing.Size(357, 331);
             this.turandotPageControl.TabIndex = 0;
             this.turandotPageControl.StartInteractiveClick += new System.EventHandler<string>(this.turandotPageControl_InteractiveClick);
-            this.turandotPageControl.StartTurandotClick += new System.EventHandler<string>(this.turandotPageControl_StartTurandotClick);
+            this.turandotPageControl.StartTurandotClick += new System.EventHandler<HTSController.Pages.StartTurandotEventArgs>(this.turandotPageControl_StartTurandotClick);
             // 
             // messagePage
             // 

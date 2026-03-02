@@ -346,7 +346,7 @@ namespace HTSController
             connectionTimer.Start();
         }
 
-        private void turandotPageControl_StartTurandotClick(object sender, string settingsPath)
+        private void turandotPageControl_StartTurandotClick(object sender, HTSController.Pages.StartTurandotEventArgs e)
         {
             connectionTimer.Stop();
 
@@ -368,7 +368,7 @@ namespace HTSController
                 _liveForm.Dock = DockStyle.Fill;
                 _liveForm.Show();
             }
-            _liveForm.Initialize(settingsPath);
+            _liveForm.Initialize(e.settingsPath, e.extraSettings);
 
             tabControl.SelectedTab = runTurandotPage;
         }
@@ -515,7 +515,10 @@ namespace HTSController
                     break;
                 case "Turandot":
                     turandotButton.Checked = true;
-                    turandotPageControl_StartTurandotClick(this, Path.Combine(FileLocations.ConfigFolder, $"Turandot.{e.settingsFile}.xml"));
+                    var parts = e.settingsFile.Split(new char[] { ':' }, 2);
+                    string fileName = parts[0];
+                    string extraSettings = (parts.Length > 1) ? parts[1] : "";
+                    turandotPageControl_StartTurandotClick(this, new HTSController.Pages.StartTurandotEventArgs(Path.Combine(FileLocations.ConfigFolder, $"Turandot.{fileName}.xml"), extraSettings));
                     _liveForm.AutoRun();
                     break;
             }

@@ -18,6 +18,13 @@ using KLib;
 
 namespace HTSController.Pages
 {
+    public class StartTurandotEventArgs : EventArgs
+    {
+        public string settingsPath;
+        public string extraSettings;
+        public StartTurandotEventArgs(string settingsPath, string extraSettings) { this.settingsPath = settingsPath; this.extraSettings = extraSettings; }
+    }
+
     public partial class TurandotPage : KUserControl
     {
         private HTSNetwork _network;
@@ -29,10 +36,10 @@ namespace HTSController.Pages
         {
             StartInteractiveClick?.Invoke(this, settingsPath);
         }
-        public event EventHandler<string> StartTurandotClick;
-        protected virtual void OnStartTurandotClick(string settingsPath)
+        public event EventHandler<StartTurandotEventArgs> StartTurandotClick;
+        protected virtual void OnStartTurandotClick(string settingsPath, string extraSettings)
         {
-            StartTurandotClick?.Invoke(this, settingsPath);
+            StartTurandotClick?.Invoke(this, new StartTurandotEventArgs(settingsPath, extraSettings));
         }
 
         public TurandotPage()
@@ -108,7 +115,7 @@ namespace HTSController.Pages
             }
             else if (fileType.Equals("Turandot"))
             {
-                OnStartTurandotClick(settingsPath);
+                OnStartTurandotClick(settingsPath, null);
             }
             else if (fileType.Equals("TScript"))
             {

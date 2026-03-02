@@ -26,6 +26,7 @@ namespace HTSController
         private HTSNetwork _network;
         private DataStreamManager _streamManager;
         private string _parameterFile;
+        private string _extraSettings;
         private string _dataFile;
         private string _postRunMATLABFile = "";
 
@@ -53,12 +54,13 @@ namespace HTSController
             InitializeComponent();
         }
 
-        public void Initialize(string parameterFile)
+        public void Initialize(string parameterFile, string extraSettings)
         {
             startButton.Visible = true;
 
             _dataFile = "";
             _parameterFile = parameterFile;
+            _extraSettings = extraSettings;
             _network.RemoteMessageHandler += OnRemoteMessage;
 
             dataFileTextBox.Text = "";
@@ -129,6 +131,10 @@ namespace HTSController
             Log.Information($"Turandot parameter file: {_parameterFile}");
             var p = KFile.XmlDeserialize<Turandot.Parameters>(_parameterFile);
             _postRunMATLABFile = p.matlabFunction;
+            if (!string.IsNullOrEmpty(_extraSettings))
+            {
+                _network.SendMessage($"SetScriptArguments:{_extraSettings}");   
+            }
             _network.SendMessage($"SetParams:{KFile.ToXMLString(p)}");
 
             // wait for file name to get sent back

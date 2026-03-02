@@ -246,9 +246,7 @@
     <Compile Include="Pages\ProtocolControl.Designer.cs">
       <DependentUpon>ProtocolControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Pages\TurandotPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Pages\TurandotPage.cs" />
     <Compile Include="Pages\TurandotPage.Designer.cs">
       <DependentUpon>TurandotPage.cs</DependentUpon>
     </Compile>
