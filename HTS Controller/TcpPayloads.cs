@@ -56,6 +56,13 @@ namespace HTS.Tcp
     }
 
     [JsonObject]
+    public class RemoteMessagePayload
+    {
+        public string Target { get; set; }
+        public string Data { get; set; }
+    }
+
+    [JsonObject]
     public class FilenamePayload
     {
         public string Filename { get; set; }

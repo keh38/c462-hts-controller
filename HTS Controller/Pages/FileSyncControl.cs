@@ -14,6 +14,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 using Serilog;
 using KLib;
+using KLib.Net;
 
 namespace HTSController.Pages
 {
@@ -227,21 +228,15 @@ namespace HTSController.Pages
             logBox.AppendText($"{message}{Environment.NewLine}");
         }
 
-        private void OnRemoteMessage(object sender, string message)
+        private void OnRemoteMessage(object sender, TcpMessage message)
         {
-            var parts = message.Split(new char[] { ':' }, 3);
-            if (parts.Length < 2) return;
+            var payload = message.GetPayload<RemoteMessagePayload>();
+            if (!payload.Target.Equals("FileSync")) return;
 
-            string target = parts[0];
-            if (!target.Equals("FileSync")) return;
-
-            string command = parts[1];
-            string data = (parts.Length > 2) ? parts[2] : "";
-
-            switch (command)
+            switch (message.Command)
             {
                 case "ReceiveFileList":
-                    _remoteFiles = KFile.JSONDeserializeFromString<List<string>>(data);
+                    _remoteFiles = KFile.JSONDeserializeFromString<List<string>>(payload.Data);
                     break;
             }
         }

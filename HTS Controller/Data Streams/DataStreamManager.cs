@@ -36,11 +36,11 @@ namespace HTSController.Data_Streams
         private List<DataStreamIndicator> _indicators;
         private List<string> _problemChildren = new List<string>();
 
-        private DiscoveryListener _discoveryListener;
-        private System.Windows.Forms.Timer _statusTimer;
         private System.Windows.Forms.Timer _syncTimer;
 
         private string _logPath;
+
+        private FlowLayoutPanel _panel;
 
         private int _statusTimerInterval = 5000;
         private int _syncInterval = 5000;
@@ -71,8 +71,12 @@ namespace HTSController.Data_Streams
             }
         }
 
-        public void Initialize(FlowLayoutPanel flowLayout)
+        public void Initialize(FlowLayoutPanel panel, DiscoveryListener discoveryListener)
         {
+            _panel = panel;
+            discoveryListener.HostDiscovered += OnStreamDiscovered;
+            discoveryListener.HostDisappeared += OnStreamDisappeared;
+            
             _indicators = new List<DataStreamIndicator>();
 
             ContextMenu contextMenu = new ContextMenu();
@@ -83,20 +87,9 @@ namespace HTSController.Data_Streams
             {
                 var indicator = CreateIndicator(s);
                 indicator.ContextMenu = contextMenu;
-                flowLayout.Controls.Add(indicator);
+                panel.Controls.Add(indicator);
                 _indicators.Add(indicator);
             }
-
-            // Start discovery listener for data streams
-            _discoveryListener = new DiscoveryListener();
-            _discoveryListener.HostDiscovered += OnStreamDiscovered;
-            _discoveryListener.HostDisappeared += OnStreamDisappeared;
-            _discoveryListener.Start();
-
-            _statusTimer = new System.Windows.Forms.Timer();
-            _statusTimer.Interval = 1000;
-            _statusTimer.Tick += statusTimer_Tick;
-            _statusTimer.Start();
 
             _syncTimer = new System.Windows.Forms.Timer();
             _syncTimer.Interval = 5000;
@@ -105,9 +98,7 @@ namespace HTSController.Data_Streams
 
         public void Cleanup()
         {
-            _statusTimer.Stop();
             _syncTimer.Stop();
-            _discoveryListener?.Stop();
 
             KFile.XmlSerialize(_streams, ConfigFile);
         }
@@ -129,7 +120,7 @@ namespace HTSController.Data_Streams
 
             Log.Information($"Data stream discovered: {beacon.Name} at {stream.IPEndPoint}");
 
-            UpdateIndicators();
+            InvokeOnUI(() => UpdateIndicators());
         }
 
         private void OnStreamDisappeared(object sender, ServerBeacon beacon)
@@ -144,7 +135,7 @@ namespace HTSController.Data_Streams
 
             Log.Information($"Data stream lost: {beacon.Name}");
 
-            UpdateIndicators();
+            InvokeOnUI(() => UpdateIndicators());
         }
 
         // -------------------------------------------------------------------------
@@ -191,6 +182,13 @@ namespace HTSController.Data_Streams
             }
         }
 
+        private void InvokeOnUI(Action action)
+        {
+            if (_panel.InvokeRequired)
+                _panel.Invoke(action);
+            else
+                action();
+        }
         // -------------------------------------------------------------------------
         // IDataStreamHandler implementation
         // -------------------------------------------------------------------------
@@ -204,7 +202,6 @@ namespace HTSController.Data_Streams
                 exclude = new List<string>();
 
             _recording = true;
-            _statusTimer.Stop();
             _problemChildren.Clear();
 
             InitializeSyncLogFile(filename);
@@ -266,7 +263,6 @@ namespace HTSController.Data_Streams
                     _problemChildren.Add(s.Name);
 
                 _recording = false;
-                _statusTimer.Start();
             }
 
             return success;
@@ -294,22 +290,6 @@ namespace HTSController.Data_Streams
         // -------------------------------------------------------------------------
         // Sync and status timers
         // -------------------------------------------------------------------------
-
-        public void RestartStatusTimer()
-        {
-            Log.Information("restarting status timer");
-            _recording = false;
-            statusTimer_Tick(null, null);
-        }
-
-        private async void statusTimer_Tick(object sender, EventArgs e)
-        {
-            _statusTimer.Enabled = false;
-            await CheckConnections();
-            _statusTimer.Interval = _statusTimerInterval;
-            _statusTimer.Enabled = !_exiting && !_recording;
-        }
-
         public async Task CheckConnections()
         {
             // Status check — discovery listener now maintains IsPresent via IPEndPoint
@@ -327,7 +307,7 @@ namespace HTSController.Data_Streams
                 });
             }
 
-            UpdateIndicators();
+            InvokeOnUI(() => UpdateIndicators());
         }
 
         private async void syncTimer_Tick(object sender, EventArgs e)
@@ -357,7 +337,7 @@ namespace HTSController.Data_Streams
                 }
             }
 
-            UpdateIndicators();
+            InvokeOnUI(() => UpdateIndicators());
         }
 
         private async Task<SyncData> SynchronizeClocks(DataStream stream)

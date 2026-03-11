@@ -277,7 +277,7 @@ namespace HTSController.Pages
             if (!_ignoreEvents)
             {
                 _subjectMetadata.Transducer = transducerDropDown.Text;
-                _network.SendMessage("SetSubjectMetadata", KLib.KFile.ToXMLString(_subjectMetadata));
+                _network.SendMessage("SetSubjectMetadata", _subjectMetadata);
             }
         }
 

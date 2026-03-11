@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using KLib;
+using KLib.Net;
 using SpeechReception;
 
 using HTS.Tcp;
@@ -305,7 +306,6 @@ namespace HTSController
             stopButton.Visible = false;
 
             progressBar.Value = 0;
-            _streamManager.RestartStatusTimer();
             OnRunStateChanged(_sceneName, false);
 
             EndAutoRun(success: !_runAborted && !message.Equals("Error"), dataFile: _dataFile);
@@ -319,42 +319,36 @@ namespace HTSController
             OnAutoRunEnd(success, dataFile);
         }
 
-        private void OnRemoteMessage(object sender, string message)
+        private void OnRemoteMessage(object sender, TcpMessage message)
         {
-            var parts = message.Split(new char[] { ':' }, 4);
-            if (parts.Length < 2) return;
+            var payload = message.GetPayload<RemoteMessagePayload>();
+            if (!payload.Target.Equals(_sceneName)) return;
 
-            string target = parts[0];
-            if (!target.Equals(_sceneName)) return;
-
-            string command = parts[1];
-            string info = (parts.Length > 2) ? parts[2] : "";
-            string data = (parts.Length > 3) ? parts[3] : "";
-
-            switch (command)
+            switch (message.Command)
             {
                 case "File":
-                    _dataFile = info;
+                    _dataFile = payload.Data;
                     Invoke(new Action(() => dataFileTextBox.Text = _dataFile));
                     break;
                 case "Progress":
-                    int.TryParse(info, out int progress);
+                    int.TryParse(payload.Data, out int progress);
                     Invoke(new Action(() => progressBar.Value = progress));
                     break;
                 case "ReceiveData":
-                    string filePath = Path.Combine(FileLocations.SubjectDataFolder, info);
-                    File.WriteAllText(filePath, data);
+                    var rcvParts = payload.Data.Split(new char[] { ':' }, 2);
+                    string filePath = Path.Combine(FileLocations.SubjectDataFolder, rcvParts[0]);
+                    File.WriteAllText(filePath, rcvParts.Length > 1 ? rcvParts[1] : "");
                     break;
                 case "Status":
-                    Log.Information($"Status update: {info}");
-                    Invoke(new Action(() => logTextBox.AppendText($"- {info}{Environment.NewLine}")));
+                    Log.Information($"Status update: {payload.Data}");
+                    Invoke(new Action(() => logTextBox.AppendText($"- {payload.Data}{Environment.NewLine}")));
                     break;
                 case "Error":
-                    Invoke(new Action(() => { EndRun("Error", info); }));
+                    Invoke(new Action(() => { EndRun("Error", payload.Data); }));
                     break;
                 case "Finished":
-                    _runAborted = info.Equals("Measurement aborted");
-                    Invoke(new Action(() => { EndRun("Finished", info); }));
+                    _runAborted = payload.Data.Equals("Measurement aborted");
+                    Invoke(new Action(() => { EndRun("Finished", payload.Data); }));
                     break;
             }
         }

@@ -121,13 +121,14 @@ namespace HTSController
 
             Log.Information("Starting network...");
             _network.ConnectionChanged += OnConnectionChanged;
-            _network.Initialize(this);
+
+            _streamManager = new DataStreamManager();
+            _streamManager.Initialize(ipcLayoutPanel, _network.DiscoveryListener);  // wire first
+
+            _network.Initialize(this);  // start listener last  
 
             connectionStatusLabel.Image = imageList.Images[0];
             connectionStatusLabel.Text = "No tablet connection yet";
-
-            _streamManager = new DataStreamManager();
-            _streamManager.Initialize(ipcLayoutPanel);
 
             matlabStatusLabel.Text = "Connecting...";
             matlabStatusLabel.Visible = true;
@@ -175,10 +176,10 @@ namespace HTSController
                 }
 
                 subjectPageControl.RetrieveSubjectState();
-                //turandotPageControl.UpdateConfigFileList();
+                turandotPageControl.UpdateConfigFileList();
                 menuPanel.Enabled = true;
                 subjectPageControl.Enabled = true;
-                //turandotPageControl.NetworkStatusChanged();
+                turandotPageControl.NetworkStatusChanged();
                 SelectTab(subjectButton);
             }
             else
@@ -276,19 +277,17 @@ namespace HTSController
             // handled by subjectPageControl
         }
 
-        private void OnRemoteMessage(object sender, string fullMessage)
+        private void OnRemoteMessage(object sender, TcpMessage message)
         {
-            var parts = fullMessage.Split(':');
-            string message = parts[0];
-            string data = (parts.Length > 1) ? parts[1] : null;
+            var payload = message.GetPayload<RemoteMessagePayload>();
 
-            switch (message)
+            switch (message.Command)
             {
                 case "ChangedScene":
-                    sceneNameLabel.Text = $"Scene: {data}";
+                    sceneNameLabel.Text = $"Scene: {payload.Data}";
                     break;
                 case "ChangedLEDColors":
-                    SetLightsButtonBackgroundColor(data);
+                    SetLightsButtonBackgroundColor(payload.Data);
                     break;
             }
         }

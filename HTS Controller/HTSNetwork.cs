@@ -28,12 +28,11 @@ namespace HTSController
 
         /// <summary>
         /// Raised when the HTS sends an unsolicited TCP message to this controller.
-        /// Phase 2: will be migrated to TcpMessage protocol.
         /// </summary>
-        public event EventHandler<string> RemoteMessageHandler;
+        public event EventHandler<TcpMessage> RemoteMessageHandler;
 
         private void OnConnectionChanged(bool connected) => ConnectionChanged?.Invoke(this, connected);
-        private void OnRemoteMessage(string message) => RemoteMessageHandler?.Invoke(this, message);
+        private void OnRemoteMessage(TcpMessage message) => RemoteMessageHandler?.Invoke(this, message);
 
         // -------------------------------------------------------------------------
         // Private state
@@ -57,12 +56,16 @@ namespace HTSController
         public string TabletAddress => _remoteEndPoint?.ToString() ?? "";
         public string MyAddress => _myEndPoint?.ToString() ?? "";
         public string TabletVersion => _remoteVersionNumber;
+        public DiscoveryListener DiscoveryListener => _discoveryListener;
 
         // -------------------------------------------------------------------------
         // Initialisation
         // -------------------------------------------------------------------------
 
-        public HTSNetwork() { }
+        public HTSNetwork() 
+        {
+            _discoveryListener = new DiscoveryListener();
+        }
 
         /// <summary>
         /// Starts the TCP listener and UDP discovery listener.
@@ -75,7 +78,6 @@ namespace HTSController
 
             StartListener();
 
-            _discoveryListener = new DiscoveryListener();
             _discoveryListener.HostDiscovered += OnHostDiscovered;
             _discoveryListener.HostDisappeared += OnHostDisappeared;
             _discoveryListener.Start();
@@ -287,7 +289,7 @@ namespace HTSController
                     server.WriteResponse(TcpMessage.Ok());
                     CurrentScene = sceneData.SceneName;
                     Log.Information($"HTS reports scene changed to {CurrentScene}");
-                    OnRemoteMessage($"ChangedScene:{CurrentScene}");
+                    OnRemoteMessage(TcpMessage.Request("ChangedScene", new RemoteMessagePayload { Data = CurrentScene }));
                     break;
 
                 case "Disconnect":
@@ -298,7 +300,20 @@ namespace HTSController
 
                 default:
                     server.WriteResponse(TcpMessage.Ok());
-                    OnRemoteMessage(request.Command);
+                    if (request.Payload == "{}")
+                    {
+                        // Legacy HTS string format: "Target:Command:Data"
+                        var msgParts = request.Command.Split(new char[] { ':' }, 3);
+                        var remoteCmd = msgParts.Length > 1 ? msgParts[1] : msgParts[0];
+                        var remoteTarget = msgParts.Length > 1 ? msgParts[0] : "";
+                        var remoteData = msgParts.Length > 2 ? msgParts[2] : "";
+                        OnRemoteMessage(TcpMessage.Request(remoteCmd, new RemoteMessagePayload { Target = remoteTarget, Data = remoteData }));
+                    }
+                    else
+                    {
+                        // New style: Command is the command, Payload contains RemoteMessagePayload
+                        OnRemoteMessage(request);
+                    }
                     break;
             }
 

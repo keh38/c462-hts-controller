@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using KLib;
+using KLib.Net;
 using BasicMeasurements;
 using Audiograms;
 using Bekesy;
@@ -60,7 +61,7 @@ namespace HTSController
         public BasicMeasurementForm(HTSNetwork network, DataStreamManager streamManager)
         {
             _network = network;
-            _network.RemoteMessageHandler += OnRemoteMessage;
+            _network.RemoteMessageHandler += HandleRemoteMessage;
 
             _streamManager = streamManager;
             _watchdog = new Watchdog(OnWatchdogTimeout);
@@ -273,7 +274,7 @@ namespace HTSController
         private async Task<bool> ChangeTabletScene(string sceneName)
         {
             bool success = false;
-            _network.SendMessage("ChangeScene", new ChangeScenePayload { SceneName = sceneName });
+            _network.SendMessage("ChangeScene", sceneName);
 
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
@@ -291,16 +292,15 @@ namespace HTSController
 
         private void InitializeRemoteMeasurement()
         {
-            _network.SendMessage("Initialize", _config);
+            var result = _network.SendRequest<string>("Initialize", _config);
+            _dataFile = result ?? "";
 
-            // wait for file name to get sent back
-            var startTime = DateTime.Now;
-            while ((DateTime.Now - startTime).TotalSeconds < 5)
+            if (!string.IsNullOrEmpty(_dataFile))
             {
-                Thread.Sleep(200);
-                if (!string.IsNullOrEmpty(_dataFile))
+                Log.Information($"Remote data file = {_dataFile}");
+                if (!_config.BypassDataStreams)
                 {
-                    break;
+                    _network.SendMessage("StartSynchronizing", new FilenamePayload { Filename = _dataFile });
                 }
             }
 
@@ -341,7 +341,6 @@ namespace HTSController
             stopButton.Visible = false;
 
             progressBar.Value = 0;
-            _streamManager.RestartStatusTimer();
             OnRunStateChanged(_measType, false);
 
             EndAutoRun(success: !_runAborted && !message.Equals("Error"), dataFile: _dataFile);
@@ -355,46 +354,38 @@ namespace HTSController
             OnAutoRunEnd(success, dataFile);
         }
 
-        private void OnRemoteMessage(object sender, string message)
+        private void HandleRemoteMessage(object sender, TcpMessage message)
         {
-            var parts = message.Split(new char[] { ':' }, 4);
-            if (parts.Length < 2) return;
+            var payload = message.GetPayload<RemoteMessagePayload>();
+            if (!payload.Target.Equals(_sceneName)) return;
 
-            string target = parts[0];
-            if (!target.Equals(_sceneName)) return;
-
-            string command = parts[1];
-            string info = (parts.Length > 2) ? parts[2] : "";
-            string data = (parts.Length > 3) ? parts[3] : "";
-
-            switch (command)
+            switch (message.Command)
             {
-                case "File":
-                    _dataFile = info;
-                    break;
                 case "Progress":
-                    int.TryParse(info, out int progress);
+                    int.TryParse(payload.Data, out int progress);
                     Invoke(new Action(() => progressBar.Value = progress));
                     break;
                 case "ReceiveData":
-                    string filePath = Path.Combine(FileLocations.SubjectDataFolder, info);
+                    var rcvParts = payload.Data.Split(new char[] { ':' }, 2);
+                    string filePath = Path.Combine(FileLocations.SubjectDataFolder, rcvParts[0]);
+                    string fileContent = rcvParts.Length > 1 ? rcvParts[1] : "";
                     if (File.Exists(filePath))
                     {
                         Log.Warning($"File {filePath} already exists, backing up. This shouldn't happen.");
                         File.Move(filePath, filePath + ".bak");
                     }
-                    File.WriteAllText(filePath, data);
+                    File.WriteAllText(filePath, fileContent);
                     break;
                 case "Status":
-                    Log.Information($"Status update: {info}");
-                    Invoke(new Action(() => logTextBox.AppendText($"- {info}{Environment.NewLine}")));
+                    Log.Information($"Status update: {payload.Data}");
+                    Invoke(new Action(() => logTextBox.AppendText($"- {payload.Data}{Environment.NewLine}")));
                     break;
                 case "Error":
-                    Invoke(new Action(() => { EndRun("Error", info); }));
+                    Invoke(new Action(() => { EndRun("Error", payload.Data); }));
                     break;
                 case "Finished":
-                    _runAborted = info.Equals("Measurement aborted");
-                    Invoke(new Action(() => { EndRun("Finished", info); }));
+                    _runAborted = payload.Data.Equals("Measurement aborted");
+                    Invoke(new Action(() => { EndRun("Finished", payload.Data); }));
                     break;
             }
         }

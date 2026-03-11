@@ -18,6 +18,7 @@ using KLib.Signals;
 using KLib.Signals.Waveforms;
 
 using KLib;
+using KLib.Net;
 
 using Turandot.Interactive;
 using Bekesy;
@@ -577,24 +578,17 @@ namespace HTSController
             CurateControls();
         }
 
-        private void OnRemoteMessage(object sender, string message)
+        private void OnRemoteMessage(object sender, TcpMessage message)
         {
-            var parts = message.Split(new char[] { ':' }, 4);
-            if (parts.Length < 2) return;
+            var payload = message.GetPayload<RemoteMessagePayload>();
+            if (!payload.Target.Equals("TurandotInteractive")) return;
 
-            string target = parts[0];
-            if (!target.Equals("TurandotInteractive")) return;
-
-            string command = parts[1];
-            string info = (parts.Length > 2) ? parts[2] : "";
-            string data = (parts.Length > 3) ? parts[3] : "";
-
-            switch (command)
+            switch (message.Command)
             {
                 case "Error":
                     Invoke(new Action(() =>
                     {
-                        audioErrorTextBox.Text = $"Remote error: {info}" + Environment.NewLine;
+                        audioErrorTextBox.Text = $"Remote error: {payload.Data}" + Environment.NewLine;
                         graphTabControl.SelectedTab = errorPage;
                     }));
                     break;
