@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,6 +18,8 @@ using SerilogTraceListener;
 
 using KLib;
 using KLib.Net;
+
+using HTS.Tcp;
 
 using HTSController.Data_Streams;
 using System.Runtime.CompilerServices;
@@ -59,9 +61,9 @@ namespace HTSController
         private async Task StartLogging()
         {
             _logPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), 
-                "EPL", 
-                "Logs", 
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                "EPL",
+                "Logs",
                 $"HTSController-{DateTime.Now.ToString("yyyyMMdd")}.txt");
 
             await Task.Run(() =>
@@ -93,12 +95,8 @@ namespace HTSController
 
             lightsButton.Visible = false;
 
-            //menuPanel.Enabled = false;
-            //            tabControl.SelectedTab = subjectPage;
             subjectButton.Checked = true;
-//            SelectTab(null);
 
-            subjectPageControl.Initialize(_network);
             fileSyncControl.Initialize(_network);
 
             driveDropDown.Items.Clear();
@@ -121,16 +119,15 @@ namespace HTSController
 
             Log.Information($"HTS v{Assembly.GetExecutingAssembly().GetName().Version.ToString()} started");
 
-            Log.Information("Starting TCP listener");
-            _network.StartListener();
+            Log.Information("Starting network...");
+            _network.ConnectionChanged += OnConnectionChanged;
+            _network.Initialize(this);
 
             connectionStatusLabel.Image = imageList.Images[0];
-            connectionStatusLabel.Text = "No tablet connection yet"; // (double-click to retry)";
+            connectionStatusLabel.Text = "No tablet connection yet";
 
             _streamManager = new DataStreamManager();
-            _streamManager.Initialize(_network, ipcLayoutPanel);
-
-            connectionTimer.Start();
+            _streamManager.Initialize(ipcLayoutPanel);
 
             matlabStatusLabel.Text = "Connecting...";
             matlabStatusLabel.Visible = true;
@@ -144,47 +141,53 @@ namespace HTSController
             }
         }
 
-        private async void connectionTimer_Tick(object sender, EventArgs e)
+        private async void OnConnectionChanged(object sender, bool connected)
         {
-            if (!_network.IsConnected)
+            if (connected)
             {
+                connectionStatusLabel.Image = imageList.Images[1];
+                connectionStatusLabel.Text = $"Connected to {_network.TabletAddress} (V{_network.TabletVersion})";
+                sceneNameLabel.Text = $"Scene: {_network.CurrentScene}";
+
                 try
                 {
-                    connectionTimer.Enabled = false;
-                    var success = await ConnectToTablet();
-                    if (success)
+                    var colorString = _network.SendRequest<string>("GetLEDColors");
+                    if (string.IsNullOrEmpty(colorString) || colorString == "none")
                     {
-                        var colorString = _network.SendMessageAndReceiveString("GetLEDColors");
-                        if (string.IsNullOrEmpty(colorString) || colorString == "none")
-                        {
-                            lightsButton.Visible = false;
-                        }
-                        else
-                        {
-                            lightsButton.Visible = true;
-                            SetLightsButtonBackgroundColor(colorString);
-                        }
-
-                        connectionTimer.Interval = 5000;
-                        subjectPageControl.Enabled = true;
-                        turandotPageControl.NetworkStatusChanged();
+                        lightsButton.Visible = false;
+                    }
+                    else
+                    {
+                        lightsButton.Visible = true;
+                        SetLightsButtonBackgroundColor(colorString);
                     }
                 }
-                catch (Exception ex) { Debug.WriteLine(ex.Message); }
-                connectionTimer.Enabled = true;
+                catch { lightsButton.Visible = false; }
+
+                // Send local paths when running on the same machine as HTS
+                if (_network.TabletAddress == "127.0.0.1")
+                {
+                    _network.SendMessage("SetDataRoot", FileLocations.ProjectRootFolder);
+                    if (!string.IsNullOrEmpty(subjectPageControl.Project))
+                    {
+                        _network.SendMessage("SetProject", subjectPageControl.Project);
+                    }
+                }
+
+                subjectPageControl.RetrieveSubjectState();
+                turandotPageControl.UpdateConfigFileList();
+                menuPanel.Enabled = true;
+                subjectPageControl.Enabled = true;
+                turandotPageControl.NetworkStatusChanged();
+                SelectTab(subjectButton);
             }
             else
             {
-                var success = _network.CheckConnection();
-                if (!success)
-                {
-                    Log.Information("Tablet connection lost");
-                    subjectPageControl.Enabled = false;
-                    turandotPageControl.NetworkStatusChanged();
-                    connectionStatusLabel.Image = imageList.Images[0];
-                    connectionStatusLabel.Text = "No tablet connection, retrying..."; // (double-click to retry)";
-                    connectionTimer.Interval = 500;
-                }
+                Log.Information("Tablet connection lost");
+                subjectPageControl.Enabled = false;
+                turandotPageControl.NetworkStatusChanged();
+                connectionStatusLabel.Image = imageList.Images[0];
+                connectionStatusLabel.Text = "No tablet connection, retrying...";
             }
         }
 
@@ -195,7 +198,7 @@ namespace HTSController
 
             if (!e.Cancel)
             {
-                _network.Disconnect();
+                _network.Shutdown();
             }
 
             Log.Information("Exit");
@@ -255,38 +258,6 @@ namespace HTSController
             }
         }
 
-        private async Task<bool> ConnectToTablet()
-        {
-            bool success = false;
-            try
-            {
-                success = await _network.Connect();
-            }
-            catch { }
-
-            if (success)
-            {
-                connectionStatusLabel.Image = imageList.Images[1];
-                connectionStatusLabel.Text = $"Connected to {_network.TabletAddress} (V{_network.TabletVersion})";
-                sceneNameLabel.Text = $"Scene: {_network.CurrentScene}";
-
-                if (_network.IsLocalConnection)
-                {
-                    _network.SendMessage($"SetDataRoot:{FileLocations.ProjectRootFolder}");
-                    if (!string.IsNullOrEmpty(subjectPageControl.Project))
-                    {
-                        _network.SendMessage($"SetProject:{subjectPageControl.Project}");
-                    }
-                }
-
-                subjectPageControl.RetrieveSubjectState();
-                turandotPageControl.UpdateConfigFileList();
-                menuPanel.Enabled = true;
-                SelectTab(subjectButton);
-            }
-            return success;
-        }
-
         private void menuButton_CheckedChanged(object sender, EventArgs e)
         {
             if (!_ignoreEvents)
@@ -302,8 +273,7 @@ namespace HTSController
 
         private void subjectPageControl_ProjectChanged(string projectName)
         {
-            FileLocations.SetProject(projectName);
-            turandotPageControl.UpdateConfigFileList();
+            // handled by subjectPageControl
         }
 
         private void OnRemoteMessage(object sender, string fullMessage)
@@ -327,47 +297,37 @@ namespace HTSController
         {
             if (_network.IsConnected)
             {
-                _network.SendMessage("ChangeScene:Home");
+                _network.SendMessage("ChangeScene", "Home");
             }
         }
 
         private void turandotPageControl_InteractiveClick(object sender, string settingsPath)
         {
-            connectionTimer.Stop();
-
             if (_network.IsConnected)
             {
-                _network.SendMessage("ChangeScene:Turandot Interactive");
+                _network.SendMessage("ChangeScene", "Turandot Interactive");
             }
 
             var dlg = new InteractiveForm(_network, settingsPath);
             dlg.ShowDialog();
-
-            connectionTimer.Start();
         }
 
         private void turandotPageControl_StartTurandotClick(object sender, HTSController.Pages.StartTurandotEventArgs e)
         {
-            connectionTimer.Stop();
-
-            if (_network.IsConnected)
-            {
-                _network.SendMessage("ChangeScene:Turandot");
-            }
-
             menuPanel.Enabled = false;
 
             if (_liveForm == null)
             {
                 _liveForm = new TurandotLiveForm(_network, _streamManager);
                 _liveForm.TopLevel = false;
-                _liveForm.ClosePage += OnTurandotRunPageClose;
                 _liveForm.AutoRunEnd += TestRunEnded;
-                 runTurandotPage.Controls.Add(_liveForm);
+                _liveForm.ClosePage += OnTurandotRunPageClose;
+                runTurandotPage.Controls.Add(_liveForm);
                 _liveForm.FormBorderStyle = FormBorderStyle.None;
                 _liveForm.Dock = DockStyle.Fill;
                 _liveForm.Show();
             }
+
             _liveForm.Initialize(e.settingsPath, e.extraSettings);
 
             tabControl.SelectedTab = runTurandotPage;
@@ -377,14 +337,12 @@ namespace HTSController
         {
             tabControl.SelectedTab = turandotSettingsPage;
             menuPanel.Enabled = true;
-            connectionTimer.Start();
         }
 
         private void adminButton_CheckedChanged(object sender, EventArgs e)
         {
             if (!_ignoreEvents)
             {
-                //fileSyncControl.Enabled = _network.IsConnected;
                 SelectTab(sender as CheckBox);
             }
         }
@@ -397,11 +355,17 @@ namespace HTSController
                 Directory.CreateDirectory(folder);
             }
 
-            var response = _network.SendMessageAndReceiveString("GetLog");
-            var parts = response.Split(new char[] { ':' }, 2);
-            var logPath = Path.Combine(folder, parts[0]);
-            File.WriteAllText(logPath, parts[1]);
-            System.Diagnostics.Process.Start(logPath);
+            try
+            {
+                var logFile = _network.SendRequest<TextFilePayload>("GetLog");
+                if (logFile != null && !string.IsNullOrEmpty(logFile.Filename))
+                {
+                    var logPath = Path.Combine(folder, logFile.Filename);
+                    File.WriteAllText(logPath, logFile.Content);
+                    System.Diagnostics.Process.Start(logPath);
+                }
+            }
+            catch (Exception ex) { Debug.WriteLine(ex.Message); }
         }
 
         private void localLogButton_Click(object sender, EventArgs e)
@@ -421,7 +385,6 @@ namespace HTSController
                 _basicForm.TopLevel = false;
                 _basicForm.AutoRunEnd += TestRunEnded;
                 _basicForm.RunStateChanged += RunStateChanged;
-                //_pupilForm.ClosePage += OnTurandotRunPageClose;
                 basicPageContainer.Controls.Add(_basicForm);
                 _basicForm.FormBorderStyle = FormBorderStyle.None;
                 _basicForm.Dock = DockStyle.Fill;
@@ -458,10 +421,7 @@ namespace HTSController
         {
             if (_ignoreEvents) return;
 
-            //connectionTimer.Stop();
             SelectTab(sender as CheckBox);
-
-            //menuPanel.Enabled = false;
 
             if (_pupilForm == null)
             {
@@ -469,7 +429,6 @@ namespace HTSController
                 _pupilForm.TopLevel = false;
                 _pupilForm.AutoRunEnd += TestRunEnded;
                 _pupilForm.RunStateChanged += RunStateChanged;
-                //_pupilForm.ClosePage += OnTurandotRunPageClose;
                 pupilPage.Controls.Add(_pupilForm);
                 _pupilForm.FormBorderStyle = FormBorderStyle.None;
                 _pupilForm.Dock = DockStyle.Fill;
@@ -507,7 +466,7 @@ namespace HTSController
                     break;
                 case "Investigator":
                     MarkdownDialog.ShowMarkdownDialog(e.instructions);
-                    protocolControl.TestFinished(success: true, dataFile:null);
+                    protocolControl.TestFinished(success: true, dataFile: null);
                     break;
                 case "Speech Reception":
                     speechButton.Checked = true;
@@ -527,21 +486,20 @@ namespace HTSController
         private void protocolControl_ProtocolStateChange(object sender, Pages.ProtocolControl.ProtocolStateChangeEventArgs e)
         {
             menuPanel.Enabled = !e.running;
-            //tableLayoutPanel.ColumnStyles[0].Width = e.running ? 0 : 155;
         }
 
         private void RunStateChanged(object sender, RunStateChangedEventArgs e)
         {
-            if (e.isRunning)
-            {
-                connectionTimer.Stop();
-                Log.Information("connection timer stopped");
-            }
-            else
-            {
-                connectionTimer.Start();
-                Log.Information("connection timer started");
-            }
+            //if (e.isRunning)
+            //{
+            //    connectionTimer.Stop();
+            //    Log.Information("connection timer stopped");
+            //}
+            //else
+            //{
+            //    connectionTimer.Start();
+            //    Log.Information("connection timer started");
+            //}
         }
 
         private void TestRunEnded(object sender, AutoRunEndEventArgs e)
@@ -566,6 +524,5 @@ namespace HTSController
                 FileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
             }
         }
-
     }
 }

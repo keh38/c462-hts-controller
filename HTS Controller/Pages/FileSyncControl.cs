@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -67,7 +67,7 @@ namespace HTSController.Pages
 
         private async void startButton_Click(object sender, EventArgs e)
         {
-            _network.SendMessage("ChangeScene:Admin Tools");
+            _network.SendMessage("ChangeScene", "Admin Tools");
             _network.RemoteMessageHandler += OnRemoteMessage;
 
             cancelButton.Enabled = true;
@@ -88,7 +88,6 @@ namespace HTSController.Pages
                 {
                     await UpdateApp(_cts);
                 }
-
             }
             catch (OperationCanceledException ex)
             {
@@ -142,7 +141,7 @@ namespace HTSController.Pages
                 {
                     progressBar.Value++;
                     progressBarLabel.Text = remoteFile;
-                    _network.SendMessage($"DeleteFile:{remoteFile}");
+                    _network.SendMessage("DeleteFile", remoteFile);
                 }
             }
 
@@ -158,18 +157,25 @@ namespace HTSController.Pages
 
                 progressBar.Value++;
                 progressBarLabel.Text = file;
-                var result = _network.SendMessageAndReceiveString($"FileExists:{file}");
+
                 bool upload = false;
-                if (result.Equals("404"))
+                try
+                {
+                    var result = _network.SendRequest<string>("FileExists", file);
+                    if (result.Equals("404"))
+                    {
+                        upload = true;
+                    }
+                    else
+                    {
+                        DateTime remoteTime = KFile.JSONDeserializeFromString<DateTime>(result);
+                        DateTime localTime = File.GetLastWriteTime(fullLocalPath);
+                        upload = (localTime > remoteTime);
+                    }
+                }
+                catch
                 {
                     upload = true;
-                }
-                else
-                {
-                    DateTime remoteTime = KFile.JSONDeserializeFromString<DateTime>(result);
-                    DateTime localTime = File.GetLastWriteTime(fullLocalPath);
-                    upload = (localTime > remoteTime);
-                    //Debug.WriteLine($"{upload} {localTime} {remoteTime} {file}");
                 }
 
                 if (upload)
@@ -204,7 +210,7 @@ namespace HTSController.Pages
                 var success = await _network.SendBufferedFile(fileBrowser.Value, remotePath);
                 if (success)
                 {
-                    _network.SendMessage($"RunInstaller:{Path.GetFileName(fileBrowser.Value)}");
+                    _network.SendMessage("RunInstaller", Path.GetFileName(fileBrowser.Value));
                 }
                 Log.Information("Update app finished");
                 AppendLogText("Finished");
@@ -214,7 +220,6 @@ namespace HTSController.Pages
                 Log.Information("Update installer does not exist");
                 AppendLogText("Update installer does not exist");
             }
-
         }
 
         private void AppendLogText(string message)
@@ -257,13 +262,13 @@ namespace HTSController.Pages
 
             List<string> resources = new List<string>();
 
-            foreach (var resourceFolder in resourceFolders) 
+            foreach (var resourceFolder in resourceFolders)
             {
                 string folder = Path.Combine(FileLocations.ResourcesFolder, resourceFolder);
                 var files = Directory.GetFiles(folder);
-                foreach (var file in files) 
+                foreach (var file in files)
                 {
-                    resources.Add(file.Remove(0, FileLocations.ResourcesFolder.Length+1));
+                    resources.Add(file.Remove(0, FileLocations.ResourcesFolder.Length + 1));
                 }
             }
 

@@ -1,9 +1,9 @@
-﻿#if DEBUG
+#if DEBUG
 //#define NO_EYELINK
 #endif
 using System;
 using System.Collections.Generic;
-using System.ComponentModel; 
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -17,6 +17,7 @@ using System.Windows.Forms;
 using KLib;
 using Pupillometry;
 
+using HTS.Tcp;
 using HTSController.Data_Streams;
 
 using Serilog;
@@ -146,10 +147,10 @@ namespace HTSController
                 .Select(x => Path.GetFileNameWithoutExtension(x).Replace("DynamicRange.", ""));
 
             openDropDown.Items.Clear();
-            foreach ( var file in files)
+            foreach (var file in files)
             {
                 openDropDown.Items.Add(file);
-            }                
+            }
         }
 
         public void AutoRunDynamicRange(string settingsFile)
@@ -175,7 +176,6 @@ namespace HTSController
 
             EnumerateDynamicRangeSettings();
             openDropDown.SelectedItem = _dynamicRangeSettings.Name;
-
         }
 
         private void openDropDown_SelectedIndexChanged(object sender, EventArgs e)
@@ -239,9 +239,9 @@ namespace HTSController
             if (!string.IsNullOrEmpty(_dataFile))
             {
 #if false && DEBUG
-                var started = await _streamManager.StartRecording(_dataFile);
+                var started = await _streamManager.StartDataStreamsAsync(_dataFile);
 #else
-                var started = await _streamManager.StartRecording(_dataFile, mandatory:_eyeTrackerName);
+                var started = await _streamManager.StartDataStreamsAsync(_dataFile, mandatory: _eyeTrackerName);
 #endif
                 if (started)
                 {
@@ -254,13 +254,13 @@ namespace HTSController
                 else
                 {
                     logTextBox.AppendText("failed" + Environment.NewLine);
-                    foreach (var s in _streamManager.ProblemStreams)
+                    foreach (var s in _streamManager.GetProblemStreams())
                     {
                         logTextBox.AppendText($"- {s}\n");
                         Log.Error($"failed to start stream: {s}");
                     }
                     startButton.Enabled = true;
-                    _network.SendMessage($"StopSynchronizing");
+                    _network.SendMessage("StopSynchronizing");
                     EndAutoRun(false, null);
                 }
             }
@@ -269,7 +269,7 @@ namespace HTSController
                 logTextBox.AppendText("didn't receive data file name from Dynamic Range scene");
                 Log.Error("didn't receive data file name from Dynamic Range scene");
                 startButton.Enabled = true;
-                _network.SendMessage($"StopSynchronizing");
+                _network.SendMessage("StopSynchronizing");
                 EndAutoRun(false, null);
             }
         }
@@ -277,7 +277,7 @@ namespace HTSController
         private async Task<bool> ChangeTabletScene(string sceneName)
         {
             bool success = false;
-            _network.SendMessage($"ChangeScene:{sceneName}");
+            _network.SendMessage("ChangeScene", sceneName);
 
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
@@ -295,9 +295,9 @@ namespace HTSController
 
         private void InitializeDynamicRangeMeasurement()
         {
-            _network.SendMessage($"Initialize:{KFile.ToXMLString(_dynamicRangeSettings)}");
+            _network.SendMessage("Initialize", KFile.ToXMLString(_dynamicRangeSettings));
 
-            // wait for file name to get sent back
+            // wait for file name to get sent back via RemoteMessageHandler
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
             {
@@ -310,7 +310,7 @@ namespace HTSController
 
             if (!string.IsNullOrEmpty(_dataFile))
             {
-                _network.SendMessage($"StartSynchronizing:{_dataFile}");
+                _network.SendMessage("StartSynchronizing", _dataFile);
             }
         }
 
@@ -319,8 +319,8 @@ namespace HTSController
             _watchdog.Stop();
             Log.Information("Dynamic range test ended");
 
-            _network.SendMessage($"StopSynchronizing");
-            await _streamManager.StopRecording();
+            _network.SendMessage("StopSynchronizing");
+            await _streamManager.StopDataStreamsAsync();
             _network.SendMessage("SendSyncLog");
 
             if (!string.IsNullOrEmpty(status))
@@ -361,7 +361,7 @@ namespace HTSController
             _streamManager.RestartStatusTimer();
             OnRunStateChanged("PupilDynamicRange", false);
 
-            EndAutoRun(success: !_runAborted && !message.Equals("Error") && analysisSuccess, dataFile:_dataFile);
+            EndAutoRun(success: !_runAborted && !message.Equals("Error") && analysisSuccess, dataFile: _dataFile);
         }
 
         private void EndAutoRun(bool success, string dataFile)
@@ -397,21 +397,17 @@ namespace HTSController
             FileStream stream = null;
             try
             {
-                // Try to open the file for exclusive access
                 stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
             }
             catch (IOException ex)
             {
-                // If an IOException occurs, the file is locked
                 return true;
             }
             finally
             {
-                // Close the stream if it was successfully opened
                 if (stream != null)
                     stream.Close();
             }
-            // File is not locked
             return false;
         }
 
@@ -460,7 +456,7 @@ namespace HTSController
 
         private void stopButton_Click(object sender, EventArgs e)
         {
-            Log.Information("User stopping dynamice range test");
+            Log.Information("User stopping dynamic range test");
             _runAborted = true;
             stopButton.Enabled = false;
             _network.SendMessage("Abort");
@@ -507,7 +503,7 @@ namespace HTSController
 #if !NO_EYELINK
             _streamManager.Find("EYELINK")?.SendMessage("Abort");
 #endif
-            
+
             success = GetTabletScreenSize();
             if (success)
             {
@@ -533,7 +529,7 @@ namespace HTSController
                 return;
             }
 
-            var started = await _streamManager.StartRecording(_dataFile, exclude: new List<string> { "EYELINK" });
+            var started = await _streamManager.StartDataStreamsAsync(_dataFile, exclude: new List<string> { "EYELINK" });
             if (started)
             {
                 OnRunStateChanged("GazeCalibration", true);
@@ -541,7 +537,7 @@ namespace HTSController
             else
             {
                 gazeLogTextBox.AppendText("failed" + Environment.NewLine);
-                foreach (var s in _streamManager.ProblemStreams)
+                foreach (var s in _streamManager.GetProblemStreams())
                 {
                     gazeLogTextBox.AppendText($"- {s}{Environment.NewLine}");
                     Log.Error($"failed to start stream: {s}");
@@ -558,7 +554,7 @@ namespace HTSController
                 gazeLogTextBox.AppendText("- Could not start EyeLink" + Environment.NewLine);
                 Log.Error("could not start EyeLink");
                 gazeStartButton.Enabled = true;
-                await _streamManager.StopRecording();
+                await _streamManager.StopDataStreamsAsync();
 
                 _streamManager.RestartStatusTimer();
                 OnRunStateChanged("GazeCalibration", false);
@@ -577,9 +573,9 @@ namespace HTSController
 
         private void InitializeGazeCalibrationMeasurement()
         {
-            _network.SendMessage($"Initialize:{KFile.ToXMLString(_gazeSettings)}");
+            _network.SendMessage("Initialize", KFile.ToXMLString(_gazeSettings));
 
-            // wait for file name to get sent back
+            // wait for file name to get sent back via RemoteMessageHandler
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
             {
@@ -592,7 +588,7 @@ namespace HTSController
 
             if (!string.IsNullOrEmpty(_dataFile))
             {
-                _network.SendMessage($"StartSynchronizing:{_dataFile}");
+                _network.SendMessage("StartSynchronizing", _dataFile);
             }
         }
 
@@ -615,15 +611,13 @@ namespace HTSController
 
             while (true)
             {
-                //if (job > 0 && job != 6 && job != lastjob) Log.Information($" job = {job}");
                 lastjob = job;
 
                 if (job == 9)
                 {
                     _busyCal.getCalLocation(out short x, out short y);
-                    //Log.Information($"target location = {x}, {y}");
                     _targetPoint = new Point(x, y);
-                    _network.SendMessage($"Location:{x},{y}");
+                    _network.SendMessage("Location", $"{x},{y}");
                     Invoke(new Action(() => gazePicture.Refresh()));
                 }
                 else if (job == 14)
@@ -641,7 +635,6 @@ namespace HTSController
                 job = _busyCal.job;
             }
 #endif
-            //EndGazeCalibration();
         }
 
         private void gazeStopButton_Click(object sender, EventArgs e)
@@ -656,13 +649,20 @@ namespace HTSController
         {
             bool success = false;
 
-            var response = _network.SendMessageAndReceiveString("GetScreenSize");
-            var parts = response.Split(',');
-            if (parts.Length == 2)
+            try
             {
-                _tabletWidth = int.Parse(parts[0]);
-                _tabletHeight = int.Parse(parts[1]);
-                success = true;
+                var response = _network.SendRequest<string>("GetScreenSize");
+                var parts = response.Split(',');
+                if (parts.Length == 2)
+                {
+                    _tabletWidth = int.Parse(parts[0]);
+                    _tabletHeight = int.Parse(parts[1]);
+                    success = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"GetScreenSize failed: {ex.Message}");
             }
 
             return success;
@@ -717,8 +717,8 @@ namespace HTSController
         private async void EndGazeCalibration()
         {
             Log.Information("End gaze calibration");
-            _network.SendMessage($"StopSynchronizing");
-            await _streamManager.StopRecording();
+            _network.SendMessage("StopSynchronizing");
+            await _streamManager.StopDataStreamsAsync();
 
             await Task.Run(() => GetDataFile("SendData", "gaze calibration log"));
             await Task.Run(() => GetDataFile("SendSyncLog", "sync log"));
@@ -739,7 +739,6 @@ namespace HTSController
                 Log.Information("EyeLink is still connected");
             }
 #endif
-            // race condition restarting EyeLink in free run mode below?
             Thread.Sleep(1000);
 
             gazeStopButton.Visible = false;
@@ -763,9 +762,9 @@ namespace HTSController
         private void GetDataFile(string message, string fileType)
         {
             _dataReceived = false;
-            _network.SendMessage($"{message}");
+            _network.SendMessage(message);
 
-            // wait for file name to get sent back
+            // wait for file to get sent back via RemoteMessageHandler
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
             {
@@ -784,14 +783,13 @@ namespace HTSController
                 }));
                 Log.Error($"timed out waiting for {fileType}");
             }
-
         }
 
         private void gazePicture_Paint(object sender, PaintEventArgs e)
         {
             if (_tabletWidth == 0) return;
 
-            float aspectRatio = (float) _tabletWidth / _tabletHeight;
+            float aspectRatio = (float)_tabletWidth / _tabletHeight;
 
             float width = gazePicture.Width;
             float height = gazePicture.Width / aspectRatio;
@@ -811,7 +809,7 @@ namespace HTSController
             {
                 float x = xoff + (float)_targetPoint.X / _tabletWidth * width;
                 float y = yoff + (float)_targetPoint.Y / _tabletHeight * height;
-                float size = 10; 
+                float size = 10;
 
                 rect = new RectangleF(x - size / 2, y - size / 2, size, size);
 
@@ -826,8 +824,6 @@ namespace HTSController
                 var functionName = matlabDropDown.SelectedItem?.ToString();
                 if (!string.IsNullOrEmpty(functionName))
                 {
-                    //_dataFile = @"C:\Users\hancock\OneDrive\Engineering\Polley\HTS\Sync\Test Data\_Yu-PupilDR-2025-04-14_103307.json";
-                    //var result = MATLAB.RunFunction(functionName, _dataFile);
                     var result = MATLAB.RunFunction(functionName, Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
                     logTextBox.AppendText(result);
                 }
@@ -841,6 +837,5 @@ namespace HTSController
                 HTSControllerSettings.SetLastUsed("PupilFunction", matlabDropDown.SelectedItem.ToString());
             }
         }
-
     }
 }

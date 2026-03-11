@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -41,7 +41,7 @@ namespace HTSController.Data_Streams
 
         public async Task SendMessage(string message)
         {
-            await KTcpClient.SendMessageAsync(IPEndPoint, message);
+            await Task.Run(() => KTcpClient.SendRequest(IPEndPoint, TcpMessage.Request(message)));
         }
     }
 }

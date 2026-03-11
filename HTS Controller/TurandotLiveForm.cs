@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,8 +16,8 @@ using Serilog;
 
 using KLib;
 
+using HTS.Tcp;
 using HTSController.Data_Streams;
-using UnityEngine.WSA;
 
 namespace HTSController
 {
@@ -91,7 +91,7 @@ namespace HTSController
             dataFileTextBox.Text = _dataFile;
             if (!string.IsNullOrEmpty(_dataFile) && !_dataFile.Equals("error"))
             {
-                var started = await _streamManager.StartRecording(_dataFile);
+                var started = await _streamManager.StartDataStreamsAsync(_dataFile);
                 if (started)
                 {
                     startButton.Visible = false;
@@ -102,7 +102,7 @@ namespace HTSController
                 else
                 {
                     logTextBox.AppendText("failed" + Environment.NewLine);
-                    foreach (var s in _streamManager.ProblemStreams)
+                    foreach (var s in _streamManager.GetProblemStreams())
                     {
                         logTextBox.AppendText($"- {s}\n");
                     }
@@ -133,11 +133,11 @@ namespace HTSController
             _postRunMATLABFile = p.matlabFunction;
             if (!string.IsNullOrEmpty(_extraSettings))
             {
-                _network.SendMessage($"SetScriptArguments:{_extraSettings}");   
+                _network.SendMessage("SetScriptArguments", _extraSettings);
             }
-            _network.SendMessage($"SetParams:{KFile.ToXMLString(p)}");
+            _network.SendMessage("SetParams", KFile.ToXMLString(p));
 
-            // wait for file name to get sent back
+            // wait for file name to get sent back via RemoteMessageHandler
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
             {
@@ -150,27 +150,32 @@ namespace HTSController
 
             if (!string.IsNullOrEmpty(_dataFile) && !_dataFile.Equals("error"))
             {
-                _network.SendMessage($"StartSynchronizing:{_dataFile}");
+                _network.SendMessage("StartSynchronizing", _dataFile);
             }
         }
 
         private async void EndRun(string message, string status)
         {
             _watchdog.Stop();
-            _network.SendMessage($"StopSynchronizing");
-            await _streamManager.StopRecording();
-            //_network.SendMessage("SendSyncLog");
+            _network.SendMessage("StopSynchronizing");
+            await _streamManager.StopDataStreamsAsync();
 
-            var response = _network.SendMessageAndReceiveString("GetSyncLog");
-            if (response == null || response.Equals("none"))
+            try
             {
-                Log.Information("tablet has no sync log file to send");
+                var syncLog = _network.SendRequest<TextFilePayload>("GetSyncLog");
+                if (syncLog != null && !string.IsNullOrEmpty(syncLog.Filename))
+                {
+                    var logPath = Path.Combine(FileLocations.SubjectDataFolder, syncLog.Filename);
+                    File.WriteAllText(logPath, syncLog.Content);
+                }
+                else
+                {
+                    Log.Information("tablet has no sync log file to send");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var parts = response.Split(new char[] { ':' }, 2);
-                var logPath = Path.Combine(FileLocations.SubjectDataFolder, parts[0]);
-                File.WriteAllText(logPath, parts[1]);
+                Log.Warning($"Could not retrieve sync log: {ex.Message}");
             }
 
             statusTextBox.Text = message;
@@ -248,7 +253,6 @@ namespace HTSController
         private void closeButton_Click(object sender, EventArgs e)
         {
             _network.RemoteMessageHandler -= OnRemoteMessage;
-            //_streamManager.Cleanup();
             OnClosePage();
         }
 
@@ -256,7 +260,7 @@ namespace HTSController
         {
             stopButton.Enabled = false;
             _runAborted = true;
-            if (_network.CheckConnection())
+            if (_network.IsConnected)
             {
                 _network.SendMessage("Abort");
                 _watchdog.Start();

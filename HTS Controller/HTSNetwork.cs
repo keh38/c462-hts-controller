@@ -1,218 +1,267 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
+using System;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Serilog;
-using SerilogTraceListener;
 
 using KLib;
 using KLib.Net;
-using UnityEngine;
+using HTS.Tcp;
 
 namespace HTSController
 {
     public class HTSNetwork
     {
+        // -------------------------------------------------------------------------
+        // Public events
+        // -------------------------------------------------------------------------
+
+        /// <summary>
+        /// Raised when the connection to the HTS is established or lost.
+        /// true = connected, false = disconnected.
+        /// Always marshalled to the UI thread.
+        /// </summary>
+        public event EventHandler<bool> ConnectionChanged;
+
+        /// <summary>
+        /// Raised when the HTS sends an unsolicited TCP message to this controller.
+        /// Phase 2: will be migrated to TcpMessage protocol.
+        /// </summary>
         public event EventHandler<string> RemoteMessageHandler;
-        private void OnRemoteMessage(string message) { RemoteMessageHandler?.Invoke(this, message); }
 
+        private void OnConnectionChanged(bool connected) => ConnectionChanged?.Invoke(this, connected);
+        private void OnRemoteMessage(string message) => RemoteMessageHandler?.Invoke(this, message);
 
-        private IPEndPoint _ipEndPoint;
-        private string _serverAddress;
-        private bool _lastPingSucceeded = false;
+        // -------------------------------------------------------------------------
+        // Private state
+        // -------------------------------------------------------------------------
+
+        private IPEndPoint _remoteEndPoint;
+        private IPEndPoint _myEndPoint;
+        private string _hostName = "";
         private string _remoteVersionNumber = "";
 
+        private DiscoveryListener _discoveryListener;
         private CancellationTokenSource _serverCancellationToken;
+        private Control _uiControl;
 
-        public bool IsConnected { get { return _ipEndPoint != null && _lastPingSucceeded; } }
-        public bool IsLocalConnection { get { return _ipEndPoint != null && _serverAddress.StartsWith(_ipEndPoint.Address.ToString()); } }
+        // -------------------------------------------------------------------------
+        // Public properties
+        // -------------------------------------------------------------------------
+
+        public bool IsConnected => _remoteEndPoint != null;
         public string CurrentScene { get; private set; }
-        public string TabletAddress { get { return (_ipEndPoint == null) ? "" : _ipEndPoint.ToString(); } }
-        public string MyAddress { get { return _serverAddress; } }
-        public string TabletVersion { get { return _remoteVersionNumber; } }
+        public string TabletAddress => _remoteEndPoint?.ToString() ?? "";
+        public string MyAddress => _myEndPoint?.ToString() ?? "";
+        public string TabletVersion => _remoteVersionNumber;
+
+        // -------------------------------------------------------------------------
+        // Initialisation
+        // -------------------------------------------------------------------------
 
         public HTSNetwork() { }
 
-        public async Task<bool> Connect()
+        /// <summary>
+        /// Starts the TCP listener and UDP discovery listener.
+        /// Call once at application startup.
+        /// </summary>
+        /// <param name="uiControl">Any UI control — used to marshal events to the UI thread.</param>
+        public void Initialize(Control uiControl)
         {
-            return await Task.Run(() => Discover());
+            _uiControl = uiControl;
+
+            StartListener();
+
+            _discoveryListener = new DiscoveryListener();
+            _discoveryListener.HostDiscovered += OnHostDiscovered;
+            _discoveryListener.HostDisappeared += OnHostDisappeared;
+            _discoveryListener.Start();
+
+            Log.Information("HTSNetwork initialized — listening for HTS beacon");
         }
 
-        public void Disconnect()
+        // -------------------------------------------------------------------------
+        // Discovery handlers
+        // -------------------------------------------------------------------------
+
+        private void OnHostDiscovered(object sender, ServerBeacon beacon)
         {
-            if (_ipEndPoint != null)
+            if (!beacon.Name.Equals("HEARING.TEST.SUITE", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            if (_remoteEndPoint != null)
+                return; // already connected
+
+            try
             {
-                KTcpClient.SendMessage(_ipEndPoint, "Disconnect");
-                _serverCancellationToken.Cancel();
+                var endpoint = new IPEndPoint(IPAddress.Parse(beacon.Address), beacon.TcpPort);
+                Log.Information($"HTS beacon received — contacting {endpoint}");
+
+                var payload = new ConnectionRequestPayload
+                {
+                    Address = _myEndPoint.Address.ToString(),
+                    Port = _myEndPoint.Port
+                };
+
+                var response = KTcpClient.SendRequest(endpoint, TcpMessage.Request("Connect", payload));
+
+                if (!response.IsOk)
+                {
+                    Log.Information($"HTS refused connection — code {response.Code}: {response.Command}");
+                    return;
+                }
+
+                var data = response.GetPayload<ConnectionResponsePayload>();
+                _remoteEndPoint = endpoint;
+                _hostName = data.HostName;
+                _remoteVersionNumber = data.VersionNumber;
+                CurrentScene = data.SceneName;
+
+                Log.Information($"Connected to {_hostName} at {_remoteEndPoint} — scene: {CurrentScene}, version: {_remoteVersionNumber}");
+
+                InvokeOnUI(() => OnConnectionChanged(true));
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error connecting to HTS: {ex.Message}");
             }
         }
 
-        public bool CheckConnection()
+        private void OnHostDisappeared(object sender, ServerBeacon beacon)
         {
-            bool connected = false;
-            if (_ipEndPoint != null)
+            if (!beacon.Name.Equals("HEARING.TEST.SUITE", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            if (_remoteEndPoint == null)
+                return; // already disconnected
+
+            Log.Information("HTS beacon lost — connection dropped");
+            ResetConnection();
+            InvokeOnUI(() => OnConnectionChanged(false));
+        }
+
+        // -------------------------------------------------------------------------
+        // Shutdown
+        // -------------------------------------------------------------------------
+
+        /// <summary>
+        /// Notifies the HTS that this controller is shutting down, then stops all listeners.
+        /// Call once from MainForm.OnFormClosing.
+        /// </summary>
+        public void Shutdown()
+        {
+            _discoveryListener?.Stop();
+
+            if (_remoteEndPoint != null)
             {
-                var result = KTcpClient.SendMessage(_ipEndPoint, "Ping");
-                connected = result > 0;
-                _lastPingSucceeded = connected;
+                try
+                {
+                    KTcpClient.SendRequest(_remoteEndPoint, TcpMessage.Request("Disconnect"));
+                    Log.Information("Disconnect sent to HTS");
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"Could not send Disconnect to HTS: {ex.Message}");
+                }
             }
 
-            return connected;
+            _serverCancellationToken?.Cancel();
+            ResetConnection();
         }
 
-        public bool SendMessage(string message)
+        // -------------------------------------------------------------------------
+        // Outgoing messaging
+        // -------------------------------------------------------------------------
+
+        /// <summary>Sends a command with no payload. Returns true if the server responded OK.</summary>
+        public bool SendMessage(string command)
         {
-            var response = KTcpClient.SendMessage(_ipEndPoint, message);
-            return response > 0;
+            if (_remoteEndPoint == null) return false;
+            return KTcpClient.SendRequest(_remoteEndPoint, TcpMessage.Request(command)).IsOk;
         }
 
-        public string SendMessageAndReceiveString(string message)
+        /// <summary>Sends a command with a payload object. Returns true if the server responded OK.</summary>
+        public bool SendMessage(string command, object payload)
         {
-            string response = null;
-            if (_ipEndPoint != null)
-            {
-                response = KTcpClient.SendMessageReceiveString(_ipEndPoint, message);
-            }
-
-            return response;
+            if (_remoteEndPoint == null) return false;
+            return KTcpClient.SendRequest(_remoteEndPoint, TcpMessage.Request(command, payload)).IsOk;
         }
 
-        public T SendMessageAndReceiveJSON<T>(string message)
+        /// <summary>Sends a request and returns the typed payload from the response.</summary>
+        public T SendRequest<T>(string command, object payload = null)
         {
-            var data = default(T);
-            if (_ipEndPoint != null)
-            {
-                var response = KTcpClient.SendMessageReceiveString(_ipEndPoint, message);
-                data = KFile.JSONDeserializeFromString<T>(response);
-            }
-
-            return data;
+            if (_remoteEndPoint == null) return default;
+            var request = payload != null
+                ? TcpMessage.Request(command, payload)
+                : TcpMessage.Request(command);
+            var response = KTcpClient.SendRequest(_remoteEndPoint, request);
+            return response.IsOk ? response.GetPayload<T>() : default;
         }
 
-        public T SendMessageAndReceiveXml<T>(string message)
-        {
-            var data = default(T);
-            if (_ipEndPoint != null)
-            {
-                var response = KTcpClient.SendMessageReceiveString(_ipEndPoint, message);
-                data = KFile.FromXMLString<T>(response);
-            }
-
-            return data;
-        }
+        // -------------------------------------------------------------------------
+        // File transfer — phase 2 will migrate to the two-connection protocol
+        // -------------------------------------------------------------------------
 
         public async Task<bool> SendBufferedFile(string localPath, string remotePath)
         {
             int bufferSize = 16384;
 
             var fileInfo = new FileInfo(localPath);
-
             long numBuffers = (long)Math.Ceiling((double)fileInfo.Length / bufferSize);
 
-            KTcpClient client = new KTcpClient();
-            client.Connect(_ipEndPoint);
+            //KTcpClient client = new KTcpClient();
+            //client.Connect(_remoteEndPoint);
+            //client.StartBufferedSend();
 
-            client.StartBufferedSend();
-            var result = client.SendBuffer($"ReceiveBufferedFile:{remotePath}:{bufferSize}:{numBuffers}");
-            if (result <= 0)
-            {
-                return false;
-            }
+            //var result = client.SendBuffer($"ReceiveBufferedFile:{remotePath}:{bufferSize}:{numBuffers}");
+            //if (result <= 0) return false;
 
-            using (FileStream fs = new FileStream(localPath, FileMode.Open, FileAccess.Read))
-            using (BinaryReader reader = new BinaryReader(fs))
-            {
-                for (int k = 0; k < numBuffers; k++)
-                {
-                    var bytes = reader.ReadBytes(bufferSize);
-                    result = client.SendBuffer(bytes);
-                }
-            }
+            //using (FileStream fs = new FileStream(localPath, FileMode.Open, FileAccess.Read))
+            //using (BinaryReader reader = new BinaryReader(fs))
+            //{
+            //    for (int k = 0; k < numBuffers; k++)
+            //    {
+            //        var bytes = reader.ReadBytes(bufferSize);
+            //        result = client.SendBuffer(bytes);
+            //    }
+            //}
 
-            client.EndBufferedSend();
-            client.Close();
-
+            //client.EndBufferedSend();
+            //client.Close();
             return true;
         }
 
-        private bool Discover()
+        // -------------------------------------------------------------------------
+        // TCP listener — receives unsolicited messages from HTS
+        // Phase 2: ProcessTCPMessage will be migrated to TcpMessage protocol
+        // -------------------------------------------------------------------------
+
+        private void StartListener()
         {
-            bool success = false;
-
-            try
-            {
-                _ipEndPoint = Discovery.Discover("HEARING.TEST.SUITE");
-                if (_ipEndPoint != null)
-                {
-                    Log.Information($"contacting host {_ipEndPoint.ToString()}");
-
-                    var result = KTcpClient.SendMessage(_ipEndPoint, $"Connect:{_serverAddress.Replace(":", "/")}");
-                    if (result > 0)
-                    {
-                        Log.Information("connected!");
-                        CurrentScene = KTcpClient.SendMessageReceiveString(_ipEndPoint, "GetCurrentSceneName");
-                        _remoteVersionNumber = KTcpClient.SendMessageReceiveString(_ipEndPoint, "GetVersionNumber");
-                    }
-                    else
-                    {
-                        Log.Information("remote host busy");
-                    }
-                    success = (result > 0);
-                    _lastPingSucceeded = success;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message);
-                success = false;
-                _ipEndPoint = null;
-            }
-
-            return success;
-        }
-
-        public void StartListener()
-        {
-            var serverEndPoint = Discovery.FindNextAvailableEndPoint();
+            _myEndPoint = Discovery.FindNextAvailableEndPoint();
 
             _serverCancellationToken = new CancellationTokenSource();
             Task.Run(() =>
             {
-                Listener(serverEndPoint, _serverCancellationToken.Token);
+                Listener(_myEndPoint, _serverCancellationToken.Token);
             }, _serverCancellationToken.Token);
         }
 
-        private void Listener(IPEndPoint serverEndPoint, CancellationToken ct)
+        private void Listener(IPEndPoint endpoint, CancellationToken ct)
         {
             var server = new KTcpListener();
-            server.StartListener(serverEndPoint);
-
-            _serverAddress = server.ListeningOn;
-            if (_serverAddress.StartsWith("localhost"))
-            {
-                _serverAddress = _serverAddress.Replace("localhost", "127.0.0.1");
-            }
-            Log.Information($"TCP server started on {server.ListeningOn}");
+            server.StartListener(endpoint);
+            Log.Information($"TCP server started on {endpoint}");
 
             while (!ct.IsCancellationRequested)
             {
                 try
                 {
                     if (server.Pending())
-                    {
                         ProcessTCPMessage(server);
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -227,59 +276,53 @@ namespace HTSController
         private void ProcessTCPMessage(KTcpListener server)
         {
             server.AcceptTcpClient();
+            var request = server.ReadRequest();
 
-            string input = server.ReadString();
-            server.SendAcknowledgement();
+            Log.Information($"[HTS] Received command: {request.Command}");
 
-            if (input.StartsWith("ReceiveBufferedFile"))
+            switch (request.Command)
             {
-                ReceiveBufferedFile(server, input);
-                server.CloseTcpClient();
-                return;
+                case "ChangedScene":
+                    var sceneData = request.GetPayload<ChangeScenePayload>();
+                    server.WriteResponse(TcpMessage.Ok());
+                    CurrentScene = sceneData.SceneName;
+                    Log.Information($"HTS reports scene changed to {CurrentScene}");
+                    OnRemoteMessage($"ChangedScene:{CurrentScene}");
+                    break;
+
+                case "Disconnect":
+                    server.WriteResponse(TcpMessage.Ok());
+                    ResetConnection();
+                    InvokeOnUI(() => OnConnectionChanged(false));
+                    break;
+
+                default:
+                    server.WriteResponse(TcpMessage.Ok());
+                    OnRemoteMessage(request.Command);
+                    break;
             }
 
             server.CloseTcpClient();
-
-            if (input.StartsWith("ChangedScene"))
-            {
-                CurrentScene = input.Substring(("ChangedScene:").Length);
-                Log.Information($"Tablet reports scene changed to {CurrentScene}");
-            }
-
-            OnRemoteMessage(input);
         }
 
-        private void ReceiveBufferedFile(KTcpListener server, string data)
+        // -------------------------------------------------------------------------
+        // Helpers
+        // -------------------------------------------------------------------------
+
+        private void ResetConnection()
         {
-            var parts = data.Split(new char[] { ':' }, 4);
-            if (parts.Length != 4)
-            {
-                return;
-            }
-
-            int bufferSize = int.Parse(parts[2]);
-            int numBuffers = int.Parse(parts[3]);
-
-            var filePath = Path.Combine(FileLocations.SubjectDataFolder, parts[1]);
-
-            System.Diagnostics.Debug.WriteLine($"path = {filePath}, bufferSize={bufferSize}, numBuffers={numBuffers}");
-
-            using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-            using (BinaryWriter bw = new BinaryWriter(fs))
-            {
-                for (int k = 0; k < numBuffers; k++)
-                {
-                    System.Diagnostics.Debug.WriteLine($"writing {k}");
-                    var bytes = server.ReadByteArrayFromInputStream();
-                    bw.Write(bytes);
-
-                    server.SendAcknowledgement();
-                }
-
-                bw.Close();
-                fs.Close();
-            }
+            _remoteEndPoint = null;
+            _hostName = "";
+            CurrentScene = null;
+            _remoteVersionNumber = "";
         }
 
+        private void InvokeOnUI(Action action)
+        {
+            if (_uiControl != null && _uiControl.InvokeRequired)
+                _uiControl.Invoke(action);
+            else
+                action();
+        }
     }
 }

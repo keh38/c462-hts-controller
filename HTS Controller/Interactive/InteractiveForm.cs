@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -89,7 +89,15 @@ namespace HTSController
             AdapterMap adapterMap = null;
             if (_network.IsConnected)
             {
-                adapterMap = _network.SendMessageAndReceiveXml<AdapterMap>("GetAdapterMap");
+                try
+                {
+                    adapterMap = _network.SendRequest<AdapterMap>("GetAdapterMap");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"GetAdapterMap failed: {ex.Message}");
+                    adapterMap = AdapterMap.Default7point1Map("HD280");
+                }
             }
             else
             {
@@ -149,7 +157,7 @@ namespace HTSController
                 }
                 catch (Exception ex)
                 {
-                    //Debug.WriteLine(ex.Message);
+                    // timeout or cancellation
                 }
             }
 
@@ -179,7 +187,7 @@ namespace HTSController
 
         private void startButton_Click(object sender, EventArgs e)
         {
-            _network.SendMessage($"SetParams:{KFile.ToXMLString(_settings)}");
+            _network.SendMessage("SetParams", KFile.ToXMLString(_settings));
             _network.SendMessage("Start");
             startButton.Visible = false;
             _isLive = true;
@@ -208,7 +216,7 @@ namespace HTSController
                 {
                     _sliderActions[k]?.Invoke(_udpPacket.Values[k]);
                 }
-                for (int k=0; k < _channelControls.Count; k++)
+                for (int k = 0; k < _channelControls.Count; k++)
                 {
                     if (_udpPacket.Active[k] >= 0)
                     {
@@ -256,8 +264,6 @@ namespace HTSController
 
         private void channelView_WaveformBecameValid(object sender, EventArgs e)
         {
-            //if (_selectedState.sigMan == null) _selectedState.sigMan = new SignalManager();
-            //_selectedState.sigMan.channels.Insert(channelListBox.SelectedIndex, channelView.Data);
         }
 
         private void channelView_ValueChanged(object sender, EventArgs e)
@@ -321,25 +327,18 @@ namespace HTSController
 
         private void channelListBox_SelectionChanged(object sender, KUserListBox.ChangedItem e)
         {
-            // this event is triggered when a new channel is added, but runs *after* the channel add event and *before* the name 
-            // has been assigned. KUserListBox needs a tweak
-
             if (!_ignoreEvents && !string.IsNullOrEmpty(e.name) && _settings.SigMan != null)
             {
                 Channel ch = _settings.SigMan.GetChannel(e.name);
                 if (ch != null)
                 {
                     channelView.Value = ch;
-                    //ch = new Channel(e.name);
-                    //ch.Laterality = Laterality.Diotic;
                 }
             }
         }
 
         private void PlotSignals(SignalManager sigman)
         {
-            //sigman.WavFolder = Path.Combine(_settings.wavFolder, _params.wavFolder);
-
             audioErrorTextBox.Text = "";
 
             string chanName = "";
@@ -417,7 +416,6 @@ namespace HTSController
             displayTimer.Enabled = false;
 
             LayoutMyControls();
-            //InitializeSliders();
             InitializeControlValues();
 
             displayTimer.Enabled = true;
@@ -429,7 +427,7 @@ namespace HTSController
             _sliderActions = new List<Action<float>>();
 
             var chanNames = _settings.SigMan.channels.Select(x => x.Name).ToList();
-            for (int k=0; k < chanNames.Count; k++)
+            for (int k = 0; k < chanNames.Count; k++)
             {
                 var controls = _settings.Sliders.FindAll(x => x.Channel.Equals(chanNames[k]));
                 if (k >= flowLayoutPanel.Controls.Count)
@@ -452,7 +450,6 @@ namespace HTSController
                     {
                         _sliderActions.Add(null);
                     }
-
                 }
             }
 
@@ -509,7 +506,7 @@ namespace HTSController
         {
             if (selfChange && (_isLive || (_network.IsConnected && _settings.ShowSliders)))
             {
-                _network.SendMessage($"SetActive:{channel}={(enabled?1:0)}");
+                _network.SendMessage("SetActive", $"{channel}={(enabled ? 1 : 0)}");
             }
             _settings.SigMan[channel].SetActive(enabled);
         }
@@ -518,7 +515,7 @@ namespace HTSController
         {
             if (selfChange && (_isLive || (_network.IsConnected && _settings.ShowSliders)))
             {
-                _network.SendMessage($"SetProperty:{channel}.{property}={value}");
+                _network.SendMessage("SetProperty", $"{channel}.{property}={value}");
             }
 
             _settings.SigMan.SetParameter(channel, property, value);
@@ -566,11 +563,11 @@ namespace HTSController
             _settings.ShowSliders = show;
             if (_isLive)
             {
-                _network.SendMessage($"ShowSliders:{show.ToString()}");
+                _network.SendMessage("ShowSliders", show.ToString());
             }
             else if (_network.IsConnected)
             {
-                _network.SendMessage($"SetParams:{KFile.ToXMLString(_settings)}");
+                _network.SendMessage("SetParams", KFile.ToXMLString(_settings));
             }
         }
 
@@ -603,7 +600,5 @@ namespace HTSController
                     break;
             }
         }
-
-
     }
 }

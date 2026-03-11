@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using KLib;
 using SpeechReception;
 
+using HTS.Tcp;
 using HTSController.Data_Streams;
 
 using Serilog;
@@ -165,7 +166,7 @@ namespace HTSController
             logTextBox.Text = "Starting speech test...";
             Log.Information($"Starting speech test...");
             var success = await ChangeTabletScene(_sceneName);
-            
+
             if (!success)
             {
                 EnableButtons(true);
@@ -187,7 +188,7 @@ namespace HTSController
                 bool started = true;
                 if (!_config.BypassDataStreams)
                 {
-                    started = await _streamManager.StartRecording(_dataFile);
+                    started = await _streamManager.StartDataStreamsAsync(_dataFile);
                 }
                 if (started)
                 {
@@ -200,13 +201,13 @@ namespace HTSController
                 else
                 {
                     logTextBox.AppendText("failed" + Environment.NewLine);
-                    foreach (var s in _streamManager.ProblemStreams)
+                    foreach (var s in _streamManager.GetProblemStreams())
                     {
                         logTextBox.AppendText($"- {s}\n");
                         Log.Error($"failed to start stream: {s}");
                     }
                     EnableButtons(true);
-                    _network.SendMessage($"StopSynchronizing");
+                    _network.SendMessage("StopSynchronizing");
                     EndAutoRun(false, null);
                 }
             }
@@ -219,10 +220,9 @@ namespace HTSController
                 }
                 else
                 {
-                    logTextBox.AppendText($"failed to change to {_sceneName} scenene");
+                    logTextBox.AppendText($"failed to change to {_sceneName} scene");
                 }
                 EnableButtons(true);
-//                _network.SendMessage($"StopSynchronizing");
                 EndAutoRun(false, null);
             }
         }
@@ -230,7 +230,7 @@ namespace HTSController
         private async Task<bool> ChangeTabletScene(string sceneName)
         {
             bool success = false;
-            _network.SendMessage($"ChangeScene:{sceneName}");
+            _network.SendMessage("ChangeScene", sceneName);
 
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
@@ -248,10 +248,9 @@ namespace HTSController
 
         private void InitializeRemoteMeasurement()
         {
-            //Log.Information("initializing remote measurement");
-            var result = _network.SendMessage($"Initialize:{KFile.ToXMLString(_config)}");
+            _network.SendMessage("Initialize", KFile.ToXMLString(_config));
 
-            // wait for file name to get sent back
+            // wait for file name to get sent back via RemoteMessageHandler
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
             {
@@ -268,7 +267,7 @@ namespace HTSController
 
                 if (!_config.BypassDataStreams)
                 {
-                    _network.SendMessage($"StartSynchronizing:{_dataFile}");
+                    _network.SendMessage("StartSynchronizing", _dataFile);
                 }
             }
         }
@@ -279,15 +278,21 @@ namespace HTSController
             Log.Information("Run ending");
             if (!_config.BypassDataStreams)
             {
-                _network.SendMessage($"StopSynchronizing");
-                await _streamManager.StopRecording();
+                _network.SendMessage("StopSynchronizing");
+                await _streamManager.StopDataStreamsAsync();
 
-                var response = _network.SendMessageAndReceiveString("GetSyncLog");
-                if (!string.IsNullOrEmpty(response) && !response.Equals("none"))
+                try
                 {
-                    var parts = response.Split(new char[] { ':' }, 2);
-                    var logPath = Path.Combine(FileLocations.SubjectDataFolder, parts[0]);
-                    File.WriteAllText(logPath, parts[1]);
+                    var syncLog = _network.SendRequest<TextFilePayload>("GetSyncLog");
+                    if (syncLog != null && !string.IsNullOrEmpty(syncLog.Filename))
+                    {
+                        var logPath = Path.Combine(FileLocations.SubjectDataFolder, syncLog.Filename);
+                        File.WriteAllText(logPath, syncLog.Content);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"Could not retrieve sync log: {ex.Message}");
                 }
             }
 
@@ -303,7 +308,7 @@ namespace HTSController
             _streamManager.RestartStatusTimer();
             OnRunStateChanged(_sceneName, false);
 
-            EndAutoRun(success: !_runAborted && !message.Equals("Error"), dataFile:_dataFile);
+            EndAutoRun(success: !_runAborted && !message.Equals("Error"), dataFile: _dataFile);
         }
 
         private void EndAutoRun(bool success, string dataFile)
@@ -409,14 +414,19 @@ namespace HTSController
             if (_config != null && _network.IsConnected)
             {
                 var fn = FileLocations.GetConfigFile("SpeechTest", _config.TestName);
-                _network.SendMessage($"TransferFile:Config Files:{Path.GetFileName(fn)}:{File.ReadAllText(fn)}");
+                _network.SendMessage("TransferFile", new TransferFilePayload
+                {
+                    Folder = "Config Files",
+                    Filename = Path.GetFileName(fn),
+                    Content = File.ReadAllText(fn)
+                });
             }
         }
+
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             propertyGrid.Refresh();
             ListPropertiesConverter.TestType = _config.TestType;
         }
-
     }
 }

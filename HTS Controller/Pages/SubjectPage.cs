@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -12,10 +12,10 @@ using System.Windows.Forms;
 using Serilog;
 
 using KLib.Controls;
+using KLib.Net;
 
 using MathWorks.MATLAB.Types;
 using System.IO;
-//using UnityEngine;
 
 namespace HTSController.Pages
 {
@@ -36,7 +36,6 @@ namespace HTSController.Pages
         {
             InitializeComponent();
 
-            //projectDropDown.Enabled = false;
             subjectDropDown.Enabled = false;
             transducerDropDown.Enabled = false;
         }
@@ -58,19 +57,26 @@ namespace HTSController.Pages
 
             Log.Information("Retrieving subject state");
 
-            var subjectInfo = _network.SendMessageAndReceiveString("GetSubjectInfo");
-            var parts = subjectInfo.Split('/');
-            Project = parts[0];
-            Subject = parts[1];
-            FileLocations.SetProject(Project);
-            FileLocations.SetSubject(Subject);
+            try
+            {
+                var subjectInfo = _network.SendRequest<string>("GetSubjectInfo");
+                var parts = subjectInfo.Split('/');
+                Project = parts[0];
+                Subject = parts[1];
+                FileLocations.SetProject(Project);
+                FileLocations.SetSubject(Subject);
 
-            var projects = _network.SendMessageAndReceiveJSON<List<string>>("GetProjectList");
+                var projects = _network.SendRequest<List<string>>("GetProjectList");
 
-            projectDropDown.Enabled = true;
-            projectDropDown.Items.Clear();
-            projectDropDown.Items.AddRange(projects.ToArray());
-            projectDropDown.SelectedIndex = projects.IndexOf(Project);
+                projectDropDown.Enabled = true;
+                projectDropDown.Items.Clear();
+                projectDropDown.Items.AddRange(projects.ToArray());
+                projectDropDown.SelectedIndex = projects.IndexOf(Project);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"RetrieveSubjectState failed: {ex.Message}");
+            }
         }
 
         public void UpdateMetrics(MATLABStruct data)
@@ -115,24 +121,30 @@ namespace HTSController.Pages
 
                 if (_network.IsConnected)
                 {
-                    var subjects = _network.SendMessageAndReceiveJSON<List<string>>($"GetSubjectList:{projectDropDown.Text}");
-
-                    subjectDropDown.Enabled = true;
-                    subjectDropDown.Items.Clear();
-                    subjectDropDown.Items.AddRange(subjects.ToArray());
-
-                    _ignoreEvents = true;
-
-                    subjectDropDown.SelectedIndex = subjects.IndexOf(Subject);
-                    if (subjectDropDown.SelectedIndex < 0)
+                    try
                     {
-                        // selected index change event does not get raised
-                        subjectDropDown.Text = "";
-                        Subject = "";
-                        OnValueChanged();
-                    }
+                        var subjects = _network.SendRequest<List<string>>("GetSubjectList", Project);
 
-                    _ignoreEvents = false;
+                        subjectDropDown.Enabled = true;
+                        subjectDropDown.Items.Clear();
+                        subjectDropDown.Items.AddRange(subjects.ToArray());
+
+                        _ignoreEvents = true;
+
+                        subjectDropDown.SelectedIndex = subjects.IndexOf(Subject);
+                        if (subjectDropDown.SelectedIndex < 0)
+                        {
+                            subjectDropDown.Text = "";
+                            Subject = "";
+                            OnValueChanged();
+                        }
+
+                        _ignoreEvents = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"GetSubjectList failed: {ex.Message}");
+                    }
                 }
                 OnProjectChanged?.Invoke(Project);
             }
@@ -143,21 +155,38 @@ namespace HTSController.Pages
             if (!_ignoreEvents)
             {
                 Subject = subjectDropDown.Text;
-                _network.SendMessage($"SetSubjectInfo:{Project}/{Subject}");
+                _network.SendMessage("SetSubjectInfo", $"{Project}/{Subject}");
             }
             FileLocations.SetSubject(Subject);
-            _subjectMetadata = _network.SendMessageAndReceiveXml<SubjectMetadata>("GetSubjectMetadata");
+
+            try
+            {
+                _subjectMetadata = _network.SendRequest<SubjectMetadata>("GetSubjectMetadata");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"GetSubjectMetadata failed: {ex.Message}");
+                _subjectMetadata = new SubjectMetadata();
+            }
 
             var currentIgnore = _ignoreEvents;
             _ignoreEvents = true;
 
-            var transducers = _network.SendMessageAndReceiveXml<List<string>>("GetTransducers");
-            transducerDropDown.Enabled = true;
-            transducerDropDown.Items.Clear();
-            transducerDropDown.Items.AddRange(transducers.ToArray());
+            try
+            {
+                var transducers = _network.SendRequest<List<string>>("GetTransducers");
+                transducerDropDown.Enabled = true;
+                transducerDropDown.Items.Clear();
+                transducerDropDown.Items.AddRange(transducers.ToArray());
 
-            var itransducer = transducerDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList().IndexOf(_subjectMetadata.Transducer);
-            transducerDropDown.SelectedIndex = itransducer;
+                var itransducer = transducerDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList().IndexOf(_subjectMetadata.Transducer);
+                transducerDropDown.SelectedIndex = itransducer;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"GetTransducers failed: {ex.Message}");
+            }
+
             ShowMetrics();
             SendMetricsToEditor();
             SendSubjectFolderToEditor();
@@ -203,15 +232,16 @@ namespace HTSController.Pages
         {
             createSubjectButton.Visible = false;
         }
+
         private void createProjectButton_Click(object sender, EventArgs e)
         {
             createProjectButton.Visible = false;
             Project = projectDropDown.Text;
             projectDropDown.Items.Add(Project);
 
-            if (_network.IsConnected && !_network.IsLocalConnection)
+            if (_network.IsConnected)
             {
-                _network.SendMessage($"CreateProject:{Project}");
+                _network.SendMessage("CreateProject", Project);
             }
 
             var projects = projectDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList();
@@ -223,7 +253,7 @@ namespace HTSController.Pages
             createSubjectButton.Visible = false;
 
             Subject = subjectDropDown.Text;
-            _network.SendMessage($"SetSubjectInfo:{Project}/{Subject}");
+            _network.SendMessage("SetSubjectInfo", $"{Project}/{Subject}");
 
             _ignoreEvents = true;
 
@@ -247,7 +277,7 @@ namespace HTSController.Pages
             if (!_ignoreEvents)
             {
                 _subjectMetadata.Transducer = transducerDropDown.Text;
-                _network.SendMessage($"SetSubjectMetadata:{KLib.KFile.ToXMLString(_subjectMetadata)}");
+                _network.SendMessage("SetSubjectMetadata", KLib.KFile.ToXMLString(_subjectMetadata));
             }
         }
 
@@ -258,7 +288,7 @@ namespace HTSController.Pages
 
         private void ApplyMetrics()
         {
-            _network.SendMessage($"SetSubjectMetrics:{KLib.KFile.ToXMLString(_subjectMetadata.metrics)}");
+            _network.SendMessage("SetSubjectMetrics", KLib.KFile.ToXMLString(_subjectMetadata.metrics));
             ShowMetrics();
             SendMetricsToEditor();
             applyButton.Visible = false;
@@ -276,20 +306,16 @@ namespace HTSController.Pages
 
         private void SendSubjectFolderToEditor()
         {
-            var ip = KLib.Net.Discovery.Discover("TURANDOT.EDITOR");
-            if (ip != null)
-            {
-                KLib.Net.KTcpClient.SendMessage(ip, $"SetSubjectFolder:{FileLocations.SubjectDataFolder}");
-            }
+            // TODO: Update when Turandot Editor discovery API is finalized in KLib.Net
+            // var ep = DiscoverEditor("TURANDOT.EDITOR");
+            // if (ep != null) KTcpClient.SendRequest(ep, TcpMessage.Request("SetSubjectFolder", FileLocations.SubjectDataFolder));
         }
 
         private void SendMetricsToEditor()
         {
-            var ip = KLib.Net.Discovery.Discover("TURANDOT.EDITOR");
-            if (ip != null)
-            {
-                KLib.Net.KTcpClient.SendMessage(ip, $"SetMetrics:{KLib.KFile.ToXMLString(_subjectMetadata.metrics)}");
-            }
+            // TODO: Update when Turandot Editor discovery API is finalized in KLib.Net
+            // var ep = DiscoverEditor("TURANDOT.EDITOR");
+            // if (ep != null) KTcpClient.SendRequest(ep, TcpMessage.Request("SetMetrics", KLib.KFile.ToXMLString(_subjectMetadata.metrics)));
         }
 
         private void metricGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -307,7 +333,7 @@ namespace HTSController.Pages
                     _subjectMetadata.metrics[metricName] = "";
                 }
                 else
-                { 
+                {
                     _subjectMetadata.metrics.RenameKey(rowIndex, metricName);
                 }
             }
@@ -326,6 +352,5 @@ namespace HTSController.Pages
 
             applyButton.Visible = true;
         }
-
     }
 }

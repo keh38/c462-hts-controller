@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,6 +21,7 @@ using LDL;
 using LDL.Haptics;
 
 using HTSController.Data_Streams;
+using HTS.Tcp;
 
 using Serilog;
 using System.Timers;
@@ -197,7 +198,7 @@ namespace HTSController
             Log.Information($"Starting {_measType}.{_configName} measurement...");
             _sceneName = GetSceneName(_measType, _config);
             var success = await ChangeTabletScene(_sceneName);
-            
+
             if (!success)
             {
                 EnableButtons(true);
@@ -219,7 +220,7 @@ namespace HTSController
                 bool started = true;
                 if (!_config.BypassDataStreams)
                 {
-                    started = await _streamManager.StartRecording(_dataFile);
+                    started = await _streamManager.StartDataStreamsAsync(_dataFile);
                 }
                 if (started)
                 {
@@ -232,13 +233,13 @@ namespace HTSController
                 else
                 {
                     logTextBox.AppendText("failed" + Environment.NewLine);
-                    foreach (var s in _streamManager.ProblemStreams)
+                    foreach (var s in _streamManager.GetProblemStreams())
                     {
                         logTextBox.AppendText($"- {s}\n");
                         Log.Error($"failed to start stream: {s}");
                     }
                     EnableButtons(true);
-                    _network.SendMessage($"StopSynchronizing");
+                    _network.SendMessage("StopSynchronizing");
                     EndAutoRun(false, null);
                 }
             }
@@ -254,7 +255,6 @@ namespace HTSController
                     logTextBox.AppendText($"didn't receive data file name from {_sceneName} scene");
                 }
                 EnableButtons(true);
-//                _network.SendMessage($"StopSynchronizing");
                 EndAutoRun(false, null);
             }
         }
@@ -273,7 +273,7 @@ namespace HTSController
         private async Task<bool> ChangeTabletScene(string sceneName)
         {
             bool success = false;
-            _network.SendMessage($"ChangeScene:{sceneName}");
+            _network.SendMessage("ChangeScene", new ChangeScenePayload { SceneName = sceneName });
 
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
@@ -291,8 +291,7 @@ namespace HTSController
 
         private void InitializeRemoteMeasurement()
         {
-            //Log.Information("initializing remote measurement");
-            var result = _network.SendMessage($"Initialize:{KFile.ToXMLString(_config)}");
+            _network.SendMessage("Initialize", _config);
 
             // wait for file name to get sent back
             var startTime = DateTime.Now;
@@ -311,7 +310,7 @@ namespace HTSController
 
                 if (!_config.BypassDataStreams)
                 {
-                    _network.SendMessage($"StartSynchronizing:{_dataFile}");
+                    _network.SendMessage("StartSynchronizing", new FilenamePayload { Filename = _dataFile });
                 }
             }
         }
@@ -322,15 +321,14 @@ namespace HTSController
             Log.Information("Run ending");
             if (!_config.BypassDataStreams)
             {
-                _network.SendMessage($"StopSynchronizing");
-                await _streamManager.StopRecording();
+                _network.SendMessage("StopSynchronizing");
+                await _streamManager.StopDataStreamsAsync();
 
-                var response = _network.SendMessageAndReceiveString("GetSyncLog");
-                if (!string.IsNullOrEmpty(response) && !response.Equals("none"))
+                var syncLog = _network.SendRequest<TextFilePayload>("GetSyncLog");
+                if (syncLog != null)
                 {
-                    var parts = response.Split(new char[] { ':' }, 2);
-                    var logPath = Path.Combine(FileLocations.SubjectDataFolder, parts[0]);
-                    File.WriteAllText(logPath, parts[1]);
+                    var logPath = Path.Combine(FileLocations.SubjectDataFolder, syncLog.Filename);
+                    File.WriteAllText(logPath, syncLog.Content);
                 }
             }
 
@@ -346,7 +344,7 @@ namespace HTSController
             _streamManager.RestartStatusTimer();
             OnRunStateChanged(_measType, false);
 
-            EndAutoRun(success: !_runAborted && !message.Equals("Error"), dataFile:_dataFile);
+            EndAutoRun(success: !_runAborted && !message.Equals("Error"), dataFile: _dataFile);
         }
 
         private void EndAutoRun(bool success, string dataFile)
@@ -382,8 +380,6 @@ namespace HTSController
                     string filePath = Path.Combine(FileLocations.SubjectDataFolder, info);
                     if (File.Exists(filePath))
                     {
-                        // this shouldn't happen, but it did when the Digits test sent back a file name
-                        // with no .json extension. 
                         Log.Warning($"File {filePath} already exists, backing up. This shouldn't happen.");
                         File.Move(filePath, filePath + ".bak");
                     }
@@ -462,9 +458,15 @@ namespace HTSController
             if (_config != null && _network.IsConnected)
             {
                 var fn = FileLocations.GetConfigFile(_measType, _config.Name);
-                _network.SendMessage($"TransferFile:Config Files:{Path.GetFileName(fn)}:{File.ReadAllText(fn)}");
+                _network.SendMessage("TransferFile", new TransferFilePayload
+                {
+                    Folder = "Config Files",
+                    Filename = Path.GetFileName(fn),
+                    Content = File.ReadAllText(fn)
+                });
             }
         }
+
         private BasicMeasurementConfiguration AddNewConfiguration(string measType)
         {
             var config = new BasicMeasurementConfiguration();

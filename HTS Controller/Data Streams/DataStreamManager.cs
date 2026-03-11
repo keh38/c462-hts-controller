@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,13 +12,11 @@ using Serilog;
 
 using KLib;
 using KLib.Net;
-using static SyncPulseDetector.SyncPulseEvent;
-using System.Runtime.CompilerServices;
-using System.Data;
+using HTS.Tcp;
 
 namespace HTSController.Data_Streams
 {
-    public class DataStreamManager
+    public class DataStreamManager : IDataStreamHandler
     {
         internal class SyncData
         {
@@ -30,17 +27,16 @@ namespace HTSController.Data_Streams
 
             public SyncData() { }
             public SyncData(int numRTT) { rtt = new double[numRTT]; }
-
         }
 
         public static readonly string ConfigFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS", "Streams");
         private static readonly string ConfigFile = Path.Combine(ConfigFolder, "DataStreams.xml");
+
         private List<DataStream> _streams;
         private List<DataStreamIndicator> _indicators;
-
         private List<string> _problemChildren = new List<string>();
 
-        private HTSNetwork _network;
+        private DiscoveryListener _discoveryListener;
         private System.Windows.Forms.Timer _statusTimer;
         private System.Windows.Forms.Timer _syncTimer;
 
@@ -53,17 +49,10 @@ namespace HTSController.Data_Streams
         private bool _exiting = false;
         private bool _recording = false;
 
-        public List<string> ProblemStreams { get { return _problemChildren; } }
+        public List<string> GetProblemStreams() => _problemChildren;
 
-        public DataStream Find(string name)
-        {
-            return _streams.Find(x => x.MulticastName == name);
-        }
-
-        public DataStream FindEyeTracker()
-        {
-            return _streams.Find(x => x.IsEyeTracker);
-        }
+        public DataStream Find(string name) => _streams.Find(x => x.MulticastName == name);
+        public DataStream FindEyeTracker() => _streams.Find(x => x.IsEyeTracker);
 
         public DataStreamManager()
         {
@@ -76,20 +65,18 @@ namespace HTSController.Data_Streams
                 CreateDefaultStreams();
 
                 if (!Directory.Exists(ConfigFolder))
-                {
                     Directory.CreateDirectory(ConfigFolder);
-                }
+
                 KFile.XmlSerialize(_streams, ConfigFile);
             }
         }
 
-        public void Initialize(HTSNetwork network, FlowLayoutPanel flowLayout)
+        public void Initialize(FlowLayoutPanel flowLayout)
         {
-            _network = network;
             _indicators = new List<DataStreamIndicator>();
 
             ContextMenu contextMenu = new ContextMenu();
-            MenuItem menuItem = new MenuItem("Get log", new System.EventHandler(this.OnGetLogMenuItem_Click));
+            MenuItem menuItem = new MenuItem("Get log", new EventHandler(OnGetLogMenuItem_Click));
             contextMenu.MenuItems.Add(menuItem);
 
             foreach (var s in _streams)
@@ -99,6 +86,12 @@ namespace HTSController.Data_Streams
                 flowLayout.Controls.Add(indicator);
                 _indicators.Add(indicator);
             }
+
+            // Start discovery listener for data streams
+            _discoveryListener = new DiscoveryListener();
+            _discoveryListener.HostDiscovered += OnStreamDiscovered;
+            _discoveryListener.HostDisappeared += OnStreamDisappeared;
+            _discoveryListener.Start();
 
             _statusTimer = new System.Windows.Forms.Timer();
             _statusTimer.Interval = 1000;
@@ -114,15 +107,61 @@ namespace HTSController.Data_Streams
         {
             _statusTimer.Stop();
             _syncTimer.Stop();
+            _discoveryListener?.Stop();
 
             KFile.XmlSerialize(_streams, ConfigFile);
         }
+
+        // -------------------------------------------------------------------------
+        // Discovery handlers
+        // -------------------------------------------------------------------------
+
+        private void OnStreamDiscovered(object sender, ServerBeacon beacon)
+        {
+            var stream = _streams.Find(s =>
+                s.MulticastName.Equals(beacon.Name, StringComparison.OrdinalIgnoreCase));
+
+            if (stream == null) return;
+
+            stream.IPEndPoint = new IPEndPoint(IPAddress.Parse(beacon.Address), beacon.TcpPort);
+            stream.Status = DataStream.StreamStatus.Idle;
+            stream.LastActivity = DateTime.Now;
+
+            Log.Information($"Data stream discovered: {beacon.Name} at {stream.IPEndPoint}");
+
+            UpdateIndicators();
+        }
+
+        private void OnStreamDisappeared(object sender, ServerBeacon beacon)
+        {
+            var stream = _streams.Find(s =>
+                s.MulticastName.Equals(beacon.Name, StringComparison.OrdinalIgnoreCase));
+
+            if (stream == null) return;
+
+            stream.IPEndPoint = null;
+            stream.Status = DataStream.StreamStatus.Idle;
+
+            Log.Information($"Data stream lost: {beacon.Name}");
+
+            UpdateIndicators();
+        }
+
+        // -------------------------------------------------------------------------
+        // UI helpers
+        // -------------------------------------------------------------------------
 
         private DataStreamIndicator CreateIndicator(DataStream stream)
         {
             var indicator = new DataStreamIndicator(stream);
             indicator.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             return indicator;
+        }
+
+        private void UpdateIndicators()
+        {
+            foreach (var i in _indicators)
+                i.ConnectionStatusUpdated();
         }
 
         private void OnGetLogMenuItem_Click(object sender, EventArgs e)
@@ -133,81 +172,66 @@ namespace HTSController.Data_Streams
             DataStream dataStream = streamIndicator.Stream;
 
             if (dataStream.IsPresent)
-            {
                 GetStreamLog(dataStream);
-            }
         }
 
         private void GetStreamLog(DataStream dataStream)
         {
             var folder = Path.Combine(FileLocations.RootFolder, "Remote Logs");
             if (!Directory.Exists(folder))
-            {
                 Directory.CreateDirectory(folder);
-            }
 
-            var response = KTcpClient.SendMessageReceiveString(dataStream.IPEndPoint, "GetLog");
-            if (response != null)
+            var response = KTcpClient.SendRequest(dataStream.IPEndPoint, TcpMessage.Request("GetLog"));
+            if (response.IsOk)
             {
-                var parts = response.Split(new char[] { ':' }, 2);
-                if (parts.Length > 1)
-                {
-                    var logPath = Path.Combine(folder, parts[0]);
-                    File.WriteAllText(logPath, parts[1]);
-                    System.Diagnostics.Process.Start(logPath);
-                }
+                var payload = response.GetPayload<TextFilePayload>();
+                var logPath = Path.Combine(folder, payload.Filename);
+                File.WriteAllText(logPath, payload.Content);
+                System.Diagnostics.Process.Start(logPath);
             }
         }
 
-        private void OnRecordSelectionChanged(object sender, EventArgs e)
-        {
+        // -------------------------------------------------------------------------
+        // IDataStreamHandler implementation
+        // -------------------------------------------------------------------------
 
-        }
+        public async Task<bool> StartDataStreamsAsync(string filename)
+            => await StartDataStreamsAsync(filename, mandatory: "");
 
-        public void RestartStatusTimer()
-        {
-            Log.Information($"restarting status timer");
-
-            _recording = false;
-            //_statusTimer.Interval = 100;
-            statusTimer_Tick(null, null);
-            //_statusTimer.Start();
-        }
-
-        public async Task<bool> StartRecording(string filename, string mandatory = "", List<string> exclude=null)
+        public async Task<bool> StartDataStreamsAsync(string filename, string mandatory = "", List<string> exclude = null)
         {
             if (exclude == null)
-            {
                 exclude = new List<string>();
-            }
 
             _recording = true;
             _statusTimer.Stop();
-
             _problemChildren.Clear();
 
             InitializeSyncLogFile(filename);
 
             var streamsToStart = _streams.FindAll(x => x.Record && x.IsPresent && !exclude.Contains(x.MulticastName));
+
             foreach (var s in streamsToStart)
             {
-                var response = await KTcpClient.SendMessageAsync(s.IPEndPoint, $"Record:{Path.Combine(FileLocations.SubjectDataFolder, filename)}");
-                Log.Information($"{s.Name} ({s.IPEndPoint}) responds {response}");
+                var payload = new RecordPayload { Path = Path.Combine(FileLocations.SubjectDataFolder, filename) };
+                var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Record", payload)));
+                Log.Information($"{s.Name} ({s.IPEndPoint}) responds {response.Code}");
             }
 
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)
             {
-                streamsToStart = streamsToStart.FindAll(x => x.Status == DataStream.StreamStatus.Idle || x.Status == DataStream.StreamStatus.Missed);
-                if (streamsToStart.Count == 0)
-                {
-                    break;
-                }
+                streamsToStart = streamsToStart.FindAll(x =>
+                    x.Status == DataStream.StreamStatus.Idle ||
+                    x.Status == DataStream.StreamStatus.Missed);
+
+                if (streamsToStart.Count == 0) break;
 
                 foreach (var s in streamsToStart)
                 {
-                    var status = await KTcpClient.SendMessageReceiveIntAsync(s.IPEndPoint, "Status");
-                    s.Status = (DataStream.StreamStatus)status;
+                    var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Status")));
+                    if (response.IsOk)
+                        s.Status = (DataStream.StreamStatus)response.GetPayload<DataStreamStatusPayload>().Status;
                 }
 
                 Thread.Sleep(250);
@@ -217,15 +241,12 @@ namespace HTSController.Data_Streams
 
             if (success && !string.IsNullOrEmpty(mandatory))
             {
-//                foreach (var m in mandatory)
+                var s = _streams.Find(x => x.MulticastName == mandatory);
+                if (s == null || s.Status != DataStream.StreamStatus.Recording)
                 {
-                    var s = _streams.Find(x => x.MulticastName == mandatory);
-                    if (s==null || s.Status != DataStream.StreamStatus.Recording)
-                    {
-                        Log.Error($"Mandatory stream '{s.Name}' not started");
-                        _problemChildren.Add(s.Name);
-                        success = false;
-                    }
+                    Log.Error($"Mandatory stream '{s?.Name}' not started");
+                    _problemChildren.Add(s?.Name);
+                    success = false;
                 }
             }
 
@@ -238,13 +259,12 @@ namespace HTSController.Data_Streams
             {
                 foreach (var s in _streams.FindAll(x => x.Status != DataStream.StreamStatus.Idle))
                 {
-                    var result = await KTcpClient.SendMessageAsync(s.IPEndPoint, "Stop");
-                    Log.Information($"stopping {s.MulticastName}: {result}");
+                    var result = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Stop")));
+                    Log.Information($"stopping {s.MulticastName}: {result.Code}");
                 }
                 foreach (var s in streamsToStart)
-                {
                     _problemChildren.Add(s.Name);
-                }
+
                 _recording = false;
                 _statusTimer.Start();
             }
@@ -252,30 +272,12 @@ namespace HTSController.Data_Streams
             return success;
         }
 
-        private void InitializeSyncLogFile(string logPath)
-        {
-                _logPath = Path.Combine(FileLocations.SubjectDataFolder, logPath.Replace(".json", "-StreamSync.log"));
-
-            string headerText =
-                $"{"DataStream",-30}\t" +
-                $"{"LocalTime",-20}\t" +
-                $"{"StreamTime",-20}\t";
-
-            for (int k = 0; k < _numTrialsPerSync; k++)
-            {
-                var rttHeader = $"RTT{k + 1}";
-                headerText += $"{rttHeader,-10}\t";
-            }
-
-            File.WriteAllText(_logPath, headerText + Environment.NewLine);
-        }
-
-        public async Task StopRecording()
+        public async Task StopDataStreamsAsync()
         {
             _syncTimer.Stop();
             Log.Information("Sync timer stopped");
 
-            foreach (var s in _streams.FindAll(x => x.IsPresent && x.Record))// && x.Status != DataStream.StreamStatus.Idle))
+            foreach (var s in _streams.FindAll(x => x.IsPresent && x.Record))
             {
                 if (s.Status == DataStream.StreamStatus.Idle)
                 {
@@ -283,94 +285,21 @@ namespace HTSController.Data_Streams
                 }
                 else
                 {
-                    var result = await KTcpClient.SendMessageAsync(s.IPEndPoint, "Stop");
-                    Log.Information($"stopping {s.MulticastName}: {result}");
+                    var result = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Stop")));
+                    Log.Information($"stopping {s.MulticastName}: {result.Code}");
                 }
             }
         }
 
-        private async void syncTimer_Tick(object sender, EventArgs e)
+        // -------------------------------------------------------------------------
+        // Sync and status timers
+        // -------------------------------------------------------------------------
+
+        public void RestartStatusTimer()
         {
-            //Log.Information("sync timer tick");
-            _syncTimer.Enabled = false;
-            await SyncConnections();
-            _syncTimer.Interval = _syncInterval;
-            _syncTimer.Enabled = _recording && !_exiting;
-        }
-
-        public async Task SyncConnections()
-        {
-            foreach (var s in _streams.FindAll(x => x.IsPresent && x.Record))
-            {
-                var status = await KTcpClient.SendMessageReceiveIntAsync(s.IPEndPoint, "Status");
-                Debug.WriteLine($"status for {s.MulticastName} = {status}");    
-                s.Status = (DataStream.StreamStatus)status;
-
-                if (s.Status != DataStream.StreamStatus.Idle)
-                {
-                    var data = await SynchronizeClocks(s);
-                    AddLogEntry(s.MulticastName, data);
-
-                    s.LastActivity = DateTime.Now;
-                }
-            }
-
-            foreach (var i in _indicators)
-            {
-                i.ConnectionStatusUpdated();
-            }
-        }
-
-        private void AddLogEntry(string streamName, SyncData data)
-        {
-            string logEntry =
-                 $"{streamName,-30}\t" +
-                 $"{data.localTime,-20}\t" +
-                 $"{data.streamTime,-20}\t";
-
-            for (int k = 0; k < data.rtt.Length; k++)
-            {
-                var rttEntry = $"{(data.valid ? data.rtt[k] : float.NaN),-10:0.000000}\t";
-                logEntry += rttEntry;
-            }
-
-            File.AppendAllText(_logPath, logEntry + Environment.NewLine);
-        }
-
-        private async Task<SyncData> SynchronizeClocks(DataStream stream)
-        {
-            var syncData = new SyncData(_numTrialsPerSync);
-
-            double maxRTT = double.MaxValue;
-
-            for (int k = 0; k < _numTrialsPerSync; k++)
-            {
-                try
-                {
-                    var t0 = HighPrecisionClock.UtcNowIn100nsTicks;
-                    var byteArray = await KTcpClient.SendMessageReceiveByteArrayAsync(stream.IPEndPoint, "Sync");
-                    
-                    var t1 = BitConverter.ToInt64(byteArray, 0);
-                    var t2 = BitConverter.ToInt64(byteArray, 8);
-                    var t3 = HighPrecisionClock.UtcNowIn100nsTicks;
-
-                    var rtt = (double)(t3 - t0) * 1e-4 - (t2 - t1) * 1e-4;
-
-                    if (rtt < maxRTT)
-                    {
-                        syncData.localTime = t0;
-                        syncData.streamTime = t1;
-                        maxRTT = rtt;
-                    }
-                    syncData.rtt[k] = rtt;
-                    syncData.valid = true;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"sync error = {ex.Message}");
-                }
-            }
-            return syncData;
+            Log.Information("restarting status timer");
+            _recording = false;
+            statusTimer_Tick(null, null);
         }
 
         private async void statusTimer_Tick(object sender, EventArgs e)
@@ -383,47 +312,148 @@ namespace HTSController.Data_Streams
 
         public async Task CheckConnections()
         {
-            foreach (var s in _streams)
+            // Status check — discovery listener now maintains IsPresent via IPEndPoint
+            // This tick just refreshes the stream status for streams that are present
+            foreach (var s in _streams.FindAll(x => x.IsPresent))
             {
-                await Task.Run(() => CheckStream(s));
+                await Task.Run(() =>
+                {
+                    var response = KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Status"));
+                    if (response.IsOk)
+                    {
+                        s.Status = (DataStream.StreamStatus)response.GetPayload<DataStreamStatusPayload>().Status;
+                        s.LastActivity = DateTime.Now;
+                    }
+                });
             }
 
-            foreach (var i in _indicators)
-            {
-                i.ConnectionStatusUpdated();
-            }
+            UpdateIndicators();
         }
 
-        private void CheckStream(DataStream stream)
+        private async void syncTimer_Tick(object sender, EventArgs e)
         {
-            stream.IPEndPoint = Discovery.Discover(stream.MulticastName, timeOut:200);
-
-            stream.Status = DataStream.StreamStatus.Idle;
-            stream.LastActivity = DateTime.Now;
+            _syncTimer.Enabled = false;
+            await SyncConnections();
+            _syncTimer.Interval = _syncInterval;
+            _syncTimer.Enabled = _recording && !_exiting;
         }
+
+        public async Task SyncConnections()
+        {
+            foreach (var s in _streams.FindAll(x => x.IsPresent && x.Record))
+            {
+                var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Status")));
+                if (response.IsOk)
+                {
+                    s.Status = (DataStream.StreamStatus)response.GetPayload<DataStreamStatusPayload>().Status;
+                    Debug.WriteLine($"status for {s.MulticastName} = {s.Status}");
+                }
+
+                if (s.Status != DataStream.StreamStatus.Idle)
+                {
+                    var data = await SynchronizeClocks(s);
+                    AddLogEntry(s.MulticastName, data);
+                    s.LastActivity = DateTime.Now;
+                }
+            }
+
+            UpdateIndicators();
+        }
+
+        private async Task<SyncData> SynchronizeClocks(DataStream stream)
+        {
+            var syncData = new SyncData(_numTrialsPerSync);
+            double maxRTT = double.MaxValue;
+
+            for (int k = 0; k < _numTrialsPerSync; k++)
+            {
+                try
+                {
+                    var t0 = HighPrecisionClock.UtcNowIn100nsTicks;
+                    var response = await Task.Run(() => KTcpClient.SendRequest(stream.IPEndPoint, TcpMessage.Request("Sync")));
+                    var t3 = HighPrecisionClock.UtcNowIn100nsTicks;
+
+                    if (response.IsOk)
+                    {
+                        var payload = response.GetPayload<ClockSyncPayload>();
+                        var rtt = (double)(t3 - t0) * 1e-4 - (payload.T2 - payload.T1) * 1e-4;
+
+                        if (rtt < maxRTT)
+                        {
+                            syncData.localTime = t0;
+                            syncData.streamTime = payload.T1;
+                            maxRTT = rtt;
+                        }
+                        syncData.rtt[k] = rtt;
+                        syncData.valid = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"sync error = {ex.Message}");
+                }
+            }
+            return syncData;
+        }
+
+        // -------------------------------------------------------------------------
+        // Logging
+        // -------------------------------------------------------------------------
+
+        private void InitializeSyncLogFile(string logPath)
+        {
+            _logPath = Path.Combine(FileLocations.SubjectDataFolder, logPath.Replace(".json", "-StreamSync.log"));
+
+            string headerText =
+                $"{"DataStream",-30}\t" +
+                $"{"LocalTime",-20}\t" +
+                $"{"StreamTime",-20}\t";
+
+            for (int k = 0; k < _numTrialsPerSync; k++)
+                headerText += $"{"RTT" + (k + 1),-10}\t";
+
+            File.WriteAllText(_logPath, headerText + Environment.NewLine);
+        }
+
+        private void AddLogEntry(string streamName, SyncData data)
+        {
+            string logEntry =
+                $"{streamName,-30}\t" +
+                $"{data.localTime,-20}\t" +
+                $"{data.streamTime,-20}\t";
+
+            for (int k = 0; k < data.rtt.Length; k++)
+                logEntry += $"{(data.valid ? data.rtt[k] : float.NaN),-10:0.000000}\t";
+
+            File.AppendAllText(_logPath, logEntry + Environment.NewLine);
+        }
+
+        // -------------------------------------------------------------------------
+        // Default stream configuration
+        // -------------------------------------------------------------------------
 
         private void CreateDefaultStreams()
         {
             _streams = new List<DataStream>();
-            _streams.Add(new DataStream()
+            _streams.Add(new DataStream
             {
                 Name = "Hearing Test Suite",
                 MulticastName = "HEARING.TEST.SUITE.SYNC",
                 Icon = "tablet.png"
             });
-            _streams.Add(new DataStream()
+            _streams.Add(new DataStream
             {
                 Name = "Video Recorder",
                 MulticastName = "VIDEO.RECORDER",
                 Icon = "video.png"
             });
-            _streams.Add(new DataStream()
+            _streams.Add(new DataStream
             {
                 Name = "BioSemi",
                 MulticastName = "BIOSEMI",
                 Icon = "BioSemi.png"
             });
-            _streams.Add(new DataStream()
+            _streams.Add(new DataStream
             {
                 Name = "EyeLink",
                 MulticastName = "EYELINK",
@@ -431,5 +461,9 @@ namespace HTSController.Data_Streams
             });
         }
 
+        public Task<bool> StartDataStreamsAsync(string filename, string playerName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -15,6 +15,9 @@ using Serilog;
 
 using KLib.Controls;
 using KLib;
+using KLib.Net;
+
+using HTS.Tcp;
 
 namespace HTSController.Pages
 {
@@ -93,7 +96,7 @@ namespace HTSController.Pages
         private void EnableControls()
         {
             string fileType = fileTypeDropDown.SelectedItem?.ToString();
-            startButton.Enabled = true;// _network.IsConnected || fileType.Equals("Interactive");
+            startButton.Enabled = true;
             copyButton.Enabled = _network.IsConnected;
             editButton.Visible = fileType != null && fileType.Equals("Turandot");
 
@@ -106,7 +109,7 @@ namespace HTSController.Pages
         private void startButton_Click(object sender, EventArgs e)
         {
             var fileType = fileTypeDropDown.SelectedItem.ToString();
-            var settingsPath = listBox.SelectedIndex > -1 ?_settings[listBox.SelectedIndex] : "";
+            var settingsPath = listBox.SelectedIndex > -1 ? _settings[listBox.SelectedIndex] : "";
 
             HTSControllerSettings.SetLastUsed(fileType, settingsPath);
             if (fileType.Equals("Interactive"))
@@ -145,8 +148,13 @@ namespace HTSController.Pages
             {
                 if (_network.IsConnected)
                 {
-                    _network.SendMessage($"TransferFile:Config Files:{Path.GetFileName(settingsPath)}:{File.ReadAllText(settingsPath)}");
-                    ShowMessage("Transfered file to tablet");
+                    _network.SendMessage("TransferFile", new TransferFilePayload
+                    {
+                        Folder = "Config Files",
+                        Filename = Path.GetFileName(settingsPath),
+                        Content = File.ReadAllText(settingsPath)
+                    });
+                    ShowMessage("Transferred file to tablet");
                 }
             }
         }
@@ -172,12 +180,10 @@ namespace HTSController.Pages
 
         private bool EditTurandotFile(string settingsPath)
         {
-            var ip = KLib.Net.Discovery.Discover("TURANDOT.EDITOR");
-            if (ip != null)
-            {
-                KLib.Net.KTcpClient.SendMessage(ip, $"OpenFile:{settingsPath}");
-                return true;
-            }
+            // TODO: Discovery.Discover(name) was removed from KLib.Net.
+            // Restore when Turandot Editor discovery is re-implemented.
+            // var ip = KLib.Net.Discovery.Discover("TURANDOT.EDITOR");
+            // if (ip != null) { KLib.Net.KTcpClient.SendRequest(...); return true; }
 
 #if DEBUG
             string editorFolder = @"D:\Development\C462\c462-turandot-editor\Turandot Editor\bin\x64\Debug";
@@ -187,7 +193,6 @@ namespace HTSController.Pages
             }
 #else
             string editorFolder = "";
-            // https://stackoverflow.com/questions/2039186/reading-the-registry-and-wow6432node-key
             string key = @"Software\EPL\C462\Turandot Editor";
             using (var view64 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
             {
@@ -199,7 +204,7 @@ namespace HTSController.Pages
 #endif
 
             var editorPath = Path.Combine(editorFolder, "Turandot Editor.exe");
-            
+
             if (!File.Exists(editorPath)) return false;
 
             var processStartInfo = new ProcessStartInfo(editorPath, $"\"{settingsPath}\"");
