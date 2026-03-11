@@ -175,10 +175,10 @@ namespace HTSController
                 }
 
                 subjectPageControl.RetrieveSubjectState();
-                turandotPageControl.UpdateConfigFileList();
+                //turandotPageControl.UpdateConfigFileList();
                 menuPanel.Enabled = true;
                 subjectPageControl.Enabled = true;
-                turandotPageControl.NetworkStatusChanged();
+                //turandotPageControl.NetworkStatusChanged();
                 SelectTab(subjectButton);
             }
             else
