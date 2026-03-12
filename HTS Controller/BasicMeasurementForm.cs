@@ -240,7 +240,6 @@ namespace HTSController
                         Log.Error($"failed to start stream: {s}");
                     }
                     EnableButtons(true);
-                    _network.SendMessage("StopSynchronizing");
                     EndAutoRun(false, null);
                 }
             }
@@ -298,20 +297,6 @@ namespace HTSController
             if (!string.IsNullOrEmpty(_dataFile))
             {
                 Log.Information($"Remote data file = {_dataFile}");
-                if (!_config.BypassDataStreams)
-                {
-                    _network.SendMessage("StartSynchronizing", new FilenamePayload { Filename = _dataFile });
-                }
-            }
-
-            if (!string.IsNullOrEmpty(_dataFile))
-            {
-                Log.Information($"Remote data file = {_dataFile}");
-
-                if (!_config.BypassDataStreams)
-                {
-                    _network.SendMessage("StartSynchronizing", new FilenamePayload { Filename = _dataFile });
-                }
             }
         }
 
@@ -321,7 +306,6 @@ namespace HTSController
             Log.Information("Run ending");
             if (!_config.BypassDataStreams)
             {
-                _network.SendMessage("StopSynchronizing");
                 await _streamManager.StopDataStreamsAsync();
 
                 var syncLog = _network.SendRequest<TextFilePayload>("GetSyncLog");
@@ -357,6 +341,7 @@ namespace HTSController
         private void HandleRemoteMessage(object sender, TcpMessage message)
         {
             var payload = message.GetPayload<RemoteMessagePayload>();
+            Debug.WriteLine($"Received remote message: {message.Command} - {payload.Target} - {payload.Data}");
             if (!payload.Target.Equals(_sceneName)) return;
 
             switch (message.Command)
@@ -366,15 +351,14 @@ namespace HTSController
                     Invoke(new Action(() => progressBar.Value = progress));
                     break;
                 case "ReceiveData":
-                    var rcvParts = payload.Data.Split(new char[] { ':' }, 2);
-                    string filePath = Path.Combine(FileLocations.SubjectDataFolder, rcvParts[0]);
-                    string fileContent = rcvParts.Length > 1 ? rcvParts[1] : "";
+                    var filePayload = FileIO.JSONDeserializeFromString<TransferFilePayload>(payload.Data);
+                    string filePath = Path.Combine(FileLocations.SubjectDataFolder, filePayload.Filename);
                     if (File.Exists(filePath))
                     {
                         Log.Warning($"File {filePath} already exists, backing up. This shouldn't happen.");
                         File.Move(filePath, filePath + ".bak");
                     }
-                    File.WriteAllText(filePath, fileContent);
+                    File.WriteAllText(filePath, filePayload.Content);
                     break;
                 case "Status":
                     Log.Information($"Status update: {payload.Data}");

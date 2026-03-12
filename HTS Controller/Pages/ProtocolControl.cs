@@ -17,6 +17,7 @@ using Serilog;
 using KLib.Controls;
 using KLib.Net;
 
+using HTS.Tcp;
 using Protocols;
 
 namespace HTSController.Pages

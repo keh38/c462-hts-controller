@@ -210,8 +210,7 @@ namespace HTSController.Data_Streams
 
             foreach (var s in streamsToStart)
             {
-                var payload = new RecordPayload { Path = Path.Combine(FileLocations.SubjectDataFolder, filename) };
-                var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Record", payload)));
+                var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Record", (object) filename)));
                 Log.Information($"{s.Name} ({s.IPEndPoint}) responds {response.Code}");
             }
 
@@ -281,10 +280,19 @@ namespace HTSController.Data_Streams
                 }
                 else
                 {
-                    var result = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Stop")));
-                    Log.Information($"stopping {s.MulticastName}: {result.Code}");
+                    var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Stop")));
+                    if (response.IsOk)
+                    {
+                        s.Status = DataStream.StreamStatus.Idle;
+                    }
+                    Log.Information($"stopping {s.MulticastName}: {response.Code}");
                 }
             }
+            foreach (var i in _indicators)
+            {
+                i.ConnectionStatusUpdated();
+            }
+
         }
 
         // -------------------------------------------------------------------------

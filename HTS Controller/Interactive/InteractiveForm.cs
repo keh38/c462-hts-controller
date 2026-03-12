@@ -20,6 +20,7 @@ using KLib.Signals.Waveforms;
 using KLib;
 using KLib.Net;
 
+using HTS.Tcp;
 using Turandot.Interactive;
 using Bekesy;
 

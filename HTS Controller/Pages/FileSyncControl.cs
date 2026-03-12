@@ -16,6 +16,8 @@ using Serilog;
 using KLib;
 using KLib.Net;
 
+using HTS.Tcp;
+
 namespace HTSController.Pages
 {
     public partial class FileSyncControl : UserControl

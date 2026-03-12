@@ -84,7 +84,8 @@ namespace HTSController
         private void MainForm_Load(object sender, EventArgs e)
         {
             _network = new HTSNetwork();
-            _network.RemoteMessageHandler += OnRemoteMessage;
+            _network.RemoteMessageHandler += HandleRemoteMessage;
+            _network.SceneChangeHandler += HandleSceneChange;
 
             FileLocations.SetDataDrive(HTSControllerSettings.DataDrive);
             FileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
@@ -277,15 +278,17 @@ namespace HTSController
             // handled by subjectPageControl
         }
 
-        private void OnRemoteMessage(object sender, TcpMessage message)
+        private void HandleSceneChange(object sender, string sceneName)
+        {
+            sceneNameLabel.Text = $"Scene: {sceneName}";
+        }
+
+        private void HandleRemoteMessage(object sender, TcpMessage message)
         {
             var payload = message.GetPayload<RemoteMessagePayload>();
 
             switch (message.Command)
             {
-                case "ChangedScene":
-                    sceneNameLabel.Text = $"Scene: {payload.Data}";
-                    break;
                 case "ChangedLEDColors":
                     SetLightsButtonBackgroundColor(payload.Data);
                     break;

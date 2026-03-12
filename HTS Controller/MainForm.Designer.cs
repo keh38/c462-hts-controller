@@ -15,6 +15,9 @@
         {
             if (disposing && (components != null))
             {
+                _network.RemoteMessageHandler -= HandleRemoteMessage;
+                _network.SceneChangeHandler -= HandleSceneChange;
+
                 components.Dispose();
             }
             base.Dispose(disposing);

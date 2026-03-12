@@ -10,6 +10,7 @@ using Serilog;
 using KLib;
 using KLib.Net;
 using HTS.Tcp;
+using System.Diagnostics;
 
 namespace HTSController
 {
@@ -30,6 +31,8 @@ namespace HTSController
         /// Raised when the HTS sends an unsolicited TCP message to this controller.
         /// </summary>
         public event EventHandler<TcpMessage> RemoteMessageHandler;
+
+        public event EventHandler<string> SceneChangeHandler;
 
         private void OnConnectionChanged(bool connected) => ConnectionChanged?.Invoke(this, connected);
         private void OnRemoteMessage(TcpMessage message) => RemoteMessageHandler?.Invoke(this, message);
@@ -289,7 +292,7 @@ namespace HTSController
                     server.WriteResponse(TcpMessage.Ok());
                     CurrentScene = sceneData.SceneName;
                     Log.Information($"HTS reports scene changed to {CurrentScene}");
-                    OnRemoteMessage(TcpMessage.Request("ChangedScene", new RemoteMessagePayload { Data = CurrentScene }));
+                    SceneChangeHandler?.Invoke(this, CurrentScene);
                     break;
 
                 case "Disconnect":
