@@ -130,7 +130,7 @@ namespace HTSController.Pages
             var localFiles = EnumerateResources();
 
             AppendLogText("Enumerating remote resources");
-            await GetRemoteResourceList();
+            _remoteFiles = _network.SendRequest<List<string>>("SendResourceList");
 
             var toDelete = EnumerateUnusedRemoteFiles(_remoteFiles, localFiles);
             if (toDelete.Count > 0)
@@ -164,16 +164,15 @@ namespace HTSController.Pages
                 bool upload = false;
                 try
                 {
-                    var result = _network.SendRequest<string>("FileExists", file);
-                    if (result.Equals("404"))
+                    var response = _network.SendRequest<FileInformationPayload>("FileExists", file);
+                    if (response == null)
                     {
                         upload = true;
                     }
                     else
                     {
-                        DateTime remoteTime = KFile.JSONDeserializeFromString<DateTime>(result);
                         DateTime localTime = File.GetLastWriteTime(fullLocalPath);
-                        upload = (localTime > remoteTime);
+                        upload = (localTime > response.LastModified);
                     }
                 }
                 catch

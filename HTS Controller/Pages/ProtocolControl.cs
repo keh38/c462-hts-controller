@@ -182,16 +182,16 @@ namespace HTSController.Pages
                 return;
             }
 
-            _network.SendMessage($"SetProtocol:{KLib.KFile.ToXMLString(_protocol)}");
-            _network.SendMessage($"SetHistory:{KLib.KFile.ToXMLString(_history)}");
+            _network.SendMessage("SetProtocol", _protocol);
+            _network.SendMessage("SetHistory", _history);
 
             if (finished)
             {
-                _network.SendMessage("Finish:");
+                _network.SendMessage("Finish");
             }
             else
             {
-                _network.SendMessage($"Begin:{_nextTestIndex}");
+                _network.SendMessage("Begin", _nextTestIndex);
                 _state = ProtocolState.WaitingForUser;
             }
         }
@@ -283,7 +283,7 @@ namespace HTSController.Pages
         private async Task<bool> ChangeTabletScene(string sceneName)
         {
             bool success = false;
-            _network.SendMessage($"ChangeScene:{sceneName}");
+            _network.SendMessage("ChangeScene", sceneName);
 
             var startTime = DateTime.Now;
             while ((DateTime.Now - startTime).TotalSeconds < 5)

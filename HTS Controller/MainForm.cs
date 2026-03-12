@@ -531,5 +531,6 @@ namespace HTSController
                 FileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
             }
         }
+
     }
 }

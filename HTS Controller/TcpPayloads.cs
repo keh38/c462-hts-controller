@@ -76,4 +76,17 @@ namespace HTS.Tcp
         public string Content { get; set; }
     }
 
+    [JsonObject]
+    public class FileInformationPayload
+    {
+        public string Filename { get; set; }
+        public System.DateTime LastModified { get; set; }
+    }
+
+    public class BufferedFilePayload
+    {
+        public string Filename { get; set; }
+        public long NumBuffers { get; set; }
+        public int BufferSize { get; set; }
+    }
 }

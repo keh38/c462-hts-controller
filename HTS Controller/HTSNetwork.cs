@@ -11,6 +11,7 @@ using KLib;
 using KLib.Net;
 using HTS.Tcp;
 using System.Diagnostics;
+using System.Text;
 
 namespace HTSController
 {
@@ -206,39 +207,64 @@ namespace HTSController
             return response.IsOk ? response.GetPayload<T>() : default;
         }
 
-        // -------------------------------------------------------------------------
-        // File transfer — phase 2 will migrate to the two-connection protocol
-        // -------------------------------------------------------------------------
-
-        public async Task<bool> SendBufferedFile(string localPath, string remotePath)
+        public async Task<bool> SendBufferedFile(string localPath, string remoteFilename)
         {
-            int bufferSize = 16384;
+            if (_remoteEndPoint == null) return false;
 
+            int bufferSize = 16384;
             var fileInfo = new FileInfo(localPath);
             long numBuffers = (long)Math.Ceiling((double)fileInfo.Length / bufferSize);
 
-            //KTcpClient client = new KTcpClient();
-            //client.Connect(_remoteEndPoint);
-            //client.StartBufferedSend();
+            return await Task.Run(() =>
+            {
+                var client = new KTcpClient();
+                try
+                {
+                    client.StartBufferedSend(_remoteEndPoint);
 
-            //var result = client.SendBuffer($"ReceiveBufferedFile:{remotePath}:{bufferSize}:{numBuffers}");
-            //if (result <= 0) return false;
+                    var payload = new BufferedFilePayload
+                    {
+                        Filename = remoteFilename,
+                        NumBuffers = numBuffers,
+                        BufferSize = bufferSize
+                    };
 
-            //using (FileStream fs = new FileStream(localPath, FileMode.Open, FileAccess.Read))
-            //using (BinaryReader reader = new BinaryReader(fs))
-            //{
-            //    for (int k = 0; k < numBuffers; k++)
-            //    {
-            //        var bytes = reader.ReadBytes(bufferSize);
-            //        result = client.SendBuffer(bytes);
-            //    }
-            //}
+                    // Send control message using same wire format as normal TcpMessage exchange
+                    client.WriteBuffer(Encoding.UTF8.GetBytes(
+                        TcpMessage.Request("ReceiveFile", payload).Serialize()));
 
-            //client.EndBufferedSend();
-            //client.Close();
-            return true;
+                    var ready = client.ReadBufferedSendResponse();
+                    if (!ready.IsOk)
+                    {
+                        Log.Warning($"ReceiveFile refused: {ready.Command}");
+                        return false;
+                    }
+
+                    using (var fs = new FileStream(localPath, FileMode.Open, FileAccess.Read))
+                    using (var reader = new BinaryReader(fs))
+                    {
+                        for (long k = 0; k < numBuffers; k++)
+                        {
+                            var bytes = reader.ReadBytes(bufferSize);
+                            client.WriteBuffer(bytes);
+                        }
+                    }
+
+                    var complete = client.ReadBufferedSendResponse();
+                    Log.Information($"SendBufferedFile complete: {remoteFilename}");
+                    return complete.IsOk;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"SendBufferedFile failed: {ex.Message}");
+                    return false;
+                }
+                finally
+                {
+                    client.EndBufferedSend();
+                }
+            });
         }
-
         // -------------------------------------------------------------------------
         // TCP listener — receives unsolicited messages from HTS
         // Phase 2: ProcessTCPMessage will be migrated to TcpMessage protocol
@@ -299,6 +325,27 @@ namespace HTSController
                     server.WriteResponse(TcpMessage.Ok());
                     ResetConnection();
                     InvokeOnUI(() => OnConnectionChanged(false));
+                    break;
+
+                case "ReceiveFile":
+                    var filePayload = request.GetPayload<BufferedFilePayload>();
+                    server.WriteResponse(TcpMessage.Ok()); // signal ready
+
+                    var destPath = Path.Combine("figgeridoot", filePayload.Filename);
+                    Directory.CreateDirectory(Path.GetDirectoryName(destPath));
+
+                    using (var fs = new FileStream(destPath, FileMode.Create, FileAccess.Write))
+                    using (var writer = new BinaryWriter(fs))
+                    {
+                        for (long k = 0; k < filePayload.NumBuffers; k++)
+                        {
+                            //var bytes = server.ReadRawBytes();
+                            //writer.Write(bytes);
+                        }
+                    }
+
+                    server.WriteResponse(TcpMessage.Ok()); // signal complete
+                    Log.Information($"ReceiveFile complete: {filePayload.Filename}");
                     break;
 
                 default:
