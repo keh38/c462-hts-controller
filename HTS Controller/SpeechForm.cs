@@ -249,27 +249,12 @@ namespace HTSController
 
         private void InitializeRemoteMeasurement()
         {
-            _network.SendMessage("Initialize", KFile.ToXMLString(_config));
-
-            // wait for file name to get sent back via RemoteMessageHandler
-            var startTime = DateTime.Now;
-            while ((DateTime.Now - startTime).TotalSeconds < 5)
-            {
-                Thread.Sleep(200);
-                if (!string.IsNullOrEmpty(_dataFile))
-                {
-                    break;
-                }
-            }
-
+            var result = _network.SendRequest<string>("Initialize", _config);
+            _dataFile = result ?? "";
+         
             if (!string.IsNullOrEmpty(_dataFile))
             {
                 Log.Information($"Remote data file = {_dataFile}");
-
-                if (!_config.BypassDataStreams)
-                {
-                    _network.SendMessage("StartSynchronizing", _dataFile);
-                }
             }
         }
 
@@ -279,7 +264,6 @@ namespace HTSController
             Log.Information("Run ending");
             if (!_config.BypassDataStreams)
             {
-                _network.SendMessage("StopSynchronizing");
                 await _streamManager.StopDataStreamsAsync();
 
                 try

@@ -1,0 +1,31 @@
+## Hearing Test Suite (HTS) system architecture
+- The HTS system comprises two main apps (the "HTS" and the "HTSController") and a number of independent data streams
+  - the HTS is a Unity-based app coded in C#. It runs on a PC or laptop and faces the `Subject`
+  - the HTSController is a WinForms C# app running on a different PC and faces the `Researcher`.
+  
+#### Discovery
+- There is a config-free discovery system to connect the two apps, typically over a LAN (192.168.x.x). The HTS broadcasts a beacon every 1-2 seconds. The HTSController runs a UDP listener that raises events to notify the main app when a new connection is found. The UDP listener also runs a watchdog timer to detect dropped connections and raises an event for that as well.
+- The broadcast beacon contains the IPAddress on which the HTS is listening. Upon detection of a new connection, the HTSController sends its own TCP address to the HTS, establishing two-way communication between them.
+
+#### TCP messaging
+- Each side (HTS and HTSController) runs a TCP listener that is the basis of the HTSController exchanging data nad information with the HTS and for configuring/starting/stopping measurements. The HTS-to-HTSController messaging is used to send data and also to notify the HTSController about the current state of the measurement.
+
+#### Independent data streams
+- a number of independent apps manage the acquisition of various kinds of data (e.g.: video, EEG, eye-tracking)
+- these interface with the `DataStreamManager` in the HTSController. They also broadcast discovery beacons. The DataStreamManager subscribes to the UDP discovery events and maintains a list of active data streams.
+- each data stream has its own TCP listener so it can receive instructions from the DataStreamManager. There are really only three messages:
+  - "Record" tells the stream to start streaming data to disk. The message payload is a filename which the data stream is to use so that all related data for a given measurement are named the same
+  - "Stop" tells it to stop streaming data to disk
+  - "Status" returns an integer indicating idle, recording, or error
+  
+#### Standard chain of measurement events
+1. `Researcher` pushes start button HTSController
+1. HTSController tells HTS to switch to the appropriate Unity scene
+1. HTSController send HTS an initialization request via TCPMessage with a configura1on payload
+1. The HTS performs its initialization and responds to the TCP request with an OK TCPMessage whose payload is a string containing the filename to be used for the measurement
+1. The HTSController tells its DataStreamManager to start the data stream recording
+1. If successful the HTSController sends a TCP request to the HTS to begin the measurement.
+1. The HTSController receives and displays status messages from the HTS while the HTS is running the `Subject` through the experiment
+1. The `Researcher` has the option to stop the measurement at any time. The HTSController manages the TCP messaging to make that happen and also instructs the DataStreamManager to stop the data streams
+1. At the end of the measurement (whether it runs to completion or is stopped early), the HTS sends its primary text data file to the HTSController so that the `Researcher` immediately has a copy for inspection or analysis
+  

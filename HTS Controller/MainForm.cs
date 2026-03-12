@@ -318,6 +318,11 @@ namespace HTSController
         {
             menuPanel.Enabled = false;
 
+            if (_network.IsConnected)
+            {
+                _network.SendMessage("ChangeScene", "Turandot");
+            }
+
             if (_liveForm == null)
             {
                 _liveForm = new TurandotLiveForm(_network, _streamManager);

@@ -341,7 +341,7 @@ namespace HTSController
         private void HandleRemoteMessage(object sender, TcpMessage message)
         {
             var payload = message.GetPayload<RemoteMessagePayload>();
-            Debug.WriteLine($"Received remote message: {message.Command} - {payload.Target} - {payload.Data}");
+            Log.Information($"Received remote message: {message.Command} - {payload.Target} - {payload.Data}");
             if (!payload.Target.Equals(_sceneName)) return;
 
             switch (message.Command)

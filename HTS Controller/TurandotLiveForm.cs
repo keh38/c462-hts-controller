@@ -136,7 +136,7 @@ namespace HTSController
             {
                 _network.SendMessage("SetScriptArguments", _extraSettings);
             }
-            _network.SendMessage("SetParams", KFile.ToXMLString(p));
+            _network.SendMessage("SetParams", p);
 
             // wait for file name to get sent back via RemoteMessageHandler
             var startTime = DateTime.Now;
@@ -148,17 +148,11 @@ namespace HTSController
                     break;
                 }
             }
-
-            if (!string.IsNullOrEmpty(_dataFile) && !_dataFile.Equals("error"))
-            {
-                _network.SendMessage("StartSynchronizing", _dataFile);
-            }
         }
 
         private async void EndRun(string message, string status)
         {
             _watchdog.Stop();
-            _network.SendMessage("StopSynchronizing");
             await _streamManager.StopDataStreamsAsync();
 
             try
@@ -236,6 +230,7 @@ namespace HTSController
                     File.WriteAllText(filePath, rcvParts.Length > 1 ? rcvParts[1] : "");
                     break;
                 case "Error":
+                    Debug.WriteLine($"Received error message from tablet: {payload.Data}");
                     Invoke(new Action(() => { EndRun("Error", payload.Data); }));
                     break;
                 case "Finished":

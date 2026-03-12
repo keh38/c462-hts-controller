@@ -189,7 +189,7 @@ namespace HTSController
 
         private void startButton_Click(object sender, EventArgs e)
         {
-            _network.SendMessage("SetParams", KFile.ToXMLString(_settings));
+            _network.SendMessage("SetParams", _settings);
             _network.SendMessage("Start");
             startButton.Visible = false;
             _isLive = true;
