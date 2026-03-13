@@ -275,7 +275,8 @@ namespace HTSController
 
         private void subjectPageControl_ProjectChanged(string projectName)
         {
-            // handled by subjectPageControl
+            FileLocations.SetProject(projectName);
+            turandotPageControl.UpdateConfigFileList();
         }
 
         private void HandleSceneChange(object sender, string sceneName)

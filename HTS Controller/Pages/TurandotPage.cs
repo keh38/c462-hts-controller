@@ -180,36 +180,26 @@ namespace HTSController.Pages
 
         private bool EditTurandotFile(string settingsPath)
         {
-            // TODO: Discovery.Discover(name) was removed from KLib.Net.
-            // Restore when Turandot Editor discovery is re-implemented.
-            // var ip = KLib.Net.Discovery.Discover("TURANDOT.EDITOR");
-            // if (ip != null) { KLib.Net.KTcpClient.SendRequest(...); return true; }
-
-#if DEBUG
-            string editorFolder = @"D:\Development\C462\c462-turandot-editor\Turandot Editor\bin\x64\Debug";
-            if (!Directory.Exists(editorFolder))
+            if (!TurandotEditorBridge.IsRunning)
             {
-                editorFolder = "C" + editorFolder.Substring(1);
-            }
-#else
-            string editorFolder = "";
-            string key = @"Software\EPL\C462\Turandot Editor";
-            using (var view64 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
-            {
-                using (var subKey = view64.OpenSubKey(key, false))
+                if (!TurandotEditorBridge.IsInstalled)
                 {
-                    editorFolder = subKey.GetValue("InstallPath", "").ToString();
+                    Log.Information("TurandotEditor is not installed.");
+                    //MsgBox.Show("TurandotEditor is not installed.", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
                 }
+                TurandotEditorBridge.Launch();
             }
-#endif
 
-            var editorPath = Path.Combine(editorFolder, "Turandot Editor.exe");
+            if (!TurandotEditorBridge.WaitUntilReady())
+            {
+                Log.Information("Could not connect to TurandotEditor.");
+                //MsgBox.Show("Could not connect to TurandotEditor.", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
 
-            if (!File.Exists(editorPath)) return false;
-
-            var processStartInfo = new ProcessStartInfo(editorPath, $"\"{settingsPath}\"");
-            processStartInfo.WorkingDirectory = editorFolder;
-            var process = Process.Start(processStartInfo);
+            TurandotEditorBridge.OpenFile(settingsPath);
+            TurandotEditorBridge.SetHtsEndpoint(_network.RemoteEndPoint);
 
             return true;
         }

@@ -60,6 +60,7 @@ namespace HTSController
         public string TabletAddress => _remoteEndPoint?.ToString() ?? "";
         public string MyAddress => _myEndPoint?.ToString() ?? "";
         public string TabletVersion => _remoteVersionNumber;
+        public IPEndPoint RemoteEndPoint => _remoteEndPoint;
         public DiscoveryListener DiscoveryListener => _discoveryListener;
 
         // -------------------------------------------------------------------------

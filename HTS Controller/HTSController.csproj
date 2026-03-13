@@ -303,6 +303,7 @@
       <DependentUpon>PupillometryForm.cs</DependentUpon>
     </Compile>
     <Compile Include="TcpPayloads.cs" />
+    <Compile Include="TurandotEditorBridge.cs" />
     <Compile Include="TurandotLiveForm.cs">
       <SubType>Form</SubType>
     </Compile>

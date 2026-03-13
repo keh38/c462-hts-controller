@@ -134,7 +134,7 @@ namespace HTSController
             _postRunMATLABFile = p.matlabFunction;
             if (!string.IsNullOrEmpty(_extraSettings))
             {
-                _network.SendMessage("SetScriptArguments", _extraSettings);
+                _network.SendMessage("SetScriptArguments", KFile.JSONDeserializeFromString<Turandot.Schedules.ScriptArguments>(_extraSettings));
             }
             _network.SendMessage("SetParams", p);
 
