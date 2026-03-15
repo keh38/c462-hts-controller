@@ -13,6 +13,7 @@ using Serilog;
 using KLib;
 using KLib.Net;
 using HTS.Tcp;
+using KLib.Controls;
 
 namespace HTSController.Data_Streams
 {
@@ -80,7 +81,9 @@ namespace HTSController.Data_Streams
             _indicators = new List<DataStreamIndicator>();
 
             ContextMenu contextMenu = new ContextMenu();
-            MenuItem menuItem = new MenuItem("Get log", new EventHandler(OnGetLogMenuItem_Click));
+            MenuItem menuItem = new MenuItem("Ping", new EventHandler(OnPingMenuItem_Click));
+            contextMenu.MenuItems.Add(menuItem);
+            menuItem = new MenuItem("Get log", new EventHandler(OnGetLogMenuItem_Click));
             contextMenu.MenuItems.Add(menuItem);
 
             foreach (var s in _streams)
@@ -153,6 +156,27 @@ namespace HTSController.Data_Streams
         {
             foreach (var i in _indicators)
                 i.ConnectionStatusUpdated();
+        }
+
+        private void OnPingMenuItem_Click(object sender, EventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            ContextMenu contextMenu = menuItem.Parent as ContextMenu;
+            DataStreamIndicator streamIndicator = contextMenu.SourceControl as DataStreamIndicator;
+            DataStream dataStream = streamIndicator.Stream;
+
+            if (dataStream.IsPresent)
+            {
+                var response = KTcpClient.SendRequest(dataStream.IPEndPoint, TcpMessage.Request("Ping"));
+                if (response.IsOk)
+                {
+                    MsgBox.Show($"Ping successful!", "Ping", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MsgBox.Show($"Ping failed: {response.Code}", "Ping", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void OnGetLogMenuItem_Click(object sender, EventArgs e)
