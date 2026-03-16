@@ -179,7 +179,7 @@ namespace HTSController.Data_Streams
             }
         }
 
-        private void OnGetLogMenuItem_Click(object sender, EventArgs e)
+        private async void OnGetLogMenuItem_Click(object sender, EventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
             ContextMenu contextMenu = menuItem.Parent as ContextMenu;
@@ -187,10 +187,17 @@ namespace HTSController.Data_Streams
             DataStream dataStream = streamIndicator.Stream;
 
             if (dataStream.IsPresent)
-                GetStreamLog(dataStream);
+            {
+                var error = await Task.Run(() => GetStreamLog(dataStream));
+                if (error != null)
+                {
+                    Log.Error(error);
+                    MsgBox.Show(error, "Get Log", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
-        private void GetStreamLog(DataStream dataStream)
+        private string GetStreamLog(DataStream dataStream)
         {
             var folder = Path.Combine(FileLocations.RootFolder, "Remote Logs");
             if (!Directory.Exists(folder))
@@ -203,6 +210,11 @@ namespace HTSController.Data_Streams
                 var logPath = Path.Combine(folder, payload.Filename);
                 File.WriteAllText(logPath, payload.Content);
                 System.Diagnostics.Process.Start(logPath);
+                return null;
+            }
+            else
+            {
+                return $"Failed to get log from {dataStream.Name}: {response.Code}";
             }
         }
 
