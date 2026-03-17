@@ -8,12 +8,16 @@ $ErrorActionPreference = "Stop"
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
 # --- Configuration -----------------------------------------------------------
-$Version        = "2.0"
+$Version        = "2.0.1"
+# Pad to exactly 4 parts for AssemblyVersion / FileVersion
+$vParts          = $Version.Split('.')
+$AssemblyVersion = ($vParts + @('0','0','0'))[ 0..3 ] -join '.'
+$VersionDashed  = $Version -replace '\.', '-'
 $RepoRoot       = "D:\Development\C462\c462-hts-controller"
 $AssemblyInfo   = "$RepoRoot\HTS Controller\Properties\AssemblyInfo.cs"
 $Changelog      = "$RepoRoot\CHANGELOG.md"
 $SolutionFile   = "$RepoRoot\HTS Controller.sln"
-$InstallerPath  = "$RepoRoot\Installer\Output\HTS_Controller_2-0.exe"
+$InstallerPath  = "$RepoRoot\Installer\Output\HTS_Controller_$VersionDashed.exe"
 $ReleaseDate    = (Get-Date -Format "yyyy-MM-dd")
 $CommitMessage  = "Built $Version"
 $TagName        = $Version
@@ -28,8 +32,8 @@ function Step($msg) {
 Step "Updating AssemblyInfo.cs to version $Version"
 
 $ai = Get-Content $AssemblyInfo -Raw
-$ai = $ai -replace 'AssemblyVersion\("[^"]*"\)',     "AssemblyVersion(`"$Version.0.0`")"
-$ai = $ai -replace 'AssemblyFileVersion\("[^"]*"\)', "AssemblyFileVersion(`"$Version.0.0`")"
+$ai = $ai -replace 'AssemblyVersion\("[^"]*"\)',     "AssemblyVersion(`"$AssemblyVersion`")"
+$ai = $ai -replace 'AssemblyFileVersion\("[^"]*"\)', "AssemblyFileVersion(`"$AssemblyVersion`")"
 Set-Content $AssemblyInfo $ai -NoNewline
 Write-Host "Done."
 
