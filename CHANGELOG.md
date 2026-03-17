@@ -1,6 +1,6 @@
 ## Changelog
 
-### v2.0.1 (unreleased)
+### v2.0.1 (2026-03-17)
 #### Fixed
 - basic measurements: strip folder from data filename
 
