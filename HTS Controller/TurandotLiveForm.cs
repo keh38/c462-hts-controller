@@ -129,6 +129,14 @@ namespace HTSController
 
         private void InitializeTurandot()
         {
+            if (!File.Exists(_parameterFile))
+            {
+                InvokeOnUI(new Action(()=>logTextBox.AppendText("Parameter file not found" + Environment.NewLine)));
+                Log.Error($"Turandot parameter file not found: {_parameterFile}");
+                _dataFile = "error";
+                return;
+            }
+
             Log.Information($"Turandot parameter file: {_parameterFile}");
             var p = KFile.XmlDeserialize<Turandot.Parameters>(_parameterFile);
             _postRunMATLABFile = p.matlabFunction;
@@ -136,18 +144,8 @@ namespace HTSController
             {
                 _network.SendMessage("SetScriptArguments", KFile.JSONDeserializeFromString<Turandot.Schedules.ScriptArguments>(_extraSettings));
             }
-            _network.SendMessage("SetParams", p);
-
-            // wait for file name to get sent back via RemoteMessageHandler
-            var startTime = DateTime.Now;
-            while ((DateTime.Now - startTime).TotalSeconds < 5)
-            {
-                Thread.Sleep(200);
-                if (!string.IsNullOrEmpty(_dataFile))
-                {
-                    break;
-                }
-            }
+            var result = _network.SendRequest<string>("SetParams", p);
+            _dataFile = result ?? "";
         }
 
         private async void EndRun(string message, string status)
@@ -215,11 +213,11 @@ namespace HTSController
                     _dataFile = payload.Data;
                     break;
                 case "Trial":
-                    Invoke(new Action(() => logTextBox.Text = payload.Data));
+                    InvokeOnUI(new Action(() => logTextBox.Text = payload.Data));
                     break;
                 case "Progress":
                     int.TryParse(payload.Data, out int progress);
-                    Invoke(new Action(() => progressBar.Value = progress));
+                    InvokeOnUI(new Action(() => progressBar.Value = progress));
                     break;
                 case "State":
                     Invoke(new Action(() => statusTextBox.Text = payload.Data));
@@ -231,12 +229,20 @@ namespace HTSController
                     break;
                 case "Error":
                     Debug.WriteLine($"Received error message from tablet: {payload.Data}");
-                    Invoke(new Action(() => { EndRun("Error", payload.Data); }));
+                    InvokeOnUI(new Action(() => { EndRun("Error", payload.Data); }));
                     break;
                 case "Finished":
-                    Invoke(new Action(() => { EndRun("Finished", payload.Data); }));
+                    InvokeOnUI(new Action(() => { EndRun("Finished", payload.Data); }));
                     break;
             }
+        }
+
+        private void InvokeOnUI(Action action)
+        {
+            if (this.InvokeRequired)
+                this.Invoke(action);
+            else
+                action();
         }
 
         private void closeButton_Click(object sender, EventArgs e)

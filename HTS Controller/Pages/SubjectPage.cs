@@ -288,7 +288,7 @@ namespace HTSController.Pages
 
         private void ApplyMetrics()
         {
-            _network.SendMessage("SetSubjectMetrics", KLib.KFile.ToXMLString(_subjectMetadata.metrics));
+            _network.SendMessage("SetSubjectMetrics", _subjectMetadata.metrics);
             ShowMetrics();
             SendMetricsToEditor();
             applyButton.Visible = false;
