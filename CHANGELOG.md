@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.0 (2026-03-17)
+#### Changed
+- updated discovery/message system
+
+---
+
 ### v1.12 (2026-03-03)
 #### Changed
 - Turandot:
