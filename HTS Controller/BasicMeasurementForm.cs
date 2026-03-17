@@ -216,7 +216,7 @@ namespace HTSController
 
             if (!string.IsNullOrEmpty(_dataFile) && !_dataFile.StartsWith("error"))
             {
-                dataFileTextBox.Text = _dataFile;
+                dataFileTextBox.Text = Path.GetFileName(_dataFile);
 
                 bool started = true;
                 if (!_config.BypassDataStreams)

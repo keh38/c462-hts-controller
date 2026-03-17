@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.0.1 (unreleased)
+#### Fixed
+- basic measurements: strip folder from data filename
+
+---
+
 ### v2.0 (2026-03-17)
 #### Changed
 - updated discovery/message system
