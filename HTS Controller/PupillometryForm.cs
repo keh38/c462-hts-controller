@@ -296,23 +296,8 @@ namespace HTSController
 
         private void InitializeDynamicRangeMeasurement()
         {
-            _network.SendMessage("Initialize", KFile.ToXMLString(_dynamicRangeSettings));
-
-            // wait for file name to get sent back via RemoteMessageHandler
-            var startTime = DateTime.Now;
-            while ((DateTime.Now - startTime).TotalSeconds < 5)
-            {
-                Thread.Sleep(200);
-                if (!string.IsNullOrEmpty(_dataFile))
-                {
-                    break;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(_dataFile))
-            {
-                _network.SendMessage("StartSynchronizing", _dataFile);
-            }
+            var result = _network.SendRequest<string>("Initialize", _dynamicRangeSettings);
+            _dataFile = result ?? "";
         }
 
         private async void EndRun(string message, string status)
@@ -320,10 +305,25 @@ namespace HTSController
             _watchdog.Stop();
             Log.Information("Dynamic range test ended");
 
-            _network.SendMessage("StopSynchronizing");
             await _streamManager.StopDataStreamsAsync();
-            _network.SendMessage("SendSyncLog");
 
+            try
+            {
+                var syncLog = _network.SendRequest<TextFilePayload>("GetSyncLog");
+                if (syncLog != null && !string.IsNullOrEmpty(syncLog.Filename))
+                {
+                    var logPath = Path.Combine(FileLocations.SubjectDataFolder, syncLog.Filename);
+                    File.WriteAllText(logPath, syncLog.Content);
+                }
+                else
+                {
+                    Log.Information("tablet has no sync log file to send");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning($"Could not retrieve sync log: {ex.Message}");
+            }
             if (!string.IsNullOrEmpty(status))
             {
                 logTextBox.AppendText($"{Environment.NewLine}{status}{Environment.NewLine}");
@@ -418,9 +418,6 @@ namespace HTSController
 
             switch (message.Command)
             {
-                case "File":
-                    _dataFile = payload.Data;
-                    break;
                 case "Progress":
                     int.TryParse(payload.Data, out int progress);
                     Invoke(new Action(() => progressBar.Value = progress));

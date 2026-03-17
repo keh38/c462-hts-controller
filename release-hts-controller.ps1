@@ -8,12 +8,12 @@ $ErrorActionPreference = "Stop"
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
 # --- Configuration -----------------------------------------------------------
-$Version        = "1.12"
+$Version        = "2.0"
 $RepoRoot       = "D:\Development\C462\c462-hts-controller"
 $AssemblyInfo   = "$RepoRoot\HTS Controller\Properties\AssemblyInfo.cs"
 $Changelog      = "$RepoRoot\CHANGELOG.md"
 $SolutionFile   = "$RepoRoot\HTS Controller.sln"
-$InstallerPath  = "$RepoRoot\Installer\Output\HTS_Controller_1-12.exe"
+$InstallerPath  = "$RepoRoot\Installer\Output\HTS_Controller_2-0.exe"
 $ReleaseDate    = (Get-Date -Format "yyyy-MM-dd")
 $CommitMessage  = "Built $Version"
 $TagName        = $Version
