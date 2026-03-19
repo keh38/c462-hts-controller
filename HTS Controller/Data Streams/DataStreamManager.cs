@@ -240,47 +240,50 @@ namespace HTSController.Data_Streams
             _recording = true;
             _problemChildren.Clear();
 
-            InitializeSyncLogFile(filename);
-
             var streamsToStart = _streams.FindAll(x => x.Record && x.IsPresent && !exclude.Contains(x.MulticastName));
-
-            foreach (var s in streamsToStart)
+ 
+            if (!string.IsNullOrEmpty(mandatory))
             {
-                var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Record", (object) filename)));
-                Log.Information($"{s.Name} ({s.IPEndPoint}) responds {response.Code}");
+                var s = streamsToStart.Find(x => x.MulticastName == mandatory);
+                if (s == null)
+                {
+                    Log.Error($"Mandatory stream '{s?.Name}' not available");
+                    _problemChildren.Add(s?.Name);
+                    return false;
+                }
             }
 
-            var startTime = DateTime.Now;
-            while ((DateTime.Now - startTime).TotalSeconds < 5)
+            InitializeSyncLogFile(filename);
+
+            // Fire all Record commands in parallel
+            string fullDataPath = Path.Combine(FileLocations.SubjectDataFolder, Path.GetFileName(filename));
+            await Task.WhenAll(streamsToStart.Select(async s =>
             {
-                streamsToStart = streamsToStart.FindAll(x =>
-                    x.Status == DataStream.StreamStatus.Idle ||
-                    x.Status == DataStream.StreamStatus.Missed);
+                var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Record", (object)fullDataPath)));
+                Log.Information($"{s.Name} ({s.IPEndPoint}) responds {response.Code}");
+            }));
 
-                if (streamsToStart.Count == 0) break;
+            // Poll in parallel until all streams are recording or timeout
+            var startTime = DateTime.Now;
+            var pending = streamsToStart.ToList();
 
-                foreach (var s in streamsToStart)
+            while ((DateTime.Now - startTime).TotalSeconds < 5 && pending.Count > 0)
+            {
+                await Task.Delay(250);
+
+                var results = await Task.WhenAll(pending.Select(async s =>
                 {
                     var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Status")));
                     if (response.IsOk)
                         s.Status = (DataStream.StreamStatus)response.GetPayload<DataStreamStatusPayload>().Status;
-                }
+                    return s;
+                }));
 
-                Thread.Sleep(250);
+                pending = results
+                    .Where(s => s.Status == DataStream.StreamStatus.Idle || s.Status == DataStream.StreamStatus.Missed)
+                    .ToList();
             }
-
-            bool success = streamsToStart.Count == 0;
-
-            if (success && !string.IsNullOrEmpty(mandatory))
-            {
-                var s = _streams.Find(x => x.MulticastName == mandatory);
-                if (s == null || s.Status != DataStream.StreamStatus.Recording)
-                {
-                    Log.Error($"Mandatory stream '{s?.Name}' not started");
-                    _problemChildren.Add(s?.Name);
-                    success = false;
-                }
-            }
+            bool success = pending.Count == 0;
 
             if (success)
             {
@@ -291,11 +294,23 @@ namespace HTSController.Data_Streams
             {
                 foreach (var s in _streams.FindAll(x => x.Status != DataStream.StreamStatus.Idle))
                 {
-                    var result = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Stop")));
-                    Log.Information($"stopping {s.MulticastName}: {result.Code}");
+                    var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Stop")));
+                    if (response.IsOk)
+                    {
+                        s.Status = DataStream.StreamStatus.Idle;
+                    }
+                    Log.Information($"stopping {s.MulticastName}: {response.Code}");
                 }
-                foreach (var s in streamsToStart)
+                // Anything still pending has timed out
+                foreach (var s in pending)
+                {
+                    Log.Warning($"{s.Name} failed to start within timeout");
                     _problemChildren.Add(s.Name);
+                }
+                foreach (var i in _indicators)
+                {
+                    i.ConnectionStatusUpdated();
+                }
 
                 _recording = false;
             }

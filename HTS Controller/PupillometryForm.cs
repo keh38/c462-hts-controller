@@ -242,7 +242,7 @@ namespace HTSController
 #if false && DEBUG
                 var started = await _streamManager.StartDataStreamsAsync(_dataFile);
 #else
-                var started = await _streamManager.StartDataStreamsAsync(_dataFile, mandatory: _eyeTrackerName);
+                var started = await _streamManager.StartDataStreamsAsync(Path.GetFileName(_dataFile), mandatory: _eyeTrackerName);
 #endif
                 if (started)
                 {
@@ -520,7 +520,7 @@ namespace HTSController
                 return;
             }
 
-            var started = await _streamManager.StartDataStreamsAsync(_dataFile, exclude: new List<string> { "EYELINK" });
+            var started = await _streamManager.StartDataStreamsAsync(Path.GetFileName(_dataFile), exclude: new List<string> { "EYELINK" });
             if (started)
             {
                 OnRunStateChanged("GazeCalibration", true);

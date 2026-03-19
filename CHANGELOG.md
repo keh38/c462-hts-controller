@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.0.2 (unreleased)
+#### Fixed
+- cleaned up Data Stream logic
+
+---
+
 ### v2.0.1 (2026-03-17)
 #### Fixed
 - basic measurements: strip folder from data filename
