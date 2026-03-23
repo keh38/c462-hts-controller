@@ -296,6 +296,11 @@ namespace HTSController.Data_Streams
             while ((DateTime.Now - startTime).TotalSeconds < 5 && pending.Count > 0)
             {
                 await Task.Delay(250);
+                foreach (var stream in pending)
+                {
+                    var status = await KTcpClient.SendMessageReceiveIntAsync(stream.IPEndPoint, "Status");
+                    stream.Status = (DataStream.StreamStatus)status;
+                }
 
                 pending = streamsToStop
                     .Where(s => s.Status != DataStream.StreamStatus.Idle)
