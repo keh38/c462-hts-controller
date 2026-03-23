@@ -323,7 +323,7 @@ namespace HTSController
             if (!_config.BypassDataStreams)
             {
                 _network.SendMessage($"StopSynchronizing");
-                await _streamManager.StopRecording();
+                bool streamsStopped = await _streamManager.StopRecording();
 
                 var response = _network.SendMessageAndReceiveString("GetSyncLog");
                 if (!string.IsNullOrEmpty(response) && !response.Equals("none"))

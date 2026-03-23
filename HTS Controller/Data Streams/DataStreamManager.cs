@@ -270,12 +270,13 @@ namespace HTSController.Data_Streams
             File.WriteAllText(_logPath, headerText + Environment.NewLine);
         }
 
-        public async Task StopRecording()
+        public async Task<bool> StopRecording()
         {
             _syncTimer.Stop();
             Log.Information("Sync timer stopped");
 
-            foreach (var s in _streams.FindAll(x => x.IsPresent && x.Record))// && x.Status != DataStream.StreamStatus.Idle))
+            var streamsToStop = _streams.FindAll(x => x.IsPresent && x.Record);
+            foreach (var s in streamsToStop)// && x.Status != DataStream.StreamStatus.Idle))
             {
                 if (s.Status == DataStream.StreamStatus.Idle)
                 {
@@ -287,6 +288,22 @@ namespace HTSController.Data_Streams
                     Log.Information($"stopping {s.MulticastName}: {result}");
                 }
             }
+
+            // Poll in parallel until all streams are recording or timeout
+            var startTime = DateTime.Now;
+            var pending = streamsToStop.ToList();
+
+            while ((DateTime.Now - startTime).TotalSeconds < 5 && pending.Count > 0)
+            {
+                await Task.Delay(250);
+
+                pending = streamsToStop
+                    .Where(s => s.Status != DataStream.StreamStatus.Idle)
+                    .ToList();
+            }
+            bool success = pending.Count == 0;
+ 
+            return success;
         }
 
         private async void syncTimer_Tick(object sender, EventArgs e)
