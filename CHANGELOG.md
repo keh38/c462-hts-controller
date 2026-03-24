@@ -1,5 +1,11 @@
 ## Changelog
 
+### v1.13 (2026-03-24)
+#### Changed
+- wait for data streams to finish before continuing
+
+---
+
 ### v1.12 (2026-03-03)
 #### Changed
 - Turandot:

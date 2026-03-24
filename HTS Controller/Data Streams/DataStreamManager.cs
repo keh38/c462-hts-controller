@@ -236,6 +236,7 @@ namespace HTSController.Data_Streams
             }
             else
             {
+                Log.Error("Failed to start all streams, stopping any that did start");
                 foreach (var s in _streams.FindAll(x => x.Status != DataStream.StreamStatus.Idle))
                 {
                     var result = await KTcpClient.SendMessageAsync(s.IPEndPoint, "Stop");
@@ -245,6 +246,8 @@ namespace HTSController.Data_Streams
                 {
                     _problemChildren.Add(s.Name);
                 }
+                var problems = String.Join(", ", _problemChildren.ToArray());
+                Log.Error($"Problem streams: {problems}");
                 _recording = false;
                 _statusTimer.Start();
             }
@@ -293,7 +296,7 @@ namespace HTSController.Data_Streams
             var startTime = DateTime.Now;
             var pending = streamsToStop.ToList();
 
-            while ((DateTime.Now - startTime).TotalSeconds < 5 && pending.Count > 0)
+            while ((DateTime.Now - startTime).TotalSeconds < 10 && pending.Count > 0)
             {
                 await Task.Delay(250);
                 foreach (var stream in pending)
@@ -302,12 +305,27 @@ namespace HTSController.Data_Streams
                     stream.Status = (DataStream.StreamStatus)status;
                 }
 
+                foreach (var i in _indicators)
+                {
+                    i.ConnectionStatusUpdated();
+                }
+
                 pending = streamsToStop
                     .Where(s => s.Status != DataStream.StreamStatus.Idle)
                     .ToList();
             }
             bool success = pending.Count == 0;
  
+            if (success)
+            {
+                Log.Information("stopped all data streams");
+            }
+            else
+            {
+                var unstopped = String.Join(", ", pending.Select(s => s.Name).ToArray());
+                Log.Error($"Failed to stop all data streams, {pending.Count} remaining: {unstopped}");
+            }
+
             return success;
         }
 
