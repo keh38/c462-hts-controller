@@ -323,7 +323,8 @@ namespace HTSController.Data_Streams
             _syncTimer.Stop();
             Log.Information("Sync timer stopped");
 
-            foreach (var s in _streams.FindAll(x => x.IsPresent && x.Record))
+            var streamsToStop = _streams.FindAll(x => x.IsPresent && x.Record);
+            foreach (var s in streamsToStop)
             {
                 if (s.Status == DataStream.StreamStatus.Idle)
                 {
@@ -339,11 +340,43 @@ namespace HTSController.Data_Streams
                     Log.Information($"stopping {s.MulticastName}: {response.Code}");
                 }
             }
-            foreach (var i in _indicators)
-            {
-                i.ConnectionStatusUpdated();
-            }
 
+            // Poll in parallel until all streams are recording or timeout
+            var startTime = DateTime.Now;
+            var pending = streamsToStop.ToList();
+
+            while ((DateTime.Now - startTime).TotalSeconds < 10 && pending.Count > 0)
+            {
+                await Task.Delay(250);
+                foreach (var stream in pending)
+                {
+                    var response = KTcpClient.SendRequest(stream.IPEndPoint, TcpMessage.Request("Status"));
+                    if (response.IsOk)
+                    {
+                        stream.Status = (DataStream.StreamStatus)response.GetPayload<DataStreamStatusPayload>().Status;
+                    }
+                }
+
+                foreach (var i in _indicators)
+                {
+                    i.ConnectionStatusUpdated();
+                }
+
+                pending = streamsToStop
+                    .Where(s => s.Status != DataStream.StreamStatus.Idle)
+                    .ToList();
+            }
+            bool success = pending.Count == 0;
+
+            if (success)
+            {
+                Log.Information("stopped all data streams");
+            }
+            else
+            {
+                var unstopped = String.Join(", ", pending.Select(s => s.Name).ToArray());
+                Log.Error($"Failed to stop all data streams, {pending.Count} remaining: {unstopped}");
+            }
         }
 
         // -------------------------------------------------------------------------
