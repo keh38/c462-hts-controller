@@ -5,6 +5,7 @@ using OrderedPropertyGrid;
 
 using KLib.Signals;
 using KLib.TypeConverters;
+using C462.Shared.Turandot;
 
 namespace Turandot
 {

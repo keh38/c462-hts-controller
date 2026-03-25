@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using C462.Shared;
 
 namespace Turandot.Screen
 {

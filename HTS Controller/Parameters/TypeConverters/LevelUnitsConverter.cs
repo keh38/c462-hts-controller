@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 
+using C462.Shared;
+
 namespace KLib.Signals
 {
     class LevelUnitsConverter : EnumConverter

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using OrderedPropertyGrid;
 
 using KLib.Signals.Enumerations;
+using C462.Shared;
 
 namespace SpeechReception
 {
@@ -109,7 +110,7 @@ namespace SpeechReception
         {
             Name = "";
             Level = 60;
-            Units = LevelUnits.dBSPL;
+            Units = LevelUnits.dB_SPL;
             SNR = "";
             Masker = new Masker();
             ClosedSet = new ClosedSet();

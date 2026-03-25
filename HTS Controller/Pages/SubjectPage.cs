@@ -14,6 +14,7 @@ using Serilog;
 using KLib.Controls;
 using KLib.Net;
 
+using C462.Shared;
 using MathWorks.MATLAB.Types;
 using System.IO;
 

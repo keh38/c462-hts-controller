@@ -50,8 +50,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\c462-diagnostics\Diagnostics\Library\ScriptAssemblies\Assembly-CSharp.dll</HintPath>
+    <Reference Include="C462.Shared">
+      <HintPath>..\..\c462-shared\C462.Shared\bin\Debug\netstandard2.0\C462.Shared.dll</HintPath>
     </Reference>
     <Reference Include="KLib.Controls">
       <HintPath>..\..\..\klib\Framework\KLib.Controls.dll</HintPath>

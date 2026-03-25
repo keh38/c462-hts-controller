@@ -19,6 +19,7 @@ using KLib.Net;
 using Pupillometry;
 
 using HTS.Tcp;
+using C462.Shared.Protocol.DTOs;
 using HTSController.Data_Streams;
 
 using Serilog;

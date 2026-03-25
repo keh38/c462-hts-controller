@@ -1,17 +1,16 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Serilog;
 
-using KLib;
+using C462.Shared.Protocol.DTOs;
 using KLib.Net;
 using HTS.Tcp;
-using System.Diagnostics;
-using System.Text;
 
 namespace HTSController
 {

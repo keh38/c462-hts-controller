@@ -4,6 +4,8 @@ using System.Drawing.Design;
 
 using KLib.Signals;
 using KLib.TypeConverters;
+using C462.Shared;
+using LevelUnits = KLib.Signals.LevelUnits;
 
 using BasicMeasurements;
 using LDL.Haptics;

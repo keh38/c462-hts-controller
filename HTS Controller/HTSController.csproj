@@ -56,6 +56,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="C462.Shared">
+      <HintPath>..\..\c462-shared\C462.Shared\bin\Debug\netstandard2.0\C462.Shared.dll</HintPath>
+    </Reference>
     <Reference Include="Interop.SREYELINKLib">
       <HintPath>..\Unity Assemblies\Interop.SREYELINKLib.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -200,90 +203,91 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data Streams\IDataStreamHandler.cs" />
-    <Compile Include="DomainModel\Basic\Audiogram\AudiogramMeasurementSettings.cs" />
-    <Compile Include="DomainModel\Basic\BasicMeasurementConfiguration.cs" />
-    <Compile Include="DomainModel\Basic\Bekesy\BekesyMeasurementSettings.cs" />
-    <Compile Include="DomainModel\Basic\LDL\Haptics\LDL.HapticsSeqVar.cs" />
-    <Compile Include="DomainModel\Basic\LDL\Haptics\LDL.HapticStimulus.cs" />
-    <Compile Include="DomainModel\Basic\LDL\LDLMeasurementSettings.cs" />
-    <Compile Include="DomainModel\Basic\Questionnaires\Questionnaires.Question.cs" />
-    <Compile Include="DomainModel\Basic\Questionnaires\Questionnaires.Questionnaire.cs" />
-    <Compile Include="DomainModel\Prefabs\ParameterSliderProperties.cs" />
-    <Compile Include="DomainModel\Pupillometry\Pupillometry.DynamicRangeSettings.cs" />
-    <Compile Include="DomainModel\Pupillometry\Pupillometry.GazeCalibrationSettings.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Enumerations\AMShape.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Enumerations\BandwidthMethod.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Enumerations\BWUnits.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Enumerations\FilterShape.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Enumerations\GateState.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Enumerations\Modality.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Enumerations\RampState.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Enumerations\Waveshape.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Level.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Modulations\AM.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Modulations\SinusoidalAM.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Waveforms\Digitimer.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Waveforms\Sinusoid.cs" />
-    <Compile Include="DomainModel\Scripts\KLib\Signals\Waveforms\Waveform.cs" />
-    <Compile Include="DomainModel\Speech\Digits\DigitsTestSettings.cs" />
-    <Compile Include="DomainModel\Speech\Speech Reception\SpeechReception.ClosedSet.cs" />
-    <Compile Include="DomainModel\Speech\Speech Reception\SpeechReception.InstructionFile.cs" />
-    <Compile Include="DomainModel\Speech\Speech Reception\SpeechReception.ListProperties.cs" />
-    <Compile Include="DomainModel\Speech\Speech Reception\SpeechReception.Masker.cs" />
-    <Compile Include="DomainModel\Speech\Speech Reception\SpeechReception.MatrixTest.cs" />
-    <Compile Include="DomainModel\Speech\Speech Reception\SpeechReception.PerformanceCriteria.cs" />
-    <Compile Include="DomainModel\Speech\Speech Reception\SpeechReception.Sequence.cs" />
-    <Compile Include="DomainModel\Speech\Speech Reception\SpeechReception.Test.cs" />
-    <Compile Include="DomainModel\Turandot\Cues\Turandot.Cues.Cue.cs" />
-    <Compile Include="DomainModel\Turandot\Cues\Turandot.Cues.ImageAction.cs" />
-    <Compile Include="DomainModel\Turandot\Cues\Turandot.Cues.Message.cs" />
-    <Compile Include="DomainModel\Turandot\Cues\Turandot.Cues.TextBoxAction.cs" />
-    <Compile Include="DomainModel\Turandot\Cues\Turandot.Cues.VideoAction.cs" />
-    <Compile Include="DomainModel\Turandot\Inputs\Turandot.Inputs.Button.cs" />
-    <Compile Include="DomainModel\Turandot\Inputs\Turandot.Inputs.Input.cs" />
-    <Compile Include="DomainModel\Turandot\Inputs\Turandot.Inputs.ParamSliderAction.cs" />
-    <Compile Include="DomainModel\Turandot\Inputs\Turandot.Inputs.ScalerAction.cs" />
-    <Compile Include="DomainModel\Turandot\Parameters\Turandot.Instructions.cs" />
-    <Compile Include="DomainModel\Turandot\Parameters\TurandotAction.cs" />
-    <Compile Include="DomainModel\Turandot\Schedules\Turandot.Schedules.Script.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Cues\Turandot.Screen.CueLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Cues\Turandot.Screen.FixationPointLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Cues\Turandot.Screen.ImageLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Cues\Turandot.Screen.MessageLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Cues\Turandot.Screen.ProgressBarLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Cues\Turandot.Screen.TextBoxLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Cues\Turandot.Screen.VideoLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Inputs\Turandot.Screen.ButtonLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Inputs\Turandot.Screen.CheckListLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Inputs\Turandot.Screen.InputLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Inputs\Turandot.Screen.ManikinLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Inputs\Turandot.Screen.ManikinSpec.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Inputs\Turandot.Screen.ParamSliderLayout.cs" />
-    <Compile Include="DomainModel\Turandot\Screen\Inputs\Turandot.Screen.ScalerLayout.cs" />
-    <Compile Include="DomainModel\TypeConverters\AMConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\ButtonActionTypeConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\ClosedSetConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\DigitimerConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\DigitimerModeConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\DigitimerPolarityConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\FloatTypeConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\HapticSeqVarCollectionConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\HapticSeqVarVariableConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\HapticStimulusConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\InstructionFileCollectionConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\LevelUnitsConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\ListPropertiesCollectionConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\ListPropertiesConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\MaskerConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\MatrixTestTypeConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\PerformanceCriteriaConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\PropertySorter.cs" />
-    <Compile Include="DomainModel\TypeConverters\QuestionCollectionEditor.cs" />
-    <Compile Include="DomainModel\TypeConverters\SequenceTypeConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\SinusoidConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\SortableExpandableObjectConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\SortableTypeConverter.cs" />
-    <Compile Include="DomainModel\TypeConverters\SpeechTestConverter.cs" />
+    <Compile Include="Parameters\Basic\Audiogram\AudiogramMeasurementSettings.cs" />
+    <Compile Include="Parameters\Basic\BasicMeasurementConfiguration.cs" />
+    <Compile Include="Parameters\Basic\Bekesy\BekesyMeasurementSettings.cs" />
+    <Compile Include="Parameters\Basic\LDL\Haptics\LDL.HapticsSeqVar.cs" />
+    <Compile Include="Parameters\Basic\LDL\Haptics\LDL.HapticStimulus.cs" />
+    <Compile Include="Parameters\Basic\LDL\LDLMeasurementSettings.cs" />
+    <Compile Include="Parameters\Basic\Questionnaires\Questionnaires.Question.cs" />
+    <Compile Include="Parameters\Basic\Questionnaires\Questionnaires.Questionnaire.cs" />
+    <Compile Include="Parameters\Prefabs\ParameterSliderProperties.cs" />
+    <Compile Include="Parameters\Pupillometry\Pupillometry.DynamicRangeSettings.cs" />
+    <Compile Include="Parameters\Pupillometry\Pupillometry.GazeCalibrationSettings.cs" />
+    <Compile Include="Parameters\Scripts\KLib\Signals\Enumerations\AMShape.cs" />
+    <Compile Include="Parameters\Scripts\KLib\Signals\Enumerations\BandwidthMethod.cs" />
+    <Compile Include="Parameters\Scripts\KLib\Signals\Enumerations\BWUnits.cs" />
+    <Compile Include="Parameters\Scripts\KLib\Signals\Enumerations\FilterShape.cs" />
+    <Compile Include="Parameters\Scripts\KLib\Signals\Enumerations\GateState.cs" />
+    <Compile Include="Parameters\Scripts\KLib\Signals\Enumerations\RampState.cs" />
+    <Compile Include="Parameters\Scripts\KLib\Signals\Enumerations\Waveshape.cs" />
+    <Compile Include="Parameters\Scripts\KLib\Signals\Modulations\AM.cs" />
+    <Compile Include="Parameters\Scripts\KLib\Signals\Modulations\SinusoidalAM.cs" />
+    <Compile Include="Parameters\Speech\Digits\DigitsTestSettings.cs" />
+    <Compile Include="Parameters\Speech\Speech Reception\SpeechReception.ClosedSet.cs" />
+    <Compile Include="Parameters\Speech\Speech Reception\SpeechReception.InstructionFile.cs" />
+    <Compile Include="Parameters\Speech\Speech Reception\SpeechReception.ListDescription.cs" />
+    <Compile Include="Parameters\Speech\Speech Reception\SpeechReception.ListProperties.cs" />
+    <Compile Include="Parameters\Speech\Speech Reception\SpeechReception.Masker.cs" />
+    <Compile Include="Parameters\Speech\Speech Reception\SpeechReception.MatrixTest.cs" />
+    <Compile Include="Parameters\Speech\Speech Reception\SpeechReception.PerformanceCriteria.cs" />
+    <Compile Include="Parameters\Speech\Speech Reception\SpeechReception.Sequence.cs" />
+    <Compile Include="Parameters\Speech\Speech Reception\SpeechReception.Test.cs" />
+    <Compile Include="Parameters\Turandot\Cues\Turandot.Cues.Cue.cs" />
+    <Compile Include="Parameters\Turandot\Cues\Turandot.Cues.FixationPointAction.cs" />
+    <Compile Include="Parameters\Turandot\Cues\Turandot.Cues.ImageAction.cs" />
+    <Compile Include="Parameters\Turandot\Cues\Turandot.Cues.Message.cs" />
+    <Compile Include="Parameters\Turandot\Cues\Turandot.Cues.ProgressBarAction.cs" />
+    <Compile Include="Parameters\Turandot\Cues\Turandot.Cues.TextBoxAction.cs" />
+    <Compile Include="Parameters\Turandot\Cues\Turandot.Cues.VideoAction.cs" />
+    <Compile Include="Parameters\Turandot\Inputs\Turandot.Inputs.Button.cs" />
+    <Compile Include="Parameters\Turandot\Inputs\Turandot.Inputs.Categorizer.cs" />
+    <Compile Include="Parameters\Turandot\Inputs\Turandot.Inputs.Input.cs" />
+    <Compile Include="Parameters\Turandot\Inputs\Turandot.Inputs.ParamSliderAction.cs" />
+    <Compile Include="Parameters\Turandot\Inputs\Turandot.Inputs.ScalerAction.cs" />
+    <Compile Include="Parameters\Turandot\Interactive\InteractiveSettings.cs" />
+    <Compile Include="Parameters\Turandot\Parameters\Turandot.Instructions.cs" />
+    <Compile Include="Parameters\Turandot\Parameters\Turandot.Parameters.cs" />
+    <Compile Include="Parameters\Turandot\Parameters\TurandotAction.cs" />
+    <Compile Include="Parameters\Turandot\Schedules\Turandot.Schedules.Script.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Cues\Turandot.Screen.CueLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Cues\Turandot.Screen.FixationPointLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Cues\Turandot.Screen.ImageLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Cues\Turandot.Screen.MessageLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Cues\Turandot.Screen.ProgressBarLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Cues\Turandot.Screen.TextBoxLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Cues\Turandot.Screen.VideoLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Inputs\Turandot.Screen.ButtonLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Inputs\Turandot.Screen.CheckListLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Inputs\Turandot.Screen.InputLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Inputs\Turandot.Screen.ManikinLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Inputs\Turandot.Screen.ManikinSpec.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Inputs\Turandot.Screen.ParamSliderLayout.cs" />
+    <Compile Include="Parameters\Turandot\Screen\Inputs\Turandot.Screen.ScalerLayout.cs" />
+    <Compile Include="Parameters\TypeConverters\AMConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\ButtonActionTypeConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\ClosedSetConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\DigitimerConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\DigitimerModeConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\DigitimerPolarityConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\FloatTypeConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\HapticSeqVarCollectionConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\HapticSeqVarVariableConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\HapticStimulusConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\InstructionFileCollectionConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\LevelUnitsConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\ListPropertiesCollectionConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\ListPropertiesConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\MaskerConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\MatrixTestTypeConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\PerformanceCriteriaConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\PropertySorter.cs" />
+    <Compile Include="Parameters\TypeConverters\QuestionCollectionEditor.cs" />
+    <Compile Include="Parameters\TypeConverters\SequenceTypeConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\SinusoidConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\SortableExpandableObjectConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\SortableTypeConverter.cs" />
+    <Compile Include="Parameters\TypeConverters\SpeechTestConverter.cs" />
     <Compile Include="SpeechForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -492,13 +496,7 @@
     <None Include="Images\Speech-24.png" />
     <Content Include="Revision_History.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DomainModel\Basic\TypeConverters\" />
-    <Folder Include="DomainModel\Scripts\KLib\Signals\TypeConverters\" />
-    <Folder Include="DomainModel\Scripts\KLib\TypeConverters\" />
-    <Folder Include="DomainModel\Speech\Speech Reception\TypeConverters\" />
-    <Folder Include="DomainModel\Turandot\TypeConverters\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if "$(ConfigurationName)" == "Release" ("C:\Program Files (x86)\Inno Setup 6\Compil32.exe" /cc "$(SolutionDir)Installer\HTS Controller.iss")</PostBuildEvent>

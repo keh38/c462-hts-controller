@@ -23,6 +23,8 @@ using LDL.Haptics;
 
 using HTSController.Data_Streams;
 using HTS.Tcp;
+using C462.Shared.Protocol.DTOs;
+using TransferFilePayload = HTS.Tcp.TransferFilePayload;
 
 using Serilog;
 using System.Timers;

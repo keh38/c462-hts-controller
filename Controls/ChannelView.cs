@@ -13,6 +13,8 @@ using KLib.Controls;
 using KLib.Signals;
 using KLib.Signals.Waveforms;
 using KLib.Signals.Enumerations;
+using C462.Shared;
+using LevelUnits = KLib.Signals.LevelUnits;
 
 namespace KLib.Unity.Controls.Signals
 {

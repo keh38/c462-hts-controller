@@ -4,6 +4,8 @@ using System.Xml.Serialization;
 using Newtonsoft.Json;
 using ProtoBuf;
 
+using KLib.Signals.Enumerations;
+
 namespace KLib.Signals.Modulations
 {
     [System.Serializable]

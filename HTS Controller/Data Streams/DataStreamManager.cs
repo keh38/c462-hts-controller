@@ -13,6 +13,7 @@ using Serilog;
 using KLib;
 using KLib.Net;
 using HTS.Tcp;
+using C462.Shared.Protocol.DTOs;
 using KLib.Controls;
 
 namespace HTSController.Data_Streams

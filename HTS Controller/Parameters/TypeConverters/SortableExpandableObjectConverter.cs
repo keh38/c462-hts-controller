@@ -9,18 +9,18 @@ namespace KLib.TypeConverters
 {
     public class SortableExpandableObjectConverter : ExpandableObjectConverter
     {
-        public override bool GetPropertiesSupported(ITypeDescriptorContext? context)
+        public override bool GetPropertiesSupported(ITypeDescriptorContext context)
         {
             return true;
         }
 
-        protected PropertyDescriptorCollection GetSortedProperties(object value, Attribute[]? attributes)
+        protected PropertyDescriptorCollection GetSortedProperties(object value, Attribute[] attributes)
         {
             PropertyDescriptorCollection pdc = TypeDescriptor.GetProperties(value, attributes);
             return pdc.Sort(GetSortedPropertyOrder(value, attributes));
         }
 
-        protected string[] GetSortedPropertyOrder(object value, Attribute[]? attributes)
+        protected string[] GetSortedPropertyOrder(object value, Attribute[] attributes)
         {
             PropertyDescriptorCollection pdc = TypeDescriptor.GetProperties(value, attributes);
             ArrayList orderedProperties = new ArrayList();

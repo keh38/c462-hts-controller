@@ -19,8 +19,10 @@ using KLib.Signals.Waveforms;
 
 using KLib;
 using KLib.Net;
+using AdapterMap = KLib.AdapterMap;
 
 using HTS.Tcp;
+using C462.Shared;
 using Turandot.Interactive;
 using Bekesy;
 

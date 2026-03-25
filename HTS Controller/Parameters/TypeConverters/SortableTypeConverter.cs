@@ -13,7 +13,7 @@ namespace KLib.TypeConverters
             return true;
         }
 
-        public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[]? attributes)
+        public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
         {
             return GetSortedProperties(value, attributes);
         }

@@ -16,6 +16,8 @@ using KLib.Net;
 using SpeechReception;
 
 using HTS.Tcp;
+using C462.Shared.Protocol.DTOs;
+using TransferFilePayload = HTS.Tcp.TransferFilePayload;
 using HTSController.Data_Streams;
 
 using Serilog;

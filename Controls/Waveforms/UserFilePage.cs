@@ -74,7 +74,7 @@ namespace KLib.Unity.Controls.Signals
 
                 if (!float.IsNaN(wf.SamplingRate))
                 {
-                    string dur = wf.Duration > 10 ? Math.Round(wf.Duration) + "s": Math.Round(wf.Duration * 1000) + "ms";
+                    string dur = wf.Duration > 10 ? System.Math.Round(wf.Duration) + "s": System.Math.Round(wf.Duration * 1000) + "ms";
                     formatTextBox.Text = dur + " @ " + (wf.SamplingRate) + "Hz";
                 }
                 else

@@ -18,6 +18,7 @@ using KLib;
 using KLib.Net;
 
 using HTS.Tcp;
+using C462.Shared.Protocol.DTOs;
 using HTSController.Data_Streams;
 
 namespace HTSController

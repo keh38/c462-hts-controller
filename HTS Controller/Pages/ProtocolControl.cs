@@ -18,7 +18,7 @@ using KLib.Controls;
 using KLib.Net;
 
 using HTS.Tcp;
-using Protocols;
+using C462.Shared.Protocols;
 
 namespace HTSController.Pages
 {

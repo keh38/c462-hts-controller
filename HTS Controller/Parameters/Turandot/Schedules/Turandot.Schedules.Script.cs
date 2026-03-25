@@ -1,11 +1,35 @@
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+
+using KLib;
+using static KLib.Expressions;
 using KLib.TypeConverters;
+using Newtonsoft.Json;
 using OrderedPropertyGrid;
+
+using C462.Shared;
+using C462.Shared.Turandot;
+
+namespace Protocols
+{
+    public class ProtocolEntry
+    {
+        public string Title;
+        public string Scene;
+        public string Settings;
+    }
+
+    public class Protocol
+    {
+        public string Title;
+        public bool FullAuto;
+        public List<ProtocolEntry> Tests = new List<ProtocolEntry>();
+    }
+}
 
 namespace Turandot.Schedules
 {
-    public enum TestedEars { None, Left, Right, Both }
-
     public class ScriptArguments
     {
         public Laterality laterality;
@@ -93,6 +117,126 @@ namespace Turandot.Schedules
             Expression = "";
             Order = Order.Interleave;
             SplitAfter = 1;
+        }
+
+        public void Apply(string protocolFolder)
+        {
+            if (ConfigFiles.Count == 0) return;
+
+            float[] values = null;
+
+            if (!string.IsNullOrEmpty(Expression))
+            {
+                double[] dvals = Evaluate(Expression);
+                values = System.Array.ConvertAll(dvals, v => (float)v);
+                if (Order == Order.Random || Order == Order.Interleave)
+                {
+                    KMath.Permute(values);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(Groups))
+            {
+                EvaluateToInt(Groups);
+            }
+
+            int nfile = 1;
+            int nperFile = 1;
+            if (values != null)
+            {
+                nperFile = values.Length;
+                if (values.Length > 0 && SplitAfter > 0)
+                {
+                    nfile = (int)System.Math.Ceiling((double)values.Length / SplitAfter);
+                    nperFile = SplitAfter;
+                }
+            }
+
+            string protocolRootName = Name;
+            if (!string.IsNullOrEmpty(ProtocolRootName))
+            {
+                protocolRootName = ProtocolRootName;
+            }
+
+            var combinedEntries = new List<Protocols.ProtocolEntry>();
+
+            int i1 = 0;
+            for (int k = 0; k < nfile; k++)
+            {
+                var args = new ScriptArguments();
+
+                if (values != null)
+                {
+                    args.dimension = Dim;
+                    args.expression = "[";
+                    int i2 = System.Math.Min(i1 + nperFile, values.Length);
+                    for (int kv = i1; kv < i2; kv++) args.expression += $"{values[kv]} ";
+                    args.expression += "]";
+                    i1 = i2;
+                }
+
+                if (TestedEars == TestedEars.None)
+                {
+                    args.laterality = Laterality.None;
+                    var entries = CreateEntries(args);
+                    if (SingleProtocolFile)
+                        combinedEntries.AddRange(entries);
+                    else
+                        CreateOneProtocolFile(protocolFolder, $"{protocolRootName}-{k + 1}", entries);
+                }
+                else
+                {
+                    if (TestedEars == TestedEars.Left || TestedEars == TestedEars.Both)
+                    {
+                        args.laterality = Laterality.Left;
+                        var entries = CreateEntries(args);
+                        if (SingleProtocolFile)
+                            combinedEntries.AddRange(entries);
+                        else
+                            CreateOneProtocolFile(protocolFolder, $"{protocolRootName}-{k + 1}Left", entries);
+                    }
+                    if (TestedEars == TestedEars.Right || TestedEars == TestedEars.Both)
+                    {
+                        args.laterality = Laterality.Right;
+                        var entries = CreateEntries(args);
+                        if (SingleProtocolFile)
+                            combinedEntries.AddRange(entries);
+                        else
+                            CreateOneProtocolFile(protocolFolder, $"{protocolRootName}-{k + 1}Right", entries);
+                    }
+                }
+
+                if (SingleProtocolFile)
+                {
+                    CreateOneProtocolFile(protocolFolder, protocolRootName, combinedEntries);
+                }
+            }
+        }
+
+        private List<Protocols.ProtocolEntry> CreateEntries(ScriptArguments args)
+        {
+            var entries = new List<Protocols.ProtocolEntry>();
+            string serializedArgs = JsonConvert.SerializeObject(args, Formatting.None);
+
+            foreach (string configFile in ConfigFiles)
+            {
+                entries.Add(new Protocols.ProtocolEntry()
+                {
+                    Title = $"{configFile}-{args.laterality}-{args.expression}",
+                    Scene = "Turandot",
+                    Settings = $"{configFile}:{serializedArgs}"
+                });
+            }
+            return entries;
+        }
+
+        private void CreateOneProtocolFile(string folder, string name, List<Protocols.ProtocolEntry> entries)
+        {
+            var protocol = new Protocols.Protocol();
+            protocol.Title = name;
+            protocol.FullAuto = true;
+            protocol.Tests.AddRange(entries);
+            KFile.XmlSerialize(protocol, Path.Combine(folder, $"{name}.xml"));
         }
     }
 }
