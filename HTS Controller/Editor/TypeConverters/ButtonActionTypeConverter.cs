@@ -5,7 +5,7 @@ using System.Globalization;
 
 using KLib.TypeConverters;
 
-using Turandot.Inputs;
+using Turandot.Editor;
 
 namespace Turandot.TypeConverters
 {

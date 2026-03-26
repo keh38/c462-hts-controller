@@ -56,8 +56,14 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\c462-shared\C462.Turandot\C462.Turandot.csproj">
+      <Name>C462.Turandot</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="C462.Shared">
       <HintPath>..\..\c462-shared\C462.Shared\bin\Debug\netstandard2.0\C462.Shared.dll</HintPath>
+      <Aliases>global,C462Shared</Aliases>
     </Reference>
     <Reference Include="HarfBuzzSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <HintPath>..\packages\HarfBuzzSharp.8.3.1.1\lib\net462\HarfBuzzSharp.dll</HintPath>
@@ -232,7 +238,6 @@
     <Compile Include="Editor\Basic\LDL\LDLMeasurementSettings.cs" />
     <Compile Include="Editor\Basic\Questionnaires\Questionnaires.Question.cs" />
     <Compile Include="Editor\Basic\Questionnaires\Questionnaires.Questionnaire.cs" />
-    <Compile Include="Editor\Prefabs\ParameterSliderProperties.cs" />
     <Compile Include="Editor\Pupillometry\Pupillometry.DynamicRangeSettings.cs" />
     <Compile Include="Editor\Pupillometry\Pupillometry.GazeCalibrationSettings.cs" />
     <Compile Include="Editor\Speech\Digits\DigitsTestSettings.cs" />
@@ -245,37 +250,6 @@
     <Compile Include="Editor\Speech\Speech Reception\SpeechReception.PerformanceCriteria.cs" />
     <Compile Include="Editor\Speech\Speech Reception\SpeechReception.Sequence.cs" />
     <Compile Include="Editor\Speech\Speech Reception\SpeechReception.Test.cs" />
-    <Compile Include="Editor\Turandot\Cues\Turandot.Cues.Cue.cs" />
-    <Compile Include="Editor\Turandot\Cues\Turandot.Cues.FixationPointAction.cs" />
-    <Compile Include="Editor\Turandot\Cues\Turandot.Cues.ImageAction.cs" />
-    <Compile Include="Editor\Turandot\Cues\Turandot.Cues.Message.cs" />
-    <Compile Include="Editor\Turandot\Cues\Turandot.Cues.ProgressBarAction.cs" />
-    <Compile Include="Editor\Turandot\Cues\Turandot.Cues.TextBoxAction.cs" />
-    <Compile Include="Editor\Turandot\Cues\Turandot.Cues.VideoAction.cs" />
-    <Compile Include="Editor\Turandot\Inputs\Turandot.Inputs.Button.cs" />
-    <Compile Include="Editor\Turandot\Inputs\Turandot.Inputs.Categorizer.cs" />
-    <Compile Include="Editor\Turandot\Inputs\Turandot.Inputs.Input.cs" />
-    <Compile Include="Editor\Turandot\Inputs\Turandot.Inputs.ParamSliderAction.cs" />
-    <Compile Include="Editor\Turandot\Inputs\Turandot.Inputs.ScalerAction.cs" />
-    <Compile Include="Editor\Turandot\Interactive\InteractiveSettings.cs" />
-    <Compile Include="Editor\Turandot\Parameters\Turandot.Instructions.cs" />
-    <Compile Include="Editor\Turandot\Parameters\Turandot.Parameters.cs" />
-    <Compile Include="Editor\Turandot\Parameters\TurandotAction.cs" />
-    <Compile Include="Editor\Turandot\Schedules\Turandot.Schedules.Script.cs" />
-    <Compile Include="Editor\Turandot\Screen\Cues\Turandot.Screen.CueLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Cues\Turandot.Screen.FixationPointLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Cues\Turandot.Screen.ImageLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Cues\Turandot.Screen.MessageLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Cues\Turandot.Screen.ProgressBarLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Cues\Turandot.Screen.TextBoxLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Cues\Turandot.Screen.VideoLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Inputs\Turandot.Screen.ButtonLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Inputs\Turandot.Screen.CheckListLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Inputs\Turandot.Screen.InputLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Inputs\Turandot.Screen.ManikinLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Inputs\Turandot.Screen.ManikinSpec.cs" />
-    <Compile Include="Editor\Turandot\Screen\Inputs\Turandot.Screen.ParamSliderLayout.cs" />
-    <Compile Include="Editor\Turandot\Screen\Inputs\Turandot.Screen.ScalerLayout.cs" />
     <Compile Include="Editor\TypeConverters\ButtonActionTypeConverter.cs" />
     <Compile Include="Editor\TypeConverters\ClosedSetConverter.cs" />
     <Compile Include="Editor\TypeConverters\DigitimerConverter.cs" />
@@ -292,12 +266,9 @@
     <Compile Include="Editor\TypeConverters\MaskerConverter.cs" />
     <Compile Include="Editor\TypeConverters\MatrixTestTypeConverter.cs" />
     <Compile Include="Editor\TypeConverters\PerformanceCriteriaConverter.cs" />
-    <Compile Include="Editor\TypeConverters\PropertySorter.cs" />
     <Compile Include="Editor\TypeConverters\QuestionCollectionEditor.cs" />
     <Compile Include="Editor\TypeConverters\SequenceTypeConverter.cs" />
     <Compile Include="Editor\TypeConverters\SinusoidConverter.cs" />
-    <Compile Include="Editor\TypeConverters\SortableExpandableObjectConverter.cs" />
-    <Compile Include="Editor\TypeConverters\SortableTypeConverter.cs" />
     <Compile Include="Editor\TypeConverters\SpeechTestConverter.cs" />
     <Compile Include="SpeechForm.cs">
       <SubType>Form</SubType>
@@ -403,6 +374,7 @@
     <Compile Include="TurandotLiveForm.Designer.cs">
       <DependentUpon>TurandotLiveForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Turandot\Schedules\Turandot.Schedules.Script.cs" />
     <Compile Include="Watchdog.cs" />
     <EmbeddedResource Include="SpeechForm.resx">
       <DependentUpon>SpeechForm.cs</DependentUpon>
@@ -505,7 +477,6 @@
   <ItemGroup>
     <Folder Include="Editor\Basic\TypeConverters\" />
     <Folder Include="Editor\Speech\Speech Reception\TypeConverters\" />
-    <Folder Include="Editor\Turandot\TypeConverters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

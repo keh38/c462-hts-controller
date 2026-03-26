@@ -1,36 +1,23 @@
+extern alias C462Shared;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-
+using KLib.Signals;
 using KLib;
-using KLib.IO;
-using static KLib.Expressions;
 using KLib.TypeConverters;
-using Newtonsoft.Json;
 using OrderedPropertyGrid;
-
+using System.IO;
+using System.Xml.Serialization;
 using C462.Shared;
-using C462.Shared.Turandot;
-
-namespace Protocols
-{
-    public class ProtocolEntry
-    {
-        public string Title;
-        public string Scene;
-        public string Settings;
-    }
-
-    public class Protocol
-    {
-        public string Title;
-        public bool FullAuto;
-        public List<ProtocolEntry> Tests = new List<ProtocolEntry>();
-    }
-}
+using C462.Shared.Protocols;
+using System.Text;
+using Expr = C462Shared::KLib.Expressions.Expressions;
 
 namespace Turandot.Schedules
 {
+    public enum TestedEars { None, Left, Right, Both}
+
     public class ScriptArguments
     {
         public Laterality laterality;
@@ -54,24 +41,28 @@ namespace Turandot.Schedules
         [Description("Name of this script")]
         [PropertyOrder(0)]
         public string Name { get; set; }
+        private bool ShouldSerializeName() { return false; }
 
         [Category("Bookkeeping")]
         [DisplayName("Protocol name")]
         [Description("Root name of generated protocol files")]
         [PropertyOrder(1)]
         public string ProtocolRootName { get; set; }
+        private bool ShouldSerializeProtocolRootName() { return false; }
 
         [Category("Bookkeeping")]
         [DisplayName("Single output")]
         [Description("Generate single output protocol file")]
         [PropertyOrder(2)]
         public bool SingleProtocolFile { get; set; }
+        private bool ShouldSerializeSingleProtocolFile() { return false; }
 
         [Category("Bookkeeping")]
         [DisplayName("Config files")]
         [Description("List of Turandot config files (just the central part of the name")]
         [PropertyOrder(3)]
         public BindingList<string> ConfigFiles { get; set; }
+        private bool ShouldSerializeConfigFiles() { return false; }
 
         [Category("Sequence")]
         [DisplayName("Ears")]
@@ -79,32 +70,38 @@ namespace Turandot.Schedules
         [PropertyOrder(1)]
         public TestedEars TestedEars { get; set; }
 
+        private bool ShouldSerializeTestedEars() { return false; }
         [Category("Sequence")]
         [PropertyOrder(2)]
         [Browsable(false)]
         public string Groups { get; set; }
+        private bool ShouldSerializeGroups() { return false; }
 
         [Category("Sequence")]
         [DisplayName("Dimension")]
         [Description("Sequence dimension along which to split")]
         [PropertyOrder(3)]
         public VarDimension Dim { get; set; }
+        private bool ShouldSerializeDim() { return false; }
 
         [Category("Sequence")]
         [Description("Value expression")]
         [PropertyOrder(4)]
         public string Expression { get; set; }
+        private bool ShouldSerializeExpression() { return false; }
 
         [Category("Sequence")]
         [Description("Order in which values are distributed across split")]
         [PropertyOrder(5)]
         public Order Order { get; set; }
+        private bool ShouldSerializeOrder() { return false; }
 
         [Category("Sequence")]
         [DisplayName("Split after")]
         [Description("Number of items per split")]
         [PropertyOrder(6)]
         public int SplitAfter { get; set; }
+        private bool ShouldSerializeSplitAfter() { return false; }
 
         public Script()
         {
@@ -125,11 +122,11 @@ namespace Turandot.Schedules
             if (ConfigFiles.Count == 0) return;
 
             float[] values = null;
+            int[] groups = new int[] { 0 };
 
             if (!string.IsNullOrEmpty(Expression))
             {
-                double[] dvals = Evaluate(Expression);
-                values = System.Array.ConvertAll(dvals, v => (float)v);
+                values = Expr.Evaluate(Expression);
                 if (Order == Order.Random || Order == Order.Interleave)
                 {
                     KMath.Permute(values);
@@ -138,7 +135,7 @@ namespace Turandot.Schedules
 
             if (!string.IsNullOrEmpty(Groups))
             {
-                EvaluateToInt(Groups);
+                groups = Expr.EvaluateToInt(Groups);
             }
 
             int nfile = 1;
@@ -148,7 +145,7 @@ namespace Turandot.Schedules
                 nperFile = values.Length;
                 if (values.Length > 0 && SplitAfter > 0)
                 {
-                    nfile = (int)System.Math.Ceiling((double)values.Length / SplitAfter);
+                    nfile = (int)Math.Ceiling((double)values.Length / SplitAfter);
                     nperFile = SplitAfter;
                 }
             }
@@ -159,7 +156,7 @@ namespace Turandot.Schedules
                 protocolRootName = ProtocolRootName;
             }
 
-            var combinedEntries = new List<Protocols.ProtocolEntry>();
+            List<ProtocolEntry> combinedEntries = new List<ProtocolEntry>();
 
             int i1 = 0;
             for (int k = 0; k < nfile; k++)
@@ -170,7 +167,7 @@ namespace Turandot.Schedules
                 {
                     args.dimension = Dim;
                     args.expression = "[";
-                    int i2 = System.Math.Min(i1 + nperFile, values.Length);
+                    int i2 = Math.Min(i1 + nperFile, values.Length);
                     for (int kv = i1; kv < i2; kv++) args.expression += $"{values[kv]} ";
                     args.expression += "]";
                     i1 = i2;
@@ -180,10 +177,16 @@ namespace Turandot.Schedules
                 {
                     args.laterality = Laterality.None;
                     var entries = CreateEntries(args);
+
                     if (SingleProtocolFile)
+                    {
                         combinedEntries.AddRange(entries);
+                    }
                     else
-                        CreateOneProtocolFile(protocolFolder, $"{protocolRootName}-{k + 1}", entries);
+                    {
+                        string protocolName = $"{protocolRootName}-{k + 1}";
+                        CreateOneProtocolFile(protocolFolder, protocolName, entries);
+                    }
                 }
                 else
                 {
@@ -192,21 +195,30 @@ namespace Turandot.Schedules
                         args.laterality = Laterality.Left;
                         var entries = CreateEntries(args);
                         if (SingleProtocolFile)
+                        {
                             combinedEntries.AddRange(entries);
+                        }
                         else
-                            CreateOneProtocolFile(protocolFolder, $"{protocolRootName}-{k + 1}Left", entries);
+                        {
+                            string protocolName = $"{protocolRootName}-{k + 1}Left";
+                            CreateOneProtocolFile(protocolFolder, protocolName, entries);
+                        }
                     }
                     if (TestedEars == TestedEars.Right || TestedEars == TestedEars.Both)
                     {
                         args.laterality = Laterality.Right;
                         var entries = CreateEntries(args);
                         if (SingleProtocolFile)
+                        {
                             combinedEntries.AddRange(entries);
+                        }
                         else
-                            CreateOneProtocolFile(protocolFolder, $"{protocolRootName}-{k + 1}Right", entries);
+                        {
+                            string protocolName = $"{protocolRootName}-{k + 1}Right";
+                            CreateOneProtocolFile(protocolFolder, protocolName, entries);
+                        }
                     }
                 }
-
                 if (SingleProtocolFile)
                 {
                     CreateOneProtocolFile(protocolFolder, protocolRootName, combinedEntries);
@@ -214,30 +226,38 @@ namespace Turandot.Schedules
             }
         }
 
-        private List<Protocols.ProtocolEntry> CreateEntries(ScriptArguments args)
+        private List<ProtocolEntry> CreateEntries(ScriptArguments args)
         {
-            var entries = new List<Protocols.ProtocolEntry>();
-            string serializedArgs = JsonConvert.SerializeObject(args, Formatting.None);
+            List<ProtocolEntry> entries = new List<ProtocolEntry>();
+
+            string serializedArgs = Newtonsoft.Json.JsonConvert.SerializeObject(args, Newtonsoft.Json.Formatting.Indented);
 
             foreach (string configFile in ConfigFiles)
             {
-                entries.Add(new Protocols.ProtocolEntry()
+                var entry = new ProtocolEntry()
                 {
                     Title = $"{configFile}-{args.laterality}-{args.expression}",
                     Scene = "Turandot",
                     Settings = $"{configFile}:{serializedArgs}"
-                });
+                };
+                entries.Add(entry);
             }
+
             return entries;
         }
 
-        private void CreateOneProtocolFile(string folder, string name, List<Protocols.ProtocolEntry> entries)
+        private void CreateOneProtocolFile(string folder, string name, List<ProtocolEntry> entries)
         {
-            var protocol = new Protocols.Protocol();
+            Protocol protocol = new Protocol();
             protocol.Title = name;
             protocol.FullAuto = true;
             protocol.Tests.AddRange(entries);
-            Files.XmlSerialize(protocol, Path.Combine(folder, $"{name}.xml"));
+            var path = Path.Combine(folder, $"{name}.xml");
+            using (var writer = new StreamWriter(path))
+            {
+                var serializer = new XmlSerializer(protocol.GetType());
+                serializer.Serialize(writer, protocol);
+            }
         }
     }
 }

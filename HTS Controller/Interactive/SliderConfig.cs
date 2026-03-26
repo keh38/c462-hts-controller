@@ -12,7 +12,7 @@ using System.Windows.Forms;
 using KLib.Controls;
 using KLib.Signals;
 using C462.Shared;
-using Turandot.Inputs;
+using Turandot.Editor;
 using ChannelProperties = KLib.Signals.ChannelProperties;
 
 namespace HTSController.Interactive

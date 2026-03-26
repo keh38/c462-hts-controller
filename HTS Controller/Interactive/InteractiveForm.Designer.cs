@@ -38,7 +38,7 @@
             this.channelListBox = new KLib.Controls.KUserListBox();
             this.graphTabControl = new System.Windows.Forms.TabControl();
             this.graphPage = new System.Windows.Forms.TabPage();
-            this.formsPlot = new ScottPlot.WinForms.FormsPlot();
+            this.signalGraph = new ScottPlot.WinForms.FormsPlot();
             this.errorPage = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
             this.saveButton = new System.Windows.Forms.Button();
@@ -139,7 +139,7 @@
             // graphPage
             // 
             this.graphPage.BackColor = System.Drawing.SystemColors.Control;
-            this.graphPage.Controls.Add(this.formsPlot);
+            this.graphPage.Controls.Add(this.signalGraph);
             this.graphPage.Location = new System.Drawing.Point(4, 5);
             this.graphPage.Margin = new System.Windows.Forms.Padding(4);
             this.graphPage.Name = "graphPage";
@@ -150,11 +150,11 @@
             // 
             // formsPlot
             // 
-            this.formsPlot.DisplayScale = 0F;
-            this.formsPlot.Location = new System.Drawing.Point(8, 7);
-            this.formsPlot.Name = "formsPlot";
-            this.formsPlot.Size = new System.Drawing.Size(545, 206);
-            this.formsPlot.TabIndex = 0;
+            this.signalGraph.DisplayScale = 0F;
+            this.signalGraph.Location = new System.Drawing.Point(8, 7);
+            this.signalGraph.Name = "formsPlot";
+            this.signalGraph.Size = new System.Drawing.Size(545, 206);
+            this.signalGraph.TabIndex = 0;
             // 
             // errorPage
             // 
@@ -333,6 +333,6 @@
         private Interactive.SliderConfig sliderConfig;
         private System.Windows.Forms.PropertyGrid channelPropertyGrid;
         private System.Windows.Forms.Button button1;
-        private ScottPlot.WinForms.FormsPlot formsPlot;
+        private ScottPlot.WinForms.FormsPlot signalGraph;
     }
 }

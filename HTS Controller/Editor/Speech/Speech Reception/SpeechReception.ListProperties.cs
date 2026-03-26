@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Xml.Serialization;
 using KLib.TypeConverters;
 using Newtonsoft.Json;
-using KLib.Signals;
+using C462.Shared;
 
 using OrderedPropertyGrid;
 

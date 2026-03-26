@@ -18,11 +18,10 @@ using KLib.Signals.Editor;
 
 using KLib.IO;
 using KLib.Net;
-using AdapterMap = KLib.AdapterMap;
 
 using HTS.Tcp;
 using C462.Shared;
-using Turandot.Interactive;
+using Turandot.Editor;
 using Bekesy;
 
 using Color = System.Drawing.Color;
@@ -111,9 +110,9 @@ namespace HTSController
             //_settings.SigMan.AdapterMap = adapterMap;
             channelPropertyGrid.SelectedObject = _settings.SigMan.Channels[0];
 
-            //sliderConfig.SetDataForContext(_settings.SigMan.GetValidSweepables());
-            //sliderConfig.ShowSliders = _settings.ShowSliders;
-            //sliderConfig.Value = _settings.Sliders;
+            sliderConfig.SetDataForContext(_settings.SigMan.GetValidSweepables());
+            sliderConfig.ShowSliders = _settings.ShowSliders;
+            sliderConfig.Value = _settings.Sliders;
 
             //PlotSignals(_settings.SigMan);
             LayoutControls();
@@ -238,7 +237,7 @@ namespace HTSController
 
             channelListBox.SetItems(_settings.SigMan.Channels.Select(c => c.Name).ToList());
             channelListBox.SelectedIndex = 0;
-            //signalGraph.Visible = true;
+            signalGraph.Visible = true;
 
             SetTitle();
         }
@@ -345,7 +344,7 @@ namespace HTSController
             double[] time;
             try
             {
-                formsPlot.Plot.Clear();
+                signalGraph.Plot.Clear();
 
                 float T = 0.001f * sigman.GetMaxInterval(1000);
                 T = Math.Min(T, 25);
@@ -368,7 +367,7 @@ namespace HTSController
             catch (Exception ex)
             {
                 audioErrorTextBox.Text = ex.Message;
-                formsPlot.Refresh();
+                signalGraph.Refresh();
                 graphTabControl.SelectedTab = errorPage;
                 return;
             }
@@ -391,7 +390,7 @@ namespace HTSController
                         y[k] = ch.Data[k] * scaleFactor + 2 * irow;
                     }
 
-                    formsPlot.Plot.Add.SignalXY(time, y);
+                    signalGraph.Plot.Add.SignalXY(time, y);
                 }
                 catch (Exception ex)
                 {
@@ -401,17 +400,17 @@ namespace HTSController
                 --irow;
             }
 
-            formsPlot.Plot.Axes.AutoScale();
+            signalGraph.Plot.Axes.AutoScale();
             // Hide axis label and tick
-            formsPlot.Plot.Axes.Left.TickLabelStyle.IsVisible = false;
-            formsPlot.Plot.Axes.Left.MajorTickStyle.Length = 0;
-            formsPlot.Plot.Axes.Left.MinorTickStyle.Length = 0;
-            formsPlot.Plot.XLabel("Time (ms)");
+            signalGraph.Plot.Axes.Left.TickLabelStyle.IsVisible = false;
+            signalGraph.Plot.Axes.Left.MajorTickStyle.Length = 0;
+            signalGraph.Plot.Axes.Left.MinorTickStyle.Length = 0;
+            signalGraph.Plot.XLabel("Time (ms)");
 
             // Hide axis edge line
-            formsPlot.Plot.Axes.Left.FrameLineStyle.Width = 0;
-            formsPlot.Plot.Axes.Right.FrameLineStyle.Width = 0;
-            formsPlot.Plot.Axes.Top.FrameLineStyle.Width = 0; formsPlot.Refresh();
+            signalGraph.Plot.Axes.Left.FrameLineStyle.Width = 0;
+            signalGraph.Plot.Axes.Right.FrameLineStyle.Width = 0;
+            signalGraph.Plot.Axes.Top.FrameLineStyle.Width = 0; signalGraph.Refresh();
             graphTabControl.SelectedTab = string.IsNullOrEmpty(audioErrorTextBox.Text) ? graphPage : errorPage;
         }
 
