@@ -316,7 +316,7 @@ namespace HTSController.Pages
         {
             // TODO: Update when Turandot Editor discovery API is finalized in KLib.Net
             // var ep = DiscoverEditor("TURANDOT.EDITOR");
-            // if (ep != null) KTcpClient.SendRequest(ep, TcpMessage.Request("SetMetrics", KLib.KFile.ToXMLString(_subjectMetadata.metrics)));
+            // if (ep != null) KTcpClient.SendRequest(ep, TcpMessage.Request("SetMetrics", KLib.IO.Files.ToXMLString(_subjectMetadata.metrics)));
         }
 
         private void metricGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)

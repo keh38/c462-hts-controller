@@ -14,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using KLib;
+using KLib.IO;
 using KLib.Net;
 using Pupillometry;
 
@@ -114,7 +114,7 @@ namespace HTSController
             var configPath = Path.Combine(FileLocations.ConfigFolder, "Gaze.Defaults.xml");
             if (File.Exists(configPath))
             {
-                _gazeSettings = KFile.XmlDeserialize<GazeCalibrationSettings>(configPath);
+                _gazeSettings = Files.XmlDeserialize<GazeCalibrationSettings>(configPath);
             }
             else
             {
@@ -174,7 +174,7 @@ namespace HTSController
         private void saveButton_Click(object sender, EventArgs e)
         {
             var configPath = Path.Combine(FileLocations.ConfigFolder, $"DynamicRange.{_dynamicRangeSettings.Name}.xml");
-            KLib.KFile.XmlSerialize(_dynamicRangeSettings, configPath);
+            KLib.IO.Files.XmlSerialize(_dynamicRangeSettings, configPath);
 
             EnumerateDynamicRangeSettings();
             openDropDown.SelectedItem = _dynamicRangeSettings.Name;
@@ -195,7 +195,7 @@ namespace HTSController
         private void ReadDynamicRangeSettings(string name)
         {
             var settingsPath = Path.Combine(FileLocations.ConfigFolder, $"DynamicRange.{name}.xml");
-            _dynamicRangeSettings = KFile.XmlDeserialize<DynamicRangeSettings>(settingsPath);
+            _dynamicRangeSettings = Files.XmlDeserialize<DynamicRangeSettings>(settingsPath);
             _dynamicRangeSettings.Name = name;
             dynamicRangePropertyGrid.SelectedObject = _dynamicRangeSettings;
         }
@@ -464,7 +464,7 @@ namespace HTSController
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
             var configPath = Path.Combine(FileLocations.ConfigFolder, "Gaze.Defaults.xml");
-            KLib.KFile.XmlSerialize(_gazeSettings, configPath);
+            KLib.IO.Files.XmlSerialize(_gazeSettings, configPath);
         }
 
         private async void gazeStartButton_Click(object sender, EventArgs e)
@@ -564,7 +564,7 @@ namespace HTSController
 
         private void InitializeGazeCalibrationMeasurement()
         {
-            _network.SendMessage("Initialize", KFile.ToXMLString(_gazeSettings));
+            _network.SendMessage("Initialize", Files.ToXMLString(_gazeSettings));
 
             // wait for file name to get sent back via RemoteMessageHandler
             var startTime = DateTime.Now;

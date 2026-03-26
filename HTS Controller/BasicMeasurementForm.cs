@@ -11,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using KLib;
+using KLib.IO;
 using KLib.Net;
 using BasicMeasurements;
 using Audiograms;
@@ -25,6 +25,8 @@ using HTSController.Data_Streams;
 using HTS.Tcp;
 using C462.Shared.Protocol.DTOs;
 using TransferFilePayload = HTS.Tcp.TransferFilePayload;
+
+using Newtonsoft.Json;
 
 using Serilog;
 using System.Timers;
@@ -133,7 +135,7 @@ namespace HTSController
             var configPath = FileLocations.GetConfigFile(_measType, _configName);
             if (File.Exists(configPath))
             {
-                var obj = KFile.XmlDeserialize<BasicMeasurementConfiguration>(configPath);
+                var obj = Files.XmlDeserialize<BasicMeasurementConfiguration>(configPath);
                 switch (_measType)
                 {
                     case "Audiogram":
@@ -353,7 +355,7 @@ namespace HTSController
                     Invoke(new Action(() => progressBar.Value = progress));
                     break;
                 case "ReceiveData":
-                    var filePayload = FileIO.JSONDeserializeFromString<TransferFilePayload>(payload.Data);
+                    var filePayload = JsonConvert.DeserializeObject<TransferFilePayload>(payload.Data);
                     string filePath = Path.Combine(FileLocations.SubjectDataFolder, filePayload.Filename);
                     if (File.Exists(filePath))
                     {
@@ -397,7 +399,7 @@ namespace HTSController
             if (_config != null)
             {
                 var fn = FileLocations.GetConfigFile(_measType, _config.Name);
-                KLib.KFile.XmlSerialize(_config, fn);
+                Files.XmlSerialize(_config, fn);
                 msSelectMeasurement.Text = $"{_measType}.{_config.Name}";
                 UpdateFileMenu();
             }

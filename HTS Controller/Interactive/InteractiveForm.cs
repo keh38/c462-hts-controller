@@ -14,10 +14,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using KLib.Controls;
-using KLib.Signals;
-using KLib.Signals.Waveforms;
+using KLib.Signals.Editor;
 
-using KLib;
+using KLib.IO;
 using KLib.Net;
 using AdapterMap = KLib.AdapterMap;
 
@@ -25,6 +24,10 @@ using HTS.Tcp;
 using C462.Shared;
 using Turandot.Interactive;
 using Bekesy;
+
+using Color = System.Drawing.Color;
+
+using ScottPlot;
 
 namespace HTSController
 {
@@ -56,6 +59,8 @@ namespace HTSController
         private int _packetsReceived = 0;
         private int _lastPacketProcessed = 0;
 
+        private KLib.Signals.SignalManager _signalEngine = new KLib.Signals.SignalManager();
+
         public string SettingsPath { get; private set; }
 
         public InteractiveForm(HTSNetwork network, string settingsPath)
@@ -69,15 +74,6 @@ namespace HTSController
             InitializeComponent();
 
             channelControl.ChannelActiveChanged = OnChannelActiveChanged;
-
-            KLib.KGraphics.ZedGraphUtils.InitZedGraph(signalGraph, "Time (s)", "");
-            signalGraph.MasterPane.Fill.Type = ZedGraph.FillType.None;
-            signalGraph.MasterPane.Border.IsVisible = false;
-            signalGraph.GraphPane.Fill.Type = ZedGraph.FillType.None;
-            signalGraph.GraphPane.Border.IsVisible = false;
-            signalGraph.GraphPane.Chart.Fill.Type = ZedGraph.FillType.None;
-            signalGraph.GraphPane.YAxis.IsVisible = false;
-            signalGraph.Refresh();
         }
 
         private void InteractiveForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -107,20 +103,19 @@ namespace HTSController
             {
                 adapterMap = AdapterMap.Default7point1Map("HD280");
             }
-            channelView.AdapterMap = adapterMap;
 
             StartUDP();
 
             InitializeSettings();
 
-            _settings.SigMan.AdapterMap = adapterMap;
-            channelView.Value = _settings.SigMan.channels[0];
+            //_settings.SigMan.AdapterMap = adapterMap;
+            channelPropertyGrid.SelectedObject = _settings.SigMan.Channels[0];
 
-            sliderConfig.SetDataForContext(_settings.SigMan.GetValidSweepables());
-            sliderConfig.ShowSliders = _settings.ShowSliders;
-            sliderConfig.Value = _settings.Sliders;
+            //sliderConfig.SetDataForContext(_settings.SigMan.GetValidSweepables());
+            //sliderConfig.ShowSliders = _settings.ShowSliders;
+            //sliderConfig.Value = _settings.Sliders;
 
-            PlotSignals(_settings.SigMan);
+            //PlotSignals(_settings.SigMan);
             LayoutControls();
         }
 
@@ -238,12 +233,12 @@ namespace HTSController
             }
             else
             {
-                _settings = KFile.XmlDeserialize<InteractiveSettings>(SettingsPath);
+                _settings = Files.XmlDeserialize<InteractiveSettings>(SettingsPath);
             }
 
-            channelListBox.SetItems(_settings.SigMan.channels.Select(c => c.Name).ToList());
+            channelListBox.SetItems(_settings.SigMan.Channels.Select(c => c.Name).ToList());
             channelListBox.SelectedIndex = 0;
-            signalGraph.Visible = true;
+            //signalGraph.Visible = true;
 
             SetTitle();
         }
@@ -256,12 +251,12 @@ namespace HTSController
         private void channelListBox_ItemAdded(object sender, KUserListBox.ChangedItem e)
         {
             Debug.WriteLine($"added {e.name}");
-            Channel ch = new Channel(e.name, new Waveform());
-            ch.Modality = KLib.Signals.Enumerations.Modality.Audio;
-            ch.Laterality = Laterality.Diotic;
-            channelView.Value = ch;
+            //Channel ch = new Channel(e.name, new Waveform());
+            //ch.Modality = KLib.Signals.Enumerations.Modality.Audio;
+            //ch.Laterality = Laterality.Diotic;
+            //channelView.Value = ch;
 
-            _settings.SigMan.channels.Insert(e.index, ch);
+            //_settings.SigMan.Channels.Insert(e.index, ch);
 
             CurateControls();
         }
@@ -274,7 +269,7 @@ namespace HTSController
         {
             if (!_ignoreEvents)
             {
-                PlotSignals(_settings.SigMan);
+                //PlotSignals(_settings.SigMan);
                 CurateControls();
             }
         }
@@ -283,12 +278,12 @@ namespace HTSController
         {
             if (_ignoreEvents || _settings.SigMan == null) return;
 
-            Channel ch = _settings.SigMan.GetChannel(e.name);
-            if (ch != null)
-            {
-                _settings.SigMan.channels.Remove(ch);
-                _settings.SigMan.channels.Insert(e.index, ch);
-            }
+            //Channel ch = _settings.SigMan.GetChannel(e.name);
+            //if (ch != null)
+            //{
+            //    _settings.SigMan.Channels.Remove(ch);
+            //    _settings.SigMan.Channels.Insert(e.index, ch);
+            //}
 
             CurateControls();
         }
@@ -297,7 +292,7 @@ namespace HTSController
         {
             if (_ignoreEvents || _settings.SigMan == null) return;
 
-            _settings.SigMan.channels[e.index].Name = e.name;
+            _settings.SigMan.Channels[e.index].Name = e.name;
 
             CurateControls();
         }
@@ -308,8 +303,8 @@ namespace HTSController
 
             foreach (string name in e.names)
             {
-                Channel ch = _settings.SigMan.GetChannel(name);
-                if (ch != null) _settings.SigMan.channels.Remove(ch);
+                //Channel ch = _settings.SigMan.GetChannel(name);
+                //if (ch != null) _settings.SigMan.Channels.Remove(ch);
             }
             CurateControls();
         }
@@ -321,11 +316,11 @@ namespace HTSController
             List<Channel> tmp = new List<Channel>();
             foreach (string name in e.names)
             {
-                Channel ch = _settings.SigMan.GetChannel(name);
-                if (ch != null) tmp.Add(ch);
+                //Channel ch = _settings.SigMan.GetChannel(name);
+                //if (ch != null) tmp.Add(ch);
             }
 
-            _settings.SigMan.channels = tmp;
+            _settings.SigMan.Channels = tmp;
             CurateControls();
         }
 
@@ -336,12 +331,12 @@ namespace HTSController
                 Channel ch = _settings.SigMan.GetChannel(e.name);
                 if (ch != null)
                 {
-                    channelView.Value = ch;
+                    channelPropertyGrid.SelectedObject = ch;
                 }
             }
         }
 
-        private void PlotSignals(SignalManager sigman)
+        private void PlotSignals(KLib.Signals.SignalManager sigman)
         {
             audioErrorTextBox.Text = "";
 
@@ -350,36 +345,36 @@ namespace HTSController
             double[] time;
             try
             {
-                signalGraph.GraphPane.CurveList.Clear();
+                formsPlot.Plot.Clear();
 
                 float T = 0.001f * sigman.GetMaxInterval(1000);
                 T = Math.Min(T, 25);
 
                 npts = (int)(_plotSampleRate * T);
 
-                if (!string.IsNullOrEmpty(FileLocations.SubjectDataFolder))
-                {
-                    KLib.Signals.Calibration.CalibrationFactory.AudiogramFolder = Path.Combine(FileLocations.SubjectDataFolder, "meta");
-                }
-                else
-                {
-                    KLib.Signals.Calibration.CalibrationFactory.AudiogramFolder = Path.Combine(FileLocations.RootFolder, "Calibrations");
-                }
+                //if (!string.IsNullOrEmpty(FileLocations.SubjectDataFolder))
+                //{
+                //    KLib.Signals.Calibration.CalibrationFactory.AudiogramFolder = Path.Combine(FileLocations.SubjectDataFolder, "meta");
+                //}
+                //else
+                //{
+                //    KLib.Signals.Calibration.CalibrationFactory.AudiogramFolder = Path.Combine(FileLocations.RootFolder, "Calibrations");
+                //}
                 sigman.Initialize(_plotSampleRate, npts);
-                channelView.UpdateMaxLevel();
+                //channelView.UpdateMaxLevel();
 
                 time = new double[npts];
             }
             catch (Exception ex)
             {
                 audioErrorTextBox.Text = ex.Message;
-                signalGraph.Refresh();
+                formsPlot.Refresh();
                 graphTabControl.SelectedTab = errorPage;
                 return;
             }
 
             int irow = 0;
-            foreach (Channel ch in sigman.channels)
+            foreach (KLib.Signals.Channel ch in sigman.Channels)
             {
                 try
                 {
@@ -396,7 +391,7 @@ namespace HTSController
                         y[k] = ch.Data[k] * scaleFactor + 2 * irow;
                     }
 
-                    signalGraph.GraphPane.AddCurve("", time, y, Color.Blue, ZedGraph.SymbolType.None);
+                    formsPlot.Plot.Add.SignalXY(time, y);
                 }
                 catch (Exception ex)
                 {
@@ -406,12 +401,17 @@ namespace HTSController
                 --irow;
             }
 
-            signalGraph.GraphPane.XAxis.Scale.Min = time.Min();
-            signalGraph.GraphPane.XAxis.Scale.Max = time.Max();
-            signalGraph.GraphPane.YAxis.Scale.Min = -sigman.channels.Count * 2 + 0.75;
-            signalGraph.GraphPane.YAxis.Scale.Max = 1.25;
-            signalGraph.GraphPane.YAxis.IsVisible = false;
-            signalGraph.Refresh();
+            formsPlot.Plot.Axes.AutoScale();
+            // Hide axis label and tick
+            formsPlot.Plot.Axes.Left.TickLabelStyle.IsVisible = false;
+            formsPlot.Plot.Axes.Left.MajorTickStyle.Length = 0;
+            formsPlot.Plot.Axes.Left.MinorTickStyle.Length = 0;
+            formsPlot.Plot.XLabel("Time (ms)");
+
+            // Hide axis edge line
+            formsPlot.Plot.Axes.Left.FrameLineStyle.Width = 0;
+            formsPlot.Plot.Axes.Right.FrameLineStyle.Width = 0;
+            formsPlot.Plot.Axes.Top.FrameLineStyle.Width = 0; formsPlot.Refresh();
             graphTabControl.SelectedTab = string.IsNullOrEmpty(audioErrorTextBox.Text) ? graphPage : errorPage;
         }
 
@@ -419,8 +419,8 @@ namespace HTSController
         {
             displayTimer.Enabled = false;
 
-            LayoutMyControls();
-            InitializeControlValues();
+            //LayoutMyControls();
+            //InitializeControlValues();
 
             displayTimer.Enabled = true;
         }
@@ -430,7 +430,7 @@ namespace HTSController
             _channelControls = new List<ChannelControl>();
             _sliderActions = new List<Action<float>>();
 
-            var chanNames = _settings.SigMan.channels.Select(x => x.Name).ToList();
+            var chanNames = _settings.SigMan.Channels.Select(x => x.Name).ToList();
             for (int k = 0; k < chanNames.Count; k++)
             {
                 var controls = _settings.Sliders.FindAll(x => x.Channel.Equals(chanNames[k]));
@@ -483,49 +483,49 @@ namespace HTSController
         {
             foreach (var s in _settings.Sliders)
             {
-                _settings.SigMan.SetParameter(s.Channel, s.Property, s.StartValue);
+                //_settings.SigMan.SetParameter(s.Channel, s.Property, s.StartValue);
             }
-            channelView.UpdateParameters();
-            PlotSignals(_settings.SigMan);
+            //channelView.UpdateParameters();
+            //PlotSignals(_settings.SigMan);
         }
 
         private void CurateControls()
         {
-            var valid = _settings.SigMan.GetValidSweepables();
+            //var valid = _settings.SigMan.GetValidSweepables();
 
-            var toDelete = new List<Turandot.Inputs.ParameterSliderProperties>();
-            foreach (var s in _settings.Sliders)
-            {
-                if (valid.Find(x => x.channelName.Equals(s.Channel) && x.properties.Contains(s.Property)) == null)
-                {
-                    toDelete.Add(s);
-                }
-            }
-            foreach (var c in toDelete) _settings.Sliders.Remove(c);
+            //var toDelete = new List<Turandot.Inputs.ParameterSliderProperties>();
+            //foreach (var s in _settings.Sliders)
+            //{
+            //    if (valid.Find(x => x.channelName.Equals(s.Channel) && x.properties.Contains(s.Property)) == null)
+            //    {
+            //        toDelete.Add(s);
+            //    }
+            //}
+            //foreach (var c in toDelete) _settings.Sliders.Remove(c);
 
-            LayoutControls();
+            //LayoutControls();
         }
 
         private void OnChannelActiveChanged(string channel, bool enabled, bool selfChange)
         {
-            if (selfChange && (_isLive || (_network.IsConnected && _settings.ShowSliders)))
-            {
-                _network.SendMessage("SetActive", $"{channel}={(enabled ? 1 : 0)}");
-            }
-            _settings.SigMan[channel].SetActive(enabled);
+            //if (selfChange && (_isLive || (_network.IsConnected && _settings.ShowSliders)))
+            //{
+            //    _network.SendMessage("SetActive", $"{channel}={(enabled ? 1 : 0)}");
+            //}
+            //_settings.SigMan[channel].SetActive(enabled);
         }
 
         private void OnPropertyValueChanged(string channel, string property, float value, bool selfChange)
         {
-            if (selfChange && (_isLive || (_network.IsConnected && _settings.ShowSliders)))
-            {
-                _network.SendMessage("SetProperty", $"{channel}.{property}={value}");
-            }
+            //if (selfChange && (_isLive || (_network.IsConnected && _settings.ShowSliders)))
+            //{
+            //    _network.SendMessage("SetProperty", $"{channel}.{property}={value}");
+            //}
 
-            _settings.SigMan.SetParameter(channel, property, value);
-            channelView.UpdateParameters();
-            _settings.Sliders.Find(x => x.Channel.Equals(channel) && x.Property.Equals(property)).StartValue = value;
-            PlotSignals(_settings.SigMan);
+            //_settings.SigMan.SetParameter(channel, property, value);
+            ////channelView.UpdateParameters();
+            //_settings.Sliders.Find(x => x.Channel.Equals(channel) && x.Property.Equals(property)).StartValue = value;
+            //PlotSignals(_settings.SigMan);
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -550,7 +550,7 @@ namespace HTSController
 
                 _settings.Name = name;
                 SettingsPath = Path.Combine(folder, $"Interactive.{name}.xml");
-                KFile.XmlSerialize(_settings, SettingsPath);
+                Files.XmlSerialize(_settings, SettingsPath);
                 SetTitle();
             }
         }
@@ -571,7 +571,7 @@ namespace HTSController
             }
             else if (_network.IsConnected)
             {
-                _network.SendMessage("SetParams", KFile.ToXMLString(_settings));
+                _network.SendMessage("SetParams", Files.ToXMLString(_settings));
             }
         }
 
@@ -596,6 +596,22 @@ namespace HTSController
                     }));
                     break;
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var xml = Files.ToXMLString(_settings.SigMan);
+            _signalEngine = Files.FromXMLString<KLib.Signals.SignalManager>(xml);
+            _signalEngine.AdapterMap = AdapterMap.DefaultStereoMap("HD280");
+            PlotSignals(_signalEngine);
+        }
+
+        private void channelPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            var xml = Files.ToXMLString(_settings.SigMan);
+            _signalEngine = Files.FromXMLString<KLib.Signals.SignalManager>(xml);
+            _signalEngine.AdapterMap = AdapterMap.DefaultStereoMap("HD280");
+            PlotSignals(_signalEngine);
         }
     }
 }

@@ -35,16 +35,17 @@
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.displayTimer = new System.Windows.Forms.Timer(this.components);
             this.audioErrorTextBox = new System.Windows.Forms.TextBox();
-            this.signalGraph = new ZedGraph.ZedGraphControl();
             this.channelListBox = new KLib.Controls.KUserListBox();
             this.graphTabControl = new System.Windows.Forms.TabControl();
             this.graphPage = new System.Windows.Forms.TabPage();
+            this.formsPlot = new ScottPlot.WinForms.FormsPlot();
             this.errorPage = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
             this.saveButton = new System.Windows.Forms.Button();
-            this.channelView = new KLib.Unity.Controls.Signals.ChannelView();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.stimulusPage = new System.Windows.Forms.TabPage();
+            this.button1 = new System.Windows.Forms.Button();
+            this.channelPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.sliderPage = new System.Windows.Forms.TabPage();
             this.sliderConfig = new HTSController.Interactive.SliderConfig();
             this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -61,7 +62,7 @@
             // startButton
             // 
             this.startButton.Location = new System.Drawing.Point(612, 15);
-            this.startButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.startButton.Margin = new System.Windows.Forms.Padding(4);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(107, 32);
             this.startButton.TabIndex = 0;
@@ -72,7 +73,7 @@
             // stopButton
             // 
             this.stopButton.Location = new System.Drawing.Point(612, 15);
-            this.stopButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.stopButton.Margin = new System.Windows.Forms.Padding(4);
             this.stopButton.Name = "stopButton";
             this.stopButton.Size = new System.Drawing.Size(107, 32);
             this.stopButton.TabIndex = 1;
@@ -98,35 +99,18 @@
             this.audioErrorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.audioErrorTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.audioErrorTextBox.Location = new System.Drawing.Point(27, 31);
-            this.audioErrorTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.audioErrorTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.audioErrorTextBox.Multiline = true;
             this.audioErrorTextBox.Name = "audioErrorTextBox";
             this.audioErrorTextBox.ReadOnly = true;
             this.audioErrorTextBox.Size = new System.Drawing.Size(510, 163);
             this.audioErrorTextBox.TabIndex = 8;
             // 
-            // signalGraph
-            // 
-            this.signalGraph.BackColor = System.Drawing.SystemColors.Control;
-            this.signalGraph.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.signalGraph.Location = new System.Drawing.Point(4, 4);
-            this.signalGraph.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.signalGraph.Name = "signalGraph";
-            this.signalGraph.ScrollGrace = 0D;
-            this.signalGraph.ScrollMaxX = 0D;
-            this.signalGraph.ScrollMaxY = 0D;
-            this.signalGraph.ScrollMaxY2 = 0D;
-            this.signalGraph.ScrollMinX = 0D;
-            this.signalGraph.ScrollMinY = 0D;
-            this.signalGraph.ScrollMinY2 = 0D;
-            this.signalGraph.Size = new System.Drawing.Size(560, 212);
-            this.signalGraph.TabIndex = 10;
-            // 
             // channelListBox
             // 
             this.channelListBox.DefaultName = "Signal";
             this.channelListBox.Location = new System.Drawing.Point(8, 11);
-            this.channelListBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.channelListBox.Margin = new System.Windows.Forms.Padding(5);
             this.channelListBox.Name = "channelListBox";
             this.channelListBox.SelectedIndex = -1;
             this.channelListBox.Size = new System.Drawing.Size(219, 181);
@@ -145,7 +129,7 @@
             this.graphTabControl.Controls.Add(this.errorPage);
             this.graphTabControl.ItemSize = new System.Drawing.Size(0, 1);
             this.graphTabControl.Location = new System.Drawing.Point(16, 444);
-            this.graphTabControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphTabControl.Margin = new System.Windows.Forms.Padding(4);
             this.graphTabControl.Name = "graphTabControl";
             this.graphTabControl.SelectedIndex = 0;
             this.graphTabControl.Size = new System.Drawing.Size(576, 229);
@@ -155,14 +139,22 @@
             // graphPage
             // 
             this.graphPage.BackColor = System.Drawing.SystemColors.Control;
-            this.graphPage.Controls.Add(this.signalGraph);
+            this.graphPage.Controls.Add(this.formsPlot);
             this.graphPage.Location = new System.Drawing.Point(4, 5);
-            this.graphPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphPage.Margin = new System.Windows.Forms.Padding(4);
             this.graphPage.Name = "graphPage";
-            this.graphPage.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphPage.Padding = new System.Windows.Forms.Padding(4);
             this.graphPage.Size = new System.Drawing.Size(568, 220);
             this.graphPage.TabIndex = 0;
             this.graphPage.Text = "tabPage1";
+            // 
+            // formsPlot
+            // 
+            this.formsPlot.DisplayScale = 0F;
+            this.formsPlot.Location = new System.Drawing.Point(8, 7);
+            this.formsPlot.Name = "formsPlot";
+            this.formsPlot.Size = new System.Drawing.Size(545, 206);
+            this.formsPlot.TabIndex = 0;
             // 
             // errorPage
             // 
@@ -170,9 +162,9 @@
             this.errorPage.Controls.Add(this.label1);
             this.errorPage.Controls.Add(this.audioErrorTextBox);
             this.errorPage.Location = new System.Drawing.Point(4, 5);
-            this.errorPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.errorPage.Margin = new System.Windows.Forms.Padding(4);
             this.errorPage.Name = "errorPage";
-            this.errorPage.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.errorPage.Padding = new System.Windows.Forms.Padding(4);
             this.errorPage.Size = new System.Drawing.Size(568, 220);
             this.errorPage.TabIndex = 1;
             this.errorPage.Text = "tabPage2";
@@ -190,7 +182,7 @@
             // saveButton
             // 
             this.saveButton.Location = new System.Drawing.Point(796, 15);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(4);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(107, 32);
             this.saveButton.TabIndex = 13;
@@ -198,26 +190,12 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
-            // channelView
-            // 
-            this.channelView.AdapterMap = null;
-            this.channelView.AutoScroll = true;
-            this.channelView.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.channelView.Location = new System.Drawing.Point(235, 11);
-            this.channelView.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
-            this.channelView.Name = "channelView";
-            this.channelView.Size = new System.Drawing.Size(317, 357);
-            this.channelView.TabIndex = 11;
-            this.channelView.Value = null;
-            this.channelView.WavFolder = null;
-            this.channelView.ValueChanged += new System.EventHandler(this.channelView_ValueChanged);
-            // 
             // tabControl
             // 
             this.tabControl.Controls.Add(this.stimulusPage);
             this.tabControl.Controls.Add(this.sliderPage);
             this.tabControl.Location = new System.Drawing.Point(16, 15);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(576, 427);
@@ -225,16 +203,36 @@
             // 
             // stimulusPage
             // 
+            this.stimulusPage.Controls.Add(this.button1);
+            this.stimulusPage.Controls.Add(this.channelPropertyGrid);
             this.stimulusPage.Controls.Add(this.channelListBox);
-            this.stimulusPage.Controls.Add(this.channelView);
             this.stimulusPage.Location = new System.Drawing.Point(4, 25);
-            this.stimulusPage.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.stimulusPage.Margin = new System.Windows.Forms.Padding(4);
             this.stimulusPage.Name = "stimulusPage";
-            this.stimulusPage.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.stimulusPage.Padding = new System.Windows.Forms.Padding(4);
             this.stimulusPage.Size = new System.Drawing.Size(568, 398);
             this.stimulusPage.TabIndex = 0;
             this.stimulusPage.Text = "Stimulus";
             this.stimulusPage.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(69, 284);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(99, 47);
+            this.button1.TabIndex = 9;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // channelPropertyGrid
+            // 
+            this.channelPropertyGrid.Location = new System.Drawing.Point(235, 37);
+            this.channelPropertyGrid.Name = "channelPropertyGrid";
+            this.channelPropertyGrid.Size = new System.Drawing.Size(318, 348);
+            this.channelPropertyGrid.TabIndex = 8;
+            this.channelPropertyGrid.ToolbarVisible = false;
+            this.channelPropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.channelPropertyGrid_PropertyValueChanged);
             // 
             // sliderPage
             // 
@@ -253,7 +251,7 @@
             this.sliderConfig.AutoSize = true;
             this.sliderConfig.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.sliderConfig.Location = new System.Drawing.Point(13, 6);
-            this.sliderConfig.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.sliderConfig.Margin = new System.Windows.Forms.Padding(5);
             this.sliderConfig.Name = "sliderConfig";
             this.sliderConfig.ShowSliders = false;
             this.sliderConfig.Size = new System.Drawing.Size(539, 352);
@@ -267,7 +265,7 @@
             this.flowLayoutPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.flowLayoutPanel.Controls.Add(this.channelControl);
             this.flowLayoutPanel.Location = new System.Drawing.Point(612, 64);
-            this.flowLayoutPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.flowLayoutPanel.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel.Name = "flowLayoutPanel";
             this.flowLayoutPanel.Size = new System.Drawing.Size(290, 604);
             this.flowLayoutPanel.TabIndex = 4;
@@ -277,7 +275,7 @@
             this.channelControl.AutoSize = true;
             this.channelControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.channelControl.Location = new System.Drawing.Point(5, 5);
-            this.channelControl.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.channelControl.Margin = new System.Windows.Forms.Padding(5);
             this.channelControl.Name = "channelControl";
             this.channelControl.Size = new System.Drawing.Size(204, 47);
             this.channelControl.TabIndex = 3;
@@ -294,7 +292,7 @@
             this.Controls.Add(this.graphTabControl);
             this.Controls.Add(this.stopButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "InteractiveForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Interactive";
@@ -322,8 +320,6 @@
         private System.Windows.Forms.Timer displayTimer;
         private System.Windows.Forms.TextBox audioErrorTextBox;
         private KLib.Controls.KUserListBox channelListBox;
-        private ZedGraph.ZedGraphControl signalGraph;
-        private KLib.Unity.Controls.Signals.ChannelView channelView;
         private System.Windows.Forms.TabControl graphTabControl;
         private System.Windows.Forms.TabPage graphPage;
         private System.Windows.Forms.TabPage errorPage;
@@ -335,5 +331,8 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
         private System.Windows.Forms.TabPage sliderPage;
         private Interactive.SliderConfig sliderConfig;
+        private System.Windows.Forms.PropertyGrid channelPropertyGrid;
+        private System.Windows.Forms.Button button1;
+        private ScottPlot.WinForms.FormsPlot formsPlot;
     }
 }

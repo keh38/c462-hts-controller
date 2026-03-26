@@ -11,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using KLib;
+using KLib.IO;
 using KLib.Net;
 using SpeechReception;
 
@@ -123,7 +123,7 @@ namespace HTSController
             var configPath = FileLocations.GetConfigFile("SpeechTest", _configName);
             if (File.Exists(configPath))
             {
-                _config = KFile.XmlDeserialize<SpeechTest>(configPath);
+                _config = Files.XmlDeserialize<SpeechTest>(configPath);
                 _config.TestName = _configName;
             }
             else
@@ -370,7 +370,7 @@ namespace HTSController
             if (_config != null)
             {
                 var fn = FileLocations.GetConfigFile("SpeechTest", _config.TestName);
-                KLib.KFile.XmlSerialize(_config, fn);
+                KLib.IO.Files.XmlSerialize(_config, fn);
                 msSelectMeasurement.Text = $"SpeechTest.{_config.TestName}";
                 UpdateFileMenu();
             }

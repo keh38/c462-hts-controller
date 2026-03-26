@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Serilog;
 
 using KLib;
+using KLib.IO;
 using KLib.Net;
 using HTS.Tcp;
 using C462.Shared.Protocol.DTOs;
@@ -60,7 +61,7 @@ namespace HTSController.Data_Streams
         {
             if (File.Exists(ConfigFile))
             {
-                _streams = KFile.XmlDeserialize<List<DataStream>>(ConfigFile);
+                _streams = Files.XmlDeserialize<List<DataStream>>(ConfigFile);
             }
             else
             {
@@ -69,7 +70,7 @@ namespace HTSController.Data_Streams
                 if (!Directory.Exists(ConfigFolder))
                     Directory.CreateDirectory(ConfigFolder);
 
-                KFile.XmlSerialize(_streams, ConfigFile);
+                Files.XmlSerialize(_streams, ConfigFile);
             }
         }
 
@@ -104,7 +105,7 @@ namespace HTSController.Data_Streams
         {
             _syncTimer.Stop();
 
-            KFile.XmlSerialize(_streams, ConfigFile);
+            Files.XmlSerialize(_streams, ConfigFile);
         }
 
         // -------------------------------------------------------------------------

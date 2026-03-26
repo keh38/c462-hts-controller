@@ -13,10 +13,11 @@ using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 using Serilog;
-using KLib;
+using KLib.IO;
 using KLib.Net;
 
 using HTS.Tcp;
+using Newtonsoft.Json;
 
 namespace HTSController.Pages
 {
@@ -237,7 +238,7 @@ namespace HTSController.Pages
             switch (message.Command)
             {
                 case "ReceiveFileList":
-                    _remoteFiles = KFile.JSONDeserializeFromString<List<string>>(payload.Data);
+                    _remoteFiles = JsonConvert.DeserializeObject<List<string>>(payload.Data);
                     break;
             }
         }

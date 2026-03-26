@@ -208,7 +208,7 @@ namespace HTSController.Pages
         private async Task InitializeProtocol(string name)
         {
             var protocolPath = Path.Combine(FileLocations.ProtocolFolder, $"{name}.xml");
-            _protocol = KLib.KFile.XmlDeserialize<Protocol>(protocolPath);
+            _protocol = KLib.IO.Files.XmlDeserialize<Protocol>(protocolPath);
 
             bool restore = false;
 
@@ -218,7 +218,7 @@ namespace HTSController.Pages
                 fileList.Sort((x, y) => File.GetCreationTime(y).CompareTo(File.GetCreationTime(x)));
                 for (int k = 0; k < fileList.Count; k++) Debug.WriteLine(fileList[k]);
 
-                _history = KLib.KFile.RestoreFromJson<ProtocolHistory>(fileList[0]);
+                _history = KLib.IO.Files.RestoreFromJson<ProtocolHistory>(fileList[0]);
                 if (_history.Matches(_protocol) && !_history.Finished)
                 {
                     _historyPath = fileList[0];
@@ -235,7 +235,7 @@ namespace HTSController.Pages
                 _historyPath = Path.Combine(
                     FileLocations.SubjectDataFolder,
                     $"{FileLocations.Subject}-{name}-History-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.json");
-                KLib.KFile.JSONSerialize(_history, _historyPath);
+                KLib.IO.Files.JSONSerialize(_history, _historyPath);
             }
 
 
@@ -313,7 +313,7 @@ namespace HTSController.Pages
             {
                 _history.Data[_nextTestIndex].Date = DateTime.Now.ToString();
                 _history.Data[_nextTestIndex].DataFile = dataFile;
-                KLib.KFile.JSONSerialize(_history, _historyPath);
+                KLib.IO.Files.JSONSerialize(_history, _historyPath);
 
                 _nextTestIndex++;
                 ShowProtocolProgress(_nextTestIndex);

@@ -14,12 +14,13 @@ using System.Windows.Forms;
 
 using Serilog;
 
-using KLib;
+using KLib.IO;
 using KLib.Net;
 
 using HTS.Tcp;
 using C462.Shared.Protocol.DTOs;
 using HTSController.Data_Streams;
+using Newtonsoft.Json;
 
 namespace HTSController
 {
@@ -139,11 +140,11 @@ namespace HTSController
             }
 
             Log.Information($"Turandot parameter file: {_parameterFile}");
-            var p = KFile.XmlDeserialize<Turandot.Parameters>(_parameterFile);
+            var p = Files.XmlDeserialize<Turandot.Parameters>(_parameterFile);
             _postRunMATLABFile = p.matlabFunction;
             if (!string.IsNullOrEmpty(_extraSettings))
             {
-                _network.SendMessage("SetScriptArguments", KFile.JSONDeserializeFromString<Turandot.Schedules.ScriptArguments>(_extraSettings));
+                _network.SendMessage("SetScriptArguments", JsonConvert.DeserializeObject<Turandot.Schedules.ScriptArguments>(_extraSettings));
             }
             var result = _network.SendRequest<string>("SetParams", p);
             _dataFile = result ?? "";

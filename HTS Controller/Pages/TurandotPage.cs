@@ -14,8 +14,7 @@ using Microsoft.Win32;
 using Serilog;
 
 using KLib.Controls;
-using KLib;
-using KLib.Net;
+using KLib.IO;
 
 using HTS.Tcp;
 
@@ -221,7 +220,7 @@ namespace HTSController.Pages
         {
             if (fileTypeDropDown.SelectedItem.ToString().Equals("TScript"))
             {
-                var script = KFile.XmlDeserialize<Turandot.Schedules.Script>(_settings[listBox.SelectedIndex]);
+                var script = Files.XmlDeserialize<Turandot.Schedules.Script>(_settings[listBox.SelectedIndex]);
                 propertyGrid.SelectedObject = script;
             }
         }
@@ -236,7 +235,7 @@ namespace HTSController.Pages
         {
             Turandot.Schedules.Script script = propertyGrid.SelectedObject as Turandot.Schedules.Script;
             string filepath = Path.Combine(FileLocations.ConfigFolder, $"TScript.{script.Name}.xml");
-            KFile.XmlSerialize(script, filepath);
+            Files.XmlSerialize(script, filepath);
 
             HTSControllerSettings.SetLastUsed("TScript", filepath);
             SetFileType("TScript");

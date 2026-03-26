@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Permissions;
-using KLib;
+using KLib.IO;
 
 namespace HTSController
 {
@@ -52,7 +52,7 @@ namespace HTSController
                 {
                     if (File.Exists(FileLocations.StateFile))
                     {
-                        _instance = KFile.XmlDeserialize<HTSControllerSettings>(FileLocations.StateFile);
+                        _instance = Files.XmlDeserialize<HTSControllerSettings>(FileLocations.StateFile);
                     }
                     else
                     {
@@ -94,7 +94,7 @@ namespace HTSController
 
         private static void Save()
         {
-            KFile.XmlSerialize(_instance, FileLocations.StateFile);
+            Files.XmlSerialize(_instance, FileLocations.StateFile);
         }
 
     }
