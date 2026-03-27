@@ -1,8 +1,9 @@
-using UnityEngine;
+using System.Diagnostics;
+using System.IO;
+
 using KLib.Signals;
 using Audiograms;
 using C462.Shared;
-using System.IO;
 
 namespace HTSController
 {
@@ -29,7 +30,7 @@ namespace HTSController
         {
             if (Signal == null)
             {
-                Debug.LogError("SessionContext not initialized. Call Initialize() before setting transducer.");
+                Debug.WriteLine("SessionContext not initialized. Call Initialize() before setting transducer.");
                 return;
             }
             Signal.Transducer = transducer;
@@ -40,7 +41,7 @@ namespace HTSController
         {
             if (Signal == null)
             {
-                Debug.LogError("SessionContext not initialized. Call Initialize() before setting audiogram.");
+                Debug.WriteLine("SessionContext not initialized. Call Initialize() before setting audiogram.");
                 return;
             }
             Signal.Audiogram = AudiogramData.Load(audiogramPath);
@@ -50,7 +51,7 @@ namespace HTSController
         {
             if (Signal == null)
             {
-                Debug.LogError("SessionContext not initialized. Call Initialize() before setting LDL.");
+                Debug.WriteLine("SessionContext not initialized. Call Initialize() before setting LDL.");
                 return;
             }
             var ldl = AudiogramData.Load(ldlPath);

@@ -28,12 +28,8 @@ using SREYELINKLib;
 using MathWorks.MATLAB.Engine;
 using MathWorks.MATLAB.Types;
 using System.Xml.Linq;
-using UnityEngine;
 
 using Color = System.Drawing.Color;
-using System.Windows.Forms.VisualStyles;
-using Unity.Jobs;
-using System.Timers;
 
 namespace HTSController
 {

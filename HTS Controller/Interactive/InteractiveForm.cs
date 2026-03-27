@@ -430,7 +430,9 @@ namespace HTSController
             // Hide axis edge line
             signalGraph.Plot.Axes.Left.FrameLineStyle.Width = 0;
             signalGraph.Plot.Axes.Right.FrameLineStyle.Width = 0;
-            signalGraph.Plot.Axes.Top.FrameLineStyle.Width = 0; signalGraph.Refresh();
+            signalGraph.Plot.Axes.Top.FrameLineStyle.Width = 0; 
+            signalGraph.Refresh();
+
             graphTabControl.SelectedTab = string.IsNullOrEmpty(audioErrorTextBox.Text) ? graphPage : errorPage;
         }
 
