@@ -44,7 +44,6 @@
             this.saveButton = new System.Windows.Forms.Button();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.stimulusPage = new System.Windows.Forms.TabPage();
-            this.button1 = new System.Windows.Forms.Button();
             this.channelPropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.sliderPage = new System.Windows.Forms.TabPage();
             this.sliderConfig = new HTSController.Interactive.SliderConfig();
@@ -148,11 +147,11 @@
             this.graphPage.TabIndex = 0;
             this.graphPage.Text = "tabPage1";
             // 
-            // formsPlot
+            // signalGraph
             // 
             this.signalGraph.DisplayScale = 0F;
             this.signalGraph.Location = new System.Drawing.Point(8, 7);
-            this.signalGraph.Name = "formsPlot";
+            this.signalGraph.Name = "signalGraph";
             this.signalGraph.Size = new System.Drawing.Size(545, 206);
             this.signalGraph.TabIndex = 0;
             // 
@@ -203,7 +202,6 @@
             // 
             // stimulusPage
             // 
-            this.stimulusPage.Controls.Add(this.button1);
             this.stimulusPage.Controls.Add(this.channelPropertyGrid);
             this.stimulusPage.Controls.Add(this.channelListBox);
             this.stimulusPage.Location = new System.Drawing.Point(4, 25);
@@ -214,16 +212,6 @@
             this.stimulusPage.TabIndex = 0;
             this.stimulusPage.Text = "Stimulus";
             this.stimulusPage.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(69, 284);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(99, 47);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // channelPropertyGrid
             // 
@@ -332,7 +320,6 @@
         private System.Windows.Forms.TabPage sliderPage;
         private Interactive.SliderConfig sliderConfig;
         private System.Windows.Forms.PropertyGrid channelPropertyGrid;
-        private System.Windows.Forms.Button button1;
         private ScottPlot.WinForms.FormsPlot signalGraph;
     }
 }

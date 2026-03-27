@@ -11,6 +11,7 @@ using Serilog;
 using C462.Shared.Protocol.DTOs;
 using KLib.Net;
 using HTS.Tcp;
+using System.Diagnostics;
 
 namespace HTSController
 {
@@ -194,6 +195,13 @@ namespace HTSController
         {
             if (_remoteEndPoint == null) return false;
             return KTcpClient.SendRequest(_remoteEndPoint, TcpMessage.Request(command, payload)).IsOk;
+        }
+
+        /// <summary>Sends a command with a payload object. Returns true if the server responded OK.</summary>
+        public bool SendXmlMessage(string command, object payload)
+        {
+            if (_remoteEndPoint == null) return false;
+            return KTcpClient.SendRequest(_remoteEndPoint, TcpMessage.XmlRequest(command, payload)).IsOk;
         }
 
         /// <summary>Sends a request and returns the typed payload from the response.</summary>

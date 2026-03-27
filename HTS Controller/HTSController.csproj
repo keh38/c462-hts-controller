@@ -56,14 +56,13 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\c462-shared\C462.Turandot\C462.Turandot.csproj">
-      <Name>C462.Turandot</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="C462.Shared">
       <HintPath>..\..\c462-shared\C462.Shared\bin\Debug\netstandard2.0\C462.Shared.dll</HintPath>
       <Aliases>global,C462Shared</Aliases>
+    </Reference>
+    <Reference Include="C462.Turandot, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\c462-shared\C462.Turandot\bin\Debug\net48\C462.Turandot.dll</HintPath>
     </Reference>
     <Reference Include="HarfBuzzSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <HintPath>..\packages\HarfBuzzSharp.8.3.1.1\lib\net462\HarfBuzzSharp.dll</HintPath>
@@ -79,7 +78,7 @@
       <HintPath>..\..\..\klib\Framework\KLib.Controls.dll</HintPath>
     </Reference>
     <Reference Include="KLib.Net, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\KLib.Net.2.1.0\lib\net48\KLib.Net.dll</HintPath>
+      <HintPath>..\packages\KLib.Net.2.3.2\lib\net48\KLib.Net.dll</HintPath>
     </Reference>
     <Reference Include="Markdig, Version=0.44.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Markdig.0.44.0\lib\net462\Markdig.dll</HintPath>
@@ -270,6 +269,7 @@
     <Compile Include="Editor\TypeConverters\SequenceTypeConverter.cs" />
     <Compile Include="Editor\TypeConverters\SinusoidConverter.cs" />
     <Compile Include="Editor\TypeConverters\SpeechTestConverter.cs" />
+    <Compile Include="SessionContext.cs" />
     <Compile Include="SpeechForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -375,6 +375,7 @@
       <DependentUpon>TurandotLiveForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Turandot\Schedules\Turandot.Schedules.Script.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="Watchdog.cs" />
     <EmbeddedResource Include="SpeechForm.resx">
       <DependentUpon>SpeechForm.cs</DependentUpon>

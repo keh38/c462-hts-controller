@@ -11,6 +11,7 @@ namespace HTSController
         public static string Subject { get; private set; }
         public static string DataDrive { get; private set; } = @"C:\";
         public static readonly string RootFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS");
+        public static readonly string SharedFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "C462.Shared");
         public static string ProjectRootFolder { get; private set; } = Path.Combine(RootFolder, "Projects");
         public static string ResourcesFolder { get { return Path.Combine(ProjectRootFolder, Project, "Resources"); } }
         public static string ConfigFolder { get { return Path.Combine(ResourcesFolder, "Config Files"); } }
