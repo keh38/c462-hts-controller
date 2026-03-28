@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using KLib.Controls;
 using Turandot.Editor;
 
+using Turandot.Inputs;
+
 namespace HTSController
 {
     public partial class PropertyControl : KUserControl

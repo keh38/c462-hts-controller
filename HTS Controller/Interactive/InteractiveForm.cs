@@ -14,14 +14,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using KLib.Controls;
-using KLib.Signals.Editor;
+using KLib.Signals;
 
 using KLib.IO;
 using KLib.Net;
 
 using HTS.Tcp;
 using C462.Shared;
-using Turandot.Editor;
+
+using Turandot.Interactive;
+using Turandot.Inputs;
 
 using Color = System.Drawing.Color;
 
@@ -57,8 +59,6 @@ namespace HTSController
 
         private int _packetsReceived = 0;
         private int _lastPacketProcessed = 0;
-
-        private KLib.Signals.SignalManager _signalEngine = new KLib.Signals.SignalManager();
 
         public string SettingsPath { get; private set; }
 
@@ -121,16 +121,40 @@ namespace HTSController
 
             InitializeSettings();
 
-            sliderConfig.SetDataForContext(_signalEngine.GetValidSweepables());
+            sliderConfig.SetDataForContext(_settings.SigMan.GetValidSweepables());
             sliderConfig.ShowSliders = _settings.ShowSliders;
             sliderConfig.Value = _settings.Sliders;
 
             LayoutControls();
 
-            _settings.SigMan = ConvertEngineToEditor(_signalEngine);
             channelPropertyGrid.SelectedObject = _settings.SigMan.Channels[0];
+            channelPropertyGrid.ExpandAllGridItems();
+            // Hide axis label and tick
+            signalGraph.Plot.Axes.Left.TickLabelStyle.IsVisible = false;
+            signalGraph.Plot.Axes.Left.MajorTickStyle.Length = 0;
+            signalGraph.Plot.Axes.Left.MinorTickStyle.Length = 0;
+            signalGraph.Plot.XLabel("Time (s)");
 
-            PlotSignals(_signalEngine);
+            // Hide axis edge line
+            signalGraph.Plot.Axes.Left.FrameLineStyle.Width = 0;
+            signalGraph.Plot.Axes.Right.FrameLineStyle.Width = 0;
+            signalGraph.Plot.Axes.Top.FrameLineStyle.Width = 0;
+            signalGraph.Plot.Axes.Bottom.MinorTickStyle.Length = 0;
+
+            signalGraph.Plot.Axes.Bottom.Label.Bold = false;
+            signalGraph.Plot.Axes.Bottom.Label.FontSize = 12;
+            signalGraph.Plot.Axes.Bottom.TickLabelStyle.FontSize = 12;
+
+            signalGraph.Plot.DataBackground.Color = ScottPlot.Colors.Transparent;
+            var padding = new PixelPadding(
+                left: 0,
+                right: 0,
+                bottom: 50, // keep some bottom padding for x-axis labels
+                top: 0);
+            signalGraph.Plot.Layout.Fixed(padding);
+            signalGraph.Refresh();
+
+            PlotSignals(_settings.SigMan);
         }
 
         private void StartUDP()
@@ -259,7 +283,6 @@ namespace HTSController
             {
                 _settings = Files.XmlDeserialize<InteractiveSettings>(SettingsPath);
             }
-            _signalEngine = ConvertEditorToEngine(_settings.SigMan);
 
             channelListBox.SetItems(_settings.SigMan.Channels.Select(c => c.Name).ToList());
             channelListBox.SelectedIndex = 0;
@@ -285,8 +308,8 @@ namespace HTSController
             };
             _settings.SigMan.Channels.Insert(e.index, ch);
             channelPropertyGrid.SelectedObject = ch;
+            channelPropertyGrid.ExpandAllGridItems();
 
-            _signalEngine = ConvertEditorToEngine(_settings.SigMan);
             CurateControls();
         }
 
@@ -301,8 +324,7 @@ namespace HTSController
                 _settings.SigMan.Channels.Insert(e.index, ch);
             }
 
-            _signalEngine = ConvertEditorToEngine(_settings.SigMan);
-            PlotSignals(_signalEngine);
+            PlotSignals(_settings.SigMan);
 
             CurateControls();
         }
@@ -326,8 +348,7 @@ namespace HTSController
                 if (ch != null) _settings.SigMan.Channels.Remove(ch);
             }
 
-            _signalEngine = ConvertEditorToEngine(_settings.SigMan);
-            PlotSignals(_signalEngine);
+            PlotSignals(_settings.SigMan);
 
             CurateControls();
         }
@@ -345,8 +366,7 @@ namespace HTSController
 
             _settings.SigMan.Channels = tmp;
 
-            _signalEngine = ConvertEditorToEngine(_settings.SigMan);
-            PlotSignals(_signalEngine);
+            PlotSignals(_settings.SigMan);
 
             CurateControls();
         }
@@ -359,6 +379,7 @@ namespace HTSController
                 if (ch != null)
                 {
                     channelPropertyGrid.SelectedObject = ch;
+                    channelPropertyGrid.ExpandAllGridItems();
                 }
             }
         }
@@ -421,16 +442,6 @@ namespace HTSController
             }
 
             signalGraph.Plot.Axes.AutoScale();
-            // Hide axis label and tick
-            signalGraph.Plot.Axes.Left.TickLabelStyle.IsVisible = false;
-            signalGraph.Plot.Axes.Left.MajorTickStyle.Length = 0;
-            signalGraph.Plot.Axes.Left.MinorTickStyle.Length = 0;
-            signalGraph.Plot.XLabel("Time (ms)");
-
-            // Hide axis edge line
-            signalGraph.Plot.Axes.Left.FrameLineStyle.Width = 0;
-            signalGraph.Plot.Axes.Right.FrameLineStyle.Width = 0;
-            signalGraph.Plot.Axes.Top.FrameLineStyle.Width = 0; 
             signalGraph.Refresh();
 
             graphTabControl.SelectedTab = string.IsNullOrEmpty(audioErrorTextBox.Text) ? graphPage : errorPage;
@@ -504,16 +515,15 @@ namespace HTSController
         {
             foreach (var s in _settings.Sliders)
             {
-                _signalEngine.SetParameter(s.Channel, s.Property, s.StartValue);
+                _settings.SigMan.SetParameter(s.Channel, s.Property, s.StartValue);
             }
         }
 
         private void CurateControls()
         {
-            _signalEngine = ConvertEditorToEngine(_settings.SigMan);
-            var valid = _signalEngine.GetValidSweepables();
+            var valid = _settings.SigMan.GetValidSweepables();
 
-            var toDelete = new List<Turandot.Editor.ParameterSliderProperties>();
+            var toDelete = new List<ParameterSliderProperties>();
             foreach (var s in _settings.Sliders)
             {
                 if (valid.Find(x => x.channelName.Equals(s.Channel) && x.properties.Contains(s.Property)) == null)
@@ -532,7 +542,7 @@ namespace HTSController
             {
                 _network.SendMessage("SetActive", $"{channel}={(enabled ? 1 : 0)}");
             }
-            _signalEngine[channel].SetActive(enabled);
+            _settings.SigMan[channel].SetActive(enabled);
         }
 
         private void OnPropertyValueChanged(string channel, string property, float value, bool selfChange)
@@ -542,19 +552,19 @@ namespace HTSController
                 _network.SendMessage("SetProperty", $"{channel}.{property}={value}");
             }
 
-            _signalEngine.SetParameter(channel, property, value);
+            _settings.SigMan.SetParameter(channel, property, value);
             _settings.Sliders.Find(x => x.Channel.Equals(channel) && x.Property.Equals(property)).StartValue = value;
 
             UpdateEditorParameters();
-            PlotSignals(_signalEngine);
+            PlotSignals(_settings.SigMan);
         }
 
         private void UpdateEditorParameters()
         {
-            _settings.SigMan = ConvertEngineToEditor(_signalEngine);
             if (channelListBox.SelectedIndex > -1)
             {
                 channelPropertyGrid.SelectedObject = _settings.SigMan.Channels[channelListBox.SelectedIndex];
+                channelPropertyGrid.ExpandAllGridItems();
             }
         }
 
@@ -623,23 +633,13 @@ namespace HTSController
             }
         }
 
-        private KLib.Signals.SignalManager ConvertEditorToEngine(KLib.Signals.Editor.SignalManager editor)
-        {
-            var xml = Files.ToXMLString(editor);
-            return Files.FromXMLString<KLib.Signals.SignalManager>(xml);
-        }
-
-        private KLib.Signals.Editor.SignalManager ConvertEngineToEditor(KLib.Signals.SignalManager engine)
-        {
-            var xml = Files.ToXMLString(engine);
-            return Files.FromXMLString<KLib.Signals.Editor.SignalManager>(xml);
-        }   
-
         private void channelPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            var xml = Files.ToXMLString(_settings.SigMan);
-            _signalEngine = Files.FromXMLString<KLib.Signals.SignalManager>(xml);
-            PlotSignals(_signalEngine);
+            if (e.ChangedItem.Label == "Gate" || e.ChangedItem.Label == "Bursted" || e.ChangedItem.Label == "BurstRate" || e.ChangedItem.Label == "Modulation")
+            {
+                channelPropertyGrid.Refresh();
+            }
+            PlotSignals(_settings.SigMan);
         }
     }
 }

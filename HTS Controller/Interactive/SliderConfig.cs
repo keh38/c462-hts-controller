@@ -13,6 +13,7 @@ using KLib.Controls;
 using KLib.Signals;
 using C462.Shared;
 using Turandot.Editor;
+using Turandot.Inputs;
 using ChannelProperties = KLib.Signals.ChannelProperties;
 
 namespace HTSController.Interactive

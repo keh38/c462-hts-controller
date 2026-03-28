@@ -240,7 +240,6 @@
     <Compile Include="Editor\Speech\Speech Reception\SpeechReception.PerformanceCriteria.cs" />
     <Compile Include="Editor\Speech\Speech Reception\SpeechReception.Sequence.cs" />
     <Compile Include="Editor\Speech\Speech Reception\SpeechReception.Test.cs" />
-    <Compile Include="Editor\TypeConverters\ButtonActionTypeConverter.cs" />
     <Compile Include="Editor\TypeConverters\ClosedSetConverter.cs" />
     <Compile Include="Editor\TypeConverters\DigitimerConverter.cs" />
     <Compile Include="Editor\TypeConverters\DigitimerModeConverter.cs" />

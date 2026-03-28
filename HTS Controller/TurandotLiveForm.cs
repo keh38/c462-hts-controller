@@ -146,7 +146,7 @@ namespace HTSController
             {
                 _network.SendMessage("SetScriptArguments", JsonConvert.DeserializeObject<Turandot.Schedules.ScriptArguments>(_extraSettings));
             }
-            var result = _network.SendRequest<string>("SetParams", p);
+            var result = _network.SendXmlRequest<string>("SetParams", p);
             _dataFile = result ?? "";
         }
 

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using KLib.Controls;
-using Turandot.Editor;
+using Turandot.Inputs;
 
 namespace HTSController
 {

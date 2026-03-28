@@ -215,6 +215,17 @@ namespace HTSController
             return response.IsOk ? response.GetPayload<T>() : default;
         }
 
+        /// <summary>Sends a request and returns the typed payload from the response.</summary>
+        public T SendXmlRequest<T>(string command, object payload = null)
+        {
+            if (_remoteEndPoint == null) return default;
+            var request = payload != null
+                ? TcpMessage.XmlRequest(command, payload)
+                : TcpMessage.Request(command);
+            var response = KTcpClient.SendRequest(_remoteEndPoint, request);
+            return response.IsOk ? response.GetPayload<T>() : default;
+        }
+
         public async Task<bool> SendBufferedFile(string localPath, string remoteFilename)
         {
             if (_remoteEndPoint == null) return false;

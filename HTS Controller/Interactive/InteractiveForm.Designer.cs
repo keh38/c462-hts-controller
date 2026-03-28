@@ -60,7 +60,7 @@
             // 
             // startButton
             // 
-            this.startButton.Location = new System.Drawing.Point(612, 15);
+            this.startButton.Location = new System.Drawing.Point(686, 15);
             this.startButton.Margin = new System.Windows.Forms.Padding(4);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(107, 32);
@@ -71,10 +71,10 @@
             // 
             // stopButton
             // 
-            this.stopButton.Location = new System.Drawing.Point(612, 15);
+            this.stopButton.Location = new System.Drawing.Point(686, 15);
             this.stopButton.Margin = new System.Windows.Forms.Padding(4);
             this.stopButton.Name = "stopButton";
-            this.stopButton.Size = new System.Drawing.Size(107, 32);
+            this.stopButton.Size = new System.Drawing.Size(106, 32);
             this.stopButton.TabIndex = 1;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
@@ -127,11 +127,11 @@
             this.graphTabControl.Controls.Add(this.graphPage);
             this.graphTabControl.Controls.Add(this.errorPage);
             this.graphTabControl.ItemSize = new System.Drawing.Size(0, 1);
-            this.graphTabControl.Location = new System.Drawing.Point(16, 444);
+            this.graphTabControl.Location = new System.Drawing.Point(20, 508);
             this.graphTabControl.Margin = new System.Windows.Forms.Padding(4);
             this.graphTabControl.Name = "graphTabControl";
             this.graphTabControl.SelectedIndex = 0;
-            this.graphTabControl.Size = new System.Drawing.Size(576, 229);
+            this.graphTabControl.Size = new System.Drawing.Size(647, 229);
             this.graphTabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.graphTabControl.TabIndex = 12;
             // 
@@ -143,16 +143,17 @@
             this.graphPage.Margin = new System.Windows.Forms.Padding(4);
             this.graphPage.Name = "graphPage";
             this.graphPage.Padding = new System.Windows.Forms.Padding(4);
-            this.graphPage.Size = new System.Drawing.Size(568, 220);
+            this.graphPage.Size = new System.Drawing.Size(639, 220);
             this.graphPage.TabIndex = 0;
             this.graphPage.Text = "tabPage1";
             // 
             // signalGraph
             // 
             this.signalGraph.DisplayScale = 0F;
-            this.signalGraph.Location = new System.Drawing.Point(8, 7);
+            this.signalGraph.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.signalGraph.Location = new System.Drawing.Point(4, 4);
             this.signalGraph.Name = "signalGraph";
-            this.signalGraph.Size = new System.Drawing.Size(545, 206);
+            this.signalGraph.Size = new System.Drawing.Size(631, 212);
             this.signalGraph.TabIndex = 0;
             // 
             // errorPage
@@ -180,7 +181,7 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(796, 15);
+            this.saveButton.Location = new System.Drawing.Point(870, 15);
             this.saveButton.Margin = new System.Windows.Forms.Padding(4);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(107, 32);
@@ -197,7 +198,7 @@
             this.tabControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(576, 427);
+            this.tabControl.Size = new System.Drawing.Size(651, 485);
             this.tabControl.TabIndex = 15;
             // 
             // stimulusPage
@@ -208,7 +209,7 @@
             this.stimulusPage.Margin = new System.Windows.Forms.Padding(4);
             this.stimulusPage.Name = "stimulusPage";
             this.stimulusPage.Padding = new System.Windows.Forms.Padding(4);
-            this.stimulusPage.Size = new System.Drawing.Size(568, 398);
+            this.stimulusPage.Size = new System.Drawing.Size(643, 456);
             this.stimulusPage.TabIndex = 0;
             this.stimulusPage.Text = "Stimulus";
             this.stimulusPage.UseVisualStyleBackColor = true;
@@ -217,7 +218,7 @@
             // 
             this.channelPropertyGrid.Location = new System.Drawing.Point(235, 37);
             this.channelPropertyGrid.Name = "channelPropertyGrid";
-            this.channelPropertyGrid.Size = new System.Drawing.Size(318, 348);
+            this.channelPropertyGrid.Size = new System.Drawing.Size(401, 412);
             this.channelPropertyGrid.TabIndex = 8;
             this.channelPropertyGrid.ToolbarVisible = false;
             this.channelPropertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.channelPropertyGrid_PropertyValueChanged);
@@ -252,10 +253,10 @@
             // 
             this.flowLayoutPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.flowLayoutPanel.Controls.Add(this.channelControl);
-            this.flowLayoutPanel.Location = new System.Drawing.Point(612, 64);
+            this.flowLayoutPanel.Location = new System.Drawing.Point(686, 64);
             this.flowLayoutPanel.Margin = new System.Windows.Forms.Padding(4);
             this.flowLayoutPanel.Name = "flowLayoutPanel";
-            this.flowLayoutPanel.Size = new System.Drawing.Size(290, 604);
+            this.flowLayoutPanel.Size = new System.Drawing.Size(290, 673);
             this.flowLayoutPanel.TabIndex = 4;
             // 
             // channelControl
@@ -272,7 +273,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(921, 687);
+            this.ClientSize = new System.Drawing.Size(1003, 750);
             this.Controls.Add(this.flowLayoutPanel);
             this.Controls.Add(this.saveButton);
             this.Controls.Add(this.startButton);
