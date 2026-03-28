@@ -19,6 +19,7 @@ using KLib.Net;
 
 using HTS.Tcp;
 using C462.Shared.Protocols;
+using C462.Shared;
 
 namespace HTSController.Pages
 {
@@ -54,7 +55,7 @@ namespace HTSController.Pages
 
         public void UpdateList()
         {
-            var files = Directory.EnumerateFiles(FileLocations.ProtocolFolder, "*.xml").ToList();
+            var files = Directory.EnumerateFiles(SharedFileLocations.HtsProtocolFolder, "*.xml").ToList();
 
             listBox.Items.Clear();
             foreach (var i in files)
@@ -70,7 +71,7 @@ namespace HTSController.Pages
         private void editButton_Click(object sender, EventArgs e)
         {
             if (listBox.SelectedIndex < 0) return;
-            var protocolPath = Path.Combine(FileLocations.ProtocolFolder, $"{listBox.SelectedItem.ToString()}.xml");
+            var protocolPath = Path.Combine(SharedFileLocations.HtsProtocolFolder, $"{listBox.SelectedItem.ToString()}.xml");
             System.Diagnostics.Process.Start(protocolPath);
         }
         
@@ -207,12 +208,12 @@ namespace HTSController.Pages
 
         private async Task InitializeProtocol(string name)
         {
-            var protocolPath = Path.Combine(FileLocations.ProtocolFolder, $"{name}.xml");
+            var protocolPath = Path.Combine(SharedFileLocations.HtsProtocolFolder, $"{name}.xml");
             _protocol = KLib.IO.Files.XmlDeserialize<Protocol>(protocolPath);
 
             bool restore = false;
 
-            var fileList = Directory.GetFiles(FileLocations.SubjectDataFolder, $"{FileLocations.Subject}-{name}-History-*.json").ToList();
+            var fileList = Directory.GetFiles(SharedFileLocations.HtsSubjectDataFolder, $"{SharedFileLocations.HtsSubject}-{name}-History-*.json").ToList();
             if (fileList.Count > 0)
             {
                 fileList.Sort((x, y) => File.GetCreationTime(y).CompareTo(File.GetCreationTime(x)));
@@ -233,8 +234,8 @@ namespace HTSController.Pages
                 _history = new ProtocolHistory(_protocol);
                 _nextTestIndex = 0;
                 _historyPath = Path.Combine(
-                    FileLocations.SubjectDataFolder,
-                    $"{FileLocations.Subject}-{name}-History-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.json");
+                    SharedFileLocations.HtsSubjectDataFolder,
+                    $"{SharedFileLocations.HtsSubject}-{name}-History-{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.json");
                 KLib.IO.Files.JSONSerialize(_history, _historyPath);
             }
 

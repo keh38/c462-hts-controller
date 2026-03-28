@@ -13,6 +13,7 @@ using Microsoft.Win32;
 
 using Serilog;
 
+using C462.Shared;
 using KLib.Controls;
 using KLib.IO;
 
@@ -77,7 +78,7 @@ namespace HTSController.Pages
 
         public void SetFileType(string fileType)
         {
-            _settings = Directory.EnumerateFiles(FileLocations.ConfigFolder, $"{fileType}.*.xml").ToList();
+            _settings = Directory.EnumerateFiles(SharedFileLocations.HtsConfigFolder, $"{fileType}.*.xml").ToList();
 
             listBox.Items.Clear();
             foreach (var i in _settings)
@@ -234,7 +235,7 @@ namespace HTSController.Pages
         private void saveButton_Click(object sender, EventArgs e)
         {
             Turandot.Schedules.Script script = propertyGrid.SelectedObject as Turandot.Schedules.Script;
-            string filepath = Path.Combine(FileLocations.ConfigFolder, $"TScript.{script.Name}.xml");
+            string filepath = Path.Combine(SharedFileLocations.HtsConfigFolder, $"TScript.{script.Name}.xml");
             Files.XmlSerialize(script, filepath);
 
             HTSControllerSettings.SetLastUsed("TScript", filepath);
@@ -244,7 +245,7 @@ namespace HTSController.Pages
         private void ApplyScript()
         {
             Turandot.Schedules.Script script = propertyGrid.SelectedObject as Turandot.Schedules.Script;
-            script.Apply(FileLocations.ProtocolFolder);
+            script.Apply(SharedFileLocations.HtsProtocolFolder);
             ShowMessage("Created protocol files");
         }
     }

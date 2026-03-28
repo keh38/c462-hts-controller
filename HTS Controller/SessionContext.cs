@@ -34,7 +34,7 @@ namespace HTSController
                 return;
             }
             Signal.Transducer = transducer;
-            Signal.CalibrationFolder = Path.Combine(FileLocations.SharedFolder, "Calibration");
+            Signal.CalibrationFolder = Path.Combine(SharedFileLocations.SharedFolder, "Calibration");
         }
 
         public static void SetAudiogram(string audiogramPath)

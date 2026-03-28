@@ -20,6 +20,7 @@ using KLib;
 using KLib.Net;
 
 using HTS.Tcp;
+using C462.Shared;
 using C462.Shared.Protocol.DTOs;
 
 using HTSController.Data_Streams;
@@ -88,8 +89,8 @@ namespace HTSController
             _network.RemoteMessageHandler += HandleRemoteMessage;
             _network.SceneChangeHandler += HandleSceneChange;
 
-            FileLocations.SetDataDrive(HTSControllerSettings.DataDrive);
-            FileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
+            SharedFileLocations.SetDataDrive(HTSControllerSettings.DataDrive);
+            SharedFileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
 
             turandotPageControl.Initialize(_network);
             subjectPageControl.Initialize(_network);
@@ -170,7 +171,7 @@ namespace HTSController
                 // Send local paths when running on the same machine as HTS
                 if (_network.TabletAddress == "127.0.0.1")
                 {
-                    _network.SendMessage("SetDataRoot", FileLocations.ProjectRootFolder);
+                    _network.SendMessage("SetDataRoot", SharedFileLocations.HtsProjectRootFolder);
                     if (!string.IsNullOrEmpty(subjectPageControl.Project))
                     {
                         _network.SendMessage("SetProject", subjectPageControl.Project);
@@ -276,7 +277,7 @@ namespace HTSController
 
         private void subjectPageControl_ProjectChanged(string projectName)
         {
-            FileLocations.SetProject(projectName);
+            SharedFileLocations.SetHtsSubject(projectName);
             turandotPageControl.UpdateConfigFileList();
         }
 
@@ -358,7 +359,7 @@ namespace HTSController
 
         private void logButton_Click(object sender, EventArgs e)
         {
-            var folder = Path.Combine(FileLocations.RootFolder, "Remote Logs");
+            var folder = Path.Combine(SharedFileLocations.HtsFolder, "Remote Logs");
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
@@ -486,7 +487,7 @@ namespace HTSController
                     var parts = e.settingsFile.Split(new char[] { ':' }, 2);
                     string fileName = parts[0];
                     string extraSettings = (parts.Length > 1) ? parts[1] : "";
-                    turandotPageControl_StartTurandotClick(this, new HTSController.Pages.StartTurandotEventArgs(Path.Combine(FileLocations.ConfigFolder, $"Turandot.{fileName}.xml"), extraSettings));
+                    turandotPageControl_StartTurandotClick(this, new HTSController.Pages.StartTurandotEventArgs(Path.Combine(SharedFileLocations.HtsConfigFolder, $"Turandot.{fileName}.xml"), extraSettings));
                     _liveForm.AutoRun();
                     break;
             }
@@ -521,7 +522,7 @@ namespace HTSController
             if (!_ignoreEvents)
             {
                 HTSControllerSettings.DataDrive = driveDropDown.SelectedItem as string;
-                FileLocations.SetDataDrive(HTSControllerSettings.DataDrive);
+                SharedFileLocations.SetDataDrive(HTSControllerSettings.DataDrive);
             }
         }
 
@@ -530,7 +531,7 @@ namespace HTSController
             if (!_ignoreEvents)
             {
                 HTSControllerSettings.ProjectRootFolder = projectRootBrowser.Value;
-                FileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
+                SharedFileLocations.SetProjectRootFolder(HTSControllerSettings.ProjectRootFolder);
             }
         }
 

@@ -16,6 +16,7 @@ using KLib.Net;
 using SpeechReception;
 
 using HTS.Tcp;
+using C462.Shared;
 using C462.Shared.Protocol.DTOs;
 using TransferFilePayload = HTS.Tcp.TransferFilePayload;
 using HTSController.Data_Streams;
@@ -90,7 +91,7 @@ namespace HTSController
                 measItem.Text = measType;
                 measItem.Name = measType;
 
-                foreach (var configFile in FileLocations.EnumerateConfigFiles(measType))
+                foreach (var configFile in SharedFileLocations.EnumerateConfigFiles(measType))
                 {
                     var configItem = new ToolStripMenuItem();
                     configItem.Name = $"{measType}.{configFile}";
@@ -120,7 +121,7 @@ namespace HTSController
 
         private void LoadConfiguration()
         {
-            var configPath = FileLocations.GetConfigFile("SpeechTest", _configName);
+            var configPath = SharedFileLocations.GetConfigFile("SpeechTest", _configName);
             if (File.Exists(configPath))
             {
                 _config = Files.XmlDeserialize<SpeechTest>(configPath);
@@ -273,7 +274,7 @@ namespace HTSController
                     var syncLog = _network.SendRequest<TextFilePayload>("GetSyncLog");
                     if (syncLog != null && !string.IsNullOrEmpty(syncLog.Filename))
                     {
-                        var logPath = Path.Combine(FileLocations.SubjectDataFolder, syncLog.Filename);
+                        var logPath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, syncLog.Filename);
                         File.WriteAllText(logPath, syncLog.Content);
                     }
                 }
@@ -322,7 +323,7 @@ namespace HTSController
                     break;
                 case "ReceiveData":
                     var rcvParts = payload.Data.Split(new char[] { ':' }, 2);
-                    string filePath = Path.Combine(FileLocations.SubjectDataFolder, rcvParts[0]);
+                    string filePath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, rcvParts[0]);
                     File.WriteAllText(filePath, rcvParts.Length > 1 ? rcvParts[1] : "");
                     break;
                 case "Status":
@@ -369,7 +370,7 @@ namespace HTSController
         {
             if (_config != null)
             {
-                var fn = FileLocations.GetConfigFile("SpeechTest", _config.TestName);
+                var fn = SharedFileLocations.GetConfigFile("SpeechTest", _config.TestName);
                 KLib.IO.Files.XmlSerialize(_config, fn);
                 msSelectMeasurement.Text = $"SpeechTest.{_config.TestName}";
                 UpdateFileMenu();
@@ -380,7 +381,7 @@ namespace HTSController
         {
             if (_config != null)
             {
-                var fn = FileLocations.GetConfigFile("SpeechTest", _config.TestName);
+                var fn = SharedFileLocations.GetConfigFile("SpeechTest", _config.TestName);
                 File.Delete(fn);
                 _config = null;
                 propertyGrid.SelectedObject = null;
@@ -393,7 +394,7 @@ namespace HTSController
         {
             if (_config != null && _network.IsConnected)
             {
-                var fn = FileLocations.GetConfigFile("SpeechTest", _config.TestName);
+                var fn = SharedFileLocations.GetConfigFile("SpeechTest", _config.TestName);
                 _network.SendMessage("TransferFile", new TransferFilePayload
                 {
                     Folder = "Config Files",

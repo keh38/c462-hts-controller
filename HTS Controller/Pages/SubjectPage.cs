@@ -46,7 +46,7 @@ namespace HTSController.Pages
             _network = network;
 
             projectDropDown.Items.Clear();
-            var projects = FileLocations.EnumerateProjects();
+            var projects = SharedFileLocations.EnumerateHtsProjects();
             projectDropDown.Items.AddRange(projects.ToArray());
 
             projectDropDown.SelectedIndex = projects.IndexOf(HTSControllerSettings.LastProject);
@@ -64,8 +64,7 @@ namespace HTSController.Pages
                 var parts = subjectInfo.Split('/');
                 Project = parts[0];
                 Subject = parts[1];
-                FileLocations.SetProject(Project);
-                FileLocations.SetSubject(Subject);
+                SharedFileLocations.SetHtsSubject(Subject, Project);
 
                 var projects = _network.SendRequest<List<string>>("GetProjectList");
 
@@ -158,10 +157,10 @@ namespace HTSController.Pages
                 Subject = subjectDropDown.Text;
                 _network.SendMessage("SetSubjectInfo", $"{Project}/{Subject}");
             }
-            FileLocations.SetSubject(Subject);
+			SharedFileLocations.SetHtsSubject(Subject, Project);
 
-            try
-            {
+			try
+			{
                 _subjectMetadata = _network.SendRequest<SubjectMetadata>("GetSubjectMetadata");
             }
             catch (Exception ex)
@@ -268,9 +267,9 @@ namespace HTSController.Pages
             subjectDropDown.SelectedIndex = subjects.IndexOf(Subject);
             subjectDropDown.Text = Subject;
 
-            FileLocations.SetSubject(Subject);
+			SharedFileLocations.SetHtsSubject(Subject, Project);
 
-            _ignoreEvents = false;
+			_ignoreEvents = false;
         }
 
         private void transducerDropDown_SelectedIndexChanged(object sender, EventArgs e)
@@ -309,7 +308,7 @@ namespace HTSController.Pages
         {
             // TODO: Update when Turandot Editor discovery API is finalized in KLib.Net
             // var ep = DiscoverEditor("TURANDOT.EDITOR");
-            // if (ep != null) KTcpClient.SendRequest(ep, TcpMessage.Request("SetSubjectFolder", FileLocations.SubjectDataFolder));
+            // if (ep != null) KTcpClient.SendRequest(ep, TcpMessage.Request("SetSubjectFolder", SharedFileLocations.HtsSubjectDataFolder));
         }
 
         private void SendMetricsToEditor()

@@ -1,3 +1,5 @@
+extern alias C462Shared;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +18,7 @@ using KLib.Net;
 using HTS.Tcp;
 using C462.Shared.Protocol.DTOs;
 using KLib.Controls;
+using C462Shared::C462.Shared;
 
 namespace HTSController.Data_Streams
 {
@@ -201,7 +204,7 @@ namespace HTSController.Data_Streams
 
         private string GetStreamLog(DataStream dataStream)
         {
-            var folder = Path.Combine(FileLocations.RootFolder, "Remote Logs");
+            var folder = Path.Combine(SharedFileLocations.HtsFolder, "Remote Logs");
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 
@@ -258,7 +261,7 @@ namespace HTSController.Data_Streams
             InitializeSyncLogFile(filename);
 
             // Fire all Record commands in parallel
-            string fullDataPath = Path.Combine(FileLocations.SubjectDataFolder, Path.GetFileName(filename));
+            string fullDataPath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, Path.GetFileName(filename));
             await Task.WhenAll(streamsToStart.Select(async s =>
             {
                 var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Record", (object)fullDataPath)));
@@ -476,7 +479,7 @@ namespace HTSController.Data_Streams
 
         private void InitializeSyncLogFile(string logPath)
         {
-            _logPath = Path.Combine(FileLocations.SubjectDataFolder, logPath.Replace(".json", "-StreamSync.log"));
+            _logPath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, logPath.Replace(".json", "-StreamSync.log"));
 
             string headerText =
                 $"{"DataStream",-30}\t" +

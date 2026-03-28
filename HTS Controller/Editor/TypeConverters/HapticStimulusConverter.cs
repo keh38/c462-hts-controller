@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using KLib.TypeConverters;
+using C462.Shared;
 
 namespace LDL.Haptics
 {

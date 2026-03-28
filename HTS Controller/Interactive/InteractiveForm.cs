@@ -106,13 +106,13 @@ namespace HTSController
             SessionContext.SetTransducer("HD280");
 
             string audiogramFolder = "";
-            if (!string.IsNullOrEmpty(FileLocations.SubjectDataFolder))
+            if (!string.IsNullOrEmpty(SharedFileLocations.HtsSubjectDataFolder))
             {
-                audiogramFolder = Path.Combine(FileLocations.SubjectDataFolder, "meta");
+                audiogramFolder = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, "meta");
             }
             else
             {
-                audiogramFolder = Path.Combine(FileLocations.SharedFolder, "Calibration");
+                audiogramFolder = Path.Combine(SharedFileLocations.SharedFolder, "Calibration");
             }
             SessionContext.SetAudiogram(Path.Combine(audiogramFolder, "agram.xml"));
             SessionContext.SetLDL(Path.Combine(audiogramFolder, "ldlgram.xml"));
@@ -572,7 +572,7 @@ namespace HTSController
         {
             var dlg = new SaveFileDialog();
 
-            dlg.InitialDirectory = FileLocations.ConfigFolder;
+            dlg.InitialDirectory = SharedFileLocations.HtsConfigFolder;
             dlg.FileName = Path.GetFileName(SettingsPath);
             dlg.Filter = "Interactive settings | Interactive.*.xml";
             dlg.OverwritePrompt = true;

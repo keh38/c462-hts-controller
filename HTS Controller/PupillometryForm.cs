@@ -19,6 +19,7 @@ using KLib.Net;
 using Pupillometry;
 
 using HTS.Tcp;
+using C462.Shared;
 using C462.Shared.Protocol.DTOs;
 using HTSController.Data_Streams;
 
@@ -107,7 +108,7 @@ namespace HTSController
                 dynamicRangePropertyGrid.SelectedObject = _dynamicRangeSettings;
             }
 
-            var configPath = Path.Combine(FileLocations.ConfigFolder, "Gaze.Defaults.xml");
+            var configPath = Path.Combine(SharedFileLocations.HtsConfigFolder, "Gaze.Defaults.xml");
             if (File.Exists(configPath))
             {
                 _gazeSettings = Files.XmlDeserialize<GazeCalibrationSettings>(configPath);
@@ -140,7 +141,7 @@ namespace HTSController
 
         private void EnumerateDynamicRangeSettings()
         {
-            var files = Directory.EnumerateFiles(FileLocations.ConfigFolder, "DynamicRange.*.xml")
+            var files = Directory.EnumerateFiles(SharedFileLocations.HtsConfigFolder, "DynamicRange.*.xml")
                 .ToList()
                 .Select(x => Path.GetFileNameWithoutExtension(x).Replace("DynamicRange.", ""));
 
@@ -169,7 +170,7 @@ namespace HTSController
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            var configPath = Path.Combine(FileLocations.ConfigFolder, $"DynamicRange.{_dynamicRangeSettings.Name}.xml");
+            var configPath = Path.Combine(SharedFileLocations.HtsConfigFolder, $"DynamicRange.{_dynamicRangeSettings.Name}.xml");
             KLib.IO.Files.XmlSerialize(_dynamicRangeSettings, configPath);
 
             EnumerateDynamicRangeSettings();
@@ -190,7 +191,7 @@ namespace HTSController
 
         private void ReadDynamicRangeSettings(string name)
         {
-            var settingsPath = Path.Combine(FileLocations.ConfigFolder, $"DynamicRange.{name}.xml");
+            var settingsPath = Path.Combine(SharedFileLocations.HtsConfigFolder, $"DynamicRange.{name}.xml");
             _dynamicRangeSettings = Files.XmlDeserialize<DynamicRangeSettings>(settingsPath);
             _dynamicRangeSettings.Name = name;
             dynamicRangePropertyGrid.SelectedObject = _dynamicRangeSettings;
@@ -309,7 +310,7 @@ namespace HTSController
                 var syncLog = _network.SendRequest<TextFilePayload>("GetSyncLog");
                 if (syncLog != null && !string.IsNullOrEmpty(syncLog.Filename))
                 {
-                    var logPath = Path.Combine(FileLocations.SubjectDataFolder, syncLog.Filename);
+                    var logPath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, syncLog.Filename);
                     File.WriteAllText(logPath, syncLog.Content);
                 }
                 else
@@ -333,7 +334,7 @@ namespace HTSController
             if (analyzeData)
             {
                 Invoke(new Action(() => { logTextBox.AppendText("Waiting for eye tracker data" + Environment.NewLine); }));
-                haveData = await WaitForEyeTrackerData(Path.Combine(FileLocations.SubjectDataFolder, _dataFile.Replace(".json", _eyeTrackerExtension)));
+                haveData = await WaitForEyeTrackerData(Path.Combine(SharedFileLocations.HtsSubjectDataFolder, _dataFile.Replace(".json", _eyeTrackerExtension)));
             }
 
             startButton.Enabled = true;
@@ -345,7 +346,7 @@ namespace HTSController
                 {
                     logTextBox.AppendText($"{Environment.NewLine}Calling MATLAB function...{Environment.NewLine}");
 
-                    var result = MATLAB.RunFunction(functionName, Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
+                    var result = MATLAB.RunFunction(functionName, Path.Combine(SharedFileLocations.HtsSubjectDataFolder, _dataFile));
                     logTextBox.AppendText(result);
                     analysisSuccess = !result.StartsWith("Error");
                 }
@@ -421,7 +422,7 @@ namespace HTSController
                     break;
                 case "ReceiveData":
                     var rcvParts = payload.Data.Split(new char[] { ':' }, 2);
-                    string filePath = Path.Combine(FileLocations.SubjectDataFolder, rcvParts[0]);
+                    string filePath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, rcvParts[0]);
                     File.WriteAllText(filePath, rcvParts.Length > 1 ? rcvParts[1] : "");
                     _dataReceived = true;
                     break;
@@ -459,7 +460,7 @@ namespace HTSController
 
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            var configPath = Path.Combine(FileLocations.ConfigFolder, "Gaze.Defaults.xml");
+            var configPath = Path.Combine(SharedFileLocations.HtsConfigFolder, "Gaze.Defaults.xml");
             KLib.IO.Files.XmlSerialize(_gazeSettings, configPath);
         }
 
@@ -810,7 +811,7 @@ namespace HTSController
                 var functionName = matlabDropDown.SelectedItem?.ToString();
                 if (!string.IsNullOrEmpty(functionName))
                 {
-                    var result = MATLAB.RunFunction(functionName, Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
+                    var result = MATLAB.RunFunction(functionName, Path.Combine(SharedFileLocations.HtsSubjectDataFolder, _dataFile));
                     logTextBox.AppendText(result);
                 }
             }

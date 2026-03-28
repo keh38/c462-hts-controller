@@ -23,6 +23,8 @@ using LDL.Haptics;
 
 using HTSController.Data_Streams;
 using HTS.Tcp;
+
+using C462.Shared;
 using C462.Shared.Protocol.DTOs;
 using TransferFilePayload = HTS.Tcp.TransferFilePayload;
 
@@ -101,7 +103,7 @@ namespace HTSController
                 measItem.Text = measType;
                 measItem.Name = measType;
 
-                foreach (var configFile in FileLocations.EnumerateConfigFiles(measType))
+                foreach (var configFile in SharedFileLocations.EnumerateConfigFiles(measType))
                 {
                     var configItem = new ToolStripMenuItem();
                     configItem.Name = $"{measType}.{configFile}";
@@ -132,7 +134,7 @@ namespace HTSController
 
         private void LoadConfiguration()
         {
-            var configPath = FileLocations.GetConfigFile(_measType, _configName);
+            var configPath = SharedFileLocations.GetConfigFile(_measType, _configName);
             if (File.Exists(configPath))
             {
                 var obj = Files.XmlDeserialize<BasicMeasurementConfiguration>(configPath);
@@ -315,7 +317,7 @@ namespace HTSController
                 var syncLog = _network.SendRequest<TextFilePayload>("GetSyncLog");
                 if (syncLog != null)
                 {
-                    var logPath = Path.Combine(FileLocations.SubjectDataFolder, syncLog.Filename);
+                    var logPath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, syncLog.Filename);
                     File.WriteAllText(logPath, syncLog.Content);
                 }
             }
@@ -356,7 +358,7 @@ namespace HTSController
                     break;
                 case "ReceiveData":
                     var filePayload = JsonConvert.DeserializeObject<TransferFilePayload>(payload.Data);
-                    string filePath = Path.Combine(FileLocations.SubjectDataFolder, filePayload.Filename);
+                    string filePath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, filePayload.Filename);
                     if (File.Exists(filePath))
                     {
                         Log.Warning($"File {filePath} already exists, backing up. This shouldn't happen.");
@@ -398,7 +400,7 @@ namespace HTSController
         {
             if (_config != null)
             {
-                var fn = FileLocations.GetConfigFile(_measType, _config.Name);
+                var fn = SharedFileLocations.GetConfigFile(_measType, _config.Name);
                 Files.XmlSerialize(_config, fn);
                 msSelectMeasurement.Text = $"{_measType}.{_config.Name}";
                 UpdateFileMenu();
@@ -423,7 +425,7 @@ namespace HTSController
         {
             if (_config != null)
             {
-                var fn = FileLocations.GetConfigFile(_measType, _config.Name);
+                var fn = SharedFileLocations.GetConfigFile(_measType, _config.Name);
                 File.Delete(fn);
                 _config = null;
                 propertyGrid.SelectedObject = null;
@@ -436,7 +438,7 @@ namespace HTSController
         {
             if (_config != null && _network.IsConnected)
             {
-                var fn = FileLocations.GetConfigFile(_measType, _config.Name);
+                var fn = SharedFileLocations.GetConfigFile(_measType, _config.Name);
                 _network.SendMessage("TransferFile", new TransferFilePayload
                 {
                     Folder = "Config Files",

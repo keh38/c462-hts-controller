@@ -7,14 +7,12 @@ using OrderedPropertyGrid;
 
 namespace LDL.Haptics
 {
-    public enum HapticSource { NONE, Vibration, TENS }
-
     [TypeConverter(typeof(HapticStimulusConverter))]
     [JsonObject(MemberSerialization.OptOut)]
     public class HapticStimulus
     {
         [Browsable(false)]
-        public HapticSource Source { get; set; }
+        public C462.Shared.HapticSource Source { get; set; }
 
         [PropertyOrder(0)]
         public bool SaveLDLGram { get; set; }
@@ -52,7 +50,7 @@ namespace LDL.Haptics
         {
             SaveLDLGram = false;
             DoAudioOnly = true;
-            Source = HapticSource.NONE;
+            Source = C462.Shared.HapticSource.NONE;
             TENS = new Digitimer();
             Vibration = new Sinusoid()
             {

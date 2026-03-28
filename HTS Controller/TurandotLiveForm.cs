@@ -18,6 +18,7 @@ using KLib.IO;
 using KLib.Net;
 
 using HTS.Tcp;
+using C462.Shared;
 using C462.Shared.Protocol.DTOs;
 using HTSController.Data_Streams;
 using Newtonsoft.Json;
@@ -160,7 +161,7 @@ namespace HTSController
                 var syncLog = _network.SendRequest<TextFilePayload>("GetSyncLog");
                 if (syncLog != null && !string.IsNullOrEmpty(syncLog.Filename))
                 {
-                    var logPath = Path.Combine(FileLocations.SubjectDataFolder, syncLog.Filename);
+                    var logPath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, syncLog.Filename);
                     File.WriteAllText(logPath, syncLog.Content);
                 }
                 else
@@ -183,7 +184,7 @@ namespace HTSController
             {
                 logTextBox.AppendText($"{Environment.NewLine}Calling MATLAB function...{Environment.NewLine}");
 
-                var result = MATLAB.RunFunction(Path.GetFileNameWithoutExtension(_postRunMATLABFile), Path.Combine(FileLocations.SubjectDataFolder, _dataFile));
+                var result = MATLAB.RunFunction(Path.GetFileNameWithoutExtension(_postRunMATLABFile), Path.Combine(SharedFileLocations.HtsSubjectDataFolder, _dataFile));
                 logTextBox.AppendText(result);
             }
 
@@ -226,7 +227,7 @@ namespace HTSController
                     break;
                 case "ReceiveData":
                     var rcvParts = payload.Data.Split(new char[] { ':' }, 2);
-                    string filePath = Path.Combine(FileLocations.SubjectDataFolder, rcvParts[0]);
+                    string filePath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, rcvParts[0]);
                     File.WriteAllText(filePath, rcvParts.Length > 1 ? rcvParts[1] : "");
                     break;
                 case "Error":

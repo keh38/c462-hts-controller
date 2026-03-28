@@ -1,3 +1,5 @@
+extern alias C462Shared;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +20,7 @@ using KLib.Net;
 
 using HTS.Tcp;
 using Newtonsoft.Json;
+using C462Shared::C462.Shared;
 
 namespace HTSController.Pages
 {
@@ -157,7 +160,7 @@ namespace HTSController.Pages
             int numUploaded = 0;
             foreach (var file in localFiles)
             {
-                string fullLocalPath = Path.Combine(FileLocations.ResourcesFolder, file);
+                string fullLocalPath = Path.Combine(SharedFileLocations.HtsResourcesFolder, file);
 
                 progressBar.Value++;
                 progressBarLabel.Text = file;
@@ -245,27 +248,15 @@ namespace HTSController.Pages
 
         private List<string> EnumerateResources()
         {
-            var resourceFolders = new List<string>()
-            {
-                "Config Files",
-                "Images",
-                "MATLAB",
-                "Plugins",
-                "Protocols",
-                "Schedules",
-                "Videos",
-                "Wav Files"
-            };
-
             List<string> resources = new List<string>();
 
-            foreach (var resourceFolder in resourceFolders)
+            foreach (var resourceFolder in SharedFileLocations.HtsProjectResourceFolders)
             {
-                string folder = Path.Combine(FileLocations.ResourcesFolder, resourceFolder);
+                string folder = Path.Combine(SharedFileLocations.HtsResourcesFolder, resourceFolder);
                 var files = Directory.GetFiles(folder);
                 foreach (var file in files)
                 {
-                    resources.Add(file.Remove(0, FileLocations.ResourcesFolder.Length + 1));
+                    resources.Add(file.Remove(0, SharedFileLocations.HtsResourcesFolder.Length + 1));
                 }
             }
 
