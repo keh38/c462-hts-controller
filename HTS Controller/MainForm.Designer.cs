@@ -411,7 +411,6 @@
             this.subjectPageControl.Location = new System.Drawing.Point(3, 3);
             this.subjectPageControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.subjectPageControl.Name = "subjectPageControl";
-            this.subjectPageControl.OnProjectChanged = null;
             this.subjectPageControl.Size = new System.Drawing.Size(354, 484);
             this.subjectPageControl.TabIndex = 0;
             this.subjectPageControl.ValueChanged += new System.EventHandler(this.subjectPageControl_ValueChanged);

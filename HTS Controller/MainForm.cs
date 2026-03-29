@@ -57,7 +57,7 @@ namespace HTSController
             _menu.Add(new Tuple<CheckBox, TabPage>(pupilButton, pupilPage));
             _menu.Add(new Tuple<CheckBox, TabPage>(adminButton, adminPage));
 
-            subjectPageControl.OnProjectChanged = subjectPageControl_ProjectChanged;
+            subjectPageControl.ProjectChanged += subjectPageControl_ProjectChanged;
         }
 
         private async Task StartLogging()
@@ -178,7 +178,7 @@ namespace HTSController
                     }
                 }
 
-                subjectPageControl.RetrieveSubjectState();
+                subjectPageControl.OnConnected();
                 turandotPageControl.UpdateConfigFileList();
                 menuPanel.Enabled = true;
                 subjectPageControl.Enabled = true;
@@ -275,9 +275,10 @@ namespace HTSController
             subjectButton.Text = string.IsNullOrEmpty(subjectPageControl.Subject) ? "Subject" : subjectPageControl.Subject;
         }
 
-        private void subjectPageControl_ProjectChanged(string projectName)
+        private void subjectPageControl_ProjectChanged(object s, string projectName)
         {
             SharedFileLocations.SetHtsSubject(projectName);
+            Debug.WriteLine($"subject data folder: {SharedFileLocations.HtsSubjectDataFolder}");
             turandotPageControl.UpdateConfigFileList();
         }
 

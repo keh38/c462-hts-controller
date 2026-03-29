@@ -12,12 +12,15 @@ namespace SpeechReception
     {
         [Browsable(false)]
         public Order Order { get; set; }
+        private bool ShouldSerializeOrder() { return false; }
 
         [PropertyOrder(1)]
         public int RepeatsPerBlock { get; set; }
+        private bool ShouldSerializeRepeatsPerBlock() { return false; }
 
         [PropertyOrder(2)]
         public int NumBlocks { get; set; }
+        private bool ShouldSerializeNumBlocks() { return false; }
 
         public int choose = -1;
 

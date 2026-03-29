@@ -35,7 +35,7 @@ namespace HTSController.Data_Streams
             public SyncData(int numRTT) { rtt = new double[numRTT]; }
         }
 
-        public static readonly string ConfigFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS", "Streams");
+        public static readonly string ConfigFolder = Path.Combine(SharedFileLocations.SharedFolder, "Streams");
         private static readonly string ConfigFile = Path.Combine(ConfigFolder, "DataStreams.xml");
 
         private List<DataStream> _streams;

@@ -9,12 +9,16 @@ namespace Pupillometry
     public class GazeCalibrationSettings
     {
         public int Width { get; set; }
+        private bool ShouldSerializeWidth() { return false; }
 
         public int Height { get; set; }
+        private bool ShouldSerializeHeight() { return false; }
 
         public float TargetSizeFactor { get; set; }
+        private bool ShouldSerializeTargetSizeFactor() { return false; }
 
         public float HoleSizeFactor { get; set; }
+        private bool ShouldSerializeHoleSizeFactor() { return false; }
 
         [DisplayName("Target Color")]
         [XmlIgnore]
@@ -26,6 +30,7 @@ namespace Pupillometry
 
         [Browsable(false)]
         public int TargetColor { set; get; }
+        private bool ShouldSerializeTargetColor() { return false; }
 
         [DisplayName("Background Color")]
         [XmlIgnore]
@@ -37,8 +42,10 @@ namespace Pupillometry
 
         [Browsable(false)]
         public int BackgroundColor { set; get; }
+        private bool ShouldSerializeBackgroundColor() { return false; }
 
         public string CalibrationType { get; set; }
+        private bool ShouldSerializeCalibrationType() { return false; }
 
         public GazeCalibrationSettings()
         {

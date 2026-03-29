@@ -9,14 +9,15 @@ namespace SpeechReception
     {
         [Browsable(false)]
         public string Source { get; set; }
+        private bool ShouldSerializeSource() { return false; }
 
         [PropertyOrder(1)]
         public int NumBabblers { get; set; }
-        public bool ShouldSerializeNumBabblers() { return Source.Equals("IEEE"); }
+        private bool ShouldSerializeNumBabblers() { return Source.Equals("IEEE"); }
 
         [PropertyOrder(2)]
         public int BabbleSeed { get; set; }
-        public bool ShouldSerializeBabbleSeed() { return Source.Equals("IEEE"); }
+        private bool ShouldSerializeBabbleSeed() { return Source.Equals("IEEE"); }
 
         public Masker()
         {

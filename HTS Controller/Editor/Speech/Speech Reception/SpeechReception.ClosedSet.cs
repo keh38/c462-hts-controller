@@ -13,14 +13,16 @@ namespace SpeechReception
 
         [PropertyOrder(0)]
         public FeedbackType Feedback { get; set; }
+        private bool ShouldSerializeFeedback() { return false; }
 
         [PropertyOrder(1)]
         public List<string> Decoys { get; set; }
-        public bool ShouldSerializeDecoys() { return Decoys != null && Decoys.Count > 0; }
+        private bool ShouldSerializeDecoys() { return Decoys != null && Decoys.Count > 0; }
 
         [PropertyOrder(2)]
         [DisplayName("Performance")]
         public PerformanceCriteria PerformanceCriteria { get; set; }
+        private bool ShouldSerializePerformanceCriteria() { return false; }
 
         public ClosedSet()
         {

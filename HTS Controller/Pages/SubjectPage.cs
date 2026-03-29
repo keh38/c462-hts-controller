@@ -23,15 +23,29 @@ namespace HTSController.Pages
     [DefaultEvent(nameof(ValueChanged))]
     public partial class SubjectPage : KUserControl
     {
+        // -------------------------------------------------------------------------
+        // Events
+        // -------------------------------------------------------------------------
+
+        /// <summary>
+        /// Raised when the active project changes. MainForm uses this to refresh
+        /// config file lists in other parts of the UI.
+        /// </summary>
+        public event EventHandler<string> ProjectChanged;
+
+        // -------------------------------------------------------------------------
+        // State
+        // -------------------------------------------------------------------------
+
         private HTSNetwork _network;
+        private SubjectMetadata _subjectMetadata;
 
         public string Project { get; private set; } = "";
         public string Subject { get; private set; } = "";
 
-        private SubjectMetadata _subjectMetadata;
-
-        public delegate void ProjectChangedDelegate(string projectName);
-        public ProjectChangedDelegate OnProjectChanged { get; set; }
+        // -------------------------------------------------------------------------
+        // Construction
+        // -------------------------------------------------------------------------
 
         public SubjectPage()
         {
@@ -41,44 +55,72 @@ namespace HTSController.Pages
             transducerDropDown.Enabled = false;
         }
 
+        // -------------------------------------------------------------------------
+        // Public entry points
+        // -------------------------------------------------------------------------
+
+        /// <summary>
+        /// Called once at application startup. Populates the project list from the
+        /// local file system and restores the last-used project (offline-safe).
+        /// </summary>
         public void Initialize(HTSNetwork network)
         {
             _network = network;
 
-            projectDropDown.Items.Clear();
             var projects = SharedFileLocations.EnumerateHtsProjects();
-            projectDropDown.Items.AddRange(projects.ToArray());
-
-            projectDropDown.SelectedIndex = projects.IndexOf(HTSControllerSettings.LastProject);
+            PopulateProjectDropDown(projects);
+            SetProject(HTSControllerSettings.LastProject);
         }
 
-        public void RetrieveSubjectState()
+        /// <summary>
+        /// Called when a connection to HTS is established. Reads the current
+        /// subject state from HTS and syncs the UI to it.
+        /// </summary>
+        public void OnConnected()
         {
-            if (!_network.IsConnected) return;
-
-            Log.Information("Retrieving subject state");
+            Log.Information("Retrieving subject state from HTS");
 
             try
             {
                 var subjectInfo = _network.SendRequest<string>("GetSubjectInfo");
                 var parts = subjectInfo.Split('/');
-                Project = parts[0];
-                Subject = parts[1];
-                SharedFileLocations.SetHtsSubject(Subject, Project);
 
                 var projects = _network.SendRequest<List<string>>("GetProjectList");
 
-                projectDropDown.Enabled = true;
-                projectDropDown.Items.Clear();
-                projectDropDown.Items.AddRange(projects.ToArray());
-                projectDropDown.SelectedIndex = projects.IndexOf(Project);
+                _ignoreEvents = true;
+                PopulateProjectDropDown(projects);
+                SetProject(parts[0]);
+                SetSubject(parts[1]);
+                _ignoreEvents = false;
             }
             catch (Exception ex)
             {
-                Log.Error($"RetrieveSubjectState failed: {ex.Message}");
+                Log.Error($"OnConnected subject sync failed: {ex.Message}");
             }
         }
 
+        /// <summary>
+        /// Called when the connection to HTS is lost. Falls back to the local
+        /// project list and clears subject-specific controls.
+        /// </summary>
+        public void OnDisconnected()
+        {
+            _ignoreEvents = true;
+
+            subjectDropDown.Items.Clear();
+            subjectDropDown.Enabled = false;
+            transducerDropDown.Items.Clear();
+            transducerDropDown.Enabled = false;
+
+            PopulateProjectDropDown(SharedFileLocations.EnumerateHtsProjects());
+            SetProject(Project); // re-apply current project against the local list
+
+            _ignoreEvents = false;
+        }
+
+        /// <summary>
+        /// Called by MainForm when MATLAB pushes updated metrics for the current subject.
+        /// </summary>
         public void UpdateMetrics(MATLABStruct data)
         {
             try
@@ -91,8 +133,8 @@ namespace HTSController.Pages
 
                     _subjectMetadata.metrics[n] = value;
                     Log.Information($"Set metric {n} = '{value}'");
-                    ApplyMetrics();
                 }
+                ApplyMetrics();
             }
             catch (Exception ex)
             {
@@ -100,116 +142,137 @@ namespace HTSController.Pages
             }
         }
 
-        private void projectDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        // -------------------------------------------------------------------------
+        // Core state setters — all state changes flow through here
+        // -------------------------------------------------------------------------
+
+        private void SetProject(string project)
         {
-            if (projectDropDown.SelectedIndex < 0)
-            {
-                Subject = "";
-                transducerDropDown.Items.Clear();
-                transducerDropDown.Enabled = false;
-                subjectDropDown.Items.Clear();
-                subjectDropDown.Enabled = false;
-            }
-            else
-            {
-                Project = projectDropDown.Text;
-                HTSControllerSettings.LastProject = Project;
+            Project = project;
+            HTSControllerSettings.LastProject = project;
+            SharedFileLocations.SetHtsProject(project);
 
-                transducerDropDown.Enabled = false;
-                transducerDropDown.Items.Clear();
-                transducerDropDown.SelectedIndex = -1;
+            // Sync dropdown selection
+            var idx = projectDropDown.Items.Cast<object>()
+                .Select(x => x.ToString()).ToList().IndexOf(project);
+            if (projectDropDown.SelectedIndex != idx)
+                projectDropDown.SelectedIndex = idx;
 
-                if (_network.IsConnected)
+            // Reset subject-dependent controls
+            Subject = "";
+            subjectDropDown.Items.Clear();
+            subjectDropDown.Enabled = false;
+            transducerDropDown.Items.Clear();
+            transducerDropDown.Enabled = false;
+
+            if (_network.IsConnected)
+            {
+                try
                 {
-                    try
-                    {
-                        var subjects = _network.SendRequest<List<string>>("GetSubjectList", Project);
-
-                        subjectDropDown.Enabled = true;
-                        subjectDropDown.Items.Clear();
-                        subjectDropDown.Items.AddRange(subjects.ToArray());
-
-                        _ignoreEvents = true;
-
-                        subjectDropDown.SelectedIndex = subjects.IndexOf(Subject);
-                        if (subjectDropDown.SelectedIndex < 0)
-                        {
-                            subjectDropDown.Text = "";
-                            Subject = "";
-                            OnValueChanged();
-                        }
-
-                        _ignoreEvents = false;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error($"GetSubjectList failed: {ex.Message}");
-                    }
+                    var subjects = _network.SendRequest<List<string>>("GetSubjectList", project);
+                    PopulateSubjectDropDown(subjects);
                 }
-                OnProjectChanged?.Invoke(Project);
+                catch (Exception ex)
+                {
+                    Log.Error($"GetSubjectList failed: {ex.Message}");
+                }
             }
+
+            ProjectChanged?.Invoke(this, project);
         }
 
-        private void subjectDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        private void SetSubject(string subject)
         {
-            if (!_ignoreEvents)
+            Subject = subject;
+            SharedFileLocations.SetHtsSubject(Project, subject);
+            Debug.WriteLine($"subject data folder: {SharedFileLocations.HtsSubjectDataFolder}");
+
+            // Sync dropdown selection
+            var idx = subjectDropDown.Items.Cast<object>()
+                .Select(x => x.ToString()).ToList().IndexOf(subject);
+            if (subjectDropDown.SelectedIndex != idx)
+                subjectDropDown.SelectedIndex = idx;
+
+            if (_network.IsConnected)
             {
-                Subject = subjectDropDown.Text;
                 _network.SendMessage("SetSubjectInfo", $"{Project}/{Subject}");
+
+                try
+                {
+                    _subjectMetadata = _network.SendRequest<SubjectMetadata>("GetSubjectMetadata");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"GetSubjectMetadata failed: {ex.Message}");
+                    _subjectMetadata = new SubjectMetadata();
+                }
+
+                var savedIgnore = _ignoreEvents;
+                _ignoreEvents = true;
+
+                try
+                {
+                    var transducers = _network.SendRequest<List<string>>("GetTransducers");
+                    transducerDropDown.Enabled = true;
+                    transducerDropDown.Items.Clear();
+                    transducerDropDown.Items.AddRange(transducers.ToArray());
+                    transducerDropDown.SelectedIndex = transducers.IndexOf(_subjectMetadata.Transducer);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"GetTransducers failed: {ex.Message}");
+                }
+
+                _ignoreEvents = savedIgnore;
+
+                ShowMetrics();
+                SendMetricsToEditor();
+                SendSubjectFolderToEditor();
+
+                if (MATLAB.IsInitialized)
+                    MATLAB.AddPath(FileLocations.GetMATLABFolder(""));
             }
-			SharedFileLocations.SetHtsSubject(Subject, Project);
-
-			try
-			{
-                _subjectMetadata = _network.SendRequest<SubjectMetadata>("GetSubjectMetadata");
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"GetSubjectMetadata failed: {ex.Message}");
-                _subjectMetadata = new SubjectMetadata();
-            }
-
-            var currentIgnore = _ignoreEvents;
-            _ignoreEvents = true;
-
-            try
-            {
-                var transducers = _network.SendRequest<List<string>>("GetTransducers");
-                transducerDropDown.Enabled = true;
-                transducerDropDown.Items.Clear();
-                transducerDropDown.Items.AddRange(transducers.ToArray());
-
-                var itransducer = transducerDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList().IndexOf(_subjectMetadata.Transducer);
-                transducerDropDown.SelectedIndex = itransducer;
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"GetTransducers failed: {ex.Message}");
-            }
-
-            ShowMetrics();
-            SendMetricsToEditor();
-            SendSubjectFolderToEditor();
-
-            if (MATLAB.IsInitialized)
-            {
-                MATLAB.AddPath(FileLocations.GetMATLABFolder(""));
-            }
-
-            _ignoreEvents = currentIgnore;
 
             OnValueChanged();
         }
 
+        // -------------------------------------------------------------------------
+        // Dropdown population helpers
+        // -------------------------------------------------------------------------
+
+        private void PopulateProjectDropDown(List<string> projects)
+        {
+            projectDropDown.Items.Clear();
+            projectDropDown.Items.AddRange(projects.ToArray());
+        }
+
+        private void PopulateSubjectDropDown(List<string> subjects)
+        {
+            subjectDropDown.Enabled = true;
+            subjectDropDown.Items.Clear();
+            subjectDropDown.Items.AddRange(subjects.ToArray());
+        }
+
+        // -------------------------------------------------------------------------
+        // Dropdown event handlers — user-initiated changes only
+        // -------------------------------------------------------------------------
+
+        private void projectDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_ignoreEvents || projectDropDown.SelectedIndex < 0) return;
+            SetProject(projectDropDown.Text);
+        }
+
+        private void subjectDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_ignoreEvents || subjectDropDown.SelectedIndex < 0) return;
+            SetSubject(subjectDropDown.Text);
+        }
+
         private void projectDropDown_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                if (!projectDropDown.Items.Contains(projectDropDown.Text))
-                {
-                    createProjectButton.Visible = true;
-                }
-            }
+            if (e.KeyCode == Keys.Enter && !projectDropDown.Items.Contains(projectDropDown.Text))
+                createProjectButton.Visible = true;
         }
 
         private void projectDropDown_TextChanged(object sender, EventArgs e)
@@ -219,13 +282,8 @@ namespace HTSController.Pages
 
         private void subjectDropDown_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                if (!subjectDropDown.Items.Contains(subjectDropDown.Text))
-                {
-                    createSubjectButton.Visible = true;
-                }
-            }
+            if (e.KeyCode == Keys.Enter && !subjectDropDown.Items.Contains(subjectDropDown.Text))
+                createSubjectButton.Visible = true;
         }
 
         private void subjectDropDown_TextChanged(object sender, EventArgs e)
@@ -233,53 +291,62 @@ namespace HTSController.Pages
             createSubjectButton.Visible = false;
         }
 
+        // -------------------------------------------------------------------------
+        // Create project / subject
+        // -------------------------------------------------------------------------
+
         private void createProjectButton_Click(object sender, EventArgs e)
         {
             createProjectButton.Visible = false;
-            Project = projectDropDown.Text;
-            projectDropDown.Items.Add(Project);
 
+            var project = projectDropDown.Text;
             if (_network.IsConnected)
-            {
-                _network.SendMessage("CreateProject", Project);
-            }
+                _network.SendMessage("CreateProject", project);
 
-            var projects = projectDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList();
-            projectDropDown.SelectedIndex = projects.IndexOf(Project);
+            // Add to sorted list and repopulate
+            var projects = projectDropDown.Items.Cast<object>()
+                .Select(x => x.ToString()).ToList();
+            projects.Add(project);
+            projects.Sort();
+
+            _ignoreEvents = true;
+            PopulateProjectDropDown(projects);
+            _ignoreEvents = false;
+
+            SetProject(project);
         }
 
         private void createSubjectButton_Click(object sender, EventArgs e)
         {
             createSubjectButton.Visible = false;
 
-            Subject = subjectDropDown.Text;
-            _network.SendMessage("SetSubjectInfo", $"{Project}/{Subject}");
+            var subject = subjectDropDown.Text;
+            var subjects = subjectDropDown.Items.Cast<object>()
+                .Select(x => x.ToString()).ToList();
+            subjects.Add(subject);
+            subjects.Sort();
 
             _ignoreEvents = true;
+            PopulateSubjectDropDown(subjects);
+            _ignoreEvents = false;
 
-            var subjects = subjectDropDown.Items.Cast<Object>().Select(item => item.ToString()).ToList();
-            subjectDropDown.Items.Add(Subject);
-            subjects.Add(Subject);
-            subjects.Sort();
-            subjectDropDown.Items.Clear();
-            subjectDropDown.Items.AddRange(subjects.ToArray());
-
-            subjectDropDown.SelectedIndex = subjects.IndexOf(Subject);
-            subjectDropDown.Text = Subject;
-
-			SharedFileLocations.SetHtsSubject(Subject, Project);
-
-			_ignoreEvents = false;
+            SetSubject(subject);
         }
+
+        // -------------------------------------------------------------------------
+        // Transducer
+        // -------------------------------------------------------------------------
 
         private void transducerDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_ignoreEvents)
-            {
-                _subjectMetadata.Transducer = transducerDropDown.Text;
-                _network.SendMessage("SetSubjectMetadata", _subjectMetadata);
-            }
+            if (_ignoreEvents) return;
+            _subjectMetadata.Transducer = transducerDropDown.Text;
+            _network.SendMessage("SetSubjectMetadata", _subjectMetadata);
         }
+
+        // -------------------------------------------------------------------------
+        // Metrics
+        // -------------------------------------------------------------------------
 
         private void applyButton_Click(object sender, EventArgs e)
         {
@@ -299,23 +366,7 @@ namespace HTSController.Pages
             _subjectMetadata.metrics.Sort();
             metricGridView.Rows.Clear();
             foreach (var entry in _subjectMetadata.metrics.entries)
-            {
                 metricGridView.Rows.Add(entry.key, entry.value);
-            }
-        }
-
-        private void SendSubjectFolderToEditor()
-        {
-            // TODO: Update when Turandot Editor discovery API is finalized in KLib.Net
-            // var ep = DiscoverEditor("TURANDOT.EDITOR");
-            // if (ep != null) KTcpClient.SendRequest(ep, TcpMessage.Request("SetSubjectFolder", SharedFileLocations.HtsSubjectDataFolder));
-        }
-
-        private void SendMetricsToEditor()
-        {
-            // TODO: Update when Turandot Editor discovery API is finalized in KLib.Net
-            // var ep = DiscoverEditor("TURANDOT.EDITOR");
-            // if (ep != null) KTcpClient.SendRequest(ep, TcpMessage.Request("SetMetrics", KLib.IO.Files.ToXMLString(_subjectMetadata.metrics)));
         }
 
         private void metricGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -329,13 +380,9 @@ namespace HTSController.Pages
             if (metricGridView.CurrentCell.ColumnIndex == 0)
             {
                 if (rowIndex == _subjectMetadata.metrics.entries.Count)
-                {
                     _subjectMetadata.metrics[metricName] = "";
-                }
                 else
-                {
                     _subjectMetadata.metrics.RenameKey(rowIndex, metricName);
-                }
             }
             else if (metricGridView.CurrentCell.ColumnIndex == 1)
             {
@@ -349,8 +396,25 @@ namespace HTSController.Pages
         {
             var metricName = e.Row.Cells["MetricName"].Value.ToString();
             _subjectMetadata.metrics.RemoveKey(metricName);
-
             applyButton.Visible = true;
+        }
+
+        // -------------------------------------------------------------------------
+        // Editor integration (pending)
+        // -------------------------------------------------------------------------
+
+        private void SendSubjectFolderToEditor()
+        {
+            // TODO: Update when Turandot Editor discovery API is finalized in KLib.Net
+            // var ep = DiscoverEditor("TURANDOT.EDITOR");
+            // if (ep != null) KTcpClient.SendRequest(ep, TcpMessage.Request("SetSubjectFolder", SharedFileLocations.HtsSubjectDataFolder));
+        }
+
+        private void SendMetricsToEditor()
+        {
+            // TODO: Update when Turandot Editor discovery API is finalized in KLib.Net
+            // var ep = DiscoverEditor("TURANDOT.EDITOR");
+            // if (ep != null) KTcpClient.SendRequest(ep, TcpMessage.Request("SetMetrics", KLib.IO.Files.ToXMLString(_subjectMetadata.metrics)));
         }
     }
 }

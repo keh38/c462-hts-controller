@@ -9,18 +9,19 @@ namespace SpeechReception
     {
         [Browsable(false)]
         public bool Apply { get; set; }
+        private bool ShouldSerializeApply() { return false; }
 
         [PropertyOrder(1)]
         public float AllowablePctRange { get; set; }
-        public bool ShouldSerializeAllowablePctRange() { return Apply; }
+        private bool ShouldSerializeAllowablePctRange() { return Apply; }
 
         [PropertyOrder(2)]
         public int MinBlocks { get; set; }
-        public bool ShouldSerializeMinBlocks() { return Apply; }
+        private bool ShouldSerializeMinBlocks() { return Apply; }
 
         [PropertyOrder(3)]
         public int MaxBlocks { get; set; }
-        public bool ShouldSerializeMaxBlocks() { return Apply; }
+        private bool ShouldSerializeMaxBlocks() { return Apply; }
 
         public PerformanceCriteria()
         {

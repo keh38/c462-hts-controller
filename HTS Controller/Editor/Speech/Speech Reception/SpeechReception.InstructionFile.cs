@@ -13,10 +13,12 @@ namespace SpeechReception
         [PropertyOrder(0)]
         [DisplayName("File name")]
         public string Name { get; set; }
+        private bool ShouldSerializeName() { return false; }
 
         [PropertyOrder(1)]
         [DisplayName("Insert before")]
         [Description("Show these instructions before which list")]
         public int Before { get; set; }
+        private bool ShouldSerializeBefore() { return false; }
     }
 }

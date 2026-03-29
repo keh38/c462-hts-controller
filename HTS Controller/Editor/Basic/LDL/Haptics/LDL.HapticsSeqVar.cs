@@ -11,9 +11,11 @@ namespace LDL.Haptics
         [PropertyOrder(6)]
         [TypeConverter(typeof(HapticSeqVarVariableConverter))]
         public string Variable { get; set; }
+        private bool ShouldSerializeVariable() { return false; }
 
         [PropertyOrder(7)]
         public string Expression { get; set; }
+        private bool ShouldSerializeExpression() { return false; }
 
         public HapticSeqVar()
         {
