@@ -148,6 +148,8 @@ namespace HTSController.Pages
 
         private void SetProject(string project)
         {
+            if (string.IsNullOrEmpty(project)) return;
+
             Project = project;
             HTSControllerSettings.LastProject = project;
             SharedFileLocations.SetHtsProject(project);
