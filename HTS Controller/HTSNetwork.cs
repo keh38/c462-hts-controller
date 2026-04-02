@@ -317,6 +317,7 @@ namespace HTSController
                 {
                     Log.Information(ex.Message);
                 }
+                Thread.Sleep(10);
             }
 
             server.CloseListener();

@@ -1,5 +1,13 @@
 ## Changelog
 
+### v2.1 (unreleased)
+#### Changed
+- upgraded to shared libraries
+#### Fixed
+- added sleep to TCP listener to prevent CPU spinning
+
+---
+
 ### v2.0.2 (2026-03-19)
 #### Fixed
 - cleaned up Data Stream logic
