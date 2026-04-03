@@ -1,6 +1,6 @@
 ## Changelog
 
-### v2.1 (unreleased)
+### v2.1 (2026-04-03)
 #### Changed
 - upgraded to shared libraries
 #### Fixed
