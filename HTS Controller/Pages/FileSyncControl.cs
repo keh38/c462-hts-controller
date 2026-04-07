@@ -1,5 +1,3 @@
-extern alias C462Shared;
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +18,7 @@ using KLib.Net;
 
 using HTS.Tcp;
 using Newtonsoft.Json;
-using C462Shared::C462.Shared;
+using C462.Shared;
 
 namespace HTSController.Pages
 {

@@ -1,4 +1,3 @@
-extern alias C462Shared;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ using System.Xml.Serialization;
 using C462.Shared;
 using C462.Shared.Protocols;
 using System.Text;
-using Expr = C462Shared::KLib.Expressions.Expressions;
+using Expr = KLib.Expressions.Expressions;
 
 namespace Turandot.Schedules
 {

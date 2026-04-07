@@ -452,7 +452,7 @@ namespace HTSController
 
         private void protocolButton_CheckedChanged(object sender, EventArgs e)
         {
-            tableLayoutPanel.ColumnStyles[1].Width = protocolButton.Checked ? 188 : 0;
+            tableLayoutPanel.ColumnStyles[1].Width = protocolButton.Checked ? 194 : 0;
             SetMenuButtonColors(protocolButton);
             protocolControl.UpdateList();
         }

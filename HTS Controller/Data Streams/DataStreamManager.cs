@@ -1,5 +1,3 @@
-extern alias C462Shared;
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,9 +14,9 @@ using KLib;
 using KLib.IO;
 using KLib.Net;
 using HTS.Tcp;
+using C462.Shared;
 using C462.Shared.Protocol.DTOs;
 using KLib.Controls;
-using C462Shared::C462.Shared;
 
 namespace HTSController.Data_Streams
 {

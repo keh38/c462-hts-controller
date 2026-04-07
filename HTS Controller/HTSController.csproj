@@ -56,9 +56,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="C462.Shared">
-      <HintPath>..\..\c462-shared\C462.Shared\bin\Debug\netstandard2.0\C462.Shared.dll</HintPath>
-      <Aliases>global,C462Shared</Aliases>
+    <Reference Include="C462.Shared, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\C462.Shared.1.2.2\lib\net48\C462.Shared.dll</HintPath>
     </Reference>
     <Reference Include="C462.Turandot, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -72,7 +71,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="KLib, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\KLib.1.6.0\lib\net48\KLib.dll</HintPath>
+      <HintPath>..\packages\KLib.1.8.1\lib\net48\KLib.dll</HintPath>
     </Reference>
     <Reference Include="KLib.Controls">
       <HintPath>..\..\..\klib\Framework\KLib.Controls.dll</HintPath>
@@ -190,6 +189,9 @@
       <HintPath>..\packages\System.Diagnostics.TraceSource.4.3.0\lib\net46\System.Diagnostics.TraceSource.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
     </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
