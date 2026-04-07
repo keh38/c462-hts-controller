@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.1 (unreleased)
+#### Changed
+- turned on auto scroll in Protocol panel
+
+---
+
 ### v2.1 (2026-04-03)
 #### Changed
 - upgraded to shared libraries
