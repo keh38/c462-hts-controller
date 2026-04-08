@@ -59,9 +59,8 @@
     <Reference Include="C462.Shared, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\C462.Shared.1.2.2\lib\net48\C462.Shared.dll</HintPath>
     </Reference>
-    <Reference Include="C462.Turandot, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\c462-shared\C462.Turandot\bin\Debug\net48\C462.Turandot.dll</HintPath>
+    <Reference Include="C462.Turandot, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\C462.Turandot.1.1.0\lib\net48\C462.Turandot.dll</HintPath>
     </Reference>
     <Reference Include="HarfBuzzSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <HintPath>..\packages\HarfBuzzSharp.8.3.1.1\lib\net462\HarfBuzzSharp.dll</HintPath>
