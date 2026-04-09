@@ -51,6 +51,7 @@
             this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.subjectPage = new System.Windows.Forms.TabPage();
+            this.subjectPageControl = new HTSController.Pages.SubjectPage();
             this.turandotSettingsPage = new System.Windows.Forms.TabPage();
             this.turandotPageControl = new HTSController.Pages.TurandotPage();
             this.messagePage = new System.Windows.Forms.TabPage();
@@ -74,6 +75,7 @@
             this.menuPanel.SuspendLayout();
             this.tableLayoutPanel.SuspendLayout();
             this.tabControl.SuspendLayout();
+            this.subjectPage.SuspendLayout();
             this.turandotSettingsPage.SuspendLayout();
             this.adminPage.SuspendLayout();
             this.ipcPanel.SuspendLayout();
@@ -392,6 +394,7 @@
             // 
             // subjectPage
             // 
+            this.subjectPage.Controls.Add(this.subjectPageControl);
             this.subjectPage.Location = new System.Drawing.Point(4, 5);
             this.subjectPage.Name = "subjectPage";
             this.subjectPage.Padding = new System.Windows.Forms.Padding(3);
@@ -399,6 +402,14 @@
             this.subjectPage.TabIndex = 0;
             this.subjectPage.Text = "tabPage1";
             this.subjectPage.UseVisualStyleBackColor = true;
+            // 
+            // subjectPageControl
+            // 
+            this.subjectPageControl.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.subjectPageControl.Location = new System.Drawing.Point(6, 7);
+            this.subjectPageControl.Name = "subjectPageControl";
+            this.subjectPageControl.Size = new System.Drawing.Size(318, 483);
+            this.subjectPageControl.TabIndex = 0;
             // 
             // turandotSettingsPage
             // 
@@ -637,6 +648,7 @@
             this.menuPanel.ResumeLayout(false);
             this.tableLayoutPanel.ResumeLayout(false);
             this.tabControl.ResumeLayout(false);
+            this.subjectPage.ResumeLayout(false);
             this.turandotSettingsPage.ResumeLayout(false);
             this.adminPage.ResumeLayout(false);
             this.adminPage.PerformLayout();
@@ -661,7 +673,6 @@
         private System.Windows.Forms.TabPage turandotSettingsPage;
         private System.Windows.Forms.Panel ipcPanel;
         private System.Windows.Forms.TabPage messagePage;
-        private Pages.SubjectPage subjectPageControl;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox turandotButton;
         private System.Windows.Forms.Button homeButton;
@@ -688,6 +699,7 @@
         private Pages.FileSyncControl fileSyncControl;
         private System.Windows.Forms.CheckBox speechButton;
         private System.Windows.Forms.TabPage speechPageContainer;
+        private Pages.SubjectPage subjectPageControl;
     }
 }
 

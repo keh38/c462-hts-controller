@@ -633,9 +633,18 @@ namespace HTSController
             }
         }
 
+        private static readonly HashSet<string> _changeTriggers = new HashSet<string>()
+        {
+            "Gate",
+            "Bursted",
+            "BurstRate",
+            "Modulation",
+            "Modality"
+        };
+
         private void channelPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            if (e.ChangedItem.Label == "Gate" || e.ChangedItem.Label == "Bursted" || e.ChangedItem.Label == "BurstRate" || e.ChangedItem.Label == "Modulation")
+            if (_changeTriggers.Contains(e.ChangedItem.Label))
             {
                 channelPropertyGrid.Refresh();
             }
