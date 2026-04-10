@@ -343,7 +343,10 @@ namespace HTSController
 
                 case "Disconnect":
                     server.WriteResponse(TcpMessage.Ok());
+                    var address = _remoteEndPoint?.Address.ToString();
                     ResetConnection();
+                    if (address != null)
+                        _discoveryListener.ForgetHost("HEARING.TEST.SUITE");
                     InvokeOnUI(() => OnConnectionChanged(false));
                     break;
 

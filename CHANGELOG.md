@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.3 (2026-04-10)
+#### Changed
+- properly responds to immediate reconnect of HTS
+
+---
+
 ### v2.1.2 (2026-04-09)
 #### Fixed
 - Turandot Interactive: show Location field when Modality changed

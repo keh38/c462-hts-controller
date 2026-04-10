@@ -76,7 +76,7 @@
       <HintPath>..\..\..\klib\Framework\KLib.Controls.dll</HintPath>
     </Reference>
     <Reference Include="KLib.Net, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\KLib.Net.2.3.2\lib\net48\KLib.Net.dll</HintPath>
+      <HintPath>..\packages\KLib.Net.2.4.2\lib\net48\KLib.Net.dll</HintPath>
     </Reference>
     <Reference Include="Markdig, Version=0.44.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Markdig.0.44.0\lib\net462\Markdig.dll</HintPath>
