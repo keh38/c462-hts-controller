@@ -65,19 +65,19 @@ namespace HTSController
         public InteractiveForm(HTSNetwork network, string settingsPath)
         {
             _network = network;
-            _network.RemoteMessageHandler += OnRemoteMessage;
+            _network.RemoteMessageHandler += HandleRemoteMessage;
             SettingsPath = settingsPath;
 
             _packetQueue = new Queue<byte[]>();
 
             InitializeComponent();
 
-            channelControl.ChannelActiveChanged = OnChannelActiveChanged;
+            channelControl.ChannelActiveChanged = HandleChannelActiveChanged;
         }
 
         private void InteractiveForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _network.RemoteMessageHandler -= OnRemoteMessage;
+            _network.RemoteMessageHandler -= HandleRemoteMessage;
             Debug.WriteLine("cancelling tokens");
             _udpCancellationToken.Cancel();
             _queueCancellationToken.Cancel();
@@ -469,7 +469,7 @@ namespace HTSController
                 if (k >= flowLayoutPanel.Controls.Count)
                 {
                     var c = new ChannelControl();
-                    c.ChannelActiveChanged = OnChannelActiveChanged;
+                    c.ChannelActiveChanged = HandleChannelActiveChanged;
                     flowLayoutPanel.Controls.Add(c);
                 }
                 _channelControls.Add(flowLayoutPanel.Controls[k] as ChannelControl);
@@ -536,7 +536,7 @@ namespace HTSController
             LayoutControls();
         }
 
-        private void OnChannelActiveChanged(string channel, bool enabled, bool selfChange)
+        private void HandleChannelActiveChanged(string channel, bool enabled, bool selfChange)
         {
             if (selfChange && (_isLive || (_network.IsConnected && _settings.ShowSliders)))
             {
@@ -616,7 +616,7 @@ namespace HTSController
             CurateControls();
         }
 
-        private void OnRemoteMessage(object sender, TcpMessage message)
+        private void HandleRemoteMessage(object sender, TcpMessage message)
         {
             var payload = message.GetPayload<RemoteMessagePayload>();
             if (!payload.Target.Equals("TurandotInteractive")) return;

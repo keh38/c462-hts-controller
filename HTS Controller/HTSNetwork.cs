@@ -329,8 +329,6 @@ namespace HTSController
             server.AcceptTcpClient();
             var request = server.ReadRequest();
 
-            Log.Information($"[HTS] Received command: {request.Command}");
-
             switch (request.Command)
             {
                 case "ChangedScene":
@@ -343,6 +341,7 @@ namespace HTSController
 
                 case "Disconnect":
                     server.WriteResponse(TcpMessage.Ok());
+                    Log.Information($"HTS remotely disconnected");
                     var address = _remoteEndPoint?.Address.ToString();
                     ResetConnection();
                     if (address != null)

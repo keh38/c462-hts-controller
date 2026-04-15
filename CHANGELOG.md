@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.4 (2026-04-15)
+#### Changed
+- minimize logging of TCP commands
+
+---
+
 ### v2.1.3 (2026-04-10)
 #### Changed
 - properly responds to immediate reconnect of HTS

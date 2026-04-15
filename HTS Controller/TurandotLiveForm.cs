@@ -65,7 +65,7 @@ namespace HTSController
             _dataFile = "";
             _parameterFile = parameterFile;
             _extraSettings = extraSettings;
-            _network.RemoteMessageHandler += OnRemoteMessage;
+            _network.RemoteMessageHandler += HandleRemoteMessage;
 
             dataFileTextBox.Text = "";
             progressBar.Value = 0;
@@ -205,7 +205,7 @@ namespace HTSController
             OnAutoRunEnd(success, dataFile);
         }
 
-        private void OnRemoteMessage(object sender, TcpMessage message)
+        private void HandleRemoteMessage(object sender, TcpMessage message)
         {
             var payload = message.GetPayload<RemoteMessagePayload>();
             if (!payload.Target.Equals("Turandot")) return;
@@ -228,6 +228,7 @@ namespace HTSController
                 case "ReceiveData":
                     var rcvParts = payload.Data.Split(new char[] { ':' }, 2);
                     string filePath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, rcvParts[0]);
+                    Debug.WriteLine($"Receiving data file: {filePath}");
                     File.WriteAllText(filePath, rcvParts.Length > 1 ? rcvParts[1] : "");
                     break;
                 case "Error":
@@ -250,7 +251,7 @@ namespace HTSController
 
         private void closeButton_Click(object sender, EventArgs e)
         {
-            _network.RemoteMessageHandler -= OnRemoteMessage;
+            _network.RemoteMessageHandler -= HandleRemoteMessage;
             OnClosePage();
         }
 
