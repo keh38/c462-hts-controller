@@ -12,6 +12,7 @@ using C462.Shared.Protocol.DTOs;
 using KLib.Net;
 using HTS.Tcp;
 using System.Diagnostics;
+using OpenTK.Graphics.ES11;
 
 namespace HTSController
 {

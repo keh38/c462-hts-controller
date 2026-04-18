@@ -200,7 +200,7 @@ namespace HTSController
         {
             if (!_autoRun) return;
             _autoRun = false;
-
+           
             closeButton_Click(null, null);
             OnAutoRunEnd(success, dataFile);
         }
@@ -226,10 +226,9 @@ namespace HTSController
                     Invoke(new Action(() => statusTextBox.Text = payload.Data));
                     break;
                 case "ReceiveData":
-                    var rcvParts = payload.Data.Split(new char[] { ':' }, 2);
-                    string filePath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, rcvParts[0]);
-                    Debug.WriteLine($"Receiving data file: {filePath}");
-                    File.WriteAllText(filePath, rcvParts.Length > 1 ? rcvParts[1] : "");
+                    var textFilePayload = JsonConvert.DeserializeObject<TextFilePayload>(payload.Data);
+                    string filePath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, textFilePayload.Filename);
+                    File.WriteAllText(filePath, textFilePayload.Content);
                     break;
                 case "Error":
                     Debug.WriteLine($"Received error message from tablet: {payload.Data}");

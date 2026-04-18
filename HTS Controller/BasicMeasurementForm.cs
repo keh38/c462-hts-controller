@@ -16,6 +16,7 @@ using KLib.Net;
 using BasicMeasurements;
 using Audiograms;
 using Bekesy;
+using CombinedAudioLDL;
 using DigitsTest;
 
 using LDL;
@@ -97,7 +98,7 @@ namespace HTSController
         private void UpdateFileMenu()
         {
             msSelectMeasurement.DropDownItems.Clear();
-            foreach (var measType in new List<string>() { "Audiogram", "Bekesy", "Digits", "LDL", "Questionnaire" })
+            foreach (var measType in new List<string>() { "Audiogram", "Bekesy", "Combined", "Digits", "LDL", "Questionnaire" })
             {
                 var measItem = new ToolStripMenuItem();
                 measItem.Text = measType;
@@ -146,6 +147,10 @@ namespace HTSController
 
                     case "Bekesy":
                         _config = obj as BekesyMeasurementSettings;
+                        break;
+
+                    case "Combined":
+                        _config = obj as CombinedAudioLDLSettings;
                         break;
 
                     case "Digits":
@@ -267,13 +272,17 @@ namespace HTSController
 
         private string GetSceneName(string measType, BasicMeasurementConfiguration config)
         {
-            string sceneName = measType;
             if (measType == "LDL" && (config as LDLMeasurementSettings).HapticStimulus.Source != HapticSource.NONE)
             {
-                sceneName = "LDL_Haptics";
+                return "LDL_Haptics";
             }
 
-            return sceneName;
+            if (measType == "Combined")
+            {
+                return "Combined Audio-LDL";
+            }
+
+            return measType;
         }
 
         private async Task<bool> ChangeTabletScene(string sceneName)
@@ -347,7 +356,6 @@ namespace HTSController
         private void HandleRemoteMessage(object sender, TcpMessage message)
         {
             var payload = message.GetPayload<RemoteMessagePayload>();
-            Log.Information($"Received remote message: {message.Command} - {payload.Target} - {payload.Data}");
             if (!payload.Target.Equals(_sceneName)) return;
 
             switch (message.Command)
@@ -358,6 +366,12 @@ namespace HTSController
                     break;
                 case "ReceiveData":
                     var filePayload = JsonConvert.DeserializeObject<TransferFilePayload>(payload.Data);
+                    if (filePayload.Filename.Equals("audiogram.xml") || filePayload.Filename.Equals("ldlgram.xml"))
+                    {
+                        string audiogramPath = Path.Combine(SharedFileLocations.SubjectMetaFolder, filePayload.Filename);
+                        File.WriteAllText(audiogramPath, filePayload.Content);
+                        break;
+                    }
                     string filePath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, filePayload.Filename);
                     if (File.Exists(filePath))
                     {
@@ -459,6 +473,10 @@ namespace HTSController
 
                 case "Bekesy":
                     config = new BekesyMeasurementSettings();
+                    break;
+
+                case "Combined":
+                    config = new CombinedAudioLDLSettings();
                     break;
 
                 case "Digits":

@@ -224,6 +224,7 @@
     <Compile Include="Editor\Basic\Audiogram\AudiogramMeasurementSettings.cs" />
     <Compile Include="Editor\Basic\BasicMeasurementConfiguration.cs" />
     <Compile Include="Editor\Basic\Bekesy\BekesyMeasurementSettings.cs" />
+    <Compile Include="Editor\Basic\CombinedAudioLDL\CombinedAudioLDLSettings.cs" />
     <Compile Include="Editor\Basic\LDL\Haptics\LDL.HapticsSeqVar.cs" />
     <Compile Include="Editor\Basic\LDL\Haptics\LDL.HapticStimulus.cs" />
     <Compile Include="Editor\Basic\LDL\LDLMeasurementSettings.cs" />
