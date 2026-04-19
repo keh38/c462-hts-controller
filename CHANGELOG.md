@@ -1,5 +1,12 @@
 ## Changelog
 
+### v2.1.5 (unreleased)
+#### added
+- combined audiogram/LDL measurement
+- audiogram plot
+
+---
+
 ### v2.1.4 (2026-04-15)
 #### Changed
 - minimize logging of TCP commands
