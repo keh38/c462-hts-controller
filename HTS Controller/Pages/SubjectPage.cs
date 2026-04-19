@@ -67,9 +67,12 @@ namespace HTSController.Pages
         {
             _network = network;
 
+            _ignoreEvents = true;
             var projects = SharedFileLocations.EnumerateHtsProjects();
             PopulateProjectDropDown(projects);
+            Refresh();
             SetProject(HTSControllerSettings.LastProject);
+            _ignoreEvents = false;
         }
 
         /// <summary>
@@ -179,8 +182,13 @@ namespace HTSController.Pages
                     Log.Error($"GetSubjectList failed: {ex.Message}");
                 }
             }
+            else
+            {
+                var subjects = SharedFileLocations.EnumerateHtsSubjects(project);
+                PopulateSubjectDropDown(subjects);
+            }
 
-            ProjectChanged?.Invoke(this, project);
+                ProjectChanged?.Invoke(this, project);
         }
 
         private void SetSubject(string subject)
@@ -417,6 +425,15 @@ namespace HTSController.Pages
             // TODO: Update when Turandot Editor discovery API is finalized in KLib.Net
             // var ep = DiscoverEditor("TURANDOT.EDITOR");
             // if (ep != null) KTcpClient.SendRequest(ep, TcpMessage.Request("SetMetrics", KLib.IO.Files.ToXMLString(_subjectMetadata.metrics)));
+        }
+
+        private void audiogramButton_Click(object sender, EventArgs e)
+        {
+            var audiogram = Audiograms.AudiogramData.Load(SharedFileLocations.AudiogramPath);
+            var ldlgram = Audiograms.AudiogramData.Load(SharedFileLocations.LDLPath);
+
+            AudiogramPlot.SetData(audiogram, ldlgram, Subject);
+            AudiogramPlot.Show(this.FindForm());
         }
     }
 }

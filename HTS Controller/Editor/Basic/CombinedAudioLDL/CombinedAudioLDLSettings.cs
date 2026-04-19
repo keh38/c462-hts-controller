@@ -101,7 +101,7 @@ namespace CombinedAudioLDL
             Bandwidth = 0;
             ISI_ms = 400;
             ModDepth_pct = 0;
-            NumRepeats = 3;
+            NumRepeats = 1;
 
             PromptFontSize = 72;
         }

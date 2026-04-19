@@ -44,15 +44,17 @@
             this.MetricValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.applyButton = new System.Windows.Forms.Button();
             this.createProjectButton = new System.Windows.Forms.Button();
+            this.audiogramButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.metricGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(37, 28);
+            this.label1.Location = new System.Drawing.Point(49, 34);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 13);
+            this.label1.Size = new System.Drawing.Size(56, 16);
             this.label1.TabIndex = 3;
             this.label1.Text = "Projects";
             // 
@@ -61,9 +63,10 @@
             this.projectDropDown.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.projectDropDown.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.projectDropDown.FormattingEnabled = true;
-            this.projectDropDown.Location = new System.Drawing.Point(40, 44);
+            this.projectDropDown.Location = new System.Drawing.Point(53, 54);
+            this.projectDropDown.Margin = new System.Windows.Forms.Padding(4);
             this.projectDropDown.Name = "projectDropDown";
-            this.projectDropDown.Size = new System.Drawing.Size(121, 21);
+            this.projectDropDown.Size = new System.Drawing.Size(160, 24);
             this.projectDropDown.Sorted = true;
             this.projectDropDown.TabIndex = 2;
             this.projectDropDown.SelectedIndexChanged += new System.EventHandler(this.projectDropDown_SelectedIndexChanged);
@@ -73,9 +76,10 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(37, 82);
+            this.label2.Location = new System.Drawing.Point(49, 101);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(48, 13);
+            this.label2.Size = new System.Drawing.Size(59, 16);
             this.label2.TabIndex = 5;
             this.label2.Text = "Subjects";
             // 
@@ -84,9 +88,10 @@
             this.subjectDropDown.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.subjectDropDown.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.subjectDropDown.FormattingEnabled = true;
-            this.subjectDropDown.Location = new System.Drawing.Point(40, 98);
+            this.subjectDropDown.Location = new System.Drawing.Point(53, 121);
+            this.subjectDropDown.Margin = new System.Windows.Forms.Padding(4);
             this.subjectDropDown.Name = "subjectDropDown";
-            this.subjectDropDown.Size = new System.Drawing.Size(121, 21);
+            this.subjectDropDown.Size = new System.Drawing.Size(160, 24);
             this.subjectDropDown.TabIndex = 4;
             this.subjectDropDown.SelectedIndexChanged += new System.EventHandler(this.subjectDropDown_SelectedIndexChanged);
             this.subjectDropDown.TextChanged += new System.EventHandler(this.subjectDropDown_TextChanged);
@@ -94,9 +99,10 @@
             // 
             // createSubjectButton
             // 
-            this.createSubjectButton.Location = new System.Drawing.Point(167, 96);
+            this.createSubjectButton.Location = new System.Drawing.Point(223, 118);
+            this.createSubjectButton.Margin = new System.Windows.Forms.Padding(4);
             this.createSubjectButton.Name = "createSubjectButton";
-            this.createSubjectButton.Size = new System.Drawing.Size(73, 23);
+            this.createSubjectButton.Size = new System.Drawing.Size(97, 28);
             this.createSubjectButton.TabIndex = 7;
             this.createSubjectButton.Text = "Create new";
             this.createSubjectButton.UseVisualStyleBackColor = true;
@@ -106,9 +112,10 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(37, 141);
+            this.label3.Location = new System.Drawing.Point(49, 174);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(61, 13);
+            this.label3.Size = new System.Drawing.Size(76, 16);
             this.label3.TabIndex = 9;
             this.label3.Text = "Transducer";
             // 
@@ -117,19 +124,20 @@
             this.transducerDropDown.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.transducerDropDown.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.transducerDropDown.FormattingEnabled = true;
-            this.transducerDropDown.Location = new System.Drawing.Point(40, 157);
+            this.transducerDropDown.Location = new System.Drawing.Point(53, 193);
+            this.transducerDropDown.Margin = new System.Windows.Forms.Padding(4);
             this.transducerDropDown.Name = "transducerDropDown";
-            this.transducerDropDown.Size = new System.Drawing.Size(121, 21);
+            this.transducerDropDown.Size = new System.Drawing.Size(160, 24);
             this.transducerDropDown.TabIndex = 8;
             this.transducerDropDown.SelectedIndexChanged += new System.EventHandler(this.transducerDropDown_SelectedIndexChanged);
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(37, 203);
-            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Location = new System.Drawing.Point(49, 250);
+            this.label12.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(41, 13);
+            this.label12.Size = new System.Drawing.Size(50, 16);
             this.label12.TabIndex = 13;
             this.label12.Text = "Metrics";
             // 
@@ -148,6 +156,7 @@
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.metricGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            this.metricGridView.ColumnHeadersHeight = 29;
             this.metricGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.metricGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.MetricName,
@@ -161,8 +170,8 @@
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.metricGridView.DefaultCellStyle = dataGridViewCellStyle5;
             this.metricGridView.EnableHeadersVisualStyles = false;
-            this.metricGridView.Location = new System.Drawing.Point(40, 220);
-            this.metricGridView.Margin = new System.Windows.Forms.Padding(4);
+            this.metricGridView.Location = new System.Drawing.Point(53, 271);
+            this.metricGridView.Margin = new System.Windows.Forms.Padding(5);
             this.metricGridView.Name = "metricGridView";
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
@@ -173,9 +182,11 @@
             dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.metricGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.metricGridView.RowHeadersVisible = false;
+            this.metricGridView.RowHeadersWidth = 51;
             this.metricGridView.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.metricGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.metricGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.metricGridView.Size = new System.Drawing.Size(250, 240);
+            this.metricGridView.Size = new System.Drawing.Size(375, 295);
             this.metricGridView.TabIndex = 12;
             this.metricGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.metricGridView_CellValueChanged);
             this.metricGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.metricGridView_UserDeletingRow);
@@ -184,6 +195,7 @@
             // 
             this.MetricName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.MetricName.HeaderText = "Name";
+            this.MetricName.MinimumWidth = 6;
             this.MetricName.Name = "MetricName";
             this.MetricName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.MetricName.Width = 125;
@@ -192,14 +204,17 @@
             // 
             this.MetricValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.MetricValue.HeaderText = "Value";
+            this.MetricValue.MinimumWidth = 6;
             this.MetricValue.Name = "MetricValue";
             this.MetricValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.MetricValue.Width = 125;
             // 
             // applyButton
             // 
-            this.applyButton.Location = new System.Drawing.Point(297, 220);
+            this.applyButton.Location = new System.Drawing.Point(204, 238);
+            this.applyButton.Margin = new System.Windows.Forms.Padding(4);
             this.applyButton.Name = "applyButton";
-            this.applyButton.Size = new System.Drawing.Size(75, 23);
+            this.applyButton.Size = new System.Drawing.Size(100, 28);
             this.applyButton.TabIndex = 15;
             this.applyButton.Text = "Apply";
             this.applyButton.UseVisualStyleBackColor = true;
@@ -208,20 +223,33 @@
             // 
             // createProjectButton
             // 
-            this.createProjectButton.Location = new System.Drawing.Point(167, 42);
+            this.createProjectButton.Location = new System.Drawing.Point(223, 52);
+            this.createProjectButton.Margin = new System.Windows.Forms.Padding(4);
             this.createProjectButton.Name = "createProjectButton";
-            this.createProjectButton.Size = new System.Drawing.Size(73, 23);
+            this.createProjectButton.Size = new System.Drawing.Size(97, 28);
             this.createProjectButton.TabIndex = 16;
             this.createProjectButton.Text = "Create new";
             this.createProjectButton.UseVisualStyleBackColor = true;
             this.createProjectButton.Visible = false;
             this.createProjectButton.Click += new System.EventHandler(this.createProjectButton_Click);
             // 
+            // audiogramButton
+            // 
+            this.audiogramButton.Location = new System.Drawing.Point(328, 117);
+            this.audiogramButton.Margin = new System.Windows.Forms.Padding(4);
+            this.audiogramButton.Name = "audiogramButton";
+            this.audiogramButton.Size = new System.Drawing.Size(100, 28);
+            this.audiogramButton.TabIndex = 17;
+            this.audiogramButton.Text = "Audiogram";
+            this.audiogramButton.UseVisualStyleBackColor = true;
+            this.audiogramButton.Click += new System.EventHandler(this.audiogramButton_Click);
+            // 
             // SubjectPage
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.audiogramButton);
             this.Controls.Add(this.createProjectButton);
             this.Controls.Add(this.applyButton);
             this.Controls.Add(this.label12);
@@ -233,8 +261,9 @@
             this.Controls.Add(this.subjectDropDown);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.projectDropDown);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SubjectPage";
-            this.Size = new System.Drawing.Size(569, 486);
+            this.Size = new System.Drawing.Size(523, 397);
             ((System.ComponentModel.ISupportInitialize)(this.metricGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -256,5 +285,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn MetricName;
         private System.Windows.Forms.DataGridViewTextBoxColumn MetricValue;
         private System.Windows.Forms.Button createProjectButton;
+        private System.Windows.Forms.Button audiogramButton;
     }
 }

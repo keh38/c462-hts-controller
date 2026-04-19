@@ -204,6 +204,8 @@ namespace HTSController
                 return;
             }
 
+            AudiogramPlot.SetSubject(SharedFileLocations.HtsSubject);
+
             EnableButtons(false);
 
             logTextBox.Text = $"Starting {_measType} measurement...";
@@ -383,6 +385,10 @@ namespace HTSController
                 case "Status":
                     Log.Information($"Status update: {payload.Data}");
                     Invoke(new Action(() => logTextBox.AppendText($"- {payload.Data}{Environment.NewLine}")));
+                    break;
+                case "AudiogramPoint":
+                    var dataPoint = JsonConvert.DeserializeObject<AudiogramPointPayload>(payload.Data);
+                    AudiogramPlot.AddPoint(dataPoint.Type, dataPoint.Ear, dataPoint.Frequency_Hz, dataPoint.Threshold_dBHL, dataPoint.Threshold_dBSPL);
                     break;
                 case "Error":
                     Invoke(new Action(() => { EndRun("Error", payload.Data); }));

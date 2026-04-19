@@ -95,7 +95,7 @@ namespace HTSController
             turandotPageControl.Initialize(_network);
             subjectPageControl.Initialize(_network);
             protocolControl.Initialize(_network);
-
+            return;
             lightsButton.Visible = false;
 
             subjectButton.Checked = true;
@@ -114,6 +114,8 @@ namespace HTSController
             driveDropDown.SelectedItem = HTSControllerSettings.DataDrive;
             projectRootBrowser.Value = HTSControllerSettings.ProjectRootFolder;
             _ignoreEvents = false;
+
+            AudiogramPlot.Bounds = HTSControllerSettings.AudiogramBounds;
         }
 
         private async void MainForm_Shown(object sender, EventArgs e)
@@ -197,6 +199,9 @@ namespace HTSController
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            AudiogramPlot.Close();
+            HTSControllerSettings.AudiogramBounds = AudiogramPlot.Bounds; 
+
             _streamManager.Cleanup();
             MATLAB.CleanUp();
 

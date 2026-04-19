@@ -56,8 +56,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="C462.Shared, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\C462.Shared.1.2.2\lib\net48\C462.Shared.dll</HintPath>
+    <Reference Include="C462.Shared, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\C462.Shared.1.5.0\lib\net48\C462.Shared.dll</HintPath>
     </Reference>
     <Reference Include="C462.Turandot, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\C462.Turandot.1.1.0\lib\net48\C462.Turandot.dll</HintPath>
@@ -220,6 +220,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudiogramPlot\AudiogramPlot.cs" />
+    <Compile Include="AudiogramPlot\AudiogramPlotForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AudiogramPlot\AudiogramPlotForm.Designer.cs">
+      <DependentUpon>AudiogramPlotForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Data Streams\IDataStreamHandler.cs" />
     <Compile Include="Editor\Basic\Audiogram\AudiogramMeasurementSettings.cs" />
     <Compile Include="Editor\Basic\BasicMeasurementConfiguration.cs" />
@@ -369,6 +376,9 @@
     <Compile Include="Turandot\Schedules\Turandot.Schedules.Script.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Watchdog.cs" />
+    <EmbeddedResource Include="AudiogramPlot\AudiogramPlotForm.resx">
+      <DependentUpon>AudiogramPlotForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SpeechForm.resx">
       <DependentUpon>SpeechForm.cs</DependentUpon>
     </EmbeddedResource>

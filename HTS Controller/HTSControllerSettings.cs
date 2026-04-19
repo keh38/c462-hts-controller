@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -41,6 +42,7 @@ namespace HTSController
         public string dataDrive { get; set; } = @"C:\";
         public string projectRootFolder { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS", "Projects"); 
         public string lastProject { get; set; }
+        public Rectangle audiogramBounds { get; set; } = Rectangle.Empty;
         public SerializeableDictionary lastUsed = new SerializeableDictionary();
 
         private static HTSControllerSettings _instance = null;
@@ -90,6 +92,12 @@ namespace HTSController
         public static string GetLastUsed(string key)
         {
             return instance.lastUsed[key];
+        }
+
+        public static Rectangle AudiogramBounds
+        {
+            get { return instance.audiogramBounds; }
+            set { instance.audiogramBounds = value; Save(); }
         }
 
         private static void Save()
