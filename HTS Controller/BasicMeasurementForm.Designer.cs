@@ -40,6 +40,7 @@
             this.TransferButton = new System.Windows.Forms.Button();
             this.SaveButton = new System.Windows.Forms.Button();
             this.newDropDown = new System.Windows.Forms.ComboBox();
+            this.audiogramButton = new System.Windows.Forms.Button();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -180,11 +181,23 @@
             this.newDropDown.TabIndex = 28;
             this.newDropDown.SelectedIndexChanged += new System.EventHandler(this.newDropDown_SelectedIndexChanged);
             // 
+            // audiogramButton
+            // 
+            this.audiogramButton.Location = new System.Drawing.Point(12, 498);
+            this.audiogramButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.audiogramButton.Name = "audiogramButton";
+            this.audiogramButton.Size = new System.Drawing.Size(145, 32);
+            this.audiogramButton.TabIndex = 29;
+            this.audiogramButton.Text = "Show audiogram";
+            this.audiogramButton.UseVisualStyleBackColor = true;
+            this.audiogramButton.Click += new System.EventHandler(this.audiogramButton_Click);
+            // 
             // BasicMeasurementForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(676, 542);
+            this.Controls.Add(this.audiogramButton);
             this.Controls.Add(this.newDropDown);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.TransferButton);
@@ -221,5 +234,6 @@
         private System.Windows.Forms.Button TransferButton;
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.ComboBox newDropDown;
+        private System.Windows.Forms.Button audiogramButton;
     }
 }

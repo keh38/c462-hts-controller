@@ -75,6 +75,7 @@ namespace HTSController
 
             // Remove only data plottables, not the normal range rectangle
             plot.Remove<Scatter>();
+            plot.Remove<Text>();  
 
             if (audiogram != null)
                 AddAudiogramSeries(plot, audiogram, ldlgram);

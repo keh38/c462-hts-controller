@@ -504,5 +504,10 @@ namespace HTSController
         {
             propertyGrid.Refresh();
         }
+
+        private void audiogramButton_Click(object sender, EventArgs e)
+        {
+            AudiogramPlot.Show(this.FindForm());
+        }
     }
 }
