@@ -467,6 +467,8 @@ namespace HTSController
             switch (e.sceneName)
             {
                 case "Audiogram":
+                case "Bekesy":
+                case "Combined":
                 case "Digits":
                 case "LDL":
                     basicButton.Checked = true;
