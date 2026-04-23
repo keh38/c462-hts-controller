@@ -1,6 +1,6 @@
 ## Changelog
 
-### v2.1.5 (unreleased)
+### v2.1.5 (2026-04-23)
 #### added
 - combined audiogram/LDL measurement
 - audiogram plot
