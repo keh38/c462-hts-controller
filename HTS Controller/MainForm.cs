@@ -95,7 +95,7 @@ namespace HTSController
             turandotPageControl.Initialize(_network);
             subjectPageControl.Initialize(_network);
             protocolControl.Initialize(_network);
-            return;
+
             lightsButton.Visible = false;
 
             subjectButton.Checked = true;

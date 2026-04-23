@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Audiograms;
+using C462.Shared;
 using ScottPlot;
 using ScottPlot.Plottables;
 
@@ -71,14 +72,19 @@ namespace HTSController
 
         public void LoadData(AudiogramData audiogram, AudiogramData ldlgram, string subject)
         {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => LoadData(audiogram, ldlgram, subject)));
+                return;
+            }
+
             var plot = formsPlot.Plot;
 
             // Remove only data plottables, not the normal range rectangle
             plot.Remove<Scatter>();
-            plot.Remove<Text>();  
+            plot.Remove<Text>();
 
-            if (audiogram != null)
-                AddAudiogramSeries(plot, audiogram, ldlgram);
+            AddAudiogramSeries(plot, audiogram, ldlgram);
 
             formsPlot.Plot.Title(subject);
             formsPlot.Refresh();
@@ -86,63 +92,66 @@ namespace HTSController
 
         private void AddAudiogramSeries(Plot plot, AudiogramData audiogram, AudiogramData ldlgram)
         {
-            // Left audiogram
-            var leftAudio = audiogram.Get(C462.Shared.AudiogramTestEar.Left);
-            float[] freq = leftAudio.Frequency_Hz.Select(f => (float)Math.Log10(f / _fmin) + 1).ToArray();
-            float[] threshold = leftAudio.Threshold_dBHL.Select(l => (float)Math.Min(l, _yvalueForInf)).ToArray();
-            
-            var scatter = plot.Add.Scatter(freq, threshold);
-            scatter.MarkerShape = MarkerShape.Eks;
-            scatter.MarkerLineColor = Colors.Blue;
-            scatter.MarkerLineWidth = 2;
-            scatter.MarkerSize = 12;
-            scatter.LineStyle = LineStyle.None;
+            Audiogram leftAudio = null;
+            Audiogram rightAudio = null;
 
-            // Right audiogram
-            var rightAudio = audiogram.Get(C462.Shared.AudiogramTestEar.Right);
-            freq = rightAudio.Frequency_Hz.Select(f => (float)Math.Log10(f / _fmin) + 1).ToArray();
-            threshold = rightAudio.Threshold_dBHL.Select(l => (float)Math.Min(l, _yvalueForInf)).ToArray();
-            
-            scatter = plot.Add.Scatter(freq, threshold);
-            scatter.MarkerShape = MarkerShape.OpenCircle;
-            scatter.MarkerLineColor = Colors.Red;
-            scatter.MarkerLineWidth = 2;
-            scatter.MarkerSize = 12;
-            scatter.LineStyle = LineStyle.None;
+            if (audiogram != null)
+            {
+                // Left audiogram
+                leftAudio = audiogram.Get(C462.Shared.AudiogramTestEar.Left);
+                PlotAudiogram(plot, leftAudio, Colors.Blue, MarkerShape.Eks);
+
+                // Right audiogram
+                rightAudio = audiogram.Get(C462.Shared.AudiogramTestEar.Right);
+                PlotAudiogram(plot, rightAudio, Colors.Red, MarkerShape.OpenCircle);
+            }
 
             if (ldlgram == null) return;
 
             // Left LDL
             var data = ldlgram.Get(C462.Shared.AudiogramTestEar.Left);
-
-            for (int k=0; k<data.Frequency_Hz.Length; k++)
-            {
-                var x = (float)Math.Log10(data.Frequency_Hz[k] / _fmin) + 1;
-                float ldl_sl = (float)data.Threshold_dBHL[k];
-                float thr = leftAudio.GetHL(data.Frequency_Hz[k]);
-                float ldl = (float)Math.Min(thr + ldl_sl, _yvalueForInf);
-
-                var text = plot.Add.Text("U", x, ldl);
-                text.LabelFontSize = 18;
-                text.LabelBold = true;
-                text.LabelFontColor = Colors.Blue;
-                text.LabelAlignment = Alignment.MiddleCenter;
-            }
+            PlotLDLgram(plot, data, leftAudio, Colors.Blue);
 
             // Right LDL
             data = ldlgram.Get(C462.Shared.AudiogramTestEar.Right);
-            for (int k = 0; k < data.Frequency_Hz.Length; k++)
-            {
-                float x = (float)Math.Log10(data.Frequency_Hz[k] / _fmin) + 1;
+            PlotLDLgram(plot, data, rightAudio, Colors.Red);
+        }
 
-                float ldl_sl = (float)data.Threshold_dBHL[k];
-                float thr = rightAudio.GetHL(data.Frequency_Hz[k]);
-                float ldl = (float)Math.Min(thr + ldl_sl, _yvalueForInf);
+        private void PlotAudiogram(Plot plot, Audiogram audiogram, ScottPlot.Color color, MarkerShape markerShape)
+        {
+            float[] freq = audiogram.Frequency_Hz.Select(f => (float)Math.Log10(f / _fmin) + 1).ToArray();
+            float[] threshold = audiogram.Threshold_dBHL.Select(l => (float)Math.Min(l, _yvalueForInf)).ToArray();
+            var scatter = plot.Add.Scatter(freq, threshold);
+            scatter.MarkerShape = markerShape;
+            scatter.MarkerLineColor = color;
+            scatter.MarkerLineWidth = 2;
+            scatter.MarkerSize = 12;
+            scatter.LineStyle = LineStyle.None;
+        }
+
+        private void PlotLDLgram(Plot plot, Audiogram ldlgram, Audiogram audiogram, ScottPlot.Color color)
+        {
+            for (int k = 0; k < ldlgram.Frequency_Hz.Length; k++)
+            {
+                var x = (float)Math.Log10(ldlgram.Frequency_Hz[k] / _fmin) + 1;
+
+                float ldl = float.NaN;
+                if (audiogram != null)
+                {
+                    float ldl_sl = (float)ldlgram.Threshold_dBHL[k];
+
+                    float thr = audiogram.GetHL(ldlgram.Frequency_Hz[k]);
+                    ldl = (float)Math.Min(thr + ldl_sl, _yvalueForInf);
+                }
+                else
+                {
+                    ldl = ldlgram.Threshold_dBSPL[k];
+                }
 
                 var text = plot.Add.Text("U", x, ldl);
                 text.LabelFontSize = 18;
                 text.LabelBold = true;
-                text.LabelFontColor = Colors.Red;
+                text.LabelFontColor = color;
                 text.LabelAlignment = Alignment.MiddleCenter;
             }
         }
