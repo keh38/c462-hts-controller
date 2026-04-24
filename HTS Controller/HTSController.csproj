@@ -56,8 +56,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="C462.Shared, Version=1.7.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\C462.Shared.1.7.9\lib\net48\C462.Shared.dll</HintPath>
+    <Reference Include="C462.Shared, Version=1.7.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\C462.Shared.1.7.11\lib\net48\C462.Shared.dll</HintPath>
     </Reference>
     <Reference Include="C462.Turandot, Version=1.3.10.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\C462.Turandot.1.3.10\lib\net48\C462.Turandot.dll</HintPath>
