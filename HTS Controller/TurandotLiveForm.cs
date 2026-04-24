@@ -22,6 +22,7 @@ using C462.Shared;
 using C462.Shared.Protocol.DTOs;
 using HTSController.Data_Streams;
 using Newtonsoft.Json;
+using System.Xml.Serialization;
 
 namespace HTSController
 {
@@ -147,6 +148,7 @@ namespace HTSController
             {
                 _network.SendMessage("SetScriptArguments", JsonConvert.DeserializeObject<Turandot.Schedules.ScriptArguments>(_extraSettings));
             }
+            var wtf = Files.ToXMLString(p);
             var result = _network.SendXmlRequest<string>("SetParams", p);
             _dataFile = result ?? "";
         }
