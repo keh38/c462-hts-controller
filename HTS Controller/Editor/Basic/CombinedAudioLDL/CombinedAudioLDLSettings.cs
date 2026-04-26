@@ -48,34 +48,66 @@ namespace CombinedAudioLDL
         public bool LogSliderTracks { set; get; }
         private bool ShouldSerializeLogSliderTracks() { return false; }
 
+        [Category("Procedure")]
+        [PropertyOrder(0)]
+        public float MinExcursion { get; set; }
+        private bool ShouldSerializeMinExcursion() { return false; }
+
+        [Category("Procedure")]
+        [PropertyOrder(1)]
+        public int NumThresholdReversals { get; set; }
+        private bool ShouldSerializeNumThresholdReversals() { return false; }
+
+        [Category("Procedure")]
+        [PropertyOrder(2)]
+        public int NumLDLReversals { get; set; }
+        private bool ShouldSerializeNumLDLReversals() { return false; }
+
+        [Category("Contra noise")]
+        [PropertyOrder(0)]
+        [DisplayName("Active")]
+        public bool ContraNoiseActive { set; get; }
+        private bool ShouldSerializeContraNoiseActive() { return false; }
+
+        [Category("Contra noise")]
+        [PropertyOrder(1)]
+        [DisplayName("Level")]
+        public float ContraNoiseLevel { set; get; }
+        private bool ShouldSerializeContraNoiseLevel() { return false; }
+
+        [Category("Stimulus")]
+        [PropertyOrder(0)]
+        public float MinLevel { set; get; }
+        private bool ShouldSerializeMinLevel() { return false; }
+
         [Category("Stimulus")]
         [Description("Bandwidth (octaves)")]
-        [PropertyOrder(0)]
+        [PropertyOrder(1)]
         public float Bandwidth { set; get; }
         private bool ShouldSerializeBandwidth() { return false; }
 
         [Category("Stimulus")]
         [Description("Duration of tone (ms)")]
-        [PropertyOrder(1)]
+        [PropertyOrder(2)]
         public float ToneDuration { set; get; }
         private bool ShouldSerializeToneDuration() { return false; }
 
         [Category("Stimulus")]
         [Description("Delay of tone (ms)")]
-        [PropertyOrder(2)]
+        [PropertyOrder(3)]
         public float ToneDelay { set; get; }
         private bool ShouldSerializeToneDelay() { return false; }
 
         [Category("Stimulus")]
         [Description("Pip interval (ms)")]
         [DisplayName("Pip interval")]
-        [PropertyOrder(3)]
+        [PropertyOrder(4)]
         public float ISI_ms { set; get; }
         private bool ShouldSerializeISI_ms() { return false; }
 
         [Category("Stimulus")]
         [Description("Ramp applied to tones (ms)")]
-        [PropertyOrder(4)]
+        [PropertyOrder(5)]
         public float Ramp { set; get; }
         private bool ShouldSerializeRamp() { return false; }
 
@@ -95,6 +127,7 @@ namespace CombinedAudioLDL
 
             LogSliderTracks = false;
 
+            MinLevel = 0f;
             Ramp = 5f;
             ToneDelay = 0;
             ToneDuration = 200;
@@ -102,6 +135,13 @@ namespace CombinedAudioLDL
             ISI_ms = 400;
             ModDepth_pct = 0;
             NumRepeats = 1;
+
+            MinExcursion = 2.5f;
+            NumThresholdReversals = 2;
+            NumLDLReversals = 0;
+
+            ContraNoiseActive = false;
+            ContraNoiseLevel = 40f;
 
             PromptFontSize = 72;
         }

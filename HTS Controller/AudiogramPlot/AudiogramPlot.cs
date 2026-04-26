@@ -50,7 +50,7 @@ namespace HTSController
                     _audiogram = new AudiogramData();
                     _audiogram.Initialize(new float[] { frequency });
                 }
-                _audiogram.Insert(ear, frequency, thresholdHL, thresholdSPL);
+                _audiogram.Insert(ear, frequency, thresholdHL, thresholdSPL, 0);
             }
             else
             {
@@ -59,7 +59,7 @@ namespace HTSController
                     _ldlgram = new AudiogramData();
                     _ldlgram.Initialize(new float[] { frequency });
                 }
-                _ldlgram.Insert(ear, frequency, thresholdHL, thresholdSPL);
+                _ldlgram.Insert(ear, frequency, thresholdHL, thresholdSPL, 0);
             }
             _form?.LoadData(_audiogram, _ldlgram, _subject);
         }

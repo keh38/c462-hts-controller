@@ -29,7 +29,7 @@ PrivilegesRequired=admin
 Name: "{commonappdata}\EPL";
 
 [Files]
-Source: "{#DevRoot}\C462\c462-shared\Installer\Output\C462SharedResearcherSetup.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
+;Source: "{#DevRoot}\C462\c462-shared\Installer\Output\C462SharedResearcherSetup.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
 Source: "..\HTS Controller\Images\HTS.ico"; DestDir: "{app}"; Flags: replacesameversion;
 Source: "..\HTS Controller\bin\x64\Release\*.*"; DestDir: "{app}"; Flags: replacesameversion;
 Source: "..\HTS Controller\bin\x64\Release\runtimes\*.*"; DestDir: "{app}\runtimes"; Flags: replacesameversion recursesubdirs;
@@ -40,7 +40,7 @@ Source: "..\CHANGELOG.md"; DestDir: "{app}"; Flags: replacesameversion;
 [Icons]
 Name: "{commondesktop}\HTS Controller"; Filename: "{app}\HTSController.exe"; IconFilename: "{app}\HTS.ico"; IconIndex: 0;
 
-[Run]
-Filename: "{tmp}\C462SharedResearcherSetup.exe"; Parameters: "/SILENT"; Description: "Installing shared components"; Flags: waituntilterminated
+;[Run]
+;Filename: "{tmp}\C462SharedResearcherSetup.exe"; Parameters: "/SILENT"; Description: "Installing shared components"; Flags: waituntilterminated
 
 

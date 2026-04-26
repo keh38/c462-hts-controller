@@ -17,6 +17,7 @@ using KLib.Net;
 using C462.Shared;
 using MathWorks.MATLAB.Types;
 using System.IO;
+using C462.Shared.Protocol.DTOs;
 
 namespace HTSController.Pages
 {
@@ -293,12 +294,16 @@ namespace HTSController.Pages
         private void subjectDropDown_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter && !subjectDropDown.Items.Contains(subjectDropDown.Text))
+            {
                 createSubjectButton.Visible = true;
+                audiogramButton.Visible = false;
+            }
         }
 
         private void subjectDropDown_TextChanged(object sender, EventArgs e)
         {
             createSubjectButton.Visible = false;
+            audiogramButton.Visible = true;
         }
 
         // -------------------------------------------------------------------------
@@ -434,6 +439,40 @@ namespace HTSController.Pages
 
             AudiogramPlot.SetData(audiogram, ldlgram, Subject);
             AudiogramPlot.Show(this.FindForm());
+        }
+
+        private void transferButton_Click(object sender, EventArgs e)
+        {
+            if (!_network.IsConnected)
+            {
+                return;
+            }
+
+            try
+            {
+                var audiogramFile = SharedFileLocations.AudiogramPath;
+                var ldlgramFile = SharedFileLocations.LDLPath;
+                if (File.Exists(audiogramFile))
+                    TransferAudiogramFile(audiogramFile);
+                if (File.Exists(ldlgramFile))
+                    TransferAudiogramFile(ldlgramFile);
+
+                MessageBox.Show("Audiogram files sent to HTS.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to transfer audiogram files: {ex.Message}");
+            }
+        }
+
+        private void TransferAudiogramFile(string file)
+        {
+            var payload = new TextFilePayload()
+            {
+                Filename = Path.GetFileName(file),
+                Content = File.ReadAllText(file)
+            };
+            _network.SendMessage("TransferAudiogram", payload);
         }
     }
 }

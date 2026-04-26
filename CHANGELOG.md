@@ -1,7 +1,13 @@
 ## Changelog
 
+### v2.1.6 (2026-04-24)
+#### Added
+- restored noise filtering
+
+---
+
 ### v2.1.5 (2026-04-23)
-#### added
+#### Added
 - combined audiogram/LDL measurement
 - audiogram plot
 

@@ -98,23 +98,23 @@ namespace HTSController
             if (audiogram != null)
             {
                 // Left audiogram
-                leftAudio = audiogram.Get(C462.Shared.AudiogramTestEar.Left);
+                leftAudio = audiogram.Get(AudiogramTestEar.Left);
                 PlotAudiogram(plot, leftAudio, Colors.Blue, MarkerShape.Eks);
 
                 // Right audiogram
-                rightAudio = audiogram.Get(C462.Shared.AudiogramTestEar.Right);
+                rightAudio = audiogram.Get(AudiogramTestEar.Right);
                 PlotAudiogram(plot, rightAudio, Colors.Red, MarkerShape.OpenCircle);
             }
 
             if (ldlgram == null) return;
 
             // Left LDL
-            var data = ldlgram.Get(C462.Shared.AudiogramTestEar.Left);
-            PlotLDLgram(plot, data, leftAudio, Colors.Blue);
+            var data = ldlgram.Get(AudiogramTestEar.Left);
+            PlotLDLgram(plot, data, Colors.Blue);
 
             // Right LDL
-            data = ldlgram.Get(C462.Shared.AudiogramTestEar.Right);
-            PlotLDLgram(plot, data, rightAudio, Colors.Red);
+            data = ldlgram.Get(AudiogramTestEar.Right);
+            PlotLDLgram(plot, data, Colors.Red);
         }
 
         private void PlotAudiogram(Plot plot, Audiogram audiogram, ScottPlot.Color color, MarkerShape markerShape)
@@ -129,24 +129,12 @@ namespace HTSController
             scatter.LineStyle = LineStyle.None;
         }
 
-        private void PlotLDLgram(Plot plot, Audiogram ldlgram, Audiogram audiogram, ScottPlot.Color color)
+        private void PlotLDLgram(Plot plot, Audiogram ldlgram, ScottPlot.Color color)
         {
             for (int k = 0; k < ldlgram.Frequency_Hz.Length; k++)
             {
                 var x = (float)Math.Log10(ldlgram.Frequency_Hz[k] / _fmin) + 1;
-
-                float ldl = float.NaN;
-                if (audiogram != null)
-                {
-                    float ldl_sl = (float)ldlgram.Threshold_dBHL[k];
-
-                    float thr = audiogram.GetHL(ldlgram.Frequency_Hz[k]);
-                    ldl = (float)Math.Min(thr + ldl_sl, _yvalueForInf);
-                }
-                else
-                {
-                    ldl = ldlgram.Threshold_dBSPL[k];
-                }
+                float ldl = ldlgram.GetHL(ldlgram.Frequency_Hz[k]);
 
                 var text = plot.Add.Text("U", x, ldl);
                 text.LabelFontSize = 18;
