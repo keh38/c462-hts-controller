@@ -334,6 +334,7 @@ namespace HTSController.Pages
         private void createSubjectButton_Click(object sender, EventArgs e)
         {
             createSubjectButton.Visible = false;
+            audiogramButton.Visible = true;
 
             var subject = subjectDropDown.Text;
             var subjects = subjectDropDown.Items.Cast<object>()
@@ -452,6 +453,12 @@ namespace HTSController.Pages
             {
                 var audiogramFile = SharedFileLocations.AudiogramPath;
                 var ldlgramFile = SharedFileLocations.LDLPath;
+                if (!File.Exists(audiogramFile) && !File.Exists(ldlgramFile))
+                {
+                    MessageBox.Show("No audiogram files found to transfer.");
+                    return;
+                }
+
                 if (File.Exists(audiogramFile))
                     TransferAudiogramFile(audiogramFile);
                 if (File.Exists(ldlgramFile))
