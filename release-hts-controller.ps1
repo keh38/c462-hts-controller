@@ -8,7 +8,7 @@ $ErrorActionPreference = "Stop"
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
 # --- Configuration -----------------------------------------------------------
-$Version        = "2.1.5"
+$Version        = "2.1.7"
 # Pad to exactly 4 parts for AssemblyVersion / FileVersion
 $vParts          = $Version.Split('.')
 $AssemblyVersion = ($vParts + @('0','0','0'))[ 0..3 ] -join '.'
@@ -93,7 +93,7 @@ Write-Host "Installer found."
 Step "Committing and pushing changes"
 
 Push-Location $RepoRoot
-git add "$AssemblyInfo" "$Changelog"
+git add "$AssemblyInfo" "$Changelog" $AssemblyInfo "$RepoRoot\release-hts-controller.ps1"
 git commit -m $CommitMessage
 git push
 Pop-Location
