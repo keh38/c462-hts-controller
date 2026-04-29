@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.7 (unreleased)
+#### Addded
+- mechanism to transfer audiogram/ldl data to HTS from subject page
+
+---
+
 ### v2.1.6 (2026-04-24)
 #### Added
 - restored noise filtering
