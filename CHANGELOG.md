@@ -1,6 +1,6 @@
 ## Changelog
 
-### v2.1.7 (unreleased)
+### v2.1.7 (2026-04-29)
 #### Addded
 - mechanism to transfer audiogram/ldl data to HTS from subject page
 
