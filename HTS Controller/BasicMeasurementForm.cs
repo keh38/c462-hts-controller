@@ -368,9 +368,13 @@ namespace HTSController
                     break;
                 case "ReceiveData":
                     var filePayload = JsonConvert.DeserializeObject<TransferFilePayload>(payload.Data);
-                    if (filePayload.Filename.Equals("audiogram.xml") || filePayload.Filename.Equals("ldlgram.xml"))
+                    if (filePayload.Filename.Equals("agram.xml") || filePayload.Filename.Equals("ldlgram.xml"))
                     {
                         string audiogramPath = Path.Combine(SharedFileLocations.SubjectMetaFolder, filePayload.Filename);
+                        if (!Directory.Exists(SharedFileLocations.SubjectMetaFolder))
+                        {
+                            Directory.CreateDirectory(SharedFileLocations.SubjectMetaFolder);
+                        }   
                         File.WriteAllText(audiogramPath, filePayload.Content);
                         break;
                     }
