@@ -78,15 +78,15 @@ namespace HTSController.Data_Streams
         public void Initialize(FlowLayoutPanel panel, DiscoveryListener discoveryListener)
         {
             _panel = panel;
-            discoveryListener.HostDiscovered += OnStreamDiscovered;
-            discoveryListener.HostDisappeared += OnStreamDisappeared;
+            discoveryListener.HostDiscovered += HandleHostDiscovered;
+            discoveryListener.HostDisappeared += HandleHostDisappeared;
             
             _indicators = new List<DataStreamIndicator>();
 
             ContextMenu contextMenu = new ContextMenu();
-            MenuItem menuItem = new MenuItem("Ping", new EventHandler(OnPingMenuItem_Click));
+            MenuItem menuItem = new MenuItem("Ping", new EventHandler(HandlePingMenuItem_Click));
             contextMenu.MenuItems.Add(menuItem);
-            menuItem = new MenuItem("Get log", new EventHandler(OnGetLogMenuItem_Click));
+            menuItem = new MenuItem("Get log", new EventHandler(HandleGetLogMenuItem_Click));
             contextMenu.MenuItems.Add(menuItem);
 
             foreach (var s in _streams)
@@ -113,7 +113,7 @@ namespace HTSController.Data_Streams
         // Discovery handlers
         // -------------------------------------------------------------------------
 
-        private void OnStreamDiscovered(object sender, ServerBeacon beacon)
+        private void HandleHostDiscovered(object sender, ServerBeacon beacon)
         {
             var stream = _streams.Find(s =>
                 s.MulticastName.Equals(beacon.Name, StringComparison.OrdinalIgnoreCase));
@@ -129,7 +129,7 @@ namespace HTSController.Data_Streams
             InvokeOnUI(() => UpdateIndicators());
         }
 
-        private void OnStreamDisappeared(object sender, ServerBeacon beacon)
+        private void HandleHostDisappeared(object sender, ServerBeacon beacon)
         {
             var stream = _streams.Find(s =>
                 s.MulticastName.Equals(beacon.Name, StringComparison.OrdinalIgnoreCase));
@@ -161,7 +161,7 @@ namespace HTSController.Data_Streams
                 i.ConnectionStatusUpdated();
         }
 
-        private void OnPingMenuItem_Click(object sender, EventArgs e)
+        private void HandlePingMenuItem_Click(object sender, EventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
             ContextMenu contextMenu = menuItem.Parent as ContextMenu;
@@ -182,7 +182,7 @@ namespace HTSController.Data_Streams
             }
         }
 
-        private async void OnGetLogMenuItem_Click(object sender, EventArgs e)
+        private async void HandleGetLogMenuItem_Click(object sender, EventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
             ContextMenu contextMenu = menuItem.Parent as ContextMenu;
@@ -270,7 +270,7 @@ namespace HTSController.Data_Streams
             var startTime = DateTime.Now;
             var pending = streamsToStart.ToList();
 
-            while ((DateTime.Now - startTime).TotalSeconds < 5 && pending.Count > 0)
+            while ((DateTime.Now - startTime).TotalSeconds < 20 && pending.Count > 0)
             {
                 await Task.Delay(250);
 
@@ -348,7 +348,7 @@ namespace HTSController.Data_Streams
             var startTime = DateTime.Now;
             var pending = streamsToStop.ToList();
 
-            while ((DateTime.Now - startTime).TotalSeconds < 10 && pending.Count > 0)
+            while ((DateTime.Now - startTime).TotalSeconds < 20 && pending.Count > 0)
             {
                 await Task.Delay(250);
                 foreach (var stream in pending)

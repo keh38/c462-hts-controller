@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.8 (2026-04-30)
+#### Changed
+- increased data stream timeout on start/stop recording
+
+--
+
 ### v2.1.7 (2026-04-29)
 #### Addded
 - mechanism to transfer audiogram/ldl data to HTS from subject page
