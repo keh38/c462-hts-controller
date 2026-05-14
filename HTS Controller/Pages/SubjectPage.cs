@@ -479,7 +479,7 @@ namespace HTSController.Pages
                 Filename = Path.GetFileName(file),
                 Content = File.ReadAllText(file)
             };
-            _network.SendMessage("TransferAudiogram", payload);
+            _network.SendMessage("ReceiveAudiogram", payload);
         }
     }
 }

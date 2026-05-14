@@ -18,7 +18,6 @@ using SpeechReception;
 using HTS.Tcp;
 using C462.Shared;
 using C462.Shared.Protocol.DTOs;
-using TransferFilePayload = HTS.Tcp.TransferFilePayload;
 using HTSController.Data_Streams;
 
 using Serilog;
@@ -395,9 +394,10 @@ namespace HTSController
             if (_config != null && _network.IsConnected)
             {
                 var fn = SharedFileLocations.GetConfigFile("SpeechTest", _config.TestName);
-                _network.SendMessage("TransferFile", new TransferFilePayload
+                _network.SendMessage("ReceiveTextFile", new TransferFilePayload
                 {
-                    Folder = "Config Files",
+                    Destination = FileDestination.ProjectResources,
+                    SubPath = "Config Files",
                     Filename = Path.GetFileName(fn),
                     Content = File.ReadAllText(fn)
                 });

@@ -14,6 +14,7 @@ using Microsoft.Win32;
 using Serilog;
 
 using C462.Shared;
+using C462.Shared.Protocol.DTOs;
 using KLib.Controls;
 using KLib.IO;
 
@@ -148,9 +149,10 @@ namespace HTSController.Pages
             {
                 if (_network.IsConnected)
                 {
-                    _network.SendMessage("TransferFile", new TransferFilePayload
+                    _network.SendMessage("ReceiveTextFile", new TransferFilePayload
                     {
-                        Folder = "Config Files",
+                        Destination = FileDestination.ProjectResources,
+                        SubPath = "Config Files",
                         Filename = Path.GetFileName(settingsPath),
                         Content = File.ReadAllText(settingsPath)
                     });

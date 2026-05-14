@@ -227,7 +227,7 @@ namespace HTSController
             return response.IsOk ? response.GetPayload<T>() : default;
         }
 
-        public async Task<bool> SendBufferedFile(string localPath, string remoteFilename)
+        public async Task<bool> SendBufferedFile(string localPath, string remoteFilename, FileDestination destination, string subPath="")
         {
             if (_remoteEndPoint == null) return false;
 
@@ -244,6 +244,8 @@ namespace HTSController
 
                     var payload = new BufferedFilePayload
                     {
+                        Destination = destination,
+                        SubPath = subPath,
                         Filename = remoteFilename,
                         NumBuffers = numBuffers,
                         BufferSize = bufferSize
@@ -350,25 +352,25 @@ namespace HTSController
                     InvokeOnUI(() => OnConnectionChanged(false));
                     break;
 
-                case "ReceiveFile":
-                    var filePayload = request.GetPayload<BufferedFilePayload>();
-                    server.WriteResponse(TcpMessage.Ok()); // signal ready
+                case "ReceiveBufferedFile":
+                    //var filePayload = request.GetPayload<BufferedFilePayload>();
+                    //server.WriteResponse(TcpMessage.Ok()); // signal ready
 
-                    var destPath = Path.Combine("figgeridoot", filePayload.Filename);
-                    Directory.CreateDirectory(Path.GetDirectoryName(destPath));
+                    //var destPath = Path.Combine("figgeridoot", filePayload.Filename);
+                    //Directory.CreateDirectory(Path.GetDirectoryName(destPath));
 
-                    using (var fs = new FileStream(destPath, FileMode.Create, FileAccess.Write))
-                    using (var writer = new BinaryWriter(fs))
-                    {
-                        for (long k = 0; k < filePayload.NumBuffers; k++)
-                        {
-                            //var bytes = server.ReadRawBytes();
-                            //writer.Write(bytes);
-                        }
-                    }
+                    //using (var fs = new FileStream(destPath, FileMode.Create, FileAccess.Write))
+                    //using (var writer = new BinaryWriter(fs))
+                    //{
+                    //    for (long k = 0; k < filePayload.NumBuffers; k++)
+                    //    {
+                    //        //var bytes = server.ReadRawBytes();
+                    //        //writer.Write(bytes);
+                    //    }
+                    //}
 
-                    server.WriteResponse(TcpMessage.Ok()); // signal complete
-                    Log.Information($"ReceiveFile complete: {filePayload.Filename}");
+                    //server.WriteResponse(TcpMessage.Ok()); // signal complete
+                    //Log.Information($"ReceiveFile complete: {filePayload.Filename}");
                     break;
 
                 default:

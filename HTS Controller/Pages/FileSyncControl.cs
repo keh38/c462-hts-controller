@@ -19,6 +19,8 @@ using KLib.Net;
 using HTS.Tcp;
 using Newtonsoft.Json;
 using C462.Shared;
+using C462.Shared.Protocol.DTOs;
+using C462.Shared.ProjectManagement;
 
 namespace HTSController.Pages
 {
@@ -29,7 +31,7 @@ namespace HTSController.Pages
         private SynchronizationContext _synchronizationContext;
         private CancellationTokenSource _cts;
 
-        private List<string> _remoteFiles;
+        private List<ResourceItem> _remoteResources;
 
         public FileSyncControl()
         {
@@ -73,7 +75,6 @@ namespace HTSController.Pages
         private async void startButton_Click(object sender, EventArgs e)
         {
             _network.SendMessage("ChangeScene", "Admin Tools");
-            _network.RemoteMessageHandler += OnRemoteMessage;
 
             cancelButton.Enabled = true;
             startButton.Visible = false;
@@ -129,12 +130,13 @@ namespace HTSController.Pages
             AppendLogText("Syncing resources");
 
             AppendLogText("Enumerating local resources");
-            var localFiles = EnumerateResources();
+            var localResources = EnumerateLocalResources();
 
             AppendLogText("Enumerating remote resources");
-            _remoteFiles = _network.SendRequest<List<string>>("SendResourceList");
+            var payload = _network.SendRequest<ResourceListPayload>("SendResourceList");
+            _remoteResources = payload.Resources;
 
-            var toDelete = EnumerateUnusedRemoteFiles(_remoteFiles, localFiles);
+            var toDelete = EnumerateUnusedRemoteResources(_remoteResources, localResources);
             if (toDelete.Count > 0)
             {
                 AppendLogText($"Deleting {toDelete.Count} remote files");
@@ -142,31 +144,43 @@ namespace HTSController.Pages
                 progressBarLabel.Visible = true;
                 progressBar.Maximum = toDelete.Count;
                 progressBar.Value = 0;
-                foreach (var remoteFile in toDelete)
+                foreach (var remoteItem in toDelete)
                 {
                     progressBar.Value++;
-                    progressBarLabel.Text = remoteFile;
-                    _network.SendMessage("DeleteFile", remoteFile);
+                    progressBarLabel.Text = remoteItem.Name;
+                    var fileInfoPayload = new FileInfoPayload()
+                    {
+                        Destination = FileDestination.ProjectResources,
+                        SubPath = remoteItem.Type,
+                        Filename = remoteItem.Name
+                    };
+                    _network.SendMessage("DeleteFile", fileInfoPayload);
                 }
             }
 
             AppendLogText($"Syncing files");
             progressBar.Visible = true;
             progressBarLabel.Visible = true;
-            progressBar.Maximum = localFiles.Count;
+            progressBar.Maximum = localResources.Count;
             progressBar.Value = 0;
             int numUploaded = 0;
-            foreach (var file in localFiles)
+            foreach (var localItem in localResources)
             {
-                string fullLocalPath = Path.Combine(SharedFileLocations.HtsResourcesFolder, file);
+                var fileInfoPayload = new FileInfoPayload()
+                {
+                    Destination = FileDestination.ProjectResources,
+                    SubPath = localItem.Type,
+                    Filename = localItem.Name
+                };
+                string fullLocalPath = Path.Combine(SharedFileLocations.HtsResourcesFolder, localItem.Type, localItem.Name);
 
                 progressBar.Value++;
-                progressBarLabel.Text = file;
+                progressBarLabel.Text = localItem.Name;
 
                 bool upload = false;
                 try
                 {
-                    var response = _network.SendRequest<FileInformationPayload>("FileExists", file);
+                    var response = _network.SendRequest<FileInfoPayload>("FileExists", fileInfoPayload);
                     if (response == null)
                     {
                         upload = true;
@@ -184,14 +198,14 @@ namespace HTSController.Pages
 
                 if (upload)
                 {
-                    var success = await _network.SendBufferedFile(fullLocalPath, file);
+                    var success = await _network.SendBufferedFile(fullLocalPath, localItem.Name, FileDestination.ProjectResources, localItem.Type);
                     if (success)
                     {
                         numUploaded++;
                     }
                     else
                     {
-                        AppendLogText($"error uploading {file}");
+                        AppendLogText($"error uploading {localItem}");
                     }
                 }
             }
@@ -210,8 +224,7 @@ namespace HTSController.Pages
 
             if (File.Exists(fileBrowser.Value))
             {
-                string remotePath = Path.Combine("Downloads", Path.GetFileName(fileBrowser.Value));
-                var success = await _network.SendBufferedFile(fileBrowser.Value, remotePath);
+                var success = await _network.SendBufferedFile(fileBrowser.Value, Path.GetFileName(fileBrowser.Value), FileDestination.Downloads);
                 if (success)
                 {
                     _network.SendMessage("RunInstaller", Path.GetFileName(fileBrowser.Value));
@@ -231,22 +244,9 @@ namespace HTSController.Pages
             logBox.AppendText($"{message}{Environment.NewLine}");
         }
 
-        private void OnRemoteMessage(object sender, TcpMessage message)
+        private List<ResourceItem> EnumerateLocalResources()
         {
-            var payload = message.GetPayload<RemoteMessagePayload>();
-            if (!payload.Target.Equals("FileSync")) return;
-
-            switch (message.Command)
-            {
-                case "ReceiveFileList":
-                    _remoteFiles = JsonConvert.DeserializeObject<List<string>>(payload.Data);
-                    break;
-            }
-        }
-
-        private List<string> EnumerateResources()
-        {
-            List<string> resources = new List<string>();
+           var resources = new List<ResourceItem>();
 
             foreach (var resourceFolder in SharedFileLocations.HtsProjectResourceFolders)
             {
@@ -254,39 +254,26 @@ namespace HTSController.Pages
                 var files = Directory.GetFiles(folder);
                 foreach (var file in files)
                 {
-                    resources.Add(file.Remove(0, SharedFileLocations.HtsResourcesFolder.Length + 1));
+                    resources.Add(
+                        new ResourceItem() 
+                        { 
+                            Name = Path.GetFileName(file), 
+                            Type = resourceFolder
+                        });
                 }
             }
 
             return resources;
         }
 
-        private async Task GetRemoteResourceList()
+        private List<ResourceItem> EnumerateUnusedRemoteResources(List<ResourceItem> remoteItems, List<ResourceItem> localItems)
         {
-            _remoteFiles = null;
-            _network.SendMessage("SendResourceList");
-
-            var startTime = DateTime.Now;
-            while ((DateTime.Now - startTime).TotalSeconds < 5)
+            var toDelete = new List<ResourceItem>();
+            foreach (var remoteItem in remoteItems)
             {
-                if (_remoteFiles != null)
+                if (localItems.Find(item => item.IsEqual(remoteItem)) == null)
                 {
-                    return;
-                }
-                await Task.Delay(100);
-            }
-
-            throw new Exception("timed out waiting for remote resource list");
-        }
-
-        private List<string> EnumerateUnusedRemoteFiles(List<string> remoteFiles, List<string> localFiles)
-        {
-            List<string> toDelete = new List<string>();
-            foreach (var remoteFile in remoteFiles)
-            {
-                if (!localFiles.Contains(remoteFile))
-                {
-                    toDelete.Add(remoteFile);
+                    toDelete.Add(remoteItem);
                 }
             }
             return toDelete;
