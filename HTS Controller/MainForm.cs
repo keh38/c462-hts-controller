@@ -17,6 +17,7 @@ using Serilog;
 using SerilogTraceListener;
 
 using KLib;
+using KLib.Controls;
 using KLib.Net;
 
 using HTS.Tcp;
@@ -543,5 +544,15 @@ namespace HTSController
             }
         }
 
+        private void quitButton_Click(object sender, EventArgs e)
+        {
+            var result = MessageBoxEx.Show(this, "Quit app on tablet?", "Quit HTS", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.No)
+            {
+                return;
+            }
+            _network.SendMessage("Quit");
+        }
     }
 }

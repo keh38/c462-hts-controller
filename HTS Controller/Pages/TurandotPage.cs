@@ -149,7 +149,7 @@ namespace HTSController.Pages
             {
                 if (_network.IsConnected)
                 {
-                    _network.SendMessage("ReceiveTextFile", new TransferFilePayload
+                    _network.SendMessage("ReceiveTextFile", new TextFilePayload
                     {
                         Destination = FileDestination.ProjectResources,
                         SubPath = "Config Files",

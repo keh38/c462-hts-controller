@@ -56,8 +56,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="C462.Shared, Version=1.14.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\C462.Shared.1.14.4\lib\net48\C462.Shared.dll</HintPath>
+    <Reference Include="C462.Shared, Version=1.14.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\C462.Shared.1.14.7\lib\net48\C462.Shared.dll</HintPath>
     </Reference>
     <Reference Include="C462.Turandot, Version=1.3.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\C462.Turandot.1.3.11\lib\net48\C462.Turandot.dll</HintPath>
@@ -72,8 +72,8 @@
     <Reference Include="KLib, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\KLib.1.8.1\lib\net48\KLib.dll</HintPath>
     </Reference>
-    <Reference Include="KLib.Controls">
-      <HintPath>..\..\..\klib\Framework\KLib.Controls.dll</HintPath>
+    <Reference Include="KLib.Controls, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\KLib.Controls.1.7.1\lib\net48\KLib.Controls.dll</HintPath>
     </Reference>
     <Reference Include="KLib.Net, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\KLib.Net.2.4.2\lib\net48\KLib.Net.dll</HintPath>
@@ -230,6 +230,7 @@
     <Compile Include="AudiogramPlot\AudiogramPlotForm.Designer.cs">
       <DependentUpon>AudiogramPlotForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Data Streams\DataStreamConfig.cs" />
     <Compile Include="Data Streams\IDataStreamHandler.cs" />
     <Compile Include="Editor\Basic\Audiogram\AudiogramMeasurementSettings.cs" />
     <Compile Include="Editor\Basic\BasicMeasurementConfiguration.cs" />

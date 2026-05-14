@@ -1,5 +1,13 @@
 ## Changelog
 
+### v2.1.9 (unreleased)
+#### Changed
+- cleaned up file transfer logic
+#### Added
+- button to quit tablet app
+
+---
+
 ### v2.1.8 (2026-04-30)
 #### Changed
 - increased data stream timeout on start/stop recording

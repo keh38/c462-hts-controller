@@ -134,6 +134,13 @@ namespace HTSController.Pages
 
             AppendLogText("Enumerating remote resources");
             var payload = _network.SendRequest<ResourceListPayload>("SendResourceList");
+            if (payload == null)
+            {
+                Log.Error("Failed to get remote resource list");
+                AppendLogText("Failed to get remote resource list");
+                return;
+            }
+
             _remoteResources = payload.Resources;
 
             var toDelete = EnumerateUnusedRemoteResources(_remoteResources, localResources);
@@ -205,7 +212,7 @@ namespace HTSController.Pages
                     }
                     else
                     {
-                        AppendLogText($"error uploading {localItem}");
+                        AppendLogText($"error uploading {localItem.Name}");
                     }
                 }
             }

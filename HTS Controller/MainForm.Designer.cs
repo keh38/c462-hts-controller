@@ -57,6 +57,7 @@
             this.messagePage = new System.Windows.Forms.TabPage();
             this.runTurandotPage = new System.Windows.Forms.TabPage();
             this.adminPage = new System.Windows.Forms.TabPage();
+            this.quitButton = new System.Windows.Forms.Button();
             this.fileSyncControl = new HTSController.Pages.FileSyncControl();
             this.label3 = new System.Windows.Forms.Label();
             this.projectRootBrowser = new KLib.Controls.FileBrowser();
@@ -456,6 +457,7 @@
             // 
             // adminPage
             // 
+            this.adminPage.Controls.Add(this.quitButton);
             this.adminPage.Controls.Add(this.fileSyncControl);
             this.adminPage.Controls.Add(this.label3);
             this.adminPage.Controls.Add(this.projectRootBrowser);
@@ -470,6 +472,18 @@
             this.adminPage.TabIndex = 4;
             this.adminPage.Text = "tabPage1";
             this.adminPage.UseVisualStyleBackColor = true;
+            // 
+            // quitButton
+            // 
+            this.quitButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
+            this.quitButton.ForeColor = System.Drawing.Color.White;
+            this.quitButton.Location = new System.Drawing.Point(284, 448);
+            this.quitButton.Name = "quitButton";
+            this.quitButton.Size = new System.Drawing.Size(73, 36);
+            this.quitButton.TabIndex = 9;
+            this.quitButton.Text = "Quit";
+            this.quitButton.UseVisualStyleBackColor = false;
+            this.quitButton.Click += new System.EventHandler(this.quitButton_Click);
             // 
             // fileSyncControl
             // 
@@ -701,6 +715,7 @@
         private System.Windows.Forms.CheckBox speechButton;
         private System.Windows.Forms.TabPage speechPageContainer;
         private Pages.SubjectPage subjectPageControl;
+        private System.Windows.Forms.Button quitButton;
     }
 }
 

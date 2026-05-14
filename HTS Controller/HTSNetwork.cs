@@ -253,12 +253,12 @@ namespace HTSController
 
                     // Send control message using same wire format as normal TcpMessage exchange
                     client.WriteBuffer(Encoding.UTF8.GetBytes(
-                        TcpMessage.Request("ReceiveFile", payload).Serialize()));
+                        TcpMessage.Request("ReceiveBufferedFile", payload).Serialize()));
 
                     var ready = client.ReadBufferedSendResponse();
                     if (!ready.IsOk)
                     {
-                        Log.Warning($"ReceiveFile refused: {ready.Command}");
+                        Log.Warning($"ReceiveBufferedFile refused: {ready.Command}");
                         return false;
                     }
 

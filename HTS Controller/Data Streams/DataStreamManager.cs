@@ -36,6 +36,7 @@ namespace HTSController.Data_Streams
         public static readonly string ConfigFolder = Path.Combine(SharedFileLocations.SharedFolder, "Streams");
         private static readonly string ConfigFile = Path.Combine(ConfigFolder, "DataStreams.xml");
 
+        private DataStreamConfig _streamConfig;
         private List<DataStream> _streams;
         private List<DataStreamIndicator> _indicators;
         private List<string> _problemChildren = new List<string>();
@@ -62,7 +63,8 @@ namespace HTSController.Data_Streams
         {
             if (File.Exists(ConfigFile))
             {
-                _streams = Files.XmlDeserialize<List<DataStream>>(ConfigFile);
+                _streamConfig = Files.XmlDeserialize<DataStreamConfig>(ConfigFile);
+                _streams = _streamConfig.DataStreams;
             }
             else
             {
@@ -71,7 +73,7 @@ namespace HTSController.Data_Streams
                 if (!Directory.Exists(ConfigFolder))
                     Directory.CreateDirectory(ConfigFolder);
 
-                Files.XmlSerialize(_streams, ConfigFile);
+                Files.XmlSerialize(_streamConfig, ConfigFile);
             }
         }
 
@@ -106,7 +108,7 @@ namespace HTSController.Data_Streams
         {
             _syncTimer.Stop();
 
-            Files.XmlSerialize(_streams, ConfigFile);
+            Files.XmlSerialize(_streamConfig, ConfigFile);
         }
 
         // -------------------------------------------------------------------------
@@ -270,7 +272,7 @@ namespace HTSController.Data_Streams
             var startTime = DateTime.Now;
             var pending = streamsToStart.ToList();
 
-            while ((DateTime.Now - startTime).TotalSeconds < 20 && pending.Count > 0)
+            while ((DateTime.Now - startTime).TotalSeconds < _streamConfig.StartTimeout && pending.Count > 0)
             {
                 await Task.Delay(250);
 
@@ -348,7 +350,7 @@ namespace HTSController.Data_Streams
             var startTime = DateTime.Now;
             var pending = streamsToStop.ToList();
 
-            while ((DateTime.Now - startTime).TotalSeconds < 20 && pending.Count > 0)
+            while ((DateTime.Now - startTime).TotalSeconds < _streamConfig.EndTimeout && pending.Count > 0)
             {
                 await Task.Delay(250);
                 foreach (var stream in pending)

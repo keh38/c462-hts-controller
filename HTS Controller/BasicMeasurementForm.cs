@@ -366,8 +366,8 @@ namespace HTSController
                     Invoke(new Action(() => progressBar.Value = progress));
                     break;
                 case "ReceiveData":
-                    var filePayload = JsonConvert.DeserializeObject<TransferFilePayload>(payload.Data);
-                    if (filePayload.Filename.Equals("agram.xml") || filePayload.Filename.Equals("ldlgram.xml"))
+                    var filePayload = JsonConvert.DeserializeObject<TextFilePayload>(payload.Data);
+                    if (filePayload.Destination == FileDestination.SubjectMetadata)
                     {
                         string audiogramPath = Path.Combine(SharedFileLocations.SubjectMetaFolder, filePayload.Filename);
                         if (!Directory.Exists(SharedFileLocations.SubjectMetaFolder))
@@ -462,7 +462,7 @@ namespace HTSController
             if (_config != null && _network.IsConnected)
             {
                 var fn = SharedFileLocations.GetConfigFile(_measType, _config.Name);
-                _network.SendMessage("ReceiveTextFile", new TransferFilePayload
+                _network.SendMessage("ReceiveTextFile", new TextFilePayload
                 {
                     Destination = FileDestination.ProjectResources,
                     SubPath = "Config Files",

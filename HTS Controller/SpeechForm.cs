@@ -394,7 +394,7 @@ namespace HTSController
             if (_config != null && _network.IsConnected)
             {
                 var fn = SharedFileLocations.GetConfigFile("SpeechTest", _config.TestName);
-                _network.SendMessage("ReceiveTextFile", new TransferFilePayload
+                _network.SendMessage("ReceiveTextFile", new TextFilePayload
                 {
                     Destination = FileDestination.ProjectResources,
                     SubPath = "Config Files",
