@@ -91,7 +91,7 @@ namespace HTSController.Data_Streams
             menuItem = new MenuItem("Get log", new EventHandler(HandleGetLogMenuItem_Click));
             contextMenu.MenuItems.Add(menuItem);
 
-            foreach (var s in _streams)
+            foreach (var s in _streams.FindAll(stream => !stream.MulticastName.StartsWith("SOUND.OF.SILENCE")))
             {
                 var indicator = CreateIndicator(s);
                 indicator.ContextMenu = contextMenu;
