@@ -44,6 +44,7 @@ namespace HTSController
         public string lastProject { get; set; }
         public Rectangle audiogramBounds { get; set; } = Rectangle.Empty;
         public SerializeableDictionary lastUsed = new SerializeableDictionary();
+        public Rectangle lastPosition = new Rectangle();
 
         private static HTSControllerSettings _instance = null;
         private static HTSControllerSettings instance
@@ -98,6 +99,12 @@ namespace HTSController
         {
             get { return instance.audiogramBounds; }
             set { instance.audiogramBounds = value; Save(); }
+        }
+
+        public static Rectangle LastPosition
+        {
+            get { return instance.lastPosition; }
+            set { instance.lastPosition = value; Save(); }
         }
 
         private static void Save()

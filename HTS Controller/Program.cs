@@ -13,12 +13,14 @@ namespace HTSController
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if (Process.GetProcessesByName("game-dashboard").Length > 0)
+            bool launchedByDashboard = args.Contains("--launched-by-dashboard");
+            
+            if (!launchedByDashboard && Process.GetProcessesByName("game-dashboard").Length > 0)
             {
                 MessageBox.Show(
                     "The Game Dashboard is already running.\n\n" +

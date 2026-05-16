@@ -5,6 +5,7 @@
 - cleaned up file transfer logic
 #### Added
 - button to quit tablet app
+- button to switch to Game Dashboard
 
 ---
 

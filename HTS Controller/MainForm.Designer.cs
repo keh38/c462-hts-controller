@@ -57,6 +57,7 @@
             this.messagePage = new System.Windows.Forms.TabPage();
             this.runTurandotPage = new System.Windows.Forms.TabPage();
             this.adminPage = new System.Windows.Forms.TabPage();
+            this.switchToGameButton = new System.Windows.Forms.Button();
             this.quitButton = new System.Windows.Forms.Button();
             this.fileSyncControl = new HTSController.Pages.FileSyncControl();
             this.label3 = new System.Windows.Forms.Label();
@@ -110,7 +111,7 @@
             this.matlabStatusLabel.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
             this.matlabStatusLabel.Image = global::HTSController.Properties.Resources.Matlab_Logo_32;
             this.matlabStatusLabel.Name = "matlabStatusLabel";
-            this.matlabStatusLabel.Size = new System.Drawing.Size(125, 24);
+            this.matlabStatusLabel.Size = new System.Drawing.Size(126, 24);
             this.matlabStatusLabel.Text = "MATLAB available";
             this.matlabStatusLabel.Visible = false;
             // 
@@ -457,6 +458,7 @@
             // 
             // adminPage
             // 
+            this.adminPage.Controls.Add(this.switchToGameButton);
             this.adminPage.Controls.Add(this.quitButton);
             this.adminPage.Controls.Add(this.fileSyncControl);
             this.adminPage.Controls.Add(this.label3);
@@ -473,13 +475,25 @@
             this.adminPage.Text = "tabPage1";
             this.adminPage.UseVisualStyleBackColor = true;
             // 
+            // switchToGameButton
+            // 
+            this.switchToGameButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
+            this.switchToGameButton.ForeColor = System.Drawing.Color.White;
+            this.switchToGameButton.Location = new System.Drawing.Point(236, 410);
+            this.switchToGameButton.Name = "switchToGameButton";
+            this.switchToGameButton.Size = new System.Drawing.Size(118, 36);
+            this.switchToGameButton.TabIndex = 10;
+            this.switchToGameButton.Text = "Switch to Game";
+            this.switchToGameButton.UseVisualStyleBackColor = false;
+            this.switchToGameButton.Click += new System.EventHandler(this.switchToGameButton_Click);
+            // 
             // quitButton
             // 
             this.quitButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
             this.quitButton.ForeColor = System.Drawing.Color.White;
-            this.quitButton.Location = new System.Drawing.Point(284, 448);
+            this.quitButton.Location = new System.Drawing.Point(236, 452);
             this.quitButton.Name = "quitButton";
-            this.quitButton.Size = new System.Drawing.Size(73, 36);
+            this.quitButton.Size = new System.Drawing.Size(118, 36);
             this.quitButton.TabIndex = 9;
             this.quitButton.Text = "Quit";
             this.quitButton.UseVisualStyleBackColor = false;
@@ -487,7 +501,7 @@
             // 
             // fileSyncControl
             // 
-            this.fileSyncControl.Location = new System.Drawing.Point(0, 91);
+            this.fileSyncControl.Location = new System.Drawing.Point(-4, 91);
             this.fileSyncControl.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.fileSyncControl.Name = "fileSyncControl";
             this.fileSyncControl.Size = new System.Drawing.Size(362, 314);
@@ -545,7 +559,7 @@
             // 
             this.localLogButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
             this.localLogButton.ForeColor = System.Drawing.Color.White;
-            this.localLogButton.Location = new System.Drawing.Point(134, 448);
+            this.localLogButton.Location = new System.Drawing.Point(10, 451);
             this.localLogButton.Name = "localLogButton";
             this.localLogButton.Size = new System.Drawing.Size(118, 36);
             this.localLogButton.TabIndex = 3;
@@ -557,7 +571,7 @@
             // 
             this.tabletLogButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(58)))), ((int)(((byte)(90)))), ((int)(((byte)(80)))));
             this.tabletLogButton.ForeColor = System.Drawing.Color.White;
-            this.tabletLogButton.Location = new System.Drawing.Point(10, 448);
+            this.tabletLogButton.Location = new System.Drawing.Point(10, 410);
             this.tabletLogButton.Name = "tabletLogButton";
             this.tabletLogButton.Size = new System.Drawing.Size(118, 36);
             this.tabletLogButton.TabIndex = 2;
@@ -716,6 +730,7 @@
         private System.Windows.Forms.TabPage speechPageContainer;
         private Pages.SubjectPage subjectPageControl;
         private System.Windows.Forms.Button quitButton;
+        private System.Windows.Forms.Button switchToGameButton;
     }
 }
 

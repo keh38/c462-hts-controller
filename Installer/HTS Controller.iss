@@ -40,6 +40,11 @@ Source: "..\CHANGELOG.md"; DestDir: "{app}"; Flags: replacesameversion;
 [Icons]
 Name: "{commondesktop}\HTS Controller"; Filename: "{app}\HTSController.exe"; IconFilename: "{app}\HTS.ico"; IconIndex: 0;
 
+[Registry]
+Root: HKLM64; Subkey: "Software\EPL"; Flags: uninsdeletekeyifempty
+Root: HKLM64; Subkey: "Software\EPL\C462"; Flags: uninsdeletekey
+Root: HKLM64; Subkey: "Software\EPL\C462\HTSController"; ValueType: string; ValueName: "InstallPath"; ValueData: "{app}"
+
 ;[Run]
 ;Filename: "{tmp}\C462SharedResearcherSetup.exe"; Parameters: "/SILENT"; Description: "Installing shared components"; Flags: waituntilterminated
 

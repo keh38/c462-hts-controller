@@ -1,3 +1,14 @@
+using C462.Shared;
+using C462.Shared.Protocol.DTOs;
+using HTS.Tcp;
+using HTSController.Data_Streams;
+using KLib;
+using KLib.Controls;
+using KLib.Net;
+using Markdig;
+using Microsoft.Win32;
+using Serilog;
+using SerilogTraceListener;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,25 +19,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using Serilog;
-using SerilogTraceListener;
-
-using KLib;
-using KLib.Controls;
-using KLib.Net;
-
-using HTS.Tcp;
-using C462.Shared;
-using C462.Shared.Protocol.DTOs;
-
-using HTSController.Data_Streams;
-using System.Runtime.CompilerServices;
-using Markdig;
 
 namespace HTSController
 {
@@ -48,6 +45,7 @@ namespace HTSController
         public MainForm()
         {
             InitializeComponent();
+            RestoreLastPosition();
             tableLayoutPanel.ColumnStyles[1].Width = 0;
 
             _menu = new List<Tuple<CheckBox, TabPage>>();
@@ -64,8 +62,7 @@ namespace HTSController
         private async Task StartLogging()
         {
             _logPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                "EPL",
+                SharedFileLocations.HtsFolder,
                 "Logs",
                 $"HTSController-{DateTime.Now.ToString("yyyyMMdd")}.txt");
 
@@ -148,6 +145,40 @@ namespace HTSController
             }
         }
 
+        private void RestoreLastPosition()
+        {
+            if (!HTSControllerSettings.LastPosition.IsEmpty)
+            {
+                // Validate that the saved position is still visible on screen
+                Rectangle savedBounds = HTSControllerSettings.LastPosition;
+                bool isVisible = false;
+
+                foreach (Screen screen in Screen.AllScreens)
+                {
+                    if (screen.WorkingArea.IntersectsWith(savedBounds))
+                    {
+                        isVisible = true;
+                        break;
+                    }
+                }
+
+                if (isVisible)
+                {
+                    StartPosition = FormStartPosition.Manual;
+                    Location = new Point(savedBounds.X, savedBounds.Y);
+                    Width = savedBounds.Width;
+                    Height = savedBounds.Height;
+                }
+                else
+                {
+                    // Position is off-screen, use default positioning
+                    StartPosition = FormStartPosition.CenterScreen;
+                    // Optionally clear the invalid position
+                    HTSControllerSettings.LastPosition = Rectangle.Empty;
+                }
+            }
+        }
+
         private async void OnConnectionChanged(object sender, bool connected)
         {
             if (connected)
@@ -201,7 +232,8 @@ namespace HTSController
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             AudiogramPlot.Close();
-            HTSControllerSettings.AudiogramBounds = AudiogramPlot.Bounds; 
+            HTSControllerSettings.AudiogramBounds = AudiogramPlot.Bounds;
+            HTSControllerSettings.LastPosition = new Rectangle(Location, Size);
 
             _streamManager.Cleanup();
             MATLAB.CleanUp();
@@ -544,6 +576,76 @@ namespace HTSController
             }
         }
 
+        private async void switchToGameButton_Click(object sender, EventArgs e)
+        {
+            var isInLobby = await SwitchToGame();
+            if (isInLobby)
+            {
+                _network.Shutdown();
+
+                StartGameDashboard();
+
+                this.Close();
+                return;
+            }
+
+            MessageBoxEx.Show(this, "Failed to switch to HTS mode.", "Switch to HTS", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void StartGameDashboard()
+        {
+            string exeFolder = GetExecutableFolder();
+
+            try
+            {
+                var htsExecutablePath = System.IO.Path.Combine(exeFolder, "game-dashboard.exe");
+                var processStartInfo = new System.Diagnostics.ProcessStartInfo(htsExecutablePath);
+                processStartInfo.WorkingDirectory = exeFolder;
+                processStartInfo.Arguments = "--launched-by-htscontroller";
+                var process = Process.Start(processStartInfo);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"failed to launch Game Dashboard — {ex.Message}");
+            }
+        }
+
+        private static string GetExecutableFolder()
+        {
+            string RegistryKeyName = @"SOFTWARE\EPL\C462\Game Dashboard";
+            string RegistryValue = "InstallPath";
+
+            using (var view64 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+            {
+                using (var subKey = view64.OpenSubKey(RegistryKeyName, false))
+                {
+                    return subKey?.GetValue(RegistryValue) as string;
+                }
+            }
+        }
+
+        private async Task<bool> SwitchToGame()
+        {
+            Log.Information($"Switching to Game");
+            var success = _network.SendMessage("SwitchToGame");
+            if (!success)
+            {
+                Log.Warning("Failed to send SwitchToGame message");
+                return false;
+            }
+
+            var startTime = DateTime.Now;
+            while ((DateTime.Now - startTime).TotalSeconds < 10)
+            {
+                if (_network.CurrentScene == "Lobby")
+                    return true;
+
+                Thread.Sleep(250);
+            }
+
+            return false;
+        }
+
         private void quitButton_Click(object sender, EventArgs e)
         {
             var result = MessageBoxEx.Show(this, "Quit app on tablet?", "Quit HTS", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -554,5 +656,6 @@ namespace HTSController
             }
             _network.SendMessage("Quit");
         }
+
     }
 }
