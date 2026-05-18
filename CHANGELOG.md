@@ -1,6 +1,6 @@
 ## Changelog
 
-### v2.1.9 (unreleased)
+### v2.1.9 (2026-05-18)
 #### Changed
 - cleaned up file transfer logic
 #### Added
