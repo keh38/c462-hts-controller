@@ -191,16 +191,22 @@ namespace HTSController.Pages
                     if (response == null)
                     {
                         upload = true;
+                        Debug.WriteLine($"Uploading {localItem.Name}: does not exist on remote device");
                     }
                     else
                     {
                         DateTime localTime = File.GetLastWriteTime(fullLocalPath);
                         upload = (localTime > response.LastModified);
+                        if (upload)
+                        {
+                            Debug.WriteLine($"Uploading {localItem.Name}, local time = {localTime}, remote time = {response.LastModified}");
+                        }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
                     upload = true;
+                    Debug.WriteLine($"Uploading {localItem.Name}: error = {ex.Message}");
                 }
 
                 if (upload)
