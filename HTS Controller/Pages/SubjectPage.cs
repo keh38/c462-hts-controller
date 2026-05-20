@@ -123,6 +123,21 @@ namespace HTSController.Pages
         }
 
         /// <summary>
+        /// Called when the subject is changed on the HTS side (e.g. by another client). 
+        /// </summary>
+        public void OnSubjectChanged(string projectAndSubject)
+        {
+            var parts = projectAndSubject.Split('/');
+
+            _ignoreEvents = true;
+            SetProject(parts[0]);
+            SetSubject(parts[1]);
+            _ignoreEvents = false;
+
+            OnValueChanged();
+        }
+
+        /// <summary>
         /// Called by MainForm when MATLAB pushes updated metrics for the current subject.
         /// </summary>
         public void UpdateMetrics(MATLABStruct data)
@@ -364,6 +379,15 @@ namespace HTSController.Pages
         // Metrics
         // -------------------------------------------------------------------------
 
+        private void getMetricsButton_Click(object sender, EventArgs e)
+        {
+            var metrics = _network.SendRequest<SerializeableDictionary<string>>("GetSubjectMetrics");
+            _subjectMetadata.metrics = metrics;
+            ShowMetrics();
+            SendMetricsToEditor();
+            applyButton.Visible = false;
+        }
+
         private void applyButton_Click(object sender, EventArgs e)
         {
             ApplyMetrics();
@@ -481,5 +505,6 @@ namespace HTSController.Pages
             };
             _network.SendMessage("ReceiveAudiogram", payload);
         }
+
     }
 }

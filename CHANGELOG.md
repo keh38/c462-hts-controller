@@ -3,6 +3,8 @@
 ### v2.1.10 (2026-05-20)
 #### Fixed
 - improved bridge to Game
+#### Added
+- button on subject page to update metrics from tablet
 
 ---
 
@@ -22,7 +24,7 @@
 --
 
 ### v2.1.7 (2026-04-29)
-#### Addded
+#### Added
 - mechanism to transfer audiogram/ldl data to HTS from subject page
 
 ---

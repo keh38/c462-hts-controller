@@ -334,6 +334,10 @@ namespace HTSController
                 case "ChangedLEDColors":
                     SetLightsButtonBackgroundColor(payload.Data);
                     break;
+                case "SubjectChanged":
+                    Debug.WriteLine($"Received SubjectChanged message: {payload.Data}");
+                    subjectPageControl.OnSubjectChanged(payload.Data);
+                    break;
             }
         }
 
