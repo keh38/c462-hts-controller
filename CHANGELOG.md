@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.10 (2026-05-20)
+#### Fixed
+- improved bridge to Game
+
+---
+
 ### v2.1.9 (2026-05-18)
 #### Changed
 - cleaned up file transfer logic
