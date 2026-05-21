@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.11 (unreleased)
+#### Changed
+- receive subject change initiated by HTS (from game)
+
+---
+
 ### v2.1.10 (2026-05-20)
 #### Fixed
 - improved bridge to Game
