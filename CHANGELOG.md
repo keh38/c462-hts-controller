@@ -1,8 +1,9 @@
 ## Changelog
 
-### v2.1.11 (unreleased)
+### v2.1.11 (2026-05-21)
 #### Changed
 - receive subject change initiated by HTS (from game)
+- consolidate log folders
 
 ---
 

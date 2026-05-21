@@ -64,6 +64,7 @@ namespace HTSController
             _logPath = Path.Combine(
                 SharedFileLocations.HtsFolder,
                 "Logs",
+                "Controller",
                 $"HTSController-{DateTime.Now.ToString("yyyyMMdd")}.txt");
 
             await Task.Run(() =>
@@ -402,7 +403,7 @@ namespace HTSController
 
         private void logButton_Click(object sender, EventArgs e)
         {
-            var folder = Path.Combine(SharedFileLocations.HtsFolder, "Remote Logs");
+            var folder = Path.Combine(SharedFileLocations.HtsFolder, "Logs", "Remote");
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);

@@ -204,7 +204,7 @@ namespace HTSController.Data_Streams
 
         private string GetStreamLog(DataStream dataStream)
         {
-            var folder = Path.Combine(SharedFileLocations.HtsFolder, "Remote Logs");
+            var folder = Path.Combine(SharedFileLocations.HtsFolder, "Logs", "Remote");
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 
@@ -214,7 +214,7 @@ namespace HTSController.Data_Streams
                 var payload = response.GetPayload<TextFilePayload>();
                 var logPath = Path.Combine(folder, payload.Filename);
                 File.WriteAllText(logPath, payload.Content);
-                System.Diagnostics.Process.Start(logPath);
+                Process.Start(logPath);
                 return null;
             }
             else
