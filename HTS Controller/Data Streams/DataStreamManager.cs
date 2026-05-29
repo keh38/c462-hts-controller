@@ -245,7 +245,7 @@ namespace HTSController.Data_Streams
             _recording = true;
             _problemChildren.Clear();
 
-            var streamsToStart = _streams.FindAll(x => x.Record && x.IsPresent && !exclude.Contains(x.MulticastName));
+            var streamsToStart = _streams.FindAll(stream => stream.Record && stream.IsPresent && !exclude.Contains(stream.MulticastName) && !stream.MulticastName.StartsWith("SOUND.OF.SILENCE"));
  
             if (!string.IsNullOrEmpty(mandatory))
             {
