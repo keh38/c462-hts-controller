@@ -1,8 +1,10 @@
+using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace Pupillometry
 {
+    [JsonObject(MemberSerialization.OptOut)]
     public class DynamicRangeSettings
     {
         [DisplayName("(Name)")]

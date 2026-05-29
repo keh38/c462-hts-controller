@@ -1,6 +1,8 @@
 ## Changelog
 
-### v2.1.12 (unreleased)
+### v2.1.12 (2026-05-29)
+#### Added
+- support for Tobii-based gaze calibration
 #### Fixed
 - exclude game sync from started data streams
 

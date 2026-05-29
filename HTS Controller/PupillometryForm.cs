@@ -646,7 +646,10 @@ namespace HTSController
             else
             {
                 _runAborted = true;
+                // need to get a response here!!!
                 _streamManager.Find(_eyeTrackerName)?.SendMessage("StopCalibration");
+                gazeStopButton.Enabled = false;
+                gazeStartButton.Enabled = true;
             }
         }
 

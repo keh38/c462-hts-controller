@@ -317,7 +317,6 @@ namespace HTSController
         private void subjectPageControl_ProjectChanged(object s, string projectName)
         {
             SharedFileLocations.SetHtsSubject(projectName);
-            Debug.WriteLine($"subject data folder: {SharedFileLocations.HtsSubjectDataFolder}");
             turandotPageControl.UpdateConfigFileList();
         }
 
