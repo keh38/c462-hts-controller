@@ -31,6 +31,7 @@ using MathWorks.MATLAB.Types;
 using System.Xml.Linq;
 
 using Color = System.Drawing.Color;
+using Newtonsoft.Json;
 
 namespace HTSController
 {
@@ -259,7 +260,6 @@ namespace HTSController
                         Log.Error($"failed to start stream: {s}");
                     }
                     startButton.Enabled = true;
-                    _network.SendMessage("StopSynchronizing");
                     EndAutoRun(false, null);
                 }
             }
@@ -268,7 +268,6 @@ namespace HTSController
                 logTextBox.AppendText("didn't receive data file name from Dynamic Range scene");
                 Log.Error("didn't receive data file name from Dynamic Range scene");
                 startButton.Enabled = true;
-                _network.SendMessage("StopSynchronizing");
                 EndAutoRun(false, null);
             }
         }
@@ -421,9 +420,14 @@ namespace HTSController
                     Invoke(new Action(() => progressBar.Value = progress));
                     break;
                 case "ReceiveData":
-                    var rcvParts = payload.Data.Split(new char[] { ':' }, 2);
-                    string filePath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, rcvParts[0]);
-                    File.WriteAllText(filePath, rcvParts.Length > 1 ? rcvParts[1] : "");
+                    var filePayload = JsonConvert.DeserializeObject<TextFilePayload>(payload.Data);
+                    string filePath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, filePayload.Filename);
+                    if (File.Exists(filePath))
+                    {
+                        Log.Warning($"File {filePath} already exists, backing up. This shouldn't happen.");
+                        File.Move(filePath, filePath + ".bak");
+                    }
+                    File.WriteAllText(filePath, filePayload.Content);
                     _dataReceived = true;
                     break;
                 case "Response":
@@ -439,6 +443,10 @@ namespace HTSController
                     break;
                 case "GazeCalibrationFinished":
                     _stopCal = true;
+                    if (!_eyeTrackerName.Equals("EYELINK"))
+                    {
+                        Invoke(new Action(() => EndGazeCalibration()));
+                    }
                     break;
             }
         }
@@ -468,9 +476,18 @@ namespace HTSController
         {
             if (!_network.IsConnected)
             {
-                gazeLogTextBox.Text = "Not connected to tablet";
+                gazeLogTextBox.Text = "Not connected to HTS";
                 return;
             }
+
+            var eyeTrackerStream = _streamManager.FindEyeTracker();
+
+            if (eyeTrackerStream == null)
+            {
+                gazeLogTextBox.Text = "No eye tracker found in data streams";
+                return;
+            }
+            _eyeTrackerName = eyeTrackerStream.MulticastName;
 
             _runAborted = false;
             _stopCal = false;
@@ -490,7 +507,8 @@ namespace HTSController
 
             // Stop EyeLink Interface if it's running
 #if !NO_EYELINK
-            _streamManager.Find("EYELINK")?.SendMessage("Abort");
+            if (_eyeTrackerName.Equals("EYELINK"))
+                _streamManager.Find("EYELINK")?.SendMessage("Abort");
 #endif
 
             success = GetTabletScreenSize();
@@ -511,14 +529,14 @@ namespace HTSController
             await Task.Run(() => InitializeGazeCalibrationMeasurement());
             if (string.IsNullOrEmpty(_dataFile))
             {
-                gazeLogTextBox.AppendText("- Timed out waiting for tablet to send data file name" + Environment.NewLine);
-                Log.Error("timed out waiting for tablet to send data file name");
+                gazeLogTextBox.AppendText("- HTS error initializing gaze calibration" + Environment.NewLine);
+                Log.Error("HTS error initializing gaze calibration");
                 gazeStartButton.Enabled = true;
                 EndAutoRun(false, null);
                 return;
             }
 
-            var started = await _streamManager.StartDataStreamsAsync(Path.GetFileName(_dataFile), exclude: new List<string> { "EYELINK" });
+            var started = await _streamManager.StartDataStreamsAsync(Path.GetFileName(_dataFile), exclude: new List<string> { _eyeTrackerName });
             if (started)
             {
                 OnRunStateChanged("GazeCalibration", true);
@@ -534,6 +552,12 @@ namespace HTSController
 
                 gazeStartButton.Enabled = true;
                 EndAutoRun(false, null);
+                return;
+            }
+
+            if (!_eyeTrackerName.Equals("EYELINK"))
+            {
+                StartRemoteCalibration();
                 return;
             }
 
@@ -561,23 +585,8 @@ namespace HTSController
 
         private void InitializeGazeCalibrationMeasurement()
         {
-            _network.SendMessage("Initialize", Files.ToXMLString(_gazeSettings));
-
-            // wait for file name to get sent back via RemoteMessageHandler
-            var startTime = DateTime.Now;
-            while ((DateTime.Now - startTime).TotalSeconds < 5)
-            {
-                Thread.Sleep(200);
-                if (!string.IsNullOrEmpty(_dataFile))
-                {
-                    break;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(_dataFile))
-            {
-                _network.SendMessage("StartSynchronizing", _dataFile);
-            }
+            var result = _network.SendRequest<string>("Initialize", _gazeSettings);
+            _dataFile = result ?? "";
         }
 
         private void PollForJobs()
@@ -628,9 +637,17 @@ namespace HTSController
         private void gazeStopButton_Click(object sender, EventArgs e)
         {
             Log.Information("User stopping gaze calibration");
-            _runAborted = true;
-            _stopCal = true;
-            _network.SendMessage("Abort");
+            if (_eyeTrackerName.Equals("EYELINK"))
+            {
+                _runAborted = true;
+                _stopCal = true;
+                _network.SendMessage("Abort");
+            }
+            else
+            {
+                _runAborted = true;
+                _streamManager.Find(_eyeTrackerName)?.SendMessage("StopCalibration");
+            }
         }
 
         private bool GetTabletScreenSize()
@@ -702,29 +719,60 @@ namespace HTSController
 #endif
         }
 
+        private void StartRemoteCalibration()
+        {
+            var connectionPayload = new ConnectionRequestPayload()
+            {
+                Address = _network.RemoteEndPoint.Address.ToString(),
+                Port = _network.RemoteEndPoint.Port
+            };
+            _streamManager.Find(_eyeTrackerName)?.SendRequest("StartCalibration", connectionPayload);
+
+            gazeLogTextBox.AppendText("- Running..." + Environment.NewLine);
+            gazeStopButton.Visible = true;
+        }
+
         private async void EndGazeCalibration()
         {
             Log.Information("End gaze calibration");
-            _network.SendMessage("StopSynchronizing");
             await _streamManager.StopDataStreamsAsync();
 
-            await Task.Run(() => GetDataFile("SendData", "gaze calibration log"));
-            await Task.Run(() => GetDataFile("SendSyncLog", "sync log"));
+            var dataFilePayload = _network.SendRequest<TextFilePayload>("SendData");
+            if (dataFilePayload != null && !string.IsNullOrEmpty(dataFilePayload.Filename))
+            {
+                var logPath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, dataFilePayload.Filename);
+                File.WriteAllText(logPath, dataFilePayload.Content);
+            }
+
+            var syncLog = _network.SendRequest<TextFilePayload>("GetSyncLog");
+            if (syncLog != null && !string.IsNullOrEmpty(syncLog.Filename))
+            {
+                var logPath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, syncLog.Filename);
+                File.WriteAllText(logPath, syncLog.Content);
+            }
+            else
+            {
+                Log.Information("tablet has no sync log file to send");
+            }
+
 
 #if NO_EYELINK
 #else
-            _eyeLink.exitCalibration();
-            _eyeLink.setOfflineMode();
-            _eyeLink.close();
+            if (_eyeTrackerName.Equals("EYELINK"))
+            {
+                _eyeLink.exitCalibration();
+                _eyeLink.setOfflineMode();
+                _eyeLink.close();
 
-            var startTime = DateTime.Now;
-            while (_eyeLink.isConnected() && (DateTime.Now - startTime).TotalSeconds < 5)
-            {
-                Thread.Sleep(100);
-            }
-            if (_eyeLink.isConnected())
-            {
-                Log.Information("EyeLink is still connected");
+                var startTime = DateTime.Now;
+                while (_eyeLink.isConnected() && (DateTime.Now - startTime).TotalSeconds < 5)
+                {
+                    Thread.Sleep(100);
+                }
+                if (_eyeLink.isConnected())
+                {
+                    Log.Information("EyeLink is still connected");
+                }
             }
 #endif
             Thread.Sleep(1000);
@@ -737,8 +785,11 @@ namespace HTSController
             gazePicture.Refresh();
 
 #if !NO_EYELINK
-            Log.Information("Restarting EyeLink");
-            _streamManager.Find("EYELINK")?.SendMessage("Free Run");
+            if (_eyeTrackerName.Equals("EYELINK"))
+            {
+                Log.Information("Restarting EyeLink");
+                _streamManager.Find("EYELINK")?.SendMessage("Free Run");
+            }
 #endif
 
             OnRunStateChanged("GazeCalibration", false);

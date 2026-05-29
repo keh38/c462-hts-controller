@@ -57,7 +57,7 @@ namespace HTSController.Data_Streams
         public List<string> GetProblemStreams() => _problemChildren;
 
         public DataStream Find(string name) => _streams.Find(x => x.MulticastName == name);
-        public DataStream FindEyeTracker() => _streams.Find(x => x.IsEyeTracker);
+        public DataStream FindEyeTracker() => _streams.Find(x => x.IsEyeTracker && x.IsPresent);
 
         public DataStreamManager()
         {

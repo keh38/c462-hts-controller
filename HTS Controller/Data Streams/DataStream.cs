@@ -43,5 +43,10 @@ namespace HTSController.Data_Streams
         {
             await Task.Run(() => KTcpClient.SendRequest(IPEndPoint, TcpMessage.Request(message)));
         }
+
+        public async Task SendRequest(string message, object payload)
+        {
+            await Task.Run(() => KTcpClient.SendRequest(IPEndPoint, TcpMessage.Request(message, payload)));
+        }
     }
 }

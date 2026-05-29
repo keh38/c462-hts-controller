@@ -50,8 +50,6 @@ namespace HTSController.Data_Streams
                 Serilog.Log.Information($"{Stream.Name} changed to {Stream.Status}");
             }
             BackColor = newcolor;
-            //BackColor = _stream.IsPresent ? StatusToColor(_stream.Status) : Color.LightGray;
-            statusLabel.Text = Stream.LastActivity.ToLongTimeString();
             addressLabel.Text = Stream.IsPresent ? Stream.IPEndPoint.ToString() : "";
             statusLabel.Text = (Stream.IsPresent && Stream.Status != DataStream.StreamStatus.Idle) ? Stream.LastActivity.ToLongTimeString() : "";
 
