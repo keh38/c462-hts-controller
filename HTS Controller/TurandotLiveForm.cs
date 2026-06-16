@@ -38,6 +38,7 @@ namespace HTSController
         private bool _autoRun;
         Watchdog _watchdog;
         private bool _runAborted;
+        private bool _endRunInProcess;
 
         #region EVENTS
         public event EventHandler<AutoRunEndEventArgs> AutoRunEnd;
@@ -89,6 +90,8 @@ namespace HTSController
             closeButton.Visible = false;
 
             _runAborted = false;
+            _endRunInProcess = false;
+
             dataFileTextBox.Text = "";
             progressBar.Value = 0;
             await Task.Run(() => InitializeTurandot());
@@ -155,6 +158,13 @@ namespace HTSController
 
         private async void EndRun(string message, string status)
         {
+            if (_endRunInProcess)
+            {
+                Log.Warning($"EndRun called multiple times {message}: {status}");
+                return;
+            }
+            _endRunInProcess = true;
+
             _watchdog.Stop();
             await _streamManager.StopDataStreamsAsync();
 
@@ -267,6 +277,7 @@ namespace HTSController
             }
             else
             {
+                Log.Information("Stop button clicked but network is not connected");
                 EndRun("Error", "Lost connection");
             }
         }
