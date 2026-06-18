@@ -1,6 +1,6 @@
 ## Changelog
 
-### v2.1.13 (unreleased)
+### v2.1.13 (2026-06-18)
 #### Changed
 - handle data streams that return errors on start commands
 
