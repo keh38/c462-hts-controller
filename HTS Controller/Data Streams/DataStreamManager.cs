@@ -260,17 +260,22 @@ namespace HTSController.Data_Streams
 
             InitializeSyncLogFile(filename);
 
-            // Fire all Record commands in parallel
+            // Fire all Record commands in parallel, capturing which streams acknowledged
             string fullDataPath = Path.Combine(SharedFileLocations.HtsSubjectDataFolder, Path.GetFileName(filename));
-            await Task.WhenAll(streamsToStart.Select(async s =>
+            var acks = await Task.WhenAll(streamsToStart.Select(async s =>
             {
                 var response = await Task.Run(() => KTcpClient.SendRequest(s.IPEndPoint, TcpMessage.Request("Record", (object)fullDataPath)));
                 Log.Information($"{s.Name} ({s.IPEndPoint}) responds {response.Code}");
+                return (stream: s, acked: response.IsOk);
             }));
+
+            // A non-OK Record response (403 already recording, 500 unreachable, …) means the
+            // stream won't enter Recording for us — don't wait on it.
+            var rejected = acks.Where(a => !a.acked).Select(a => a.stream).ToList();
+            var pending = acks.Where(a => a.acked).Select(a => a.stream).ToList();
 
             // Poll in parallel until all streams are recording or timeout
             var startTime = DateTime.Now;
-            var pending = streamsToStart.ToList();
 
             while ((DateTime.Now - startTime).TotalSeconds < _streamConfig.StartTimeout && pending.Count > 0)
             {
@@ -288,7 +293,8 @@ namespace HTSController.Data_Streams
                     .Where(s => s.Status == DataStream.StreamStatus.Idle || s.Status == DataStream.StreamStatus.Missed)
                     .ToList();
             }
-            bool success = pending.Count == 0;
+
+            bool success = pending.Count == 0 && rejected.Count == 0;
 
             if (success)
             {
@@ -307,7 +313,7 @@ namespace HTSController.Data_Streams
                     Log.Information($"stopping {s.MulticastName}: {response.Code}");
                 }
                 // Anything still pending has timed out
-                foreach (var s in pending)
+                foreach (var s in pending.Concat(rejected))   // timeouts + rejections both
                 {
                     Log.Warning($"{s.Name} failed to start within timeout");
                     _problemChildren.Add(s.Name);

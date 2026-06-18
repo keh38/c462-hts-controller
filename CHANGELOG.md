@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.13 (unreleased)
+#### Changed
+- handle data streams that return errors on start commands
+
+---
+
 ### v2.1.12 (2026-05-29)
 #### Added
 - support for Tobii-based gaze calibration
