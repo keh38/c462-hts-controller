@@ -32,6 +32,7 @@ using Newtonsoft.Json;
 
 using Serilog;
 using System.Timers;
+using Tapping;
 
 namespace HTSController
 {
@@ -158,6 +159,10 @@ namespace HTSController
 
                     case "LDL":
                         _config = obj as LDLMeasurementSettings;
+                        break;
+
+                    case "Tapping":
+                        _config = obj as TappingConfiguration;
                         break;
 
                     case "Questionnaire":
@@ -495,6 +500,10 @@ namespace HTSController
 
                 case "LDL":
                     config = new LDLMeasurementSettings();
+                    break;
+
+                case "Tapping":
+                    config = new TappingConfiguration();
                     break;
 
                 case "Questionnaire":

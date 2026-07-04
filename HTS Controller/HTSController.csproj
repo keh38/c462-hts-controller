@@ -241,6 +241,7 @@
     <Compile Include="Editor\Basic\LDL\LDLMeasurementSettings.cs" />
     <Compile Include="Editor\Basic\Questionnaires\Questionnaires.Question.cs" />
     <Compile Include="Editor\Basic\Questionnaires\Questionnaires.Questionnaire.cs" />
+    <Compile Include="Editor\Basic\Tapping\TappingConfiguration.cs" />
     <Compile Include="Editor\Pupillometry\Pupillometry.DynamicRangeSettings.cs" />
     <Compile Include="Editor\Pupillometry\Pupillometry.GazeCalibrationSettings.cs" />
     <Compile Include="Editor\Speech\Digits\DigitsTestSettings.cs" />
