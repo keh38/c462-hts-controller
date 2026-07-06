@@ -98,7 +98,7 @@ namespace HTSController
         private void UpdateFileMenu()
         {
             msSelectMeasurement.DropDownItems.Clear();
-            foreach (var measType in new List<string>() { "Audiogram", "Bekesy", "Combined", "Digits", "LDL", "Questionnaire" })
+            foreach (var measType in new List<string>() { "Audiogram", "Bekesy", "Combined", "Digits", "LDL", "Tapping", "Questionnaire" })
             {
                 var measItem = new ToolStripMenuItem();
                 measItem.Text = measType;

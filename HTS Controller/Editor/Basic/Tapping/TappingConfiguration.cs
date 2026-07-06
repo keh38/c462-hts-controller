@@ -6,6 +6,7 @@ using System.ComponentModel;
 
 using OrderedPropertyGrid;
 using KLib.Signals;
+using KLib.Signals.Editor;
 using KLib.TypeConverters;
 
 namespace Tapping
@@ -22,6 +23,7 @@ namespace Tapping
 
         [Category("Target")]
         [PropertyOrder(0)]
+        [TypeConverter(typeof(ChannelConverter))]
         public Channel Channel { get; set; }
         private bool ShouldSerializeChannel() { return false; }
 
@@ -51,6 +53,7 @@ namespace Tapping
 
             TestEar = Audiograms.TestEar.Both;
 
+            Channel = new Channel();
             MinISI = 0.5f;
             PatternLength = 5;
             IntervalExpression = "[1 2]";
