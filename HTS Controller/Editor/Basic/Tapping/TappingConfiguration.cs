@@ -29,6 +29,7 @@ namespace Tapping
 
         [Category("Target")]
         [PropertyOrder(1)]
+        [DisplayName("Min ISI (ms)")]   
         public float MinISI { get; set; }
         private bool ShouldSerializeMinISI() { return false; }
 
@@ -54,7 +55,7 @@ namespace Tapping
             TestEar = Audiograms.TestEar.Both;
 
             Channel = new Channel();
-            MinISI = 0.5f;
+            MinISI = 500f;
             PatternLength = 5;
             IntervalExpression = "[1 2]";
             NumRepeats = 5;
