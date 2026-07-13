@@ -1,5 +1,6 @@
 using System.ComponentModel;
 
+using C462.Shared;
 using BasicMeasurements;
 
 namespace Bekesy
@@ -13,7 +14,7 @@ namespace Bekesy
         [Category("Procedure")]
         [Description("Ears to test")]
         [DisplayName("Ears")]
-        public Audiograms.TestEar TestEar { get; set; }
+        public AudiogramTestEar TestEar { get; set; }
         private bool ShouldSerializeTestEar() { return false; }
 
         [Category("Procedure")]
@@ -78,7 +79,7 @@ namespace Bekesy
         {
             Title = "The Softest Sound";
 
-            TestEar = Audiograms.TestEar.Both;
+            TestEar = AudiogramTestEar.Each;
             TestFrequencies = new float[] { 750, 1000, 1500, 2000, 3000, 4000, 8000, 125, 250, 500 };
 
             Merge = false;

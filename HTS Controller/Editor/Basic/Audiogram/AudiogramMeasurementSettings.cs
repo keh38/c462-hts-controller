@@ -1,10 +1,12 @@
 using System.ComponentModel;
 
+using C462.Shared;
+
 using BasicMeasurements;
 
 namespace Audiograms
 {
-    public enum TestEar { Left, Right, Both }
+//    public enum TestEar { Left, Right, Both, Diotic }
 
     public class AudiogramMeasurementSettings : BasicMeasurementConfiguration
     {
@@ -52,7 +54,7 @@ namespace Audiograms
         [Category("Sequence")]
         [Description("Ears to test")]
         [DisplayName("Ears")]
-        public TestEar TestEar { get; set; }
+        public AudiogramTestEar TestEar { get; set; }
         private bool ShouldSerializeTestEar() { return false; }
 
         [Category("Sequence")]
@@ -122,7 +124,7 @@ namespace Audiograms
         {
             Title = "The Softest Sound";
 
-            TestEar = TestEar.Both;
+            TestEar = AudiogramTestEar.Each;
             TestFrequencies = new float[] { 750, 1000, 1500, 2000, 3000, 4000, 8000, 125, 250, 500 };
 
             Merge = false;

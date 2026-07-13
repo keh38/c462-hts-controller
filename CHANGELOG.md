@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.14 (unreleased)
+#### Added
+- diotic specific audiogram data (for now, applicable only to combined measurement)
+
+---
+
 ### v2.1.13 (2026-06-18)
 #### Changed
 - handle data streams that return errors on start commands

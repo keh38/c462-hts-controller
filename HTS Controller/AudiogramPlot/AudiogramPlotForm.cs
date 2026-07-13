@@ -94,6 +94,7 @@ namespace HTSController
         {
             Audiogram leftAudio = null;
             Audiogram rightAudio = null;
+            Audiogram dioticAudio = null;
 
             if (audiogram != null)
             {
@@ -104,6 +105,11 @@ namespace HTSController
                 // Right audiogram
                 rightAudio = audiogram.Get(AudiogramTestEar.Right);
                 PlotAudiogram(plot, rightAudio, Colors.Red, MarkerShape.OpenCircle);
+
+                // Diotic audiogram
+                dioticAudio = audiogram.Get(AudiogramTestEar.Diotic);
+                if (dioticAudio != null)
+                    PlotAudiogram(plot, dioticAudio, Colors.Black, MarkerShape.OpenSquare);
             }
 
             if (ldlgram == null) return;
@@ -115,6 +121,11 @@ namespace HTSController
             // Right LDL
             data = ldlgram.Get(AudiogramTestEar.Right);
             PlotLDLgram(plot, data, Colors.Red);
+
+            // Diotic LDL
+            data = ldlgram.Get(AudiogramTestEar.Diotic);
+            if (data != null)
+                PlotLDLgram(plot, data, Colors.Black);
         }
 
         private void PlotAudiogram(Plot plot, Audiogram audiogram, ScottPlot.Color color, MarkerShape markerShape)

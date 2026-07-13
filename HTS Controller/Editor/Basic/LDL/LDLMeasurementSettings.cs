@@ -31,7 +31,7 @@ namespace LDL
         [Category("Sequence")]
         [Description("Ears to test")]
         [DisplayName("Ears")]
-        public Audiograms.TestEar TestEar { get; set; }
+        public AudiogramTestEar TestEar { get; set; }
         private bool ShouldSerializeTestEar() { return false; }
 
         [Category("Sequence")]
@@ -118,7 +118,7 @@ namespace LDL
         {
             Title = "How loud does it sound?";
 
-            TestEar = Audiograms.TestEar.Both;
+            TestEar = AudiogramTestEar.Each;
             TestFrequencies = new float[] { 1000, 2000, 4000 };
 
             Merge = true;

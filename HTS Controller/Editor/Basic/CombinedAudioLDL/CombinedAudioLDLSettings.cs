@@ -27,7 +27,7 @@ namespace CombinedAudioLDL
         [Category("Sequence")]
         [Description("Ears to test")]
         [DisplayName("Ears")]
-        public Audiograms.TestEar TestEar { get; set; }
+        public AudiogramTestEar TestEar { get; set; }
         private bool ShouldSerializeTestEar() { return false; }
 
         [Category("Sequence")]
@@ -47,6 +47,11 @@ namespace CombinedAudioLDL
         [PropertyOrder(1)]
         public bool LogSliderTracks { set; get; }
         private bool ShouldSerializeLogSliderTracks() { return false; }
+
+        [Category("Bookkeeping")]
+        [PropertyOrder(2)]
+        public bool MergeData { set; get; }
+        private bool ShouldSerializeMergeData() { return false; }
 
         [Category("Procedure")]
         [PropertyOrder(0)]
@@ -122,10 +127,11 @@ namespace CombinedAudioLDL
         {
             Title = "How loud does it sound?";
 
-            TestEar = Audiograms.TestEar.Both;
+            TestEar = AudiogramTestEar.Each;
             TestFrequencies = new float[] { 1000, 2000, 4000 };
 
             LogSliderTracks = false;
+            MergeData = false;
 
             MinLevel = 0f;
             Ramp = 5f;

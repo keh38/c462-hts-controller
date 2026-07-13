@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using OrderedPropertyGrid;
+using C462.Shared;
 using KLib.Signals;
 using KLib.Signals.Editor;
 using KLib.TypeConverters;
@@ -19,7 +20,7 @@ namespace Tapping
         private bool ShouldSerializeTitle() { return false; }
 
         [Browsable(false)]
-        public TestEar TestEar { get; set; }
+        public AudiogramTestEar TestEar { get; set; }
 
         [Category("Target")]
         [PropertyOrder(0)]
@@ -52,7 +53,7 @@ namespace Tapping
         {
             Title = "Tapping";
 
-            TestEar = Audiograms.TestEar.Both;
+            TestEar = AudiogramTestEar.Each;
 
             Channel = new Channel();
             MinISI = 500f;
