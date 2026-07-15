@@ -36,8 +36,8 @@ namespace Tapping
 
         [Category("Target")]
         [PropertyOrder(2)]
-        public int PatternLength { get; set; }
-        private bool ShouldSerializePatternLength() { return false; }
+        public int SetLength { get; set; }
+        private bool ShouldSerializeSetLength() { return false; }
 
         [Category("Target")]
         [PropertyOrder(3)]
@@ -57,7 +57,7 @@ namespace Tapping
 
             Channel = new Channel();
             MinISI = 500f;
-            PatternLength = 5;
+            SetLength = 5;
             IntervalExpression = "[1 2]";
             NumRepeats = 5;
         }
