@@ -3,6 +3,8 @@
 ### v2.1.14 (unreleased)
 #### Added
 - diotic specific audiogram data (for now, applicable only to combined measurement)
+- query HTS hardware status on connection
+- option to restart HTS
 
 ---
 
