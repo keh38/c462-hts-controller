@@ -47,6 +47,7 @@
             this.audiogramButton = new System.Windows.Forms.Button();
             this.transferButton = new System.Windows.Forms.Button();
             this.getMetricsButton = new System.Windows.Forms.Button();
+            this.hardwareErrorButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.metricGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -66,7 +67,7 @@
             this.projectDropDown.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.projectDropDown.FormattingEnabled = true;
             this.projectDropDown.Location = new System.Drawing.Point(53, 54);
-            this.projectDropDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.projectDropDown.Margin = new System.Windows.Forms.Padding(4);
             this.projectDropDown.Name = "projectDropDown";
             this.projectDropDown.Size = new System.Drawing.Size(160, 24);
             this.projectDropDown.Sorted = true;
@@ -91,7 +92,7 @@
             this.subjectDropDown.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.subjectDropDown.FormattingEnabled = true;
             this.subjectDropDown.Location = new System.Drawing.Point(53, 121);
-            this.subjectDropDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.subjectDropDown.Margin = new System.Windows.Forms.Padding(4);
             this.subjectDropDown.Name = "subjectDropDown";
             this.subjectDropDown.Size = new System.Drawing.Size(160, 24);
             this.subjectDropDown.TabIndex = 4;
@@ -102,7 +103,7 @@
             // createSubjectButton
             // 
             this.createSubjectButton.Location = new System.Drawing.Point(223, 118);
-            this.createSubjectButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.createSubjectButton.Margin = new System.Windows.Forms.Padding(4);
             this.createSubjectButton.Name = "createSubjectButton";
             this.createSubjectButton.Size = new System.Drawing.Size(97, 28);
             this.createSubjectButton.TabIndex = 7;
@@ -127,7 +128,7 @@
             this.transducerDropDown.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.transducerDropDown.FormattingEnabled = true;
             this.transducerDropDown.Location = new System.Drawing.Point(53, 193);
-            this.transducerDropDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.transducerDropDown.Margin = new System.Windows.Forms.Padding(4);
             this.transducerDropDown.Name = "transducerDropDown";
             this.transducerDropDown.Size = new System.Drawing.Size(160, 24);
             this.transducerDropDown.TabIndex = 8;
@@ -173,7 +174,7 @@
             this.metricGridView.DefaultCellStyle = dataGridViewCellStyle5;
             this.metricGridView.EnableHeadersVisualStyles = false;
             this.metricGridView.Location = new System.Drawing.Point(53, 271);
-            this.metricGridView.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.metricGridView.Margin = new System.Windows.Forms.Padding(5);
             this.metricGridView.Name = "metricGridView";
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
@@ -214,7 +215,7 @@
             // applyButton
             // 
             this.applyButton.Location = new System.Drawing.Point(404, 309);
-            this.applyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.applyButton.Margin = new System.Windows.Forms.Padding(4);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(101, 28);
             this.applyButton.TabIndex = 15;
@@ -226,7 +227,7 @@
             // createProjectButton
             // 
             this.createProjectButton.Location = new System.Drawing.Point(223, 52);
-            this.createProjectButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.createProjectButton.Margin = new System.Windows.Forms.Padding(4);
             this.createProjectButton.Name = "createProjectButton";
             this.createProjectButton.Size = new System.Drawing.Size(97, 28);
             this.createProjectButton.TabIndex = 16;
@@ -238,7 +239,7 @@
             // audiogramButton
             // 
             this.audiogramButton.Location = new System.Drawing.Point(223, 118);
-            this.audiogramButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.audiogramButton.Margin = new System.Windows.Forms.Padding(4);
             this.audiogramButton.Name = "audiogramButton";
             this.audiogramButton.Size = new System.Drawing.Size(100, 28);
             this.audiogramButton.TabIndex = 17;
@@ -249,7 +250,7 @@
             // transferButton
             // 
             this.transferButton.Location = new System.Drawing.Point(328, 118);
-            this.transferButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.transferButton.Margin = new System.Windows.Forms.Padding(4);
             this.transferButton.Name = "transferButton";
             this.transferButton.Size = new System.Drawing.Size(100, 28);
             this.transferButton.TabIndex = 18;
@@ -260,7 +261,7 @@
             // getMetricsButton
             // 
             this.getMetricsButton.Location = new System.Drawing.Point(404, 271);
-            this.getMetricsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.getMetricsButton.Margin = new System.Windows.Forms.Padding(4);
             this.getMetricsButton.Name = "getMetricsButton";
             this.getMetricsButton.Size = new System.Drawing.Size(101, 28);
             this.getMetricsButton.TabIndex = 19;
@@ -268,11 +269,25 @@
             this.getMetricsButton.UseVisualStyleBackColor = true;
             this.getMetricsButton.Click += new System.EventHandler(this.getMetricsButton_Click);
             // 
+            // hardwareErrorButton
+            // 
+            this.hardwareErrorButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.hardwareErrorButton.Location = new System.Drawing.Point(372, 50);
+            this.hardwareErrorButton.Margin = new System.Windows.Forms.Padding(4);
+            this.hardwareErrorButton.Name = "hardwareErrorButton";
+            this.hardwareErrorButton.Size = new System.Drawing.Size(132, 28);
+            this.hardwareErrorButton.TabIndex = 20;
+            this.hardwareErrorButton.Text = "Hardware errors";
+            this.hardwareErrorButton.UseVisualStyleBackColor = false;
+            this.hardwareErrorButton.Visible = false;
+            this.hardwareErrorButton.Click += new System.EventHandler(this.hardwareErrorButton_Click);
+            // 
             // SubjectPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.hardwareErrorButton);
             this.Controls.Add(this.getMetricsButton);
             this.Controls.Add(this.transferButton);
             this.Controls.Add(this.audiogramButton);
@@ -287,7 +302,7 @@
             this.Controls.Add(this.subjectDropDown);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.projectDropDown);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SubjectPage";
             this.Size = new System.Drawing.Size(522, 574);
             ((System.ComponentModel.ISupportInitialize)(this.metricGridView)).EndInit();
@@ -314,5 +329,6 @@
         private System.Windows.Forms.Button audiogramButton;
         private System.Windows.Forms.Button transferButton;
         private System.Windows.Forms.Button getMetricsButton;
+        private System.Windows.Forms.Button hardwareErrorButton;
     }
 }

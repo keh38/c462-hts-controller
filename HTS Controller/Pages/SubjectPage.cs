@@ -41,6 +41,8 @@ namespace HTSController.Pages
         private HTSNetwork _network;
         private SubjectMetadata _subjectMetadata;
 
+        private string _htsErrorMessage;
+
         public string Project { get; private set; } = "";
         public string Subject { get; private set; } = "";
 
@@ -74,6 +76,26 @@ namespace HTSController.Pages
             Refresh();
             SetProject(HTSControllerSettings.LastProject);
             _ignoreEvents = false;
+        }
+
+        public void CheckHTSStatus()
+        {
+            Log.Information("Querying HTS hardware status");
+
+            try
+            {
+                _htsErrorMessage = null;
+
+                var hardwareStatus = _network.SendRequest<HardwareStatusPayload>("GetHardwareStatus");
+
+                hardwareErrorButton.Visible = !hardwareStatus.IsReady;
+                _htsErrorMessage = hardwareStatus.ErrorMessage; 
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"CheckHTSStatus query hardware status failed: {ex.Message}");
+            }
+
         }
 
         /// <summary>
@@ -506,5 +528,9 @@ namespace HTSController.Pages
             _network.SendMessage("ReceiveAudiogram", payload);
         }
 
+        private void hardwareErrorButton_Click(object sender, EventArgs e)
+        {
+            MessageBoxEx.Show(this.ParentForm, _htsErrorMessage, "HTS hardware errors", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
     }
 }

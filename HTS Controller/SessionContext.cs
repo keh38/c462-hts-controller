@@ -55,7 +55,7 @@ namespace HTSController
                 return;
             }
             var ldl = AudiogramData.Load(ldlPath);
-            if (ldl != null) ldl.ReplaceNaNWithMax(SessionContext.Signal);
+            if (ldl != null) ldl.SanitizeLDLForExpressions(SessionContext.Signal);
             Signal.LDL = ldl;
         }
 

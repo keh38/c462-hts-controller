@@ -213,6 +213,7 @@ namespace HTSController
                     }
                 }
 
+                subjectPageControl.CheckHTSStatus();
                 subjectPageControl.OnConnected();
                 turandotPageControl.UpdateConfigFileList();
                 menuPanel.Enabled = true;
