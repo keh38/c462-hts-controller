@@ -628,6 +628,7 @@ namespace HTSController
                     {
                         audioErrorTextBox.Text = $"Remote error: {payload.Data}" + Environment.NewLine;
                         graphTabControl.SelectedTab = errorPage;
+                        startButton.Visible = true;
                     }));
                     break;
             }

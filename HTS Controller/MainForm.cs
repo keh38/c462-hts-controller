@@ -653,12 +653,22 @@ namespace HTSController
 
         private void quitButton_Click(object sender, EventArgs e)
         {
-            var result = MessageBoxEx.Show(this, "Quit app on tablet?", "Quit HTS", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var result = MsgBox.Show("Quit app on tablet?", "Quit HTS", 
+                MessageBoxButtons.AbortRetryIgnore, 
+                MessageBoxIcon.Question, 
+                "Yes", "Restart", "No");
 
-            if (result == DialogResult.No)
+            if (result == DialogResult.Ignore)
             {
                 return;
             }
+
+            if (result == DialogResult.Retry)
+            {
+                _network.SendMessage("Restart");
+                return;
+            }
+
             _network.SendMessage("Quit");
         }
 
