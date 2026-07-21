@@ -1,6 +1,6 @@
 ## Changelog
 
-### v2.1.14 (unreleased)
+### v2.1.14 (2026-07-21)
 #### Added
 - diotic specific audiogram data (for now, applicable only to combined measurement)
 - query HTS hardware status on connection
