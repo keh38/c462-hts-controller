@@ -56,8 +56,11 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="C462.Shared, Version=1.23.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\C462.Shared.1.23.0\lib\net48\C462.Shared.dll</HintPath>
+    <Reference Include="C462.HTS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\C462.HTS.1.0.0\lib\net48\C462.HTS.dll</HintPath>
+    </Reference>
+    <Reference Include="C462.Shared, Version=1.24.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\C462.Shared.1.24.0\lib\net48\C462.Shared.dll</HintPath>
     </Reference>
     <Reference Include="C462.Turandot, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\C462.Turandot.1.4.2\lib\net48\C462.Turandot.dll</HintPath>
@@ -195,6 +198,7 @@
     <Reference Include="System.Drawing.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Drawing.Common.6.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
@@ -232,16 +236,6 @@
     </Compile>
     <Compile Include="Data Streams\DataStreamConfig.cs" />
     <Compile Include="Data Streams\IDataStreamHandler.cs" />
-    <Compile Include="Editor\Basic\Audiogram\AudiogramMeasurementSettings.cs" />
-    <Compile Include="Editor\Basic\BasicMeasurementConfiguration.cs" />
-    <Compile Include="Editor\Basic\Bekesy\BekesyMeasurementSettings.cs" />
-    <Compile Include="Editor\Basic\CombinedAudioLDL\CombinedAudioLDLSettings.cs" />
-    <Compile Include="Editor\Basic\LDL\Haptics\LDL.HapticsSeqVar.cs" />
-    <Compile Include="Editor\Basic\LDL\Haptics\LDL.HapticStimulus.cs" />
-    <Compile Include="Editor\Basic\LDL\LDLMeasurementSettings.cs" />
-    <Compile Include="Editor\Basic\Questionnaires\Questionnaires.Question.cs" />
-    <Compile Include="Editor\Basic\Questionnaires\Questionnaires.Questionnaire.cs" />
-    <Compile Include="Editor\Basic\Tapping\TappingConfiguration.cs" />
     <Compile Include="Editor\Pupillometry\Pupillometry.DynamicRangeSettings.cs" />
     <Compile Include="Editor\Pupillometry\Pupillometry.GazeCalibrationSettings.cs" />
     <Compile Include="Editor\Speech\Digits\DigitsTestSettings.cs" />
@@ -256,16 +250,12 @@
     <Compile Include="Editor\Speech\Speech Reception\SpeechReception.Test.cs" />
     <Compile Include="Editor\TypeConverters\ClosedSetConverter.cs" />
     <Compile Include="Editor\TypeConverters\FloatTypeConverter.cs" />
-    <Compile Include="Editor\TypeConverters\HapticSeqVarCollectionConverter.cs" />
-    <Compile Include="Editor\TypeConverters\HapticSeqVarVariableConverter.cs" />
-    <Compile Include="Editor\TypeConverters\HapticStimulusConverter.cs" />
     <Compile Include="Editor\TypeConverters\InstructionFileCollectionConverter.cs" />
     <Compile Include="Editor\TypeConverters\ListPropertiesCollectionConverter.cs" />
     <Compile Include="Editor\TypeConverters\ListPropertiesConverter.cs" />
     <Compile Include="Editor\TypeConverters\MaskerConverter.cs" />
     <Compile Include="Editor\TypeConverters\MatrixTestTypeConverter.cs" />
     <Compile Include="Editor\TypeConverters\PerformanceCriteriaConverter.cs" />
-    <Compile Include="Editor\TypeConverters\QuestionCollectionEditor.cs" />
     <Compile Include="Editor\TypeConverters\SequenceTypeConverter.cs" />
     <Compile Include="Editor\TypeConverters\SpeechTestConverter.cs" />
     <Compile Include="SessionContext.cs" />
@@ -478,7 +468,6 @@
     <Content Include="Revision_History.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Editor\Basic\TypeConverters\" />
     <Folder Include="Editor\Speech\Speech Reception\TypeConverters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

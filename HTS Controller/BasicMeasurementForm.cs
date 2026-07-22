@@ -1,20 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using KLib.IO;
 using KLib.Net;
-using BasicMeasurements;
 using Audiograms;
+using BasicMeasurements;
 using Bekesy;
 using CombinedAudioLDL;
 using DigitsTest;
@@ -31,7 +24,6 @@ using C462.Shared.Protocol.DTOs;
 using Newtonsoft.Json;
 
 using Serilog;
-using System.Timers;
 using Tapping;
 
 namespace HTSController
