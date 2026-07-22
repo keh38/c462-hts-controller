@@ -141,7 +141,7 @@ namespace HTSController.Data_Streams
             stream.IPEndPoint = null;
             stream.Status = DataStream.StreamStatus.Idle;
 
-            Log.Information($"Data stream lost: {beacon.Name}");
+            Log.Information($"Data stream lost: {beacon.Name} at {stream.IPEndPoint}");
 
             InvokeOnUI(() => UpdateIndicators());
         }

@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.15 (unreleased)
+#### Fixed
+- handle HTS sync data stream reconnect from different port
+
+---
+
 ### v2.1.14 (2026-07-21)
 #### Added
 - diotic specific audiogram data (for now, applicable only to combined measurement)

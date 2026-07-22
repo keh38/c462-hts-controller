@@ -79,7 +79,7 @@
       <HintPath>..\packages\KLib.Controls.1.8.0\lib\net48\KLib.Controls.dll</HintPath>
     </Reference>
     <Reference Include="KLib.Net, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\KLib.Net.2.5.0\lib\net48\KLib.Net.dll</HintPath>
+      <HintPath>..\packages\KLib.Net.2.6.0\lib\net48\KLib.Net.dll</HintPath>
     </Reference>
     <Reference Include="Markdig, Version=0.44.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Markdig.0.44.0\lib\net462\Markdig.dll</HintPath>
@@ -238,7 +238,6 @@
     <Compile Include="Data Streams\IDataStreamHandler.cs" />
     <Compile Include="Editor\Pupillometry\Pupillometry.DynamicRangeSettings.cs" />
     <Compile Include="Editor\Pupillometry\Pupillometry.GazeCalibrationSettings.cs" />
-    <Compile Include="Editor\Speech\Digits\DigitsTestSettings.cs" />
     <Compile Include="Editor\Speech\Speech Reception\SpeechReception.ClosedSet.cs" />
     <Compile Include="Editor\Speech\Speech Reception\SpeechReception.InstructionFile.cs" />
     <Compile Include="Editor\Speech\Speech Reception\SpeechReception.ListDescription.cs" />

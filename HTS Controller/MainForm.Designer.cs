@@ -111,7 +111,7 @@
             this.matlabStatusLabel.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
             this.matlabStatusLabel.Image = global::HTSController.Properties.Resources.Matlab_Logo_32;
             this.matlabStatusLabel.Name = "matlabStatusLabel";
-            this.matlabStatusLabel.Size = new System.Drawing.Size(125, 24);
+            this.matlabStatusLabel.Size = new System.Drawing.Size(126, 24);
             this.matlabStatusLabel.Text = "MATLAB available";
             this.matlabStatusLabel.Visible = false;
             // 

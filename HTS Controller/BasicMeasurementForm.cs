@@ -41,6 +41,8 @@ namespace HTSController
         bool _runAborted = false;
         bool _ignoreEvents = false;
         bool _autoRun = false;
+        bool _runStarted = false;
+        bool _endRunStarted = false;
         Watchdog _watchdog;
 
         BasicMeasurementConfiguration _config;
@@ -194,6 +196,9 @@ namespace HTSController
 
         private async void startButton_Click(object sender, EventArgs e)
         {
+            _runStarted = false;
+            _endRunStarted = false;
+
             if (!_network.IsConnected)
             {
                 logTextBox.Text = "Not connected to tablet";
@@ -239,33 +244,36 @@ namespace HTSController
                     logTextBox.AppendText("OK" + Environment.NewLine);
                     OnRunStateChanged(_measType, true);
                     _network.SendMessage("Begin");
+                    _runStarted = true;
+                    return;
                 }
-                else
+
+                // failed to start
+                logTextBox.AppendText("failed" + Environment.NewLine);
+                foreach (var s in _streamManager.GetProblemStreams())
                 {
-                    logTextBox.AppendText("failed" + Environment.NewLine);
-                    foreach (var s in _streamManager.GetProblemStreams())
-                    {
-                        logTextBox.AppendText($"- {s}\n");
-                        Log.Error($"failed to start stream: {s}");
-                    }
-                    EnableButtons(true);
-                    EndAutoRun(false, null);
-                }
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(_dataFile) && _dataFile.StartsWith("error"))
-                {
-                    logTextBox.AppendText($"{Path.GetFileNameWithoutExtension(_dataFile)}{Environment.NewLine}");
-                    Log.Error(_dataFile);
-                }
-                else
-                {
-                    logTextBox.AppendText($"didn't receive data file name from {_sceneName} scene");
+                    logTextBox.AppendText($"- {s}\n");
+                    Log.Error($"failed to start stream: {s}");
                 }
                 EnableButtons(true);
                 EndAutoRun(false, null);
+
+                return;
             }
+
+            // failed to initialize
+            if (!string.IsNullOrEmpty(_dataFile) && _dataFile.StartsWith("error"))
+            {
+                logTextBox.AppendText($"{Environment.NewLine}{_dataFile}{Environment.NewLine}");
+                Log.Error(_dataFile);
+            }
+            else
+            {
+                logTextBox.AppendText($"didn't receive data file name from {_sceneName} scene");
+            }
+
+            EnableButtons(true);
+            EndAutoRun(false, null);
         }
 
         private string GetSceneName(string measType, BasicMeasurementConfiguration config)
@@ -304,8 +312,20 @@ namespace HTSController
 
         private void InitializeRemoteMeasurement()
         {
-            var result = _network.SendRequest<string>("Initialize", _config);
-            _dataFile = result ?? "";
+            if (_measType.Equals("Tapping"))
+            {
+                // This sucks, but the horrible problems with json and polymorphism
+                // means we must send the Channel object as xml instead of json. 
+                // Maybe we should just change the convention here to xml, but for
+                // the moment, I don't want to break anything
+                var result = _network.SendXmlRequest<string>("Initialize", _config);
+                _dataFile = result ?? "";
+            }
+            else
+            {
+                var result = _network.SendRequest<string>("Initialize", _config);
+                _dataFile = result ?? "";
+            }
 
             if (!string.IsNullOrEmpty(_dataFile))
             {
@@ -315,6 +335,9 @@ namespace HTSController
 
         private async void EndRun(string message, string status)
         {
+            if (!_runStarted || _endRunStarted) return;
+            _endRunStarted = true;
+
             _watchdog.Stop();
             Log.Information("Run ending");
             if (!_config.BypassDataStreams)
@@ -370,7 +393,7 @@ namespace HTSController
                         if (!Directory.Exists(SharedFileLocations.SubjectMetaFolder))
                         {
                             Directory.CreateDirectory(SharedFileLocations.SubjectMetaFolder);
-                        }   
+                        }
                         File.WriteAllText(audiogramPath, filePayload.Content);
                         break;
                     }
