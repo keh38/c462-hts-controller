@@ -1,6 +1,6 @@
 ## Changelog
 
-### v2.1.15 (unreleased)
+### v2.1.15 (2026-07-23)
 #### Fixed
 - handle HTS sync data stream reconnect from different port
 
