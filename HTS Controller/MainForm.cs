@@ -509,8 +509,9 @@ namespace HTSController
                 case "Combined":
                 case "Digits":
                 case "LDL":
+                case "Tapping":
                     basicButton.Checked = true;
-                    _basicForm.AutoRunBasicMeasurement(e.sceneName, e.settingsFile);
+                    _basicForm.AutoRunBasicMeasurement(e.sceneName, e.settingsFile, e.arguments);
                     break;
                 case "Pupil Dynamic Range":
                     pupilButton.Checked = true;

@@ -36,6 +36,7 @@ namespace HTSController
 
         private string _measType;
         private string _configName;
+        private string _arguments;
         private string _sceneName;
 
         bool _runAborted = false;
@@ -123,6 +124,7 @@ namespace HTSController
             msSelectMeasurement.Text = item.Name;
             _measType = item.Tag as string;
             _configName = item.Text;
+            _arguments = "";
 
             LoadConfiguration();
         }
@@ -175,13 +177,14 @@ namespace HTSController
             startButton.Enabled = true;
         }
 
-        public void AutoRunBasicMeasurement(string measType, string configName)
+        public void AutoRunBasicMeasurement(string measType, string configName, string arguments)
         {
             _autoRun = true;
 
             msSelectMeasurement.Text = $"{measType}.{configName}";
             _measType = measType;
             _configName = configName;
+            _arguments = arguments;
 
             LoadConfiguration();
             startButton_Click(this, null);
@@ -320,7 +323,12 @@ namespace HTSController
                 // means we must send the Channel object as xml instead of json. 
                 // Maybe we should just change the convention here to xml, but for
                 // the moment, I don't want to break anything
-                var result = _network.SendXmlRequest<string>("Initialize", _config);
+                var payload = new TappingConfigPayload
+                {
+                    Configuration = _config as TappingConfiguration,
+                    Arguments = _arguments
+                };
+                var result = _network.SendXmlRequest<string>("Initialize", payload);
                 _dataFile = result ?? "";
             }
             else
@@ -329,10 +337,10 @@ namespace HTSController
                 _dataFile = result ?? "";
             }
 
-            if (!string.IsNullOrEmpty(_dataFile))
-            {
-                Log.Information($"Remote data file = {_dataFile}");
-            }
+            if (string.IsNullOrEmpty(_dataFile) || _dataFile.StartsWith("error"))
+                return;
+
+            Log.Information($"Remote data file = {_dataFile}");
         }
 
         private async void EndRun(string message, string status)
