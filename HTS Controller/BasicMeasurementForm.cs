@@ -156,7 +156,9 @@ namespace HTSController
                         break;
 
                     case "Tapping":
-                        _config = obj as TappingConfiguration;
+                        var tappingConfig = obj as TappingConfiguration;
+                        tappingConfig.WireOwners();
+                        _config = tappingConfig;
                         break;
 
                     case "Questionnaire":
