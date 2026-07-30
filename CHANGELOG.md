@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.16 (2026-07-30)
+#### Added
+- option to set EPL folder root using environment variable
+
+---
+
 ### v2.1.15 (2026-07-23)
 #### Fixed
 - handle HTS sync data stream reconnect from different port

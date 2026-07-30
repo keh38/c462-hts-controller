@@ -59,8 +59,8 @@
     <Reference Include="C462.HTS, Version=1.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\C462.HTS.1.3.1\lib\net48\C462.HTS.dll</HintPath>
     </Reference>
-    <Reference Include="C462.Shared, Version=1.27.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\C462.Shared.1.27.2\lib\net48\C462.Shared.dll</HintPath>
+    <Reference Include="C462.Shared, Version=1.28.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\C462.Shared.1.28.0\lib\net48\C462.Shared.dll</HintPath>
     </Reference>
     <Reference Include="C462.Turandot, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\C462.Turandot.1.4.2\lib\net48\C462.Turandot.dll</HintPath>

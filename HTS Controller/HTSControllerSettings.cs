@@ -40,7 +40,7 @@ namespace HTSController
         }
 
         public string dataDrive { get; set; } = @"C:\";
-        public string projectRootFolder { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "EPL", "HTS", "Projects"); 
+        public string projectRootFolder { get; set; } = Path.Combine(C462.Shared.SharedFileLocations.EplFolder, "HTS", "Projects"); 
         public string lastProject { get; set; }
         public Rectangle audiogramBounds { get; set; } = Rectangle.Empty;
         public SerializeableDictionary lastUsed = new SerializeableDictionary();
