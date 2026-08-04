@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.1.17 (2026-08-04)
+#### Added
+- Combined audio/ldl: max level setting
+
+---
+
 ### v2.1.16 (2026-07-30)
 #### Added
 - option to set EPL folder root using environment variable
