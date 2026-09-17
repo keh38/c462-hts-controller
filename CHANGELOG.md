@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.2 (2026-09-17)
+#### Changed
+- added tapping options (silent tail and tap-evoked audio)
+
+---
+
 ### v2.1.17 (2026-08-04)
 #### Added
 - Combined audio/ldl: max level setting
