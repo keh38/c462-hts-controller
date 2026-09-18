@@ -135,13 +135,11 @@ namespace HTSController.Interactive
 
         private void channelDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string selectedName = channelDropDown.SelectedItem as string;
+            if (_ignoreEvents || _selectedSlider == null) return;
 
-            if (!_ignoreEvents)
-            {
-                _selectedSlider.Channel = selectedName;
-                UpdatePropertyDropDown(selectedName);
-            }
+            string selectedName = channelDropDown.SelectedItem as string;
+            _selectedSlider.Channel = selectedName;
+            UpdatePropertyDropDown(selectedName);
         }
 
         private void UpdatePropertyDropDown(string channelName)

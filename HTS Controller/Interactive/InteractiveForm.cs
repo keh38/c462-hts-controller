@@ -127,8 +127,11 @@ namespace HTSController
 
             LayoutControls();
 
-            channelPropertyGrid.SelectedObject = _settings.SigMan.Channels[0];
-            channelPropertyGrid.ExpandAllGridItems();
+            if (_settings.SigMan.Channels.Count > 0)
+            {
+                channelPropertyGrid.SelectedObject = _settings.SigMan.Channels[0];
+                channelPropertyGrid.ExpandAllGridItems();
+            }
             // Hide axis label and tick
             signalGraph.Plot.Axes.Left.TickLabelStyle.IsVisible = false;
             signalGraph.Plot.Axes.Left.MajorTickStyle.Length = 0;
@@ -285,7 +288,10 @@ namespace HTSController
             }
 
             channelListBox.SetItems(_settings.SigMan.Channels.Select(c => c.Name).ToList());
-            channelListBox.SelectedIndex = 0;
+            if (_settings.SigMan.Channels.Count > 0)
+            {
+                channelListBox.SelectedIndex = 0;
+            }
             signalGraph.Visible = true;
 
             SetTitle();
@@ -645,11 +651,33 @@ namespace HTSController
 
         private void channelPropertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
+            if (e.ChangedItem.Label == "Name")
+            {
+                ChangeChannelName(e.OldValue.ToString(), e.ChangedItem.Value.ToString());
+                return;
+            }
+
             if (_changeTriggers.Contains(e.ChangedItem.Label))
             {
                 channelPropertyGrid.Refresh();
             }
             PlotSignals(_settings.SigMan);
+        }
+
+        private void ChangeChannelName(string oldName, string newName)
+        {
+            var selectedIndex = channelListBox.SelectedIndex;
+            channelListBox.SetItems(_settings.SigMan.Channels.Select(c => c.Name).ToList());
+
+            channelListBox.SelectedIndex = selectedIndex;
+
+            sliderConfig.SetDataForContext(_settings.SigMan.GetValidSweepables());
+            foreach (var s in _settings.Sliders.FindAll(slider => slider.Channel == oldName))
+            {
+                s.Channel = newName;
+            }
+            sliderConfig.Value = _settings.Sliders;
+            LayoutControls();
         }
     }
 }

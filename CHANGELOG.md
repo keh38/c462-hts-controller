@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.2.1 (unreleased)
+#### Fixed
+- various bugs in Turandot Interactive
+
+---
+
 ### v2.2 (2026-09-17)
 #### Changed
 - added tapping options (silent tail and tap-evoked audio)
