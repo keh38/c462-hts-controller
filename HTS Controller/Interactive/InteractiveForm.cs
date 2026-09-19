@@ -420,7 +420,7 @@ namespace HTSController
             }
 
             int irow = 0;
-            foreach (KLib.Signals.Channel ch in sigman.Channels)
+            foreach (Channel ch in sigman.Channels)
             {
                 try
                 {
@@ -478,7 +478,9 @@ namespace HTSController
                     c.ChannelActiveChanged = HandleChannelActiveChanged;
                     flowLayoutPanel.Controls.Add(c);
                 }
-                _channelControls.Add(flowLayoutPanel.Controls[k] as ChannelControl);
+                var chanControl = flowLayoutPanel.Controls[k] as ChannelControl;
+                chanControl.SetActive(_settings.SigMan[chanNames[k]].Active);
+                _channelControls.Add(chanControl);
                 _channelControls[k].LayoutControls(chanNames[k], controls, OnPropertyValueChanged);
 
                 foreach (var c in controls)
@@ -549,6 +551,7 @@ namespace HTSController
                 _network.SendMessage("SetActive", $"{channel}={(enabled ? 1 : 0)}");
             }
             _settings.SigMan[channel].SetActive(enabled);
+            PlotSignals(_settings.SigMan);
         }
 
         private void OnPropertyValueChanged(string channel, string property, float value, bool selfChange)
