@@ -1,8 +1,10 @@
 ## Changelog
 
-### v2.2.1 (unreleased)
+### v2.3 (unreleased)
 #### Fixed
 - various bugs in Turandot Interactive
+#### Changed
+- CombinedAudioLDL: threshold- and LDL-only modes
 
 ---
 
