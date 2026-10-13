@@ -1,6 +1,6 @@
 ## Changelog
 
-### v2.3 (unreleased)
+### v2.3 (2026-10-13)
 #### Fixed
 - various bugs in Turandot Interactive
 #### Changed
