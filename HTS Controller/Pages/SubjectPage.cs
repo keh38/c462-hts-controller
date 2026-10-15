@@ -18,6 +18,7 @@ using C462.Shared;
 using MathWorks.MATLAB.Types;
 using System.IO;
 using C462.Shared.Protocol.DTOs;
+using Audiograms;
 
 namespace HTSController.Pages
 {
@@ -403,8 +404,25 @@ namespace HTSController.Pages
 
         private void getMetricsButton_Click(object sender, EventArgs e)
         {
+            Debug.WriteLine("Retrieving metrics from HTS");
             var metrics = _network.SendRequest<SerializeableDictionary<string>>("GetSubjectMetrics");
             _subjectMetadata.metrics = metrics;
+            ShowMetrics();
+            SendMetricsToEditor();
+            applyButton.Visible = false;
+        }
+
+        public void HandleMetricsChangedRemotely(SubjectMetricsPayload payload)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => HandleMetricsChangedRemotely(payload)));
+                return;
+            }
+
+            if (payload.Project != Project || payload.Subject != Subject) return;
+
+            _subjectMetadata.metrics = payload.Metrics;
             ShowMetrics();
             SendMetricsToEditor();
             applyButton.Visible = false;
@@ -417,6 +435,7 @@ namespace HTSController.Pages
 
         private void ApplyMetrics()
         {
+            Debug.WriteLine("Applying metrics to HTS");
             _network.SendMessage("SetSubjectMetrics", _subjectMetadata.metrics);
             ShowMetrics();
             SendMetricsToEditor();

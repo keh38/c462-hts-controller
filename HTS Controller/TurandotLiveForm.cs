@@ -220,7 +220,7 @@ namespace HTSController
         private void HandleRemoteMessage(object sender, TcpMessage message)
         {
             var payload = message.GetPayload<RemoteMessagePayload>();
-            if (!payload.Target.Equals("Turandot")) return;
+            if (payload == null || payload.Target==null || !payload.Target.Equals("Turandot")) return;
 
             switch (message.Command)
             {

@@ -1,5 +1,11 @@
 ## Changelog
 
+### v2.3.1 (2026-10-15)
+#### Fixed
+- receive updated metrics when changed on the HTS side to avoid overwrites
+
+---
+
 ### v2.3 (2026-10-13)
 #### Fixed
 - various bugs in Turandot Interactive

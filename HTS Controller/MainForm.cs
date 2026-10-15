@@ -328,16 +328,21 @@ namespace HTSController
 
         private void HandleRemoteMessage(object sender, TcpMessage message)
         {
-            var payload = message.GetPayload<RemoteMessagePayload>();
-
             switch (message.Command)
             {
                 case "ChangedLEDColors":
+                    var payload = message.GetPayload<RemoteMessagePayload>();
                     SetLightsButtonBackgroundColor(payload.Data);
                     break;
                 case "SubjectChanged":
-                    Debug.WriteLine($"Received SubjectChanged message: {payload.Data}");
-//                    subjectPageControl.OnSubjectChanged(payload.Data);
+                    var subjectChangePayload = message.GetPayload<SubjectMetricsPayload>();
+                    Debug.WriteLine($"Received SubjectChanged message: {subjectChangePayload.Project}/{subjectChangePayload.Subject}");
+                    //                    subjectPageControl.OnSubjectChanged(payload.Data);
+                    break;
+                case "MetricsChanged":
+                    var metricsChangePayload = message.GetPayload<SubjectMetricsPayload>();
+                    Debug.WriteLine($"Received MetricsChanged message for {metricsChangePayload.Project}/{metricsChangePayload.Subject}");
+                    subjectPageControl.HandleMetricsChangedRemotely(metricsChangePayload);
                     break;
             }
         }

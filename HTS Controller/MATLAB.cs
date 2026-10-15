@@ -73,9 +73,9 @@ namespace HTSController
                             dynamic x = data.GetField(n);
                             try { value = x; } catch { double dval = x; value = dval.ToString(); }
                             result += $"{n} = {value}" + Environment.NewLine;
-
-                            OnUpdateMetrics(data);
                         }
+                        if (data.GetFieldNames().Count > 0)
+                            OnUpdateMetrics(data);
                     }
                     else if (data is MATLABArray)
                     {
